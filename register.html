@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký - Tin Mới</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="login.html">TIN<span>MỚI</span></a>
+      <a class="btn btn-outline" href="login.html">Đăng nhập</a>
+    </div>
+  </header>
+
+  <main class="auth-wrap">
+    <section class="card auth-card">
+      <div class="auth-head">
+        <h1>Tạo tài khoản</h1>
+        <p>Đăng ký tài khoản để bình luận, lưu bài viết và quản lý hồ sơ.</p>
+      </div>
+
+      <form action="#" method="post">
+        <div class="form-group">
+          <label for="name">Họ và tên</label>
+          <input class="form-control" type="text" id="name" name="name"
+                 placeholder="Nguyễn Văn A" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input class="form-control" type="email" id="email" name="email"
+                 placeholder="example@email.com" required>
+        </div>
+
+        <div class="row">
+          <div class="form-group">
+            <label for="password">Mật khẩu</label>
+            <input class="form-control" type="password" id="password" name="password"
+                   placeholder="Tối thiểu 8 ký tự" minlength="8" required>
+          </div>
+          <div class="form-group">
+            <label for="confirm">Xác nhận mật khẩu</label>
+            <input class="form-control" type="password" id="confirm" name="confirm"
+                   placeholder="Nhập lại mật khẩu" required>
+          </div>
+        </div>
+
+        <label class="checkbox" style="margin-bottom:20px">
+          <input type="checkbox" required>
+          <span>Tôi đồng ý với Điều khoản sử dụng và Chính sách bảo mật.</span>
+        </label>
+
+        <button class="btn btn-primary btn-full" type="submit">Đăng ký tài khoản</button>
+      </form>
+
+      <p class="form-footer">
+        Đã có tài khoản?
+        <a href="login.html">Đăng nhập</a>
+      </p>
+    </section>
+  </main>
+</body>
+</html>

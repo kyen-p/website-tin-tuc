@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang cá nhân - Tin Mới</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="profile.html">TIN<span>MỚI</span></a>
+      <nav class="nav">
+        <a href="#">Trang chủ</a>
+        <a href="#">Thời sự</a>
+        <a href="#">Thể thao</a>
+        <a href="#">Công nghệ</a>
+      </nav>
+      <div class="user-menu">
+        <span>Nguyễn Minh</span>
+        <div class="avatar">NM</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <h1 class="page-title">Quản lý thông tin cá nhân</h1>
+      <p class="page-subtitle">Cập nhật thông tin tài khoản và quản lý hoạt động của bạn.</p>
+
+      <div class="profile-grid">
+        <aside class="card profile-sidebar">
+          <div class="profile-avatar">NM</div>
+          <div class="profile-name">Nguyễn Minh</div>
+          <div class="profile-role">Độc giả / User</div>
+
+          <nav class="profile-menu">
+            <a class="active" href="profile.html">Thông tin cá nhân</a>
+            <a href="#">Bài viết đã lưu</a>
+            <a href="#">Lịch sử đọc</a>
+            <a href="#">Thông báo</a>
+            <a href="#">Đăng ký làm phóng viên</a>
+            <a href="login.html">Đăng xuất</a>
+          </nav>
+        </aside>
+
+        <section class="card profile-content">
+          <h2 class="section-title">Thông tin tài khoản</h2>
+          <p class="section-note">Các thông tin cơ bản của tài khoản người dùng.</p>
+
+          <form action="#" method="post">
+            <div class="row">
+              <div class="form-group">
+                <label for="name">Họ và tên</label>
+                <input class="form-control" id="name" value="Nguyễn Minh" type="text">
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control" id="email" value="nguyenminh@email.com" type="email">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <label for="phone">Số điện thoại</label>
+                <input class="form-control" id="phone" value="0901 234 567" type="tel">
+              </div>
+              <div class="form-group">
+                <label for="role">Vai trò</label>
+                <input class="form-control" id="role" value="User / Độc giả" type="text" disabled>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bio">Giới thiệu</label>
+              <textarea class="form-control" id="bio" style="min-height:130px"
+                        placeholder="Giới thiệu ngắn về bạn...">Yêu thích đọc tin tức và công nghệ.</textarea>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-outline" type="reset">Hủy</button>
+              <button class="btn btn-primary" type="submit">Lưu thay đổi</button>
+            </div>
+          </form>
+
+          <div style="border-top:1px solid var(--border);margin-top:30px;padding-top:25px">
+            <h2 class="section-title">Trạng thái tài khoản</h2>
+            <p class="section-note">
+              Tài khoản hiện đang hoạt động:
+              <span class="status-badge" style="background:#dcfce7;color:#166534">Active</span>
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <strong>TIN MỚI</strong>
+      <span>© 2026 Website Tin Tức. Giao diện tĩnh.</span>
+    </div>
+  </footer>
+</body>
+</html>

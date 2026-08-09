@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viết bài - Tin Mới</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="write-article.html">TIN<span>MỚI</span></a>
+      <nav class="nav">
+        <a href="#">Dashboard</a>
+        <a class="active" href="write-article.html">Viết bài</a>
+        <a href="#">Bài viết của tôi</a>
+      </nav>
+      <div class="user-menu">
+        <span>Phóng viên</span>
+        <div class="avatar">PV</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:25px">
+        <div>
+          <h1 class="page-title">Viết bài mới</h1>
+          <p class="page-subtitle" style="margin-bottom:0">
+            Tạo bài viết, lưu nháp hoặc gửi cho Biên tập viên xét duyệt.
+          </p>
+        </div>
+        <span class="status-badge">Bản nháp</span>
+      </div>
+
+      <form action="#" method="post" enctype="multipart/form-data">
+        <div class="write-layout">
+          <section class="card write-main">
+            <div class="form-group">
+              <label for="title">Tiêu đề bài viết *</label>
+              <input class="form-control" id="title" name="title" type="text"
+                     placeholder="Nhập tiêu đề bài viết..." required>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <label for="category">Chọn chuyên mục *</label>
+                <select class="form-control" id="category" name="category" required>
+                  <option value="">-- Chọn chuyên mục --</option>
+                  <option>Thời sự</option>
+                  <option>Thể thao</option>
+                  <option>Công nghệ</option>
+                  <option>Giải trí</option>
+                  <option>Kinh tế</option>
+                  <option>Đời sống</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="tag">Tag</label>
+                <input class="form-control" id="tag" name="tag" type="text"
+                       placeholder="Ví dụ: công nghệ, AI">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="summary">Tóm tắt bài viết</label>
+              <textarea class="form-control" id="summary" name="summary"
+                        style="min-height:110px"
+                        placeholder="Viết phần tóm tắt ngắn cho bài viết..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="content">Nội dung bài viết *</label>
+              <textarea class="form-control" id="content" name="content"
+                        placeholder="Nhập nội dung bài viết tại đây..." required></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-outline" type="reset">Hủy</button>
+              <button class="btn btn-light" type="submit" name="action" value="draft">
+                Lưu nháp
+              </button>
+              <button class="btn btn-primary" type="submit" name="action" value="submit">
+                Gửi duyệt
+              </button>
+            </div>
+          </section>
+
+          <aside class="card write-side">
+            <h3>Ảnh đại diện</h3>
+            <div class="upload-box">
+              <div class="upload-icon">🖼️</div>
+              <p>Chọn ảnh đại diện cho bài viết</p>
+              <label class="btn btn-outline" for="cover">Tải ảnh lên</label>
+              <input id="cover" name="cover" type="file" accept="image/*" hidden>
+            </div>
+
+            <div style="margin-top:22px">
+              <h3>Hướng dẫn</h3>
+              <ul class="tip-list">
+                <li>Tiêu đề nên ngắn gọn, rõ nội dung chính.</li>
+                <li>Chọn đúng chuyên mục trước khi gửi duyệt.</li>
+                <li>Có thể lưu bài ở trạng thái <b>Nháp</b>.</li>
+                <li>Khi chọn <b>Gửi duyệt</b>, bài chuyển sang trạng thái <b>Chờ duyệt</b>.</li>
+                <li>Editor có thể duyệt hoặc từ chối kèm lý do.</li>
+              </ul>
+            </div>
+
+            <div class="info-box" style="margin-top:22px;margin-bottom:0">
+              <b>Quy trình:</b><br>
+              Phóng viên viết bài → Gửi duyệt → Editor xem xét → Duyệt/Từ chối.
+            </div>
+          </aside>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <strong>TIN MỚI</strong>
+      <span>© 2026 Website Tin Tức. Giao diện tĩnh.</span>
+    </div>
+  </footer>
+</body>
+</html>
