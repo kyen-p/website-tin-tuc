@@ -1,0 +1,3364 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý chuyên mục & Tag</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --admin-canvas: #F1F4F9;
+            --admin-sidebar-bg: rgba(255,255,255,0.72);
+            --admin-ink: #2B2620;
+            --admin-ink-soft: #6E6656;
+            --admin-line: rgba(43,38,32,0.1);
+            --admin-danger: #DC2626;
+            --admin-accent: #8A6D3B;
+            --admin-success: #2E7D4F;
+            --admin-warning: #B45309;
+            --admin-f-display: 'Manrope', 'Segoe UI', sans-serif;
+            --admin-f-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--admin-f-body);
+            background: var(--admin-canvas);
+            color: var(--admin-ink);
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* ==============================
+           SIDEBAR
+        ============================== */
+
+        .admin-sidebar {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            width: 240px;
+            min-height: calc(100vh - 32px);
+            z-index: 1050;
+
+            background: var(--admin-sidebar-bg);
+            backdrop-filter: blur(14px);
+
+            border: 1px solid rgba(255,255,255,.75);
+            border-radius: 22px;
+
+            padding: 28px 20px;
+
+            display: flex;
+            flex-direction: column;
+
+            box-shadow: 0 12px 35px rgba(43,38,32,.06);
+
+            transform: translateX(-110%);
+            opacity: 0;
+            pointer-events: none;
+
+            transition:
+                transform .3s ease,
+                opacity .3s ease;
+        }
+
+        .admin-sidebar.is-open {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .admin-sidebar__brand {
+            padding: 0 6px 26px;
+        }
+
+        .admin-sidebar__title {
+            font-family: var(--admin-f-display);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--admin-ink);
+        }
+
+        .admin-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .admin-nav__link {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+
+            padding: 10px 6px 10px 16px;
+
+            font-size: 14.5px;
+            font-weight: 500;
+            line-height: 1.4;
+
+            color: var(--admin-ink);
+            text-decoration: none;
+
+            border-radius: 8px;
+
+            transition: .2s ease;
+        }
+
+        .admin-nav__link:hover {
+            background: rgba(255,255,255,.7);
+        }
+
+        .admin-nav__link.is-active {
+            font-weight: 700;
+            color: var(--admin-accent);
+            background: rgba(255,255,255,.5);
+        }
+
+        .admin-nav__link.is-active::before {
+            content: "";
+
+            position: absolute;
+            left: 0;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 4px;
+            height: 18px;
+
+            border-radius: 5px;
+
+            background: var(--admin-accent);
+        }
+
+        .admin-sidebar__foot {
+            padding-top: 20px;
+            margin-top: 12px;
+            border-top: 1px solid var(--admin-line);
+        }
+
+        .admin-nav__link--logout {
+            gap: 9px;
+            color: var(--admin-danger);
+            font-weight: 600;
+        }
+
+        .admin-nav__link--logout:hover {
+            background: rgba(220,38,38,.08);
+        }
+
+        /* ==============================
+           MAIN
+        ============================== */
+
+        .admin-main {
+            width: 100%;
+        }
+
+        .admin-container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 24px 28px 60px;
+        }
+
+        /* ==============================
+           TOPBAR
+        ============================== */
+
+        .admin-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 4px 0 28px;
+        }
+
+        .admin-topbar__left {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .admin-menu-toggle {
+            width: 40px;
+            height: 40px;
+
+            border: 1px solid var(--admin-line);
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.7);
+
+            color: var(--admin-ink);
+
+            font-size: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            transition: .2s ease;
+        }
+
+        .admin-menu-toggle:hover {
+            background: #fff;
+            border-color: var(--admin-accent);
+        }
+
+        .admin-topbar__title {
+            margin: 0;
+
+            font-family: var(--admin-f-display);
+            font-size: 24px;
+            font-weight: 800;
+
+            color: var(--admin-ink);
+        }
+
+        .admin-topbar__subtitle {
+            margin: 5px 0 0;
+
+            font-size: 12.5px;
+            color: var(--admin-ink-soft);
+        }
+
+        .admin-topbar__account {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-avatar {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: var(--admin-accent);
+            color: #fff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: var(--admin-f-display);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .admin-account-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .admin-account-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .admin-account-role {
+            font-size: 11px;
+            color: var(--admin-ink-soft);
+        }
+
+        .admin-logout-btn {
+            border: 1px solid var(--admin-line);
+            background: rgba(255,255,255,.6);
+
+            color: var(--admin-ink-soft);
+
+            font-size: 12.5px;
+            font-weight: 500;
+
+            padding: 7px 14px;
+            border-radius: 8px;
+
+            transition: .2s ease;
+        }
+
+        .admin-logout-btn:hover {
+            color: var(--admin-danger);
+            border-color: var(--admin-danger);
+        }
+
+        /* ==============================
+           TAXONOMY
+        ============================== */
+
+        .taxonomy-container {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* ==============================
+           STATS
+        ============================== */
+
+        .taxonomy-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .taxonomy-stat {
+            background: rgba(255,255,255,.72);
+
+            border: 1px solid rgba(255,255,255,.85);
+            border-radius: 14px;
+
+            padding: 18px 20px;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .taxonomy-stat::before {
+            content: "";
+
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 3px;
+
+            background: var(--admin-accent);
+        }
+
+        .taxonomy-stat:nth-child(2)::before {
+            background: #5B6EAE;
+        }
+
+        .taxonomy-stat:nth-child(3)::before {
+            background: #5F7A61;
+        }
+
+        .taxonomy-stat-label {
+            display: block;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            text-transform: uppercase;
+            letter-spacing: .03em;
+
+            color: var(--admin-ink-soft);
+        }
+
+        .taxonomy-stat-value {
+            display: block;
+
+            margin-top: 7px;
+
+            font-family: var(--admin-f-display);
+            font-size: 28px;
+            font-weight: 800;
+
+            color: var(--admin-ink);
+        }
+
+        /* ==============================
+           LAYOUT
+        ============================== */
+
+        .taxonomy-layout {
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 14px;
+
+            align-items: start;
+        }
+
+        .taxonomy-panel {
+            background: rgba(255,255,255,.72);
+
+            border: 1px solid rgba(255,255,255,.85);
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            box-shadow: 0 8px 25px rgba(43,38,32,.035);
+        }
+
+        .taxonomy-panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 16px 18px;
+
+            border-bottom: 1px solid var(--admin-line);
+        }
+
+        .taxonomy-panel-title {
+            margin: 0;
+
+            font-family: var(--admin-f-display);
+            font-size: 14px;
+            font-weight: 800;
+
+            color: var(--admin-ink);
+        }
+
+        .taxonomy-panel-subtitle {
+            margin-top: 4px;
+
+            font-size: 11.5px;
+            color: var(--admin-ink-soft);
+        }
+
+        .taxonomy-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .taxonomy-search {
+            width: 180px;
+
+            border: 1px solid var(--admin-line);
+            border-radius: 8px;
+
+            padding: 8px 11px;
+
+            background: rgba(255,255,255,.7);
+
+            color: var(--admin-ink);
+
+            font-size: 12px;
+
+            outline: none;
+        }
+
+        .taxonomy-search:focus {
+            border-color: var(--admin-accent);
+            background: #fff;
+        }
+
+        .taxonomy-add-btn {
+            border: 1px solid var(--admin-accent);
+            border-radius: 8px;
+
+            background: var(--admin-accent);
+            color: #fff;
+
+            padding: 8px 12px;
+
+            font-size: 11.5px;
+            font-weight: 600;
+
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .taxonomy-add-btn:hover {
+            opacity: .9;
+            transform: translateY(-1px);
+        }
+
+        /* ==============================
+           TABLE
+        ============================== */
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .taxonomy-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .taxonomy-table th {
+            padding: 11px 16px;
+
+            text-align: left;
+
+            font-size: 10.5px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: .04em;
+
+            color: var(--admin-ink-soft);
+
+            border-bottom: 1px solid var(--admin-line);
+
+            white-space: nowrap;
+        }
+
+        .taxonomy-table td {
+            padding: 12px 16px;
+
+            font-size: 12.5px;
+
+            border-bottom: 1px solid var(--admin-line);
+
+            vertical-align: middle;
+        }
+
+        .taxonomy-table tbody tr {
+            transition: .15s ease;
+        }
+
+        .taxonomy-table tbody tr:hover {
+            background: rgba(255,255,255,.7);
+        }
+
+        .taxonomy-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .category-name {
+            font-weight: 700;
+            color: var(--admin-ink);
+        }
+
+        .category-description {
+            margin-top: 3px;
+
+            font-size: 10.5px;
+            color: var(--admin-ink-soft);
+
+            max-width: 280px;
+        }
+
+        .article-count {
+            font-family: var(--admin-f-display);
+            font-weight: 800;
+            color: var(--admin-ink);
+        }
+
+        /* ==============================
+           BADGES
+        ============================== */
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+
+            padding: 4px 9px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .status-badge::before {
+            content: "";
+
+            width: 5px;
+            height: 5px;
+
+            border-radius: 50%;
+        }
+
+        .status-active {
+            background: #E0EEE2;
+            color: #2E7D4F;
+        }
+
+        .status-active::before {
+            background: #2E7D4F;
+        }
+
+        .status-hidden {
+            background: #F1E8D8;
+            color: #8A6D3B;
+        }
+
+        .status-hidden::before {
+            background: #8A6D3B;
+        }
+
+        /* ==============================
+           ACTIONS
+        ============================== */
+
+        .taxonomy-row-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .small-btn {
+            border: 1px solid var(--admin-line);
+            border-radius: 7px;
+
+            background: rgba(255,255,255,.7);
+
+            padding: 5px 9px;
+
+            font-size: 10.5px;
+            font-weight: 600;
+
+            color: var(--admin-ink);
+
+            transition: .2s ease;
+        }
+
+        .small-btn:hover {
+            border-color: var(--admin-accent);
+            color: var(--admin-accent);
+        }
+
+        .small-btn.danger {
+            color: var(--admin-danger);
+        }
+
+        .small-btn.danger:hover {
+            border-color: var(--admin-danger);
+            background: rgba(220,38,38,.05);
+        }
+
+        /* ==============================
+           TAG
+        ============================== */
+
+        .tag-search-wrapper {
+            padding: 14px 18px 4px;
+        }
+
+        .tag-search-wrapper .taxonomy-search {
+            width: 100%;
+        }
+
+        .tag-list {
+            padding: 14px 18px 18px;
+
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 7px 10px;
+
+            border-radius: 20px;
+
+            background: #E7E2D6;
+            color: #6E6656;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tag-item.hidden {
+            opacity: .55;
+        }
+
+        .tag-count {
+            font-size: 9.5px;
+            font-weight: 700;
+
+            background: rgba(255,255,255,.65);
+
+            padding: 2px 6px;
+
+            border-radius: 10px;
+        }
+
+        .tag-actions {
+            display: inline-flex;
+            gap: 2px;
+        }
+
+        .tag-action {
+            width: 20px;
+            height: 20px;
+
+            border: none;
+            background: transparent;
+
+            color: currentColor;
+
+            border-radius: 50%;
+
+            font-size: 11px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tag-action:hover {
+            background: rgba(0,0,0,.08);
+        }
+
+        /* ==============================
+           FORM
+        ============================== */
+
+        .form-panel {
+            display: none;
+        }
+
+        .taxonomy-form {
+            padding: 18px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            margin-bottom: 6px;
+
+            font-size: 11.5px;
+            font-weight: 600;
+
+            color: var(--admin-ink-soft);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+
+            border: 1px solid var(--admin-line);
+            border-radius: 8px;
+
+            padding: 9px 11px;
+
+            background: #fff;
+
+            color: var(--admin-ink);
+
+            font-size: 12.5px;
+
+            outline: none;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--admin-accent);
+        }
+
+        .form-textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+
+            margin-top: 18px;
+            padding-top: 15px;
+
+            border-top: 1px solid var(--admin-line);
+        }
+
+        .btn-cancel,
+        .btn-save {
+            border-radius: 8px;
+
+            padding: 8px 14px;
+
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .btn-cancel {
+            border: 1px solid var(--admin-line);
+            background: #fff;
+            color: var(--admin-ink-soft);
+        }
+
+        .btn-save {
+            border: 1px solid var(--admin-accent);
+            background: var(--admin-accent);
+            color: #fff;
+        }
+
+        /* ==============================
+           EMPTY
+        ============================== */
+
+        .empty-state {
+            padding: 30px 20px;
+
+            text-align: center;
+
+            color: var(--admin-ink-soft);
+
+            font-size: 12px;
+        }
+
+        .empty-state strong {
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: var(--admin-ink);
+        }
+
+        /* ==============================
+           TOAST
+        ============================== */
+
+        .toast {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            z-index: 3000;
+
+            min-width: 280px;
+
+            padding: 13px 16px;
+
+            background: #2B2620;
+            color: #fff;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+            font-weight: 500;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,.2);
+
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+
+            transition: .25s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 950px) {
+
+            .taxonomy-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .taxonomy-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .admin-container {
+                padding: 18px 15px 40px;
+            }
+
+            .admin-topbar {
+                align-items: flex-start;
+            }
+
+            .admin-topbar__account {
+                gap: 7px;
+            }
+
+            .admin-account-info {
+                display: none;
+            }
+
+            .admin-logout-btn {
+                padding: 7px 10px;
+            }
+
+            .taxonomy-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .taxonomy-panel-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .taxonomy-actions {
+                width: 100%;
+            }
+
+            .taxonomy-search {
+                flex: 1;
+                width: auto;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .admin-topbar__title {
+                font-size: 19px;
+            }
+
+            .admin-topbar__subtitle {
+                font-size: 11px;
+            }
+
+            .taxonomy-add-btn {
+                padding: 8px 9px;
+            }
+
+            .taxonomy-table th,
+            .taxonomy-table td {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="admin-sidebar" id="adminSidebar">
+
+        <div class="admin-sidebar__brand">
+            <span class="admin-sidebar__title">
+                TÊN NHÀ BÁO
+            </span>
+        </div>
+
+        <nav class="admin-nav" aria-label="Điều hướng quản trị">
+
+            <a href="dashboard.html" class="admin-nav__link">
+                Dashboard
+            </a>
+
+            <!-- LIÊN KẾT ĐÚNG VỚI TRANG QUẢN LÝ BÀI VIẾT -->
+            <a href="manage-articles.html" class="admin-nav__link">
+                Quản lý bài viết
+            </a>
+
+            <a href="manage-taxonomy.html"
+               class="admin-nav__link is-active">
+                Quản lý chuyên mục &amp; tag
+            </a>
+
+            <a href="manage-users.html" class="admin-nav__link">
+                Quản lý người dùng
+            </a>
+
+            <a href="system-config.html" class="admin-nav__link">
+                Cấu hình hệ thống
+            </a>
+
+        </nav>
+
+        <div class="admin-sidebar__foot">
+
+            <a href="../public/index.html"
+               class="admin-nav__link admin-nav__link--logout">
+
+                <svg width="16"
+                     height="16"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     aria-hidden="true">
+
+                    <path
+                        d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+
+                </svg>
+
+                Về trang công khai
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="admin-main">
+
+        <div class="admin-container">
+
+            <!-- =================================================
+                 TOPBAR
+            ================================================== -->
+
+            <header class="admin-topbar">
+
+                <div class="admin-topbar__left">
+
+                    <button
+                        id="menuToggle"
+                        class="admin-menu-toggle"
+                        aria-label="Mở/đóng menu"
+                        type="button">
+
+                        ☰
+
+                    </button>
+
+                    <div>
+
+                        <h1 class="admin-topbar__title">
+                            Quản lý chuyên mục &amp; tag
+                        </h1>
+
+                        <p class="admin-topbar__subtitle">
+                            Quản lý các chuyên mục và từ khóa được sử dụng cho bài viết
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-topbar__account">
+
+                    <div class="admin-avatar">
+                        A
+                    </div>
+
+                    <div class="admin-account-info">
+
+                        <span class="admin-account-name">
+                            Nguyễn Văn A
+                        </span>
+
+                        <span class="admin-account-role">
+                            Admin
+                        </span>
+
+                    </div>
+
+                    <button
+                        class="admin-logout-btn"
+                        type="button"
+                        onclick="logout()">
+
+                        Đăng xuất
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- =================================================
+                 CONTENT
+            ================================================== -->
+
+            <div class="taxonomy-container">
+
+
+                <!-- =================================================
+                     THỐNG KÊ
+                ================================================== -->
+
+                <section class="taxonomy-stats">
+
+                    <div class="taxonomy-stat">
+
+                        <span class="taxonomy-stat-label">
+                            Tổng chuyên mục
+                        </span>
+
+                        <span
+                            class="taxonomy-stat-value"
+                            id="categoryTotal">
+                            0
+                        </span>
+
+                    </div>
+
+
+                    <div class="taxonomy-stat">
+
+                        <span class="taxonomy-stat-label">
+                            Tổng tag
+                        </span>
+
+                        <span
+                            class="taxonomy-stat-value"
+                            id="tagTotal">
+                            0
+                        </span>
+
+                    </div>
+
+
+                    <div class="taxonomy-stat">
+
+                        <span class="taxonomy-stat-label">
+                            Chuyên mục đang hoạt động
+                        </span>
+
+                        <span
+                            class="taxonomy-stat-value"
+                            id="activeCategoryTotal">
+                            0
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     2 CỘT
+                ================================================== -->
+
+                <section class="taxonomy-layout">
+
+
+                    <!-- =============================================
+                         CHUYÊN MỤC
+                    ============================================== -->
+
+                    <div class="taxonomy-panel">
+
+                        <div class="taxonomy-panel-head">
+
+                            <div>
+
+                                <h2 class="taxonomy-panel-title">
+                                    Danh sách chuyên mục
+                                </h2>
+
+                                <div class="taxonomy-panel-subtitle">
+                                    Các chuyên mục dùng để phân loại bài viết
+                                </div>
+
+                            </div>
+
+
+                            <div class="taxonomy-actions">
+
+                                <input
+                                    type="text"
+                                    id="categorySearch"
+                                    class="taxonomy-search"
+                                    placeholder="Tìm chuyên mục..."
+                                    oninput="searchCategories()">
+
+                                <button
+                                    class="taxonomy-add-btn"
+                                    type="button"
+                                    onclick="openCategoryForm()">
+
+                                    + Thêm chuyên mục
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="table-scroll">
+
+                            <table class="taxonomy-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Chuyên mục
+                                        </th>
+
+                                        <th>
+                                            Bài viết
+                                        </th>
+
+                                        <th>
+                                            Trạng thái
+                                        </th>
+
+                                        <th style="text-align:right;">
+                                            Thao tác
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="categoryTableBody">
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =============================================
+                         TAG
+                    ============================================== -->
+
+                    <div class="taxonomy-panel">
+
+                        <div class="taxonomy-panel-head">
+
+                            <div>
+
+                                <h2 class="taxonomy-panel-title">
+                                    Danh sách Tag
+                                </h2>
+
+                                <div class="taxonomy-panel-subtitle">
+                                    Từ khóa được gắn vào bài viết
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                class="taxonomy-add-btn"
+                                type="button"
+                                onclick="openTagForm()">
+
+                                + Thêm Tag
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="tag-search-wrapper">
+
+                            <input
+                                type="text"
+                                id="tagSearch"
+                                class="taxonomy-search"
+                                placeholder="Tìm tag..."
+                                oninput="searchTags()">
+
+                        </div>
+
+
+                        <div
+                            class="tag-list"
+                            id="tagList">
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     FORM CHUYÊN MỤC
+                ================================================== -->
+
+                <section
+                    class="taxonomy-panel form-panel"
+                    id="categoryFormPanel">
+
+                    <div class="taxonomy-panel-head">
+
+                        <div>
+
+                            <h2
+                                class="taxonomy-panel-title"
+                                id="categoryFormTitle">
+
+                                Thêm chuyên mục
+
+                            </h2>
+
+                            <div class="taxonomy-panel-subtitle">
+                                Nhập thông tin chuyên mục
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        class="taxonomy-form"
+                        onsubmit="saveCategory(event)">
+
+                        <input
+                            type="hidden"
+                            id="categoryEditId">
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Tên chuyên mục *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="categoryName"
+                                    class="form-input"
+                                    placeholder="Ví dụ: Thời sự"
+                                    required>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Trạng thái
+                                </label>
+
+                                <select
+                                    id="categoryStatus"
+                                    class="form-select">
+
+                                    <option value="active">
+                                        Đang hoạt động
+                                    </option>
+
+                                    <option value="hidden">
+                                        Đang ẩn
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group full">
+
+                                <label class="form-label">
+                                    Mô tả
+                                </label>
+
+                                <textarea
+                                    id="categoryDescription"
+                                    class="form-textarea"
+                                    placeholder="Nhập mô tả cho chuyên mục..."></textarea>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-footer">
+
+                            <button
+                                type="button"
+                                class="btn-cancel"
+                                onclick="closeCategoryForm()">
+
+                                Hủy
+
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="btn-save">
+
+                                Lưu chuyên mục
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+
+                <!-- =================================================
+                     FORM TAG
+                ================================================== -->
+
+                <section
+                    class="taxonomy-panel form-panel"
+                    id="tagFormPanel">
+
+                    <div class="taxonomy-panel-head">
+
+                        <div>
+
+                            <h2
+                                class="taxonomy-panel-title"
+                                id="tagFormTitle">
+
+                                Thêm Tag
+
+                            </h2>
+
+                            <div class="taxonomy-panel-subtitle">
+                                Nhập tên tag mới
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        class="taxonomy-form"
+                        onsubmit="saveTag(event)">
+
+                        <input
+                            type="hidden"
+                            id="tagEditId">
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Tên Tag *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="tagName"
+                                    class="form-input"
+                                    placeholder="Ví dụ: Giá vàng"
+                                    required>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Trạng thái
+                                </label>
+
+                                <select
+                                    id="tagStatus"
+                                    class="form-select">
+
+                                    <option value="active">
+                                        Đang hoạt động
+                                    </option>
+
+                                    <option value="hidden">
+                                        Đang ẩn
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-footer">
+
+                            <button
+                                type="button"
+                                class="btn-cancel"
+                                onclick="closeTagForm()">
+
+                                Hủy
+
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="btn-save">
+
+                                Lưu Tag
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         TOAST
+    ====================================================== -->
+
+    <div
+        class="toast"
+        id="toast">
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        /* =====================================================
+           DỮ LIỆU CHUYÊN MỤC
+        ====================================================== */
+
+        let categories = JSON.parse(
+            localStorage.getItem("newsCategories")
+        ) || [
+
+            {
+                id: 1,
+                name: "Kinh tế",
+                description: "Thông tin kinh tế, tài chính và thị trường",
+                status: "active"
+            },
+
+            {
+                id: 2,
+                name: "Thể thao",
+                description: "Tin tức thể thao trong nước và quốc tế",
+                status: "active"
+            },
+
+            {
+                id: 3,
+                name: "Thời sự",
+                description: "Tin tức thời sự trong nước và quốc tế",
+                status: "active"
+            },
+
+            {
+                id: 4,
+                name: "Công nghệ",
+                description: "Công nghệ, AI và sản phẩm số",
+                status: "active"
+            },
+
+            {
+                id: 5,
+                name: "Giải trí",
+                description: "Điện ảnh, âm nhạc và đời sống giải trí",
+                status: "active"
+            },
+
+            {
+                id: 6,
+                name: "Du lịch",
+                description: "Du lịch, điểm đến và trải nghiệm",
+                status: "active"
+            },
+
+            {
+                id: 7,
+                name: "Đời sống",
+                description: "Các vấn đề đời sống và xã hội",
+                status: "active"
+            },
+
+            {
+                id: 8,
+                name: "Giáo dục",
+                description: "Tin tức giáo dục và đào tạo",
+                status: "hidden"
+            }
+
+        ];
+
+
+        /* =====================================================
+           DỮ LIỆU TAG
+        ====================================================== */
+
+        let tags = JSON.parse(
+            localStorage.getItem("newsTags")
+        ) || [
+
+            {
+                id: 1,
+                name: "Giá vàng",
+                status: "active"
+            },
+
+            {
+                id: 2,
+                name: "Chứng khoán",
+                status: "active"
+            },
+
+            {
+                id: 3,
+                name: "Kinh tế",
+                status: "active"
+            },
+
+            {
+                id: 4,
+                name: "SEA Games",
+                status: "active"
+            },
+
+            {
+                id: 5,
+                name: "Đội tuyển Việt Nam",
+                status: "active"
+            },
+
+            {
+                id: 6,
+                name: "Thời tiết",
+                status: "active"
+            },
+
+            {
+                id: 7,
+                name: "Không khí lạnh",
+                status: "active"
+            },
+
+            {
+                id: 8,
+                name: "AI",
+                status: "active"
+            },
+
+            {
+                id: 9,
+                name: "Điện thoại",
+                status: "active"
+            },
+
+            {
+                id: 10,
+                name: "Công nghệ",
+                status: "active"
+            },
+
+            {
+                id: 11,
+                name: "Điện ảnh",
+                status: "active"
+            },
+
+            {
+                id: 12,
+                name: "Phim Việt",
+                status: "active"
+            },
+
+            {
+                id: 13,
+                name: "Du lịch",
+                status: "active"
+            },
+
+            {
+                id: 14,
+                name: "Đời sống",
+                status: "active"
+            },
+
+            {
+                id: 15,
+                name: "Chuyển đổi số",
+                status: "active"
+            },
+
+            {
+                id: 16,
+                name: "Thị trường",
+                status: "hidden"
+            }
+
+        ];
+
+
+        /* =====================================================
+           LẤY BÀI VIẾT TỪ manage-articles.html
+           
+           KEY CHUNG:
+           newsArticles
+        ====================================================== */
+
+        function getArticles() {
+
+            try {
+
+                const savedArticles =
+                    localStorage.getItem("newsArticles");
+
+                if (!savedArticles) {
+                    return [];
+                }
+
+                const parsed =
+                    JSON.parse(savedArticles);
+
+                return Array.isArray(parsed)
+                    ? parsed
+                    : [];
+
+            } catch (error) {
+
+                console.error(
+                    "Không thể đọc dữ liệu bài viết:",
+                    error
+                );
+
+                return [];
+            }
+        }
+
+
+        /* =====================================================
+           LƯU CHUYÊN MỤC
+        ====================================================== */
+
+        function saveCategories() {
+
+            localStorage.setItem(
+                "newsCategories",
+                JSON.stringify(categories)
+            );
+
+        }
+
+
+        /* =====================================================
+           LƯU TAG
+        ====================================================== */
+
+        function saveTags() {
+
+            localStorage.setItem(
+                "newsTags",
+                JSON.stringify(tags)
+            );
+
+        }
+
+
+        /* =====================================================
+           ĐẾM BÀI VIẾT THEO CHUYÊN MỤC
+           
+           DỮ LIỆU ĐƯỢC LẤY TRỰC TIẾP TỪ articles
+        ====================================================== */
+
+        function getArticleCount(categoryName) {
+
+            const articles = getArticles();
+
+            return articles.filter(article => {
+
+                return String(
+                    article.category || ""
+                ).trim().toLowerCase()
+                === String(
+                    categoryName || ""
+                ).trim().toLowerCase();
+
+            }).length;
+
+        }
+
+
+        /* =====================================================
+           ĐẾM TAG
+           
+           Hỗ trợ nhiều kiểu dữ liệu:
+           article.tags = ["AI", "Công nghệ"]
+           article.tags = "AI, Công nghệ"
+        ====================================================== */
+
+        function getTagCount(tagName) {
+
+            const articles = getArticles();
+
+            let count = 0;
+
+            articles.forEach(article => {
+
+                if (Array.isArray(article.tags)) {
+
+                    article.tags.forEach(tag => {
+
+                        if (
+                            String(tag).trim().toLowerCase()
+                            === String(tagName).trim().toLowerCase()
+                        ) {
+                            count++;
+                        }
+
+                    });
+
+                }
+
+                else if (
+                    typeof article.tags === "string"
+                ) {
+
+                    const articleTags =
+                        article.tags
+                            .split(",")
+                            .map(tag => tag.trim().toLowerCase());
+
+                    if (
+                        articleTags.includes(
+                            tagName.trim().toLowerCase()
+                        )
+                    ) {
+                        count++;
+                    }
+
+                }
+
+            });
+
+            return count;
+
+        }
+
+
+        /* =====================================================
+           CẬP NHẬT THỐNG KÊ
+        ====================================================== */
+
+        function updateStatistics() {
+
+            document.getElementById(
+                "categoryTotal"
+            ).textContent = categories.length;
+
+
+            document.getElementById(
+                "tagTotal"
+            ).textContent = tags.length;
+
+
+            const activeCategories =
+                categories.filter(
+                    category =>
+                        category.status === "active"
+                ).length;
+
+
+            document.getElementById(
+                "activeCategoryTotal"
+            ).textContent = activeCategories;
+
+        }
+
+
+        /* =====================================================
+           HIỂN THỊ CHUYÊN MỤC
+        ====================================================== */
+
+        function renderCategories(
+            keyword = ""
+        ) {
+
+            const tbody =
+                document.getElementById(
+                    "categoryTableBody"
+                );
+
+            const search =
+                keyword.trim().toLowerCase();
+
+
+            const filtered =
+                categories.filter(category => {
+
+                    return (
+                        category.name
+                            .toLowerCase()
+                            .includes(search)
+
+                        ||
+
+                        (category.description || "")
+                            .toLowerCase()
+                            .includes(search)
+                    );
+
+                });
+
+
+            if (filtered.length === 0) {
+
+                tbody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            class="empty-state">
+
+                            <strong>
+                                Không tìm thấy chuyên mục
+                            </strong>
+
+                            Hãy thử nhập từ khóa khác.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+                return;
+            }
+
+
+            tbody.innerHTML =
+                filtered.map(category => {
+
+                    const articleCount =
+                        getArticleCount(
+                            category.name
+                        );
+
+
+                    const statusClass =
+                        category.status === "active"
+                            ? "status-active"
+                            : "status-hidden";
+
+
+                    const statusText =
+                        category.status === "active"
+                            ? "Đang hoạt động"
+                            : "Đang ẩn";
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+
+                                <div class="category-name">
+                                    ${escapeHtml(category.name)}
+                                </div>
+
+                                <div class="category-description">
+                                    ${escapeHtml(
+                                        category.description || ""
+                                    )}
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="article-count">
+                                    ${articleCount}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="status-badge ${statusClass}">
+                                    ${statusText}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="taxonomy-row-actions">
+
+                                    <button
+                                        class="small-btn"
+                                        type="button"
+                                        onclick="editCategory(${category.id})">
+
+                                        Sửa
+
+                                    </button>
+
+                                    <button
+                                        class="small-btn danger"
+                                        type="button"
+                                        onclick="deleteCategory(${category.id})">
+
+                                        Xóa
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }).join("");
+
+        }
+
+
+        /* =====================================================
+           HIỂN THỊ TAG
+        ====================================================== */
+
+        function renderTags(
+            keyword = ""
+        ) {
+
+            const container =
+                document.getElementById(
+                    "tagList"
+                );
+
+            const search =
+                keyword.trim().toLowerCase();
+
+
+            const filtered =
+                tags.filter(tag =>
+                    tag.name
+                        .toLowerCase()
+                        .includes(search)
+                );
+
+
+            if (filtered.length === 0) {
+
+                container.innerHTML = `
+
+                    <div class="empty-state"
+                         style="width:100%;">
+
+                        <strong>
+                            Không tìm thấy Tag
+                        </strong>
+
+                        Hãy thử nhập từ khóa khác.
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            container.innerHTML =
+                filtered.map(tag => {
+
+                    const count =
+                        getTagCount(tag.name);
+
+
+                    return `
+
+                        <div
+                            class="tag-item ${tag.status === "hidden" ? "hidden" : ""}">
+
+                            <span>
+                                #${escapeHtml(tag.name)}
+                            </span>
+
+                            <span class="tag-count">
+                                ${count}
+                            </span>
+
+                            <span class="tag-actions">
+
+                                <button
+                                    type="button"
+                                    class="tag-action"
+                                    title="Sửa"
+                                    onclick="editTag(${tag.id})">
+
+                                    ✎
+
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="tag-action"
+                                    title="Xóa"
+                                    onclick="deleteTag(${tag.id})">
+
+                                    ×
+
+                                </button>
+
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }).join("");
+
+        }
+
+
+        /* =====================================================
+           TÌM CHUYÊN MỤC
+        ====================================================== */
+
+        function searchCategories() {
+
+            const keyword =
+                document.getElementById(
+                    "categorySearch"
+                ).value;
+
+            renderCategories(keyword);
+
+        }
+
+
+        /* =====================================================
+           TÌM TAG
+        ====================================================== */
+
+        function searchTags() {
+
+            const keyword =
+                document.getElementById(
+                    "tagSearch"
+                ).value;
+
+            renderTags(keyword);
+
+        }
+
+
+        /* =====================================================
+           MỞ FORM CHUYÊN MỤC
+        ====================================================== */
+
+        function openCategoryForm() {
+
+            document.getElementById(
+                "categoryFormPanel"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "tagFormPanel"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "categoryFormTitle"
+            ).textContent =
+                "Thêm chuyên mục";
+
+
+            document.getElementById(
+                "categoryEditId"
+            ).value = "";
+
+
+            document.getElementById(
+                "categoryName"
+            ).value = "";
+
+
+            document.getElementById(
+                "categoryDescription"
+            ).value = "";
+
+
+            document.getElementById(
+                "categoryStatus"
+            ).value = "active";
+
+
+            document.getElementById(
+                "categoryFormPanel"
+            ).scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+
+            setTimeout(() => {
+
+                document.getElementById(
+                    "categoryName"
+                ).focus();
+
+            }, 300);
+
+        }
+
+
+        /* =====================================================
+           ĐÓNG FORM CHUYÊN MỤC
+        ====================================================== */
+
+        function closeCategoryForm() {
+
+            document.getElementById(
+                "categoryFormPanel"
+            ).style.display = "none";
+
+        }
+
+
+        /* =====================================================
+           SỬA CHUYÊN MỤC
+        ====================================================== */
+
+        function editCategory(id) {
+
+            const category =
+                categories.find(
+                    item => item.id === id
+                );
+
+
+            if (!category) {
+                return;
+            }
+
+
+            document.getElementById(
+                "categoryFormPanel"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "tagFormPanel"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "categoryFormTitle"
+            ).textContent =
+                "Chỉnh sửa chuyên mục";
+
+
+            document.getElementById(
+                "categoryEditId"
+            ).value = category.id;
+
+
+            document.getElementById(
+                "categoryName"
+            ).value = category.name;
+
+
+            document.getElementById(
+                "categoryDescription"
+            ).value =
+                category.description || "";
+
+
+            document.getElementById(
+                "categoryStatus"
+            ).value =
+                category.status;
+
+
+            document.getElementById(
+                "categoryFormPanel"
+            ).scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+
+        /* =====================================================
+           LƯU CHUYÊN MỤC
+        ====================================================== */
+
+        function saveCategory(event) {
+
+            event.preventDefault();
+
+
+            const editId =
+                document.getElementById(
+                    "categoryEditId"
+                ).value;
+
+
+            const name =
+                document.getElementById(
+                    "categoryName"
+                ).value.trim();
+
+
+            const description =
+                document.getElementById(
+                    "categoryDescription"
+                ).value.trim();
+
+
+            const status =
+                document.getElementById(
+                    "categoryStatus"
+                ).value;
+
+
+            if (!name) {
+
+                showToast(
+                    "Vui lòng nhập tên chuyên mục."
+                );
+
+                return;
+            }
+
+
+            const duplicate =
+                categories.some(category => {
+
+                    return (
+                        category.name
+                            .toLowerCase()
+                        ===
+                        name.toLowerCase()
+
+                        &&
+
+                        String(category.id)
+                        !==
+                        String(editId)
+                    );
+
+                });
+
+
+            if (duplicate) {
+
+                showToast(
+                    "Tên chuyên mục đã tồn tại."
+                );
+
+                return;
+            }
+
+
+            if (editId) {
+
+                const category =
+                    categories.find(
+                        item =>
+                            item.id === Number(editId)
+                    );
+
+
+                if (category) {
+
+                    const oldName =
+                        category.name;
+
+
+                    category.name =
+                        name;
+
+                    category.description =
+                        description;
+
+                    category.status =
+                        status;
+
+
+                    /*
+                     * Nếu đổi tên chuyên mục,
+                     * cập nhật luôn category
+                     * của các bài viết.
+                     */
+
+                    if (
+                        oldName.toLowerCase()
+                        !==
+                        name.toLowerCase()
+                    ) {
+
+                        updateArticleCategory(
+                            oldName,
+                            name
+                        );
+
+                    }
+
+                    showToast(
+                        "Đã cập nhật chuyên mục."
+                    );
+
+                }
+
+            } else {
+
+                categories.push({
+
+                    id: Date.now(),
+
+                    name: name,
+
+                    description:
+                        description,
+
+                    status:
+                        status
+
+                });
+
+
+                showToast(
+                    "Đã thêm chuyên mục mới."
+                );
+
+            }
+
+
+            saveCategories();
+
+            renderCategories(
+                document.getElementById(
+                    "categorySearch"
+                ).value
+            );
+
+            updateStatistics();
+
+            closeCategoryForm();
+
+        }
+
+
+        /* =====================================================
+           CẬP NHẬT CATEGORY CỦA BÀI VIẾT
+        ====================================================== */
+
+        function updateArticleCategory(
+            oldName,
+            newName
+        ) {
+
+            const articles =
+                getArticles();
+
+
+            let changed = false;
+
+
+            articles.forEach(article => {
+
+                if (
+                    String(
+                        article.category || ""
+                    ).trim().toLowerCase()
+                    ===
+                    oldName.trim().toLowerCase()
+                ) {
+
+                    article.category =
+                        newName;
+
+                    changed = true;
+                }
+
+            });
+
+
+            if (changed) {
+
+                localStorage.setItem(
+                    "newsArticles",
+                    JSON.stringify(articles)
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           XÓA CHUYÊN MỤC
+        ====================================================== */
+
+        function deleteCategory(id) {
+
+            const category =
+                categories.find(
+                    item => item.id === id
+                );
+
+
+            if (!category) {
+                return;
+            }
+
+
+            const articleCount =
+                getArticleCount(
+                    category.name
+                );
+
+
+            if (articleCount > 0) {
+
+                const confirmDelete =
+                    confirm(
+
+                        `Chuyên mục "${category.name}" đang có ${articleCount} bài viết.\n\n` +
+
+                        `Nếu xóa chuyên mục, các bài viết sẽ không còn thuộc chuyên mục này.\n\n` +
+
+                        `Bạn có chắc chắn muốn xóa không?`
+
+                    );
+
+
+                if (!confirmDelete) {
+                    return;
+                }
+
+
+                removeCategoryFromArticles(
+                    category.name
+                );
+
+            } else {
+
+                const confirmDelete =
+                    confirm(
+                        `Bạn có chắc chắn muốn xóa chuyên mục "${category.name}" không?`
+                    );
+
+
+                if (!confirmDelete) {
+                    return;
+                }
+
+            }
+
+
+            categories =
+                categories.filter(
+                    item => item.id !== id
+                );
+
+
+            saveCategories();
+
+            renderCategories(
+                document.getElementById(
+                    "categorySearch"
+                ).value
+            );
+
+            updateStatistics();
+
+
+            showToast(
+                "Đã xóa chuyên mục."
+            );
+
+        }
+
+
+        /* =====================================================
+           XÓA CATEGORY KHỎI BÀI VIẾT
+        ====================================================== */
+
+        function removeCategoryFromArticles(
+            categoryName
+        ) {
+
+            const articles =
+                getArticles();
+
+
+            articles.forEach(article => {
+
+                if (
+                    String(
+                        article.category || ""
+                    ).trim().toLowerCase()
+                    ===
+                    categoryName.trim().toLowerCase()
+                ) {
+
+                    article.category = "";
+
+                }
+
+            });
+
+
+            localStorage.setItem(
+                "newsArticles",
+                JSON.stringify(articles)
+            );
+
+        }
+
+
+        /* =====================================================
+           MỞ FORM TAG
+        ====================================================== */
+
+        function openTagForm() {
+
+            document.getElementById(
+                "tagFormPanel"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "categoryFormPanel"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "tagFormTitle"
+            ).textContent =
+                "Thêm Tag";
+
+
+            document.getElementById(
+                "tagEditId"
+            ).value = "";
+
+
+            document.getElementById(
+                "tagName"
+            ).value = "";
+
+
+            document.getElementById(
+                "tagStatus"
+            ).value = "active";
+
+
+            document.getElementById(
+                "tagFormPanel"
+            ).scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+
+            setTimeout(() => {
+
+                document.getElementById(
+                    "tagName"
+                ).focus();
+
+            }, 300);
+
+        }
+
+
+        /* =====================================================
+           ĐÓNG FORM TAG
+        ====================================================== */
+
+        function closeTagForm() {
+
+            document.getElementById(
+                "tagFormPanel"
+            ).style.display = "none";
+
+        }
+
+
+        /* =====================================================
+           SỬA TAG
+        ====================================================== */
+
+        function editTag(id) {
+
+            const tag =
+                tags.find(
+                    item => item.id === id
+                );
+
+
+            if (!tag) {
+                return;
+            }
+
+
+            document.getElementById(
+                "tagFormPanel"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "categoryFormPanel"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "tagFormTitle"
+            ).textContent =
+                "Chỉnh sửa Tag";
+
+
+            document.getElementById(
+                "tagEditId"
+            ).value = tag.id;
+
+
+            document.getElementById(
+                "tagName"
+            ).value = tag.name;
+
+
+            document.getElementById(
+                "tagStatus"
+            ).value = tag.status;
+
+
+            document.getElementById(
+                "tagFormPanel"
+            ).scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+
+        /* =====================================================
+           LƯU TAG
+        ====================================================== */
+
+        function saveTag(event) {
+
+            event.preventDefault();
+
+
+            const editId =
+                document.getElementById(
+                    "tagEditId"
+                ).value;
+
+
+            const name =
+                document.getElementById(
+                    "tagName"
+                ).value.trim();
+
+
+            const status =
+                document.getElementById(
+                    "tagStatus"
+                ).value;
+
+
+            if (!name) {
+
+                showToast(
+                    "Vui lòng nhập tên Tag."
+                );
+
+                return;
+            }
+
+
+            const duplicate =
+                tags.some(tag => {
+
+                    return (
+                        tag.name.toLowerCase()
+                        ===
+                        name.toLowerCase()
+
+                        &&
+
+                        String(tag.id)
+                        !==
+                        String(editId)
+                    );
+
+                });
+
+
+            if (duplicate) {
+
+                showToast(
+                    "Tag này đã tồn tại."
+                );
+
+                return;
+            }
+
+
+            if (editId) {
+
+                const tag =
+                    tags.find(
+                        item =>
+                            item.id === Number(editId)
+                    );
+
+
+                if (tag) {
+
+                    const oldName =
+                        tag.name;
+
+
+                    tag.name =
+                        name;
+
+                    tag.status =
+                        status;
+
+
+                    if (
+                        oldName.toLowerCase()
+                        !==
+                        name.toLowerCase()
+                    ) {
+
+                        updateArticleTag(
+                            oldName,
+                            name
+                        );
+
+                    }
+
+
+                    showToast(
+                        "Đã cập nhật Tag."
+                    );
+
+                }
+
+            } else {
+
+                tags.push({
+
+                    id: Date.now(),
+
+                    name: name,
+
+                    status: status
+
+                });
+
+
+                showToast(
+                    "Đã thêm Tag mới."
+                );
+
+            }
+
+
+            saveTags();
+
+            renderTags(
+                document.getElementById(
+                    "tagSearch"
+                ).value
+            );
+
+            updateStatistics();
+
+            closeTagForm();
+
+        }
+
+
+        /* =====================================================
+           CẬP NHẬT TAG TRONG BÀI VIẾT
+        ====================================================== */
+
+        function updateArticleTag(
+            oldName,
+            newName
+        ) {
+
+            const articles =
+                getArticles();
+
+
+            let changed = false;
+
+
+            articles.forEach(article => {
+
+                if (Array.isArray(article.tags)) {
+
+                    article.tags =
+                        article.tags.map(tag => {
+
+                            if (
+                                String(tag)
+                                    .trim()
+                                    .toLowerCase()
+                                ===
+                                oldName
+                                    .trim()
+                                    .toLowerCase()
+                            ) {
+
+                                changed = true;
+
+                                return newName;
+
+                            }
+
+                            return tag;
+
+                        });
+
+                }
+
+                else if (
+                    typeof article.tags === "string"
+                ) {
+
+                    const articleTags =
+                        article.tags
+                            .split(",")
+                            .map(tag => tag.trim());
+
+
+                    article.tags =
+                        articleTags
+                            .map(tag => {
+
+                                if (
+                                    tag.toLowerCase()
+                                    ===
+                                    oldName.toLowerCase()
+                                ) {
+
+                                    changed = true;
+
+                                    return newName;
+
+                                }
+
+                                return tag;
+
+                            })
+                            .join(", ");
+
+                }
+
+            });
+
+
+            if (changed) {
+
+                localStorage.setItem(
+                    "newsArticles",
+                    JSON.stringify(articles)
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           XÓA TAG
+        ====================================================== */
+
+        function deleteTag(id) {
+
+            const tag =
+                tags.find(
+                    item => item.id === id
+                );
+
+
+            if (!tag) {
+                return;
+            }
+
+
+            const count =
+                getTagCount(
+                    tag.name
+                );
+
+
+            let message =
+                `Bạn có chắc chắn muốn xóa Tag "${tag.name}" không?`;
+
+
+            if (count > 0) {
+
+                message =
+                    `Tag "${tag.name}" đang được sử dụng trong ${count} bài viết.\n\n` +
+
+                    `Bạn có chắc chắn muốn xóa không?`;
+
+            }
+
+
+            if (!confirm(message)) {
+                return;
+            }
+
+
+            if (count > 0) {
+
+                removeTagFromArticles(
+                    tag.name
+                );
+
+            }
+
+
+            tags =
+                tags.filter(
+                    item => item.id !== id
+                );
+
+
+            saveTags();
+
+            renderTags(
+                document.getElementById(
+                    "tagSearch"
+                ).value
+            );
+
+            updateStatistics();
+
+
+            showToast(
+                "Đã xóa Tag."
+            );
+
+        }
+
+
+        /* =====================================================
+           XÓA TAG KHỎI BÀI VIẾT
+        ====================================================== */
+
+        function removeTagFromArticles(
+            tagName
+        ) {
+
+            const articles =
+                getArticles();
+
+
+            articles.forEach(article => {
+
+                if (Array.isArray(article.tags)) {
+
+                    article.tags =
+                        article.tags.filter(
+                            tag =>
+                                String(tag)
+                                    .trim()
+                                    .toLowerCase()
+                                !==
+                                tagName
+                                    .trim()
+                                    .toLowerCase()
+                        );
+
+                }
+
+                else if (
+                    typeof article.tags === "string"
+                ) {
+
+                    article.tags =
+                        article.tags
+                            .split(",")
+                            .map(tag => tag.trim())
+                            .filter(
+                                tag =>
+                                    tag.toLowerCase()
+                                    !==
+                                    tagName.toLowerCase()
+                            )
+                            .join(", ");
+
+                }
+
+            });
+
+
+            localStorage.setItem(
+                "newsArticles",
+                JSON.stringify(articles)
+            );
+
+        }
+
+
+        /* =====================================================
+           ESCAPE HTML
+           Tránh lỗi khi dữ liệu có ký tự HTML
+        ====================================================== */
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* =====================================================
+           TOAST
+        ====================================================== */
+
+        let toastTimer;
+
+
+        function showToast(message) {
+
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+
+
+            toast.textContent =
+                message;
+
+
+            toast.classList.add(
+                "show"
+            );
+
+
+            clearTimeout(
+                toastTimer
+            );
+
+
+            toastTimer =
+                setTimeout(() => {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                }, 2500);
+
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ====================================================== */
+
+        function logout() {
+
+            if (
+                confirm(
+                    "Bạn có chắc chắn muốn đăng xuất không?"
+                )
+            ) {
+
+                window.location.href =
+                    "../public/index.html";
+
+            }
+
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ====================================================== */
+
+        const menuToggle =
+            document.getElementById(
+                "menuToggle"
+            );
+
+
+        const adminSidebar =
+            document.getElementById(
+                "adminSidebar"
+            );
+
+
+        menuToggle.addEventListener(
+            "click",
+            function () {
+
+                adminSidebar.classList.toggle(
+                    "is-open"
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           CLICK RA NGOÀI SIDEBAR
+        ====================================================== */
+
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    window.innerWidth <= 950
+                    &&
+                    adminSidebar.classList.contains(
+                        "is-open"
+                    )
+                    &&
+                    !adminSidebar.contains(
+                        event.target
+                    )
+                    &&
+                    !menuToggle.contains(
+                        event.target
+                    )
+                ) {
+
+                    adminSidebar.classList.remove(
+                        "is-open"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           ĐỒNG BỘ KHI QUAY LẠI TRANG
+           
+           Ví dụ:
+           - Đang ở manage-taxonomy.html
+           - Mở manage-articles.html
+           - Thêm bài viết
+           - Quay lại trang này
+           
+           => số lượng bài sẽ được cập nhật.
+        ====================================================== */
+
+        window.addEventListener(
+            "pageshow",
+            function() {
+
+                renderCategories(
+                    document.getElementById(
+                        "categorySearch"
+                    ).value
+                );
+
+                renderTags(
+                    document.getElementById(
+                        "tagSearch"
+                    ).value
+                );
+
+                updateStatistics();
+
+            }
+        );
+
+
+        /* =====================================================
+           KHỞI TẠO
+        ====================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                saveCategories();
+
+                saveTags();
+
+                renderCategories();
+
+                renderTags();
+
+                updateStatistics();
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
