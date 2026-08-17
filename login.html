@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng nhập — Mạch Tin</title>
     <link rel="stylesheet" href="style.css" />
+
     <style>
+      /* =========================
+         AUTH PAGE
+      ========================= */
       .auth-page {
         min-height: 70vh;
         display: flex;
@@ -13,6 +17,7 @@
         justify-content: center;
         padding: 48px 24px;
       }
+
       .auth-card {
         width: 100%;
         max-width: 420px;
@@ -20,14 +25,17 @@
         border: 1px solid var(--line);
         padding: 36px 32px;
       }
+
       .auth-card h1 {
         font-family: var(--f-display);
         font-size: 28px;
         margin: 0 0 8px;
       }
+
       .auth-card .dek {
         margin-bottom: 24px;
       }
+
       .auth-links {
         display: flex;
         justify-content: space-between;
@@ -35,10 +43,12 @@
         margin-bottom: 20px;
         font-size: 14px;
       }
+
       .auth-links a {
         color: var(--brass-dark);
         font-weight: 600;
       }
+
       .form-footer {
         text-align: center;
         margin-top: 22px;
@@ -47,10 +57,12 @@
         font-size: 14.5px;
         color: var(--muted);
       }
+
       .form-footer a {
         color: var(--brass-dark);
         font-weight: 600;
       }
+
       .alert {
         padding: 12px 14px;
         margin-bottom: 18px;
@@ -58,50 +70,175 @@
         font-size: 14px;
         display: none;
       }
+
       .alert.is-error {
         background: #fdf2f1;
         border-color: var(--crimson);
         color: var(--crimson);
       }
+
       .alert.is-info {
         background: #f8f4eb;
         border-color: var(--brass);
         color: var(--brass-dark);
       }
+
+      /* =========================
+         FOOTER - 2 CỘT
+      ========================= */
+
+      .site-footer .footer-top {
+        width: min(100% - 48px, 1100px);
+        margin: 0 auto;
+        display: grid !important;
+        grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr) !important;
+        gap: 90px;
+        justify-content: center;
+        align-items: start;
+      }
+
+      .site-footer .footer-brand,
+      .site-footer .footer-top > div:not(.footer-brand) {
+        text-align: left;
+      }
+
+      /* Căn logo + nội dung cột 1 */
+      .site-footer .footer-brand .logo {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .site-footer .footer-brand p {
+        max-width: 420px;
+      }
+
+      /* Cột Về Mạch Tin */
+      .site-footer .footer-top > div:last-child {
+        padding-left: 20px;
+      }
+
+      .site-footer .footer-top h4 {
+        margin-bottom: 22px;
+      }
+
+      .site-footer .footer-top ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .site-footer .footer-top ul li {
+        margin-bottom: 18px;
+      }
+
+      /* Social lấy đúng dữ liệu mock-data */
+      .site-footer .footer-social {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .site-footer .footer-social a {
+        text-decoration: none;
+      }
+
+      /* =========================
+         FOOTER BOTTOM - CĂN GIỮA
+      ========================= */
+
+      .site-footer .footer-bottom {
+        width: min(100% - 48px, 1100px);
+        margin: 0 auto;
+        text-align: center !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .site-footer .footer-bottom span {
+        text-align: center;
+      }
+
+      /* =========================
+         RESPONSIVE
+      ========================= */
+
+      @media (max-width: 768px) {
+        .site-footer .footer-top {
+          grid-template-columns: 1fr !important;
+          gap: 40px;
+        }
+
+        .site-footer .footer-top > div:last-child {
+          padding-left: 0;
+        }
+
+        .site-footer .footer-brand,
+        .site-footer .footer-top > div:not(.footer-brand) {
+          text-align: center;
+        }
+
+        .site-footer .footer-brand .logo {
+          justify-content: center;
+        }
+
+        .site-footer .footer-brand p {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .site-footer .footer-social {
+          justify-content: center;
+        }
+
+        .site-footer .footer-top ul {
+          text-align: center;
+        }
+      }
     </style>
   </head>
+
   <body>
-    <!-- TICKER -->
+    <!-- =========================================
+         TICKER
+    ========================================== -->
     <div class="ticker">
       <div class="ticker__inner">
-        <span
-          ><span class="ticker__tag">NÓNG —</span>Quốc hội thông qua luật sửa
-          đổi về thuế thu nhập cá nhân</span
-        >
-        <span
-          ><span class="ticker__tag">NÓNG —</span>Giá vàng miếng SJC vượt mốc 92
-          triệu đồng/lượng</span
-        >
-        <span
-          ><span class="ticker__tag">THỂ THAO —</span>Đội tuyển Việt Nam giành
-          vé vào bán kết</span
-        >
-        <span
-          ><span class="ticker__tag">NÓNG —</span>Quốc hội thông qua luật sửa
-          đổi về thuế thu nhập cá nhân</span
-        >
-        <span
-          ><span class="ticker__tag">NÓNG —</span>Giá vàng miếng SJC vượt mốc 92
-          triệu đồng/lượng</span
-        >
+        <span>
+          <span class="ticker__tag">NÓNG —</span>
+          Quốc hội thông qua luật sửa đổi về thuế thu nhập cá nhân
+        </span>
+
+        <span>
+          <span class="ticker__tag">NÓNG —</span>
+          Giá vàng miếng SJC vượt mốc 92 triệu đồng/lượng
+        </span>
+
+        <span>
+          <span class="ticker__tag">THỂ THAO —</span>
+          Đội tuyển Việt Nam giành vé vào bán kết
+        </span>
+
+        <span>
+          <span class="ticker__tag">NÓNG —</span>
+          Quốc hội thông qua luật sửa đổi về thuế thu nhập cá nhân
+        </span>
+
+        <span>
+          <span class="ticker__tag">NÓNG —</span>
+          Giá vàng miếng SJC vượt mốc 92 triệu đồng/lượng
+        </span>
       </div>
     </div>
 
-    <!-- HEADER - Guest -->
+    <!-- =========================================
+         HEADER - GUEST
+    ========================================== -->
     <header class="site-header">
       <div class="header-utility">
         <div class="wrap">
-          <span>Chủ Nhật, 09/08/2026</span>
+          <span>Thứ Năm, 13/08/2026</span>
+
           <div class="header-utility__links">
             <a href="login.html">Đăng nhập</a>
             <a href="register.html">Tạo tài khoản</a>
@@ -127,8 +264,10 @@
                 stroke-linejoin="round"
               />
             </svg>
-            <span class="logo__word">MẠCH&nbsp;<em>TIN</em></span>
+
+            <span class="logo__word"> MẠCH&nbsp;<em>TIN</em> </span>
           </a>
+
           <nav class="main-nav">
             <a href="index.html">Trang chủ</a>
             <a href="category.html">Thời sự</a>
@@ -137,6 +276,7 @@
             <a href="category.html">Công nghệ</a>
             <a href="category.html">Thể thao</a>
           </nav>
+
           <div class="header-actions">
             <a href="search.html" class="icon-btn">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
@@ -147,6 +287,7 @@
                   stroke="currentColor"
                   stroke-width="2"
                 />
+
                 <path
                   d="M21 21L16.65 16.65"
                   stroke="currentColor"
@@ -155,28 +296,35 @@
                 />
               </svg>
             </a>
-            <a href="login.html" class="btn btn-ghost btn-sm">Đăng nhập</a>
+
+            <a href="login.html" class="btn btn-ghost btn-sm"> Đăng nhập </a>
           </div>
         </div>
       </div>
     </header>
 
+    <!-- =========================================
+         LOGIN
+    ========================================== -->
     <main>
       <div class="auth-page">
         <section class="auth-card">
           <h1>Đăng nhập</h1>
+
           <p class="dek">Đăng nhập để sử dụng các tính năng cá nhân.</p>
 
           <div class="alert is-error" id="login-error">
             Sai thông tin đăng nhập.
           </div>
+
           <div class="alert is-info" id="forgot-msg">
             Tính năng đang phát triển, vui lòng liên hệ Admin.
           </div>
 
           <form id="login-form">
             <div class="field">
-              <label for="login-id">Email hoặc username</label>
+              <label for="login-id"> Email hoặc username </label>
+
               <input
                 type="text"
                 id="login-id"
@@ -186,7 +334,8 @@
             </div>
 
             <div class="field">
-              <label for="password">Mật khẩu</label>
+              <label for="password"> Mật khẩu </label>
+
               <input
                 type="password"
                 id="password"
@@ -206,9 +355,11 @@
                 "
               >
                 <input type="checkbox" style="width: auto" />
+
                 Ghi nhớ đăng nhập
               </label>
-              <a href="#" id="forgot-link">Quên mật khẩu?</a>
+
+              <a href="#" id="forgot-link"> Quên mật khẩu? </a>
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">
@@ -217,16 +368,22 @@
           </form>
 
           <p class="form-footer">
-            Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a>
+            Chưa có tài khoản?
+            <a href="register.html">Đăng ký ngay</a>
           </p>
         </section>
       </div>
     </main>
 
-    <!-- FOOTER chuẩn AD02 -->
+    <!-- =========================================
+         FOOTER
+         CHỈ CÒN 2 CỘT
+    ========================================== -->
     <footer class="site-footer">
-      <div class="wrap footer-top" style="grid-template-columns: 1.6fr 1fr 1fr">
-        <!-- Cột 1: Thương hiệu -->
+      <div class="wrap footer-top">
+        <!-- =========================
+             CỘT 1 - THƯƠNG HIỆU
+        ========================== -->
         <div class="footer-brand">
           <a href="index.html" class="logo">
             <svg
@@ -244,64 +401,131 @@
                 stroke-linejoin="round"
               />
             </svg>
-            <span class="logo__word">MẠCH&nbsp;<em>TIN</em></span>
+
+            <span class="logo__word"> MẠCH&nbsp;<em>TIN</em> </span>
           </a>
+
           <p>
             Bắt mạch dòng chảy tin tức Việt Nam — cập nhật liên tục, xác thực
             trước khi đăng.
           </p>
+
+          <!-- 3 nút mạng xã hội lấy từ mock-data.js -->
           <div class="footer-social">
-            <a href="#" aria-label="Facebook">FB</a>
-            <a href="#" aria-label="YouTube">YT</a>
-            <a href="#" aria-label="TikTok">TT</a>
+            <a
+              href="https://facebook.com/machtin"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              FB
+            </a>
+
+            <a
+              href="https://youtube.com/machtin"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+            >
+              YT
+            </a>
+
+            <a
+              href="https://tiktok.com/machtin"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok"
+            >
+              TT
+            </a>
           </div>
         </div>
 
-        <!-- Cột 2: Về Mạch Tin -->
+        <!-- =========================
+             CỘT 2 - VỀ MẠCH TIN
+        ========================== -->
         <div>
           <h4>Về Mạch Tin</h4>
-          <ul>
-            <li>Số điện thoại: 024 1234 5678</li>
-            <li>Email: lienhe@machtin.vn</li>
-            <li>Địa chỉ: 123 Đường Báo Chí, Hà Nội</li>
-          </ul>
-        </div>
 
-        <!-- Cột 3: Chuyên mục -->
-        <div>
-          <h4>Chuyên mục</h4>
           <ul>
-            <li><a href="category.html">Thời sự</a></li>
-            <li><a href="category.html">Kinh doanh</a></li>
-            <li><a href="category.html">Thể thao</a></li>
-            <li><a href="category.html">Công nghệ</a></li>
+            <li>Số điện thoại: 028 1234 5678</li>
+
+            <li>Email: lienhe@machtin.vn</li>
+
+            <li>Địa chỉ: 02 Võ Oanh, phường Thạnh Mỹ Tây, TP. Hồ Chí Minh</li>
           </ul>
         </div>
       </div>
 
+      <!-- =========================================
+           FOOTER BOTTOM
+           CĂN GIỮA
+      ========================================== -->
       <div class="wrap footer-bottom">
-        <span>© 2026 Mạch Tin · Điều khoản sử dụng · Chính sách bảo mật</span>
+        <span> © 2026 Mạch Tin · Điều khoản sử dụng · Chính sách bảo mật </span>
       </div>
     </footer>
 
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
     <script>
+      /* =========================
+         QUÊN MẬT KHẨU
+      ========================== */
       document
         .getElementById("forgot-link")
         .addEventListener("click", function (e) {
           e.preventDefault();
+
           document.getElementById("forgot-msg").style.display = "block";
+
           document.getElementById("login-error").style.display = "none";
         });
 
+      /* =========================
+         ĐĂNG NHẬP DEMO
+         Mật khẩu theo mock-data.js:
+         12345678
+      ========================== */
       document
         .getElementById("login-form")
         .addEventListener("submit", function (e) {
           e.preventDefault();
+
+          const loginId = document.getElementById("login-id").value.trim();
+
           const pass = document.getElementById("password").value;
-          if (pass === "123456") {
+
+          /*
+            mock-data.js có các tài khoản:
+
+            user01       / 12345678
+            user02       / 12345678
+            user03       / 12345678
+            user04       / 12345678
+            reporter01   / 12345678
+            reporter02   / 12345678
+            editor01     / 12345678
+            admin01      / 12345678
+          */
+
+          const validUsers = [
+            "user01",
+            "user02",
+            "user03",
+            "user04",
+            "reporter01",
+            "reporter02",
+            "editor01",
+            "admin01",
+          ];
+
+          if (validUsers.includes(loginId) && pass === "12345678") {
             window.location.href = "index.html";
           } else {
             document.getElementById("login-error").style.display = "block";
+
             document.getElementById("forgot-msg").style.display = "none";
           }
         });
