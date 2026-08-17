@@ -1,1500 +1,822 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang cá nhân - Tin Mới</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trang cá nhân - Tin Mới</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <a class="logo" href="profile.html"> TIN<span>MỚI</span> </a>
 
-<body>
-
-<header class="header">
-
-  <div class="container header-inner">
-
-    <a class="logo" href="profile.html">
-      TIN<span>MỚI</span>
-    </a>
-
-    <nav class="nav">
-      <a href="#">Trang chủ</a>
-      <a href="#">Thời sự</a>
-      <a href="#">Thể thao</a>
-      <a href="#">Công nghệ</a>
-    </nav>
-
-    <div class="user-menu">
-      <span>Nguyễn Minh</span>
-      <div class="avatar">NM</div>
-    </div>
-
-  </div>
-
-</header>
-
-<main class="page">
-
-  <div class="container">
-
-    <h1 class="page-title">
-      Quản lý thông tin cá nhân
-    </h1>
-
-    <p class="page-subtitle">
-      Cập nhật thông tin tài khoản và quản lý hoạt động của bạn.
-    </p>
-
-    <div class="profile-grid">
-
-      <!-- SIDEBAR -->
-
-      <aside class="card profile-sidebar">
-        <div class="profile-avatar">
-          NM
-        </div>
-
-        <div class="profile-name">
-          Nguyễn Minh
-        </div>
-
-        <div class="profile-role">
-          Độc giả / User
-        </div>
-
-
-        <nav class="profile-menu">
-
-          <a
-            href="#"
-            class="active"
-            data-tab="personal"
-          >
-            Thông tin cá nhân
-          </a>
-
-          <a
-            href="#"
-            data-tab="password"
-          >
-            Đổi mật khẩu
-          </a>
-
-          <a
-            href="#"
-            data-tab="favorites"
-          >
-            Bài viết đã lưu
-          </a>
-
-          <a
-            href="#"
-            data-tab="comments"
-          >
-            Bình luận của tôi
-          </a>
-
-          <a
-            href="#"
-            data-tab="history"
-          >
-            Lịch sử đọc
-          </a>
-
-          <a
-            href="#"
-            data-tab="notifications"
-          >
-            Thông báo
-
-            <span class="menu-count">
-              3
-            </span>
-
-          </a>
-
-          <a
-            href="#"
-            data-tab="reporter"
-          >
-            Đăng ký làm phóng viên
-          </a>
-
-          <a href="login.html">
-            Đăng xuất
-          </a>
-
+        <nav class="nav">
+          <a href="#">Trang chủ</a>
+          <a href="#">Thời sự</a>
+          <a href="#">Thể thao</a>
+          <a href="#">Công nghệ</a>
         </nav>
 
-      </aside>
-
-      <section class="card profile-content">
-
-      <!--  THÔNG TIN CÁ NHÂN  -->
-
-        <div
-          class="profile-tab"
-          id="personal"
-        >
-
-          <h2 class="section-title">
-            Thông tin tài khoản
-          </h2>
-
-          <p class="section-note">
-            Các thông tin cơ bản của tài khoản người dùng.
-          </p>
-
-          <form action="#" method="post">
-
-            <div class="row">
-
-              <div class="form-group">
-
-                <label for="name">
-                  Họ và tên
-                </label>
-
-                <input
-                  class="form-control"
-                  id="name"
-                  name="name"
-                  value="Nguyễn Minh"
-                  type="text"
-                >
-
-              </div>
-
-              <div class="form-group">
-
-                <label for="email">
-                  Email
-                </label>
-
-                <input
-                  class="form-control"
-                  id="email"
-                  name="email"
-                  value="nguyenminh@email.com"
-                  type="email"
-                >
-
-              </div>
-
-            </div>
-
-            <div class="row">
-
-              <div class="form-group">
-
-                <label for="phone">
-                  Số điện thoại
-                </label>
-
-                <input
-                  class="form-control"
-                  id="phone"
-                  name="phone"
-                  value="0901 234 567"
-                  type="tel"
-                >
-
-              </div>
-
-              <div class="form-group">
-
-                <label for="role">
-                  Vai trò
-                </label>
-
-                <input
-                  class="form-control"
-                  id="role"
-                  value="User / Độc giả"
-                  type="text"
-                  disabled
-                >
-
-              </div>
-
-            </div>
-
-            <div class="form-group">
-
-              <label for="bio">
-                Giới thiệu
-              </label>
-
-              <textarea
-                class="form-control short-textarea"
-                id="bio"
-                name="bio"
-              >Yêu thích đọc tin tức và công nghệ.</textarea>
-
-            </div>
-
-            <div class="form-actions">
-
-              <button
-                class="btn btn-outline"
-                type="reset"
-              >
-                Hủy
-              </button>
-
-              <button
-                class="btn btn-primary"
-                type="submit"
-              >
-                Lưu thay đổi
-              </button>
-
-            </div>
-
-          </form>
-
-          <div class="subsection">
-
-            <h2 class="section-title">
-              Trạng thái tài khoản
-            </h2>
-
-            <p class="section-note">
-
-              Tài khoản hiện đang hoạt động:
-
-              <span class="status-badge success-badge">
-                Active
-              </span>
-
-            </p>
-
-          </div>
-
+        <div class="user-menu">
+          <span>Nguyễn Minh</span>
+          <div class="avatar">NM</div>
         </div>
+      </div>
+    </header>
 
+    <main class="page">
+      <div class="container">
+        <h1 class="page-title">Quản lý thông tin cá nhân</h1>
 
+        <p class="page-subtitle">
+          Cập nhật thông tin tài khoản và quản lý hoạt động của bạn.
+        </p>
 
-        <!-- đổi mật khẩu -->
+        <div class="profile-grid">
+          <!-- SIDEBAR -->
 
-        <div
-          class="profile-tab hidden"
-          id="password"
-        >
+          <aside class="card profile-sidebar">
+            <div class="profile-avatar">NM</div>
 
-          <h2 class="section-title">
-            Đổi mật khẩu
-          </h2>
+            <div class="profile-name">Nguyễn Minh</div>
 
-          <p class="section-note">
-            Thay đổi mật khẩu để bảo vệ tài khoản của bạn.
-          </p>
+            <div class="profile-role">Độc giả / User</div>
 
+            <nav class="profile-menu">
+              <a href="#" class="active" data-tab="personal">
+                Thông tin cá nhân
+              </a>
 
-          <form
-            action="#"
-            method="post"
-            id="password-form"
-          >
+              <a href="#" data-tab="password"> Đổi mật khẩu </a>
 
-            <div class="form-group">
+              <a href="#" data-tab="favorites"> Bài viết đã lưu </a>
 
-              <label for="current-password">
-                Mật khẩu hiện tại *
-              </label>
+              <a href="#" data-tab="comments"> Bình luận của tôi </a>
 
-              <input
-                class="form-control"
-                id="current-password"
-                name="current_password"
-                type="password"
-                placeholder="Nhập mật khẩu hiện tại"
-                required
-              >
+              <a href="#" data-tab="history"> Lịch sử đọc </a>
 
-            </div>
-
-            <div class="form-group">
-
-              <label for="new-password">
-                Mật khẩu mới *
-              </label>
-
-              <input
-                class="form-control"
-                id="new-password"
-                name="new_password"
-                type="password"
-                placeholder="Nhập mật khẩu mới"
-                required
-              >
-
-            </div>
-
-            <div class="form-group">
-
-              <label for="confirm-password">
-                Xác nhận mật khẩu mới *
-              </label>
-
-              <input
-                class="form-control"
-                id="confirm-password"
-                name="confirm_password"
-                type="password"
-                placeholder="Nhập lại mật khẩu mới"
-                required
-              >
-
-            </div>
-
-            <div class="info-box">
-
-              <b>
-                Yêu cầu mật khẩu:
-              </b>
-
-              <ul class="tip-list">
-
-                <li>
-                  Tối thiểu 8 ký tự.
-                </li>
-
-                <li>
-                  Nên có chữ hoa và chữ thường.
-                </li>
-
-                <li>
-                  Nên có ít nhất một chữ số.
-                </li>
-
-              </ul>
-
-            </div>
-
-            <div class="form-actions">
-
-              <button
-                class="btn btn-outline"
-                type="reset"
-              >
-                Hủy
-              </button>
-
-              <button
-                class="btn btn-primary"
-                type="submit"
-              >
-                Đổi mật khẩu
-              </button>
-
-            </div>
-
-          </form>
-
-        </div>
-
-
-
-        <!-- Bài viết đã lưu-->
-
-        <div
-          class="profile-tab hidden"
-          id="favorites"
-        >
-
-          <div class="section-heading-row">
-
-            <div>
-
-              <h2 class="section-title">
-                Bài viết đã lưu
-              </h2>
-
-              <p class="section-note">
-                Danh sách các bài viết bạn đã lưu để đọc lại.
-              </p>
-
-            </div>
-
-            <span class="status-badge">
-              3 bài
-            </span>
-
-          </div>
-
-          <div class="article-list">
-
-
-            <article class="list-item">
-
-              <div class="article-thumb">
-                TIN
-              </div>
-
-
-              <div class="list-item-body">
-
-                <h3>
-                  Công nghệ AI đang thay đổi cách chúng ta làm việc
-                </h3>
-
-                <p>
-                  Công nghệ · 08/08/2026 · 6 phút đọc
-                </p>
-
-              </div>
-              <button
-                class="btn btn-danger btn-small"
-                type="button"
-              >
-                Bỏ lưu
-              </button>
-
-            </article>
-
-            <article class="list-item">
-
-              <div class="article-thumb">
-                TT
-              </div>
-
-
-              <div class="list-item-body">
-
-                <h3>
-                  Những xu hướng thể thao đáng chú ý trong năm 2026
-                </h3>
-
-                <p>
-                  Thể thao · 07/08/2026 · 4 phút đọc
-                </p>
-
-              </div>
-
-
-              <button
-                class="btn btn-danger btn-small"
-                type="button"
-              >
-                Bỏ lưu
-              </button>
-
-            </article>
-
-
-
-            <article class="list-item">
-
-              <div class="article-thumb">
-                TS
-              </div>
-
-
-              <div class="list-item-body">
-
-                <h3>
-                  Cập nhật những tin tức mới nhất trong ngày
-                </h3>
-
-                <p>
-                  Thời sự · 06/08/2026 · 5 phút đọc
-                </p>
-
-              </div>
-
-
-              <button
-                class="btn btn-danger btn-small"
-                type="button"
-              >
-                Bỏ lưu
-              </button>
-
-            </article>
-
-          </div>
-
-        </div>
-
-
-        <!-- quản lí bình luận -->
-
-        <div
-          class="profile-tab hidden"
-          id="comments"
-        >
-
-          <div class="section-heading-row">
-
-            <div>
-
-              <h2 class="section-title">
-                Quản lý bình luận
-              </h2>
-
-              <p class="section-note">
-                Quản lý các bình luận của chính bạn,
-                chỉnh sửa, xóa và trả lời bình luận.
-              </p>
-
-            </div>
-
-            <span class="status-badge">
-              3 bình luận
-            </span>
-
-          </div>
-
-          <div class="comment-list">
-
-
-            <article class="comment-item">
-
-              <div class="comment-head">
-
-                <strong>
-                  Nguyễn Minh
-                </strong>
-
-                <span>
-                  08/08/2026 · 19:30
-                </span>
-
-              </div>
-
-
-              <div class="comment-article">
-
-                Bài viết:
-
-                <b>
-                  Công nghệ AI đang thay đổi cách chúng ta làm việc
-                </b>
-
-              </div>
-
-
-              <p class="comment-content">
-
-                Bài viết rất hữu ích, đặc biệt là phần
-                nói về ứng dụng AI trong công việc.
-
-              </p>
-
-
-              <div class="comment-actions">
-
-                <button
-                  class="btn btn-outline btn-small edit-comment"
-                  type="button"
-                >
-                  Sửa
-                </button>
-
-                <button
-                  class="btn btn-danger btn-small delete-comment"
-                  type="button"
-                >
-                  Xóa
-                </button>
-
-                <button
-                  class="btn btn-light btn-small reply-comment"
-                  type="button"
-                >
-                  Trả lời
-                </button>
-
-              </div>
-
-
-              <div
-                class="reply-box hidden"
-              >
-
-                <textarea
-                  class="form-control mini-textarea"
-                  placeholder="Viết câu trả lời..."
-                ></textarea>
-
-                <button
-                  class="btn btn-primary btn-small"
-                  type="button"
-                >
-                  Gửi trả lời
-                </button>
-
-              </div>
-
-            </article>
-
-
-
-            <!-- BÌNH LUẬN 2 -->
-
-            <article class="comment-item">
-
-              <div class="comment-head">
-
-                <strong>
-                  Nguyễn Minh
-                </strong>
-
-                <span>
-                  07/08/2026 · 14:10
-                </span>
-
-              </div>
-
-
-              <div class="comment-article">
-
-                Bài viết:
-
-                <b>
-                  Những xu hướng thể thao đáng chú ý trong năm 2026
-                </b>
-
-              </div>
-
-
-              <p class="comment-content">
-
-                Mình cũng đang quan tâm đến xu hướng này.
-                Cảm ơn tác giả!
-
-              </p>
-
-
-              <div class="comment-actions">
-
-                <button
-                  class="btn btn-outline btn-small edit-comment"
-                  type="button"
-                >
-                  Sửa
-                </button>
-
-                <button
-                  class="btn btn-danger btn-small delete-comment"
-                  type="button"
-                >
-                  Xóa
-                </button>
-
-                <button
-                  class="btn btn-light btn-small reply-comment"
-                  type="button"
-                >
-                  Trả lời
-                </button>
-
-              </div>
-
-
-              <div
-                class="reply-box hidden"
-              >
-
-                <textarea
-                  class="form-control mini-textarea"
-                  placeholder="Viết câu trả lời..."
-                ></textarea>
-
-                <button
-                  class="btn btn-primary btn-small"
-                  type="button"
-                >
-                  Gửi trả lời
-                </button>
-
-              </div>
-
-            </article>
-
-
-
-            <!-- BÌNH LUẬN 3 -->
-
-            <article class="comment-item">
-
-              <div class="comment-head">
-
-                <strong>
-                  Nguyễn Minh
-                </strong>
-
-                <span>
-                  06/08/2026 · 10:05
-                </span>
-
-              </div>
-
-
-              <div class="comment-article">
-
-                Bài viết:
-
-                <b>
-                  Cập nhật những tin tức mới nhất trong ngày
-                </b>
-
-              </div>
-
-
-              <p class="comment-content">
-
-                Thông tin được trình bày khá dễ hiểu.
-
-              </p>
-
-
-              <div class="comment-actions">
-
-                <button
-                  class="btn btn-outline btn-small edit-comment"
-                  type="button"
-                >
-                  Sửa
-                </button>
-
-                <button
-                  class="btn btn-danger btn-small delete-comment"
-                  type="button"
-                >
-                  Xóa
-                </button>
-
-                <button
-                  class="btn btn-light btn-small reply-comment"
-                  type="button"
-                >
-                  Trả lời
-                </button>
-
-              </div>
-
-
-              <div
-                class="reply-box hidden"
-              >
-
-                <textarea
-                  class="form-control mini-textarea"
-                  placeholder="Viết câu trả lời..."
-                ></textarea>
-
-                <button
-                  class="btn btn-primary btn-small"
-                  type="button"
-                >
-                  Gửi trả lời
-                </button>
-
-              </div>
-
-            </article>
-
-          </div>
-
-        </div>
-
-        <!-- lịch sử đọc -->
-
-        <div
-          class="profile-tab hidden"
-          id="history"
-        >
-
-          <div class="section-heading-row">
-
-            <div>
-
-              <h2 class="section-title">
-                Lịch sử đọc
-              </h2>
-
-              <p class="section-note">
-                Các bài viết bạn đã xem gần đây.
-              </p>
-
-            </div>
-
-
-            <button
-              class="btn btn-outline btn-small"
-              type="button"
-            >
-              Xóa lịch sử
-            </button>
-
-          </div>
-
-          <div class="article-list">
-
-
-            <article class="list-item">
-
-              <div class="article-thumb">
-                CN
-              </div>
-
-
-              <div class="list-item-body">
-
-                <h3>
-                  AI và tương lai của ngành công nghệ
-                </h3>
-
-                <p>
-                  Công nghệ · Đã xem hôm nay lúc 19:20
-                </p>
-
-              </div>
-
-
-              <span class="read-status">
-                Đã đọc
-              </span>
-
-            </article>
-
-
-
-            <article class="list-item">
-
-              <div class="article-thumb">
-                KT
-              </div>
-
-
-              <div class="list-item-body">
-
-                <h3>
-                  Thị trường và những chuyển động mới
-                </h3>
-
-                <p>
-                  Kinh tế · Đã xem hôm qua lúc 21:10
-                </p>
-
-              </div>
-
-
-              <span class="read-status">
-                Đã đọc
-              </span>
-
-            </article>
-
-
-
-            <article class="list-item">
-
-              <div class="article-thumb">
-                DS
-              </div>
-
-
-              <div class="list-item-body">
-
-                <h3>
-                  5 thói quen giúp làm việc hiệu quả hơn
-                </h3>
-
-                <p>
-                  Đời sống · 05/08/2026
-                </p>
-
-              </div>
-
-
-              <span class="read-status">
-                Đã đọc
-              </span>
-
-            </article>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- ================= THÔNG BÁO ================= -->
-
-        <div
-          class="profile-tab hidden"
-          id="notifications"
-        >
-
-          <div class="section-heading-row">
-
-            <div>
-
-              <h2 class="section-title">
+              <a href="#" data-tab="notifications">
                 Thông báo
-              </h2>
+
+                <span class="menu-count"> 3 </span>
+              </a>
+
+              <a href="#" data-tab="reporter"> Đăng ký làm phóng viên </a>
+
+              <a href="login.html"> Đăng xuất </a>
+            </nav>
+          </aside>
+
+          <section class="card profile-content">
+            <!--  THÔNG TIN CÁ NHÂN  -->
+
+            <div class="profile-tab" id="personal">
+              <h2 class="section-title">Thông tin tài khoản</h2>
 
               <p class="section-note">
-                Thông báo về bài viết và hoạt động tài khoản.
+                Các thông tin cơ bản của tài khoản người dùng.
               </p>
 
-            </div>
+              <form action="#" method="post">
+                <div class="row">
+                  <div class="form-group">
+                    <label for="name"> Họ và tên </label>
 
+                    <input
+                      class="form-control"
+                      id="name"
+                      name="name"
+                      value="Nguyễn Minh"
+                      type="text"
+                    />
+                  </div>
 
-            <button
-              class="btn btn-outline btn-small"
-              type="button"
-            >
-              Đánh dấu đã đọc
-            </button>
+                  <div class="form-group">
+                    <label for="email"> Email </label>
 
-          </div>
+                    <input
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      value="nguyenminh@email.com"
+                      type="email"
+                    />
+                  </div>
+                </div>
 
+                <div class="row">
+                  <div class="form-group">
+                    <label for="phone"> Số điện thoại </label>
 
+                    <input
+                      class="form-control"
+                      id="phone"
+                      name="phone"
+                      value="0901 234 567"
+                      type="tel"
+                    />
+                  </div>
 
-          <div class="notification-list">
+                  <div class="form-group">
+                    <label for="role"> Vai trò </label>
 
+                    <input
+                      class="form-control"
+                      id="role"
+                      value="User / Độc giả"
+                      type="text"
+                      disabled
+                    />
+                  </div>
+                </div>
 
-            <div class="notification unread">
+                <div class="form-group">
+                  <label for="bio"> Giới thiệu </label>
 
-              <div class="notification-icon">
-                ✓
-              </div>
+                  <textarea
+                    class="form-control short-textarea"
+                    id="bio"
+                    name="bio"
+                  >
+Yêu thích đọc tin tức và công nghệ.</textarea
+                  >
+                </div>
 
+                <div class="form-actions">
+                  <button class="btn btn-outline" type="reset">Hủy</button>
 
-              <div>
+                  <button class="btn btn-primary" type="submit">
+                    Lưu thay đổi
+                  </button>
+                </div>
+              </form>
 
-                <b>
-                  Đơn đăng ký phóng viên đang được xử lý
-                </b>
+              <div class="subsection">
+                <h2 class="section-title">Trạng thái tài khoản</h2>
 
-                <p>
-                  Editor đang xem xét đơn đăng ký của bạn.
+                <p class="section-note">
+                  Tài khoản hiện đang hoạt động:
+
+                  <span class="status-badge success-badge"> Active </span>
                 </p>
-
-                <small>
-                  10 phút trước
-                </small>
-
               </div>
-
             </div>
 
+            <!-- đổi mật khẩu -->
 
+            <div class="profile-tab hidden" id="password">
+              <h2 class="section-title">Đổi mật khẩu</h2>
 
-            <div class="notification unread">
+              <p class="section-note">
+                Thay đổi mật khẩu để bảo vệ tài khoản của bạn.
+              </p>
 
-              <div class="notification-icon">
-                💬
-              </div>
+              <form action="#" method="post" id="password-form">
+                <div class="form-group">
+                  <label for="current-password"> Mật khẩu hiện tại * </label>
 
+                  <input
+                    class="form-control"
+                    id="current-password"
+                    name="current_password"
+                    type="password"
+                    placeholder="Nhập mật khẩu hiện tại"
+                    required
+                  />
+                </div>
 
-              <div>
+                <div class="form-group">
+                  <label for="new-password"> Mật khẩu mới * </label>
 
-                <b>
-                  Bạn có bình luận mới
-                </b>
+                  <input
+                    class="form-control"
+                    id="new-password"
+                    name="new_password"
+                    type="password"
+                    placeholder="Nhập mật khẩu mới"
+                    required
+                  />
+                </div>
 
-                <p>
-                  Một người dùng đã trả lời bình luận của bạn.
-                </p>
+                <div class="form-group">
+                  <label for="confirm-password">
+                    Xác nhận mật khẩu mới *
+                  </label>
 
-                <small>
-                  2 giờ trước
-                </small>
+                  <input
+                    class="form-control"
+                    id="confirm-password"
+                    name="confirm_password"
+                    type="password"
+                    placeholder="Nhập lại mật khẩu mới"
+                    required
+                  />
+                </div>
 
-              </div>
+                <div class="info-box">
+                  <b> Yêu cầu mật khẩu: </b>
 
+                  <ul class="tip-list">
+                    <li>Tối thiểu 8 ký tự.</li>
+
+                    <li>Nên có chữ hoa và chữ thường.</li>
+
+                    <li>Nên có ít nhất một chữ số.</li>
+                  </ul>
+                </div>
+
+                <div class="form-actions">
+                  <button class="btn btn-outline" type="reset">Hủy</button>
+
+                  <button class="btn btn-primary" type="submit">
+                    Đổi mật khẩu
+                  </button>
+                </div>
+              </form>
             </div>
 
+            <!-- Bài viết đã lưu-->
 
+            <div class="profile-tab hidden" id="favorites">
+              <div class="section-heading-row">
+                <div>
+                  <h2 class="section-title">Bài viết đã lưu</h2>
 
-            <div class="notification unread">
+                  <p class="section-note">
+                    Danh sách các bài viết bạn đã lưu để đọc lại.
+                  </p>
+                </div>
 
-              <div class="notification-icon">
-                ℹ
+                <span class="status-badge"> 3 bài </span>
               </div>
 
+              <div class="article-list">
+                <article class="list-item">
+                  <div class="article-thumb">TIN</div>
 
-              <div>
+                  <div class="list-item-body">
+                    <h3>Công nghệ AI đang thay đổi cách chúng ta làm việc</h3>
 
-                <b>
-                  Chào mừng bạn đến với Tin Mới
-                </b>
+                    <p>Công nghệ · 08/08/2026 · 6 phút đọc</p>
+                  </div>
+                  <button class="btn btn-danger btn-small" type="button">
+                    Bỏ lưu
+                  </button>
+                </article>
 
-                <p>
-                  Hãy khám phá và lưu những bài viết bạn quan tâm.
-                </p>
+                <article class="list-item">
+                  <div class="article-thumb">TT</div>
 
-                <small>
-                  1 ngày trước
-                </small>
+                  <div class="list-item-body">
+                    <h3>Những xu hướng thể thao đáng chú ý trong năm 2026</h3>
 
+                    <p>Thể thao · 07/08/2026 · 4 phút đọc</p>
+                  </div>
+
+                  <button class="btn btn-danger btn-small" type="button">
+                    Bỏ lưu
+                  </button>
+                </article>
+
+                <article class="list-item">
+                  <div class="article-thumb">TS</div>
+
+                  <div class="list-item-body">
+                    <h3>Cập nhật những tin tức mới nhất trong ngày</h3>
+
+                    <p>Thời sự · 06/08/2026 · 5 phút đọc</p>
+                  </div>
+
+                  <button class="btn btn-danger btn-small" type="button">
+                    Bỏ lưu
+                  </button>
+                </article>
               </div>
-
             </div>
 
-          </div>
+            <!-- quản lí bình luận -->
 
+            <div class="profile-tab hidden" id="comments">
+              <div class="section-heading-row">
+                <div>
+                  <h2 class="section-title">Quản lý bình luận</h2>
+
+                  <p class="section-note">
+                    Quản lý các bình luận của chính bạn, chỉnh sửa, xóa và trả
+                    lời bình luận.
+                  </p>
+                </div>
+
+                <span class="status-badge"> 3 bình luận </span>
+              </div>
+
+              <div class="comment-list">
+                <article class="comment-item">
+                  <div class="comment-head">
+                    <strong> Nguyễn Minh </strong>
+
+                    <span> 08/08/2026 · 19:30 </span>
+                  </div>
+
+                  <div class="comment-article">
+                    Bài viết:
+
+                    <b> Công nghệ AI đang thay đổi cách chúng ta làm việc </b>
+                  </div>
+
+                  <p class="comment-content">
+                    Bài viết rất hữu ích, đặc biệt là phần nói về ứng dụng AI
+                    trong công việc.
+                  </p>
+
+                  <div class="comment-actions">
+                    <button
+                      class="btn btn-outline btn-small edit-comment"
+                      type="button"
+                    >
+                      Sửa
+                    </button>
+
+                    <button
+                      class="btn btn-danger btn-small delete-comment"
+                      type="button"
+                    >
+                      Xóa
+                    </button>
+
+                    <button
+                      class="btn btn-light btn-small reply-comment"
+                      type="button"
+                    >
+                      Trả lời
+                    </button>
+                  </div>
+
+                  <div class="reply-box hidden">
+                    <textarea
+                      class="form-control mini-textarea"
+                      placeholder="Viết câu trả lời..."
+                    ></textarea>
+
+                    <button class="btn btn-primary btn-small" type="button">
+                      Gửi trả lời
+                    </button>
+                  </div>
+                </article>
+
+                <!-- BÌNH LUẬN 2 -->
+
+                <article class="comment-item">
+                  <div class="comment-head">
+                    <strong> Nguyễn Minh </strong>
+
+                    <span> 07/08/2026 · 14:10 </span>
+                  </div>
+
+                  <div class="comment-article">
+                    Bài viết:
+
+                    <b> Những xu hướng thể thao đáng chú ý trong năm 2026 </b>
+                  </div>
+
+                  <p class="comment-content">
+                    Mình cũng đang quan tâm đến xu hướng này. Cảm ơn tác giả!
+                  </p>
+
+                  <div class="comment-actions">
+                    <button
+                      class="btn btn-outline btn-small edit-comment"
+                      type="button"
+                    >
+                      Sửa
+                    </button>
+
+                    <button
+                      class="btn btn-danger btn-small delete-comment"
+                      type="button"
+                    >
+                      Xóa
+                    </button>
+
+                    <button
+                      class="btn btn-light btn-small reply-comment"
+                      type="button"
+                    >
+                      Trả lời
+                    </button>
+                  </div>
+
+                  <div class="reply-box hidden">
+                    <textarea
+                      class="form-control mini-textarea"
+                      placeholder="Viết câu trả lời..."
+                    ></textarea>
+
+                    <button class="btn btn-primary btn-small" type="button">
+                      Gửi trả lời
+                    </button>
+                  </div>
+                </article>
+
+                <!-- BÌNH LUẬN 3 -->
+
+                <article class="comment-item">
+                  <div class="comment-head">
+                    <strong> Nguyễn Minh </strong>
+
+                    <span> 06/08/2026 · 10:05 </span>
+                  </div>
+
+                  <div class="comment-article">
+                    Bài viết:
+
+                    <b> Cập nhật những tin tức mới nhất trong ngày </b>
+                  </div>
+
+                  <p class="comment-content">
+                    Thông tin được trình bày khá dễ hiểu.
+                  </p>
+
+                  <div class="comment-actions">
+                    <button
+                      class="btn btn-outline btn-small edit-comment"
+                      type="button"
+                    >
+                      Sửa
+                    </button>
+
+                    <button
+                      class="btn btn-danger btn-small delete-comment"
+                      type="button"
+                    >
+                      Xóa
+                    </button>
+
+                    <button
+                      class="btn btn-light btn-small reply-comment"
+                      type="button"
+                    >
+                      Trả lời
+                    </button>
+                  </div>
+
+                  <div class="reply-box hidden">
+                    <textarea
+                      class="form-control mini-textarea"
+                      placeholder="Viết câu trả lời..."
+                    ></textarea>
+
+                    <button class="btn btn-primary btn-small" type="button">
+                      Gửi trả lời
+                    </button>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- lịch sử đọc -->
+
+            <div class="profile-tab hidden" id="history">
+              <div class="section-heading-row">
+                <div>
+                  <h2 class="section-title">Lịch sử đọc</h2>
+
+                  <p class="section-note">Các bài viết bạn đã xem gần đây.</p>
+                </div>
+
+                <button class="btn btn-outline btn-small" type="button">
+                  Xóa lịch sử
+                </button>
+              </div>
+
+              <div class="article-list">
+                <article class="list-item">
+                  <div class="article-thumb">CN</div>
+
+                  <div class="list-item-body">
+                    <h3>AI và tương lai của ngành công nghệ</h3>
+
+                    <p>Công nghệ · Đã xem hôm nay lúc 19:20</p>
+                  </div>
+
+                  <span class="read-status"> Đã đọc </span>
+                </article>
+
+                <article class="list-item">
+                  <div class="article-thumb">KT</div>
+
+                  <div class="list-item-body">
+                    <h3>Thị trường và những chuyển động mới</h3>
+
+                    <p>Kinh tế · Đã xem hôm qua lúc 21:10</p>
+                  </div>
+
+                  <span class="read-status"> Đã đọc </span>
+                </article>
+
+                <article class="list-item">
+                  <div class="article-thumb">DS</div>
+
+                  <div class="list-item-body">
+                    <h3>5 thói quen giúp làm việc hiệu quả hơn</h3>
+
+                    <p>Đời sống · 05/08/2026</p>
+                  </div>
+
+                  <span class="read-status"> Đã đọc </span>
+                </article>
+              </div>
+            </div>
+
+            <!-- ================= THÔNG BÁO ================= -->
+
+            <div class="profile-tab hidden" id="notifications">
+              <div class="section-heading-row">
+                <div>
+                  <h2 class="section-title">Thông báo</h2>
+
+                  <p class="section-note">
+                    Thông báo về bài viết và hoạt động tài khoản.
+                  </p>
+                </div>
+
+                <button class="btn btn-outline btn-small" type="button">
+                  Đánh dấu đã đọc
+                </button>
+              </div>
+
+              <div class="notification-list">
+                <div class="notification unread">
+                  <div class="notification-icon">✓</div>
+
+                  <div>
+                    <b> Đơn đăng ký phóng viên đang được xử lý </b>
+
+                    <p>Editor đang xem xét đơn đăng ký của bạn.</p>
+
+                    <small> 10 phút trước </small>
+                  </div>
+                </div>
+
+                <div class="notification unread">
+                  <div class="notification-icon">💬</div>
+
+                  <div>
+                    <b> Bạn có bình luận mới </b>
+
+                    <p>Một người dùng đã trả lời bình luận của bạn.</p>
+
+                    <small> 2 giờ trước </small>
+                  </div>
+                </div>
+
+                <div class="notification unread">
+                  <div class="notification-icon">ℹ</div>
+
+                  <div>
+                    <b> Chào mừng bạn đến với Tin Mới </b>
+
+                    <p>Hãy khám phá và lưu những bài viết bạn quan tâm.</p>
+
+                    <small> 1 ngày trước </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ĐĂNG KÝ PHÓNG VIÊN  -->
+
+            <div class="profile-tab hidden" id="reporter">
+              <h2 class="section-title">Đăng ký làm Phóng viên</h2>
+
+              <p class="section-note">
+                Gửi đơn để Editor xem xét. Khi được duyệt, vai trò tài khoản sẽ
+                chuyển thành Reporter.
+              </p>
+
+              <div class="info-box">
+                <b> Trạng thái đơn hiện tại: </b>
+
+                <span class="status-badge"> Chờ duyệt </span>
+
+                <br />
+
+                Ngày gửi: 09/08/2026
+              </div>
+
+              <form action="#" method="post">
+                <div class="form-group">
+                  <label for="reason"> Lý do / Giới thiệu * </label>
+
+                  <textarea
+                    class="form-control short-textarea"
+                    id="reason"
+                    required
+                    placeholder="Giới thiệu kinh nghiệm, lý do bạn muốn trở thành phóng viên..."
+                  ></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="note"> Ghi chú thêm </label>
+
+                  <textarea
+                    class="form-control mini-textarea"
+                    id="note"
+                    placeholder="Thông tin bổ sung nếu có..."
+                  ></textarea>
+                </div>
+
+                <div class="form-actions">
+                  <button class="btn btn-outline" type="reset">Làm lại</button>
+
+                  <button class="btn btn-primary" type="submit">
+                    Gửi đơn đăng ký
+                  </button>
+                </div>
+              </form>
+
+              <div class="subsection">
+                <h3 class="section-title">Lịch sử xử lý đơn</h3>
+
+                <div class="timeline">
+                  <div>
+                    <b> 09/08/2026 </b>
+
+                    <span> Đã gửi đơn đăng ký </span>
+                  </div>
+
+                  <div class="pending-line">
+                    <b> Đang chờ </b>
+
+                    <span> Editor xem xét và phản hồi </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
+      </div>
+    </main>
 
+    <footer class="footer">
+      <div class="container footer-inner">
+        <strong> TIN MỚI </strong>
 
+        <span> © 2026 Website Tin Tức </span>
+      </div>
+    </footer>
 
-        <!-- ĐĂNG KÝ PHÓNG VIÊN  -->
-
-        <div
-          class="profile-tab hidden"
-          id="reporter"
-        >
-
-          <h2 class="section-title">
-            Đăng ký làm Phóng viên
-          </h2>
-
-          <p class="section-note">
-            Gửi đơn để Editor xem xét. Khi được duyệt,
-            vai trò tài khoản sẽ chuyển thành Reporter.
-          </p>
-
-
-
-          <div class="info-box">
-
-            <b>
-              Trạng thái đơn hiện tại:
-            </b>
-
-            <span class="status-badge">
-              Chờ duyệt
-            </span>
-
-            <br>
-
-            Ngày gửi: 09/08/2026
-
-          </div>
-
-
-
-          <form
-            action="#"
-            method="post"
-          >
-
-
-            <div class="form-group">
-
-              <label for="reason">
-                Lý do / Giới thiệu *
-              </label>
-
-              <textarea
-                class="form-control short-textarea"
-                id="reason"
-                required
-                placeholder="Giới thiệu kinh nghiệm, lý do bạn muốn trở thành phóng viên..."
-              ></textarea>
-
-            </div>
-
-
-
-            <div class="form-group">
-
-              <label for="note">
-                Ghi chú thêm
-              </label>
-
-              <textarea
-                class="form-control mini-textarea"
-                id="note"
-                placeholder="Thông tin bổ sung nếu có..."
-              ></textarea>
-
-            </div>
-
-
-
-            <div class="form-actions">
-
-              <button
-                class="btn btn-outline"
-                type="reset"
-              >
-                Làm lại
-              </button>
-
-              <button
-                class="btn btn-primary"
-                type="submit"
-              >
-                Gửi đơn đăng ký
-              </button>
-
-            </div>
-
-          </form>
-
-
-
-          <div class="subsection">
-
-            <h3 class="section-title">
-              Lịch sử xử lý đơn
-            </h3>
-
-
-            <div class="timeline">
-
-              <div>
-
-                <b>
-                  09/08/2026
-                </b>
-
-                <span>
-                  Đã gửi đơn đăng ký
-                </span>
-
-              </div>
-
-
-              <div class="pending-line">
-
-                <b>
-                  Đang chờ
-                </b>
-
-                <span>
-                  Editor xem xét và phản hồi
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </div>
-
-  </div>
-
-</main>
-
-
-
-<footer class="footer">
-
-  <div class="container footer-inner">
-
-    <strong>
-      TIN MỚI
-    </strong>
-
-    <span>
-      © 2026 Website Tin Tức
-    </span>
-
-  </div>
-
-</footer>
-
-
-
-<script>
-
-document
-  .querySelectorAll('.profile-menu a[data-tab]')
-  .forEach(function(link) {
-
-    link.addEventListener('click', function(e) {
-
-      e.preventDefault();
-
+    <script>
       document
-        .querySelectorAll('.profile-menu a[data-tab]')
-        .forEach(function(a) {
+        .querySelectorAll(".profile-menu a[data-tab]")
+        .forEach(function (link) {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
 
-          a.classList.remove('active');
+            document
+              .querySelectorAll(".profile-menu a[data-tab]")
+              .forEach(function (a) {
+                a.classList.remove("active");
+              });
 
+            this.classList.add("active");
+
+            document.querySelectorAll(".profile-tab").forEach(function (tab) {
+              tab.classList.add("hidden");
+            });
+
+            /* Hiện tab được chọn */
+
+            const target = document.getElementById(this.dataset.tab);
+
+            if (target) {
+              target.classList.remove("hidden");
+            }
+          });
         });
 
-      this.classList.add('active');
+      const passwordForm = document.getElementById("password-form");
+
+      if (passwordForm) {
+        passwordForm.addEventListener("submit", function (e) {
+          const newPassword = document.getElementById("new-password").value;
+
+          const confirmPassword =
+            document.getElementById("confirm-password").value;
+
+          /* Kiểm tra độ dài */
+
+          if (newPassword.length < 8) {
+            e.preventDefault();
+
+            alert("Mật khẩu mới phải có ít nhất 8 ký tự.");
+
+            return;
+          }
+
+          /* Kiểm tra mật khẩu trùng nhau */
+
+          if (newPassword !== confirmPassword) {
+            e.preventDefault();
+
+            alert("Mật khẩu xác nhận không khớp.");
+
+            return;
+          }
+
+          alert("Đổi mật khẩu thành công!");
+        });
+      }
+
+      document.querySelectorAll(".reply-comment").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const comment = this.closest(".comment-item");
+
+          const replyBox = comment.querySelector(".reply-box");
+
+          if (replyBox) {
+            replyBox.classList.toggle("hidden");
+          }
+        });
+      });
+
+      document.querySelectorAll(".delete-comment").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const confirmDelete = confirm(
+            "Bạn có chắc muốn xóa bình luận này không?",
+          );
+
+          if (confirmDelete) {
+            const comment = this.closest(".comment-item");
+
+            comment.remove();
+          }
+        });
+      });
+
+      document.querySelectorAll(".edit-comment").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const comment = this.closest(".comment-item");
+
+          const content = comment.querySelector(".comment-content");
+
+          if (!content) {
+            return;
+          }
+
+          const oldText = content.textContent.trim();
+
+          const newText = prompt("Chỉnh sửa bình luận:", oldText);
+
+          if (newText !== null && newText.trim() !== "") {
+            content.textContent = newText.trim();
+          }
+        });
+      });
 
       document
-        .querySelectorAll('.profile-tab')
-        .forEach(function(tab) {
+        .querySelectorAll(".reply-box .btn-primary")
+        .forEach(function (button) {
+          button.addEventListener("click", function () {
+            const replyBox = this.closest(".reply-box");
 
-          tab.classList.add('hidden');
+            const textarea = replyBox.querySelector("textarea");
 
+            if (!textarea || textarea.value.trim() === "") {
+              alert("Vui lòng nhập nội dung trả lời.");
+
+              return;
+            }
+
+            alert("Đã gửi câu trả lời.");
+
+            textarea.value = "";
+
+            replyBox.classList.add("hidden");
+          });
         });
 
-
-      /* Hiện tab được chọn */
-
-      const target =
-        document.getElementById(this.dataset.tab);
-
-
-      if (target) {
-
-        target.classList.remove('hidden');
-
-      }
-
-    });
-
-  });
-
-
-const passwordForm =
-  document.getElementById('password-form');
-
-
-if (passwordForm) {
-
-  passwordForm.addEventListener(
-    'submit',
-    function(e) {
-
-      const newPassword =
-        document.getElementById('new-password').value;
-
-      const confirmPassword =
-        document.getElementById('confirm-password').value;
-
-
-      /* Kiểm tra độ dài */
-
-      if (newPassword.length < 8) {
-
-        e.preventDefault();
-
-        alert(
-          'Mật khẩu mới phải có ít nhất 8 ký tự.'
-        );
-
-        return;
-
-      }
-
-
-      /* Kiểm tra mật khẩu trùng nhau */
-
-      if (newPassword !== confirmPassword) {
-
-        e.preventDefault();
-
-        alert(
-          'Mật khẩu xác nhận không khớp.'
-        );
-
-        return;
-
-      }
-
-
-      alert(
-        'Đổi mật khẩu thành công!'
-      );
-
-    });
-
-}
-
-document
-  .querySelectorAll('.reply-comment')
-  .forEach(function(button) {
-
-    button.addEventListener(
-      'click',
-      function() {
-
-        const comment =
-          this.closest('.comment-item');
-
-        const replyBox =
-          comment.querySelector('.reply-box');
-
-        if (replyBox) {
-
-          replyBox.classList.toggle('hidden');
-
-        }
-
-      }
-    );
-
-  });
-
-
-
-document
-  .querySelectorAll('.delete-comment')
-  .forEach(function(button) {
-
-    button.addEventListener(
-      'click',
-      function() {
-
-        const confirmDelete =
-          confirm(
-            'Bạn có chắc muốn xóa bình luận này không?'
-          );
-
-
-        if (confirmDelete) {
-
-          const comment =
-            this.closest('.comment-item');
-
-          comment.remove();
-
-        }
-
-      }
-    );
-
-  });
-
-
-
-document
-  .querySelectorAll('.edit-comment')
-  .forEach(function(button) {
-
-    button.addEventListener(
-      'click',
-      function() {
-
-        const comment =
-          this.closest('.comment-item');
-
-        const content =
-          comment.querySelector('.comment-content');
-
-
-        if (!content) {
-          return;
-        }
-
-
-        const oldText =
-          content.textContent.trim();
-
-
-        const newText =
-          prompt(
-            'Chỉnh sửa bình luận:',
-            oldText
-          );
-
-
-        if (
-          newText !== null &&
-          newText.trim() !== ''
-        ) {
-
-          content.textContent =
-            newText.trim();
-
-        }
-
-      }
-    );
-
-  });
-
-
-document
-  .querySelectorAll('.reply-box .btn-primary')
-  .forEach(function(button) {
-
-    button.addEventListener(
-      'click',
-      function() {
-
-        const replyBox =
-          this.closest('.reply-box');
-
-        const textarea =
-          replyBox.querySelector('textarea');
-
-
-        if (
-          !textarea ||
-          textarea.value.trim() === ''
-        ) {
-
-          alert(
-            'Vui lòng nhập nội dung trả lời.'
-          );
-
-          return;
-
-        }
-
-
-        alert(
-          'Đã gửi câu trả lời.'
-        );
-
-
-        textarea.value = '';
-
-        replyBox.classList.add('hidden');
-
-      }
-    );
-
-  });
-
-
-document
-  .querySelectorAll('#favorites .btn-danger')
-  .forEach(function(button) {
-
-    button.addEventListener(
-      'click',
-      function() {
-
-        const article =
-          this.closest('.list-item');
-
-
-        if (!article) {
-          return;
-        }
-
-
-        const confirmRemove =
-          confirm(
-            'Bạn có muốn bỏ lưu bài viết này không?'
-          );
-
-
-        if (confirmRemove) {
-
-          article.remove();
-
-        }
-
-      }
-    );
-
-  });
-
-</script>
-
-
-</body>
-
+      document
+        .querySelectorAll("#favorites .btn-danger")
+        .forEach(function (button) {
+          button.addEventListener("click", function () {
+            const article = this.closest(".list-item");
+
+            if (!article) {
+              return;
+            }
+
+            const confirmRemove = confirm(
+              "Bạn có muốn bỏ lưu bài viết này không?",
+            );
+
+            if (confirmRemove) {
+              article.remove();
+            }
+          });
+        });
+    </script>
+  </body>
 </html>
