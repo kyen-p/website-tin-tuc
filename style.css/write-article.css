@@ -1,0 +1,781 @@
+/* =========================================================
+   WRITE-ARTICLE.CSS — MẠCH TIN
+   GIAO DIỆN PHÓNG VIÊN
+   ========================================================= */
+
+:root {
+  --ink: #131b2e;
+  --paper: #f5f3ee;
+  --paper-alt: #ece7da;
+  --brass: #b8934f;
+  --brass-dark: #93692f;
+  --crimson: #a6362c;
+  --muted: #6b6759;
+  --white: #ffffff;
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.reporter-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-columns: 250px minmax(0, 1fr);
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.reporter-sidebar {
+  width: 250px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--paper-alt);
+}
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.reporter-brand {
+  width: 100%;
+  height: 94px;
+
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid var(--paper);
+}
+
+.brand-link {
+  display: flex;
+
+  flex-direction: row;
+
+  align-items: center;
+
+  gap: 8px;
+
+  white-space: nowrap;
+
+  line-height: 1;
+}
+
+.pulse-mark {
+  width: 25px;
+  height: 25px;
+
+  flex: 0 0 25px;
+
+  display: block;
+
+  color: var(--crimson);
+}
+
+.brand-word {
+  display: flex;
+
+  align-items: center;
+
+  white-space: nowrap;
+}
+
+.brand-mach {
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 23px;
+
+  line-height: 1;
+
+  font-weight: 700;
+
+  letter-spacing: -0.6px;
+
+  color: var(--ink);
+}
+
+.brand-tin {
+  margin-left: 4px;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 23px;
+
+  line-height: 1;
+
+  font-weight: 400;
+
+  font-style: italic;
+
+  letter-spacing: -0.8px;
+
+  color: var(--brass-dark);
+
+  transform: skewX(-4deg);
+}
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+.reporter-user {
+  padding: 26px 20px 23px;
+
+  text-align: center;
+
+  border-bottom: 1px solid var(--paper);
+}
+
+.reporter-avatar {
+  width: 60px;
+  height: 60px;
+
+  margin: 0 auto 10px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--paper);
+
+  border: 1px solid var(--brass);
+
+  color: var(--brass-dark);
+
+  font-family: Georgia, serif;
+
+  font-size: 19px;
+
+  font-weight: 700;
+}
+
+.reporter-name {
+  margin: 0;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+.reporter-role {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.reporter-menu {
+  padding-top: 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.reporter-menu-item {
+  width: 100%;
+
+  min-height: 48px;
+
+  padding: 0 25px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  border-left: 3px solid transparent;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.reporter-menu-item:hover {
+  background: var(--paper);
+}
+
+.reporter-menu-item.active {
+  background: var(--paper);
+
+  border-left-color: var(--crimson);
+
+  font-weight: 700;
+}
+
+.menu-icon {
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+
+  color: var(--muted);
+}
+
+.reporter-menu-item.active .menu-icon {
+  color: var(--crimson);
+}
+
+.reporter-menu-item span {
+  font-size: 13px;
+}
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+.reporter-logout {
+  margin-top: auto;
+
+  padding: 12px 0 22px;
+
+  border-top: 1px solid var(--paper);
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.reporter-main {
+  min-width: 0;
+  min-height: 100vh;
+
+  padding: 42px 50px 70px;
+}
+
+.reporter-content {
+  width: 100%;
+  max-width: 1100px;
+
+  margin: 0 auto;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 30px;
+}
+
+.page-header h1 {
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 29px;
+
+  line-height: 1.25;
+
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 8px 0 0;
+
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+.page-line {
+  width: 100%;
+  height: 2px;
+
+  margin-top: 12px;
+
+  background: var(--ink);
+}
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+.secondary-button {
+  padding: 10px 16px;
+
+  border: 1px solid var(--ink);
+
+  color: var(--ink);
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.secondary-button:hover {
+  background: var(--ink);
+
+  color: var(--paper);
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.article-form {
+  margin-top: 30px;
+}
+
+.form-section {
+  margin-bottom: 28px;
+
+  padding: 25px 28px;
+
+  background: var(--white);
+
+  border: 1px solid var(--paper-alt);
+}
+
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
+
+.section-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 22px;
+
+  padding-bottom: 12px;
+
+  border-bottom: 1px solid var(--paper-alt);
+}
+
+.section-title span {
+  color: var(--crimson);
+
+  font-family: Georgia, serif;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.section-title h2 {
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 18px;
+
+  font-weight: 700;
+}
+
+/* =========================================================
+   FORM GROUP
+   ========================================================= */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.form-group label b {
+  color: var(--crimson);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select,
+.image-input-box input {
+  width: 100%;
+
+  padding: 12px 13px;
+
+  background: var(--paper);
+
+  border: 1px solid #d8d2c6;
+
+  outline: none;
+
+  color: var(--ink);
+
+  font-size: 13px;
+
+  transition: border 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus,
+.image-input-box input:focus {
+  border-color: var(--brass-dark);
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+/* =========================================================
+   TWO COLUMNS
+   ========================================================= */
+
+.form-row {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+}
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+.image-method {
+  display: flex;
+
+  gap: 25px;
+
+  margin-bottom: 15px;
+}
+
+.radio-option {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.radio-option input {
+  accent-color: var(--crimson);
+}
+
+.image-input-box {
+  padding: 15px;
+
+  background: var(--paper);
+
+  border: 1px dashed #c8c0b0;
+}
+
+.image-input-box p {
+  margin: 7px 0 0;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   IMAGE PREVIEW
+   ========================================================= */
+
+.image-preview {
+  width: 240px;
+
+  margin-top: 16px;
+}
+
+.image-preview img {
+  width: 100%;
+
+  max-height: 160px;
+
+  display: block;
+
+  object-fit: cover;
+
+  border: 1px solid var(--paper-alt);
+}
+
+/* =========================================================
+   CONTENT EDITOR
+   ========================================================= */
+
+.content-editor {
+  min-height: 350px !important;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  line-height: 1.7;
+}
+
+.character-count {
+  margin-top: 5px;
+
+  text-align: right;
+
+  color: var(--muted);
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   TAG
+   ========================================================= */
+
+.tag-list {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 9px;
+}
+
+.tag-option {
+  cursor: pointer;
+}
+
+.tag-option input {
+  display: none;
+}
+
+.tag-option span {
+  display: inline-block;
+
+  padding: 7px 12px;
+
+  background: var(--paper);
+
+  border: 1px solid #d5cdbd;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+.tag-option input:checked + span {
+  background: var(--ink);
+
+  border-color: var(--ink);
+
+  color: var(--paper);
+}
+
+.form-note {
+  margin: 12px 0 0;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   ACTION
+   ========================================================= */
+
+.form-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  padding-top: 4px;
+}
+
+.form-actions button {
+  padding: 12px 20px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.draft-button {
+  background: transparent;
+
+  border: 1px solid var(--ink);
+
+  color: var(--ink);
+}
+
+.draft-button:hover {
+  background: var(--paper-alt);
+}
+
+.submit-button {
+  background: var(--crimson);
+
+  border: 1px solid var(--crimson);
+
+  color: white;
+}
+
+.submit-button:hover {
+  background: #8d2e26;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+  .reporter-page {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+
+  .reporter-sidebar {
+    width: 230px;
+  }
+
+  .reporter-main {
+    padding: 38px 32px 60px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .reporter-page {
+    display: block;
+  }
+
+  .reporter-sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .reporter-brand {
+    height: 78px;
+  }
+
+  .reporter-menu {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reporter-logout {
+    margin-top: 0;
+  }
+
+  .reporter-main {
+    padding: 30px 20px 50px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .reporter-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .reporter-main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .form-section {
+    padding: 20px 16px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}

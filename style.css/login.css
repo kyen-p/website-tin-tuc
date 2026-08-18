@@ -1,0 +1,548 @@
+/* =========================================================
+   LOGIN.CSS — MẠCH TIN
+   Giao diện đăng nhập
+   ========================================================= */
+
+/* =========================================================
+   1. AUTH PAGE
+   ========================================================= */
+
+.auth-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 48px 24px;
+
+  /*
+   * Toàn bộ trang chỉ dùng MỘT màu nền.
+   * Không dùng background khác khi kéo lên trên.
+   */
+  background: var(--paper, #f5f3ee);
+
+  color: var(--ink, #131b2e);
+
+  box-sizing: border-box;
+
+  /*
+   * Tránh xuất hiện khoảng màu khác khi overscroll.
+   */
+  overscroll-behavior: none;
+}
+
+/* =========================================================
+   2. WRAPPER
+   ========================================================= */
+
+.auth-wrapper {
+  width: 100%;
+  max-width: 420px;
+
+  margin: 0 auto;
+}
+
+/* =========================================================
+   3. LOGO MẠCH TIN
+   ========================================================= */
+
+.auth-logo {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  width: max-content;
+
+  margin: 0 auto 24px;
+
+  color: var(--ink, #131b2e);
+
+  text-decoration: none;
+
+  line-height: 1;
+
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------
+   Nhịp tim
+   --------------------------------------------------------- */
+
+.auth-logo .pulse-mark {
+  display: block;
+
+  width: 26px;
+  height: 26px;
+
+  flex: 0 0 26px;
+
+  color: var(--crimson, #a6362c);
+}
+
+/* ---------------------------------------------------------
+   Chữ MẠCH TIN
+   --------------------------------------------------------- */
+
+.auth-logo .logo__word {
+  display: inline-flex;
+
+  align-items: baseline;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 25px;
+
+  line-height: 1;
+
+  font-weight: 700;
+
+  letter-spacing: 0.3px;
+
+  color: var(--ink, #131b2e);
+}
+
+/* TIN */
+
+.auth-logo .logo__word em {
+  margin-left: 4px;
+
+  color: var(--brass-dark, #93692f);
+
+  font-style: italic;
+
+  font-weight: 400;
+
+  letter-spacing: -0.3px;
+}
+
+/* =========================================================
+   4. AUTH CARD
+   ========================================================= */
+
+.auth-card {
+  width: 100%;
+
+  /*
+   * Màu card sáng hơn nền một chút.
+   */
+  background: var(--white, #ffffff);
+
+  /*
+   * Chỉ giữ border mảnh.
+   * KHÔNG shadow.
+   */
+  border: 1px solid var(--line, #ddd8cc);
+
+  /*
+   * Không có border-top màu đỏ.
+   */
+
+  padding: 36px 32px;
+
+  box-sizing: border-box;
+
+  /*
+   * Không shadow.
+   */
+  box-shadow: none;
+
+  border-radius: 0;
+}
+
+/* =========================================================
+   5. TITLE
+   ========================================================= */
+
+.auth-card h1 {
+  margin: 0 0 8px;
+
+  color: var(--ink, #131b2e);
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 28px;
+
+  line-height: 1.25;
+
+  font-weight: 700;
+
+  letter-spacing: -0.3px;
+}
+
+/* =========================================================
+   6. DESCRIPTION
+   ========================================================= */
+
+.auth-card .dek {
+  margin: 0 0 24px;
+
+  color: var(--muted, #6b6759);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 13.5px;
+
+  line-height: 1.6;
+}
+
+/* =========================================================
+   7. FORM FIELD
+   ========================================================= */
+
+.field {
+  margin-bottom: 18px;
+}
+
+/* Label */
+
+.field label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--ink, #131b2e);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 13px;
+
+  line-height: 1.4;
+
+  font-weight: 700;
+}
+
+/* Input */
+
+.field input {
+  width: 100%;
+
+  height: 44px;
+
+  padding: 0 13px;
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--line, #d8d3c8);
+
+  border-radius: 0;
+
+  background: #ffffff;
+
+  color: var(--ink, #131b2e);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+/* Placeholder */
+
+.field input::placeholder {
+  color: #9a978f;
+}
+
+/* Focus */
+
+.field input:focus {
+  border-color: var(--brass, #b8934f);
+
+  background: #fffefa;
+}
+
+/* =========================================================
+   8. AUTH LINKS
+   ========================================================= */
+
+.auth-links {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin: 2px 0 20px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 13px;
+}
+
+/* Remember */
+
+.auth-links label {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: var(--muted, #6b6759);
+
+  cursor: pointer;
+}
+
+/* Checkbox */
+
+.auth-links input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+
+  margin: 0;
+
+  accent-color: var(--crimson, #a6362c);
+
+  cursor: pointer;
+}
+
+/* Forgot password */
+
+.auth-links a {
+  color: var(--brass-dark, #93692f);
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+}
+
+.auth-links a:hover {
+  color: var(--crimson, #a6362c);
+
+  text-decoration: underline;
+}
+
+/* =========================================================
+   9. BUTTON
+   ========================================================= */
+
+.auth-card .btn-block {
+  width: 100%;
+
+  min-height: 45px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--crimson, #a6362c);
+
+  border-radius: 0;
+
+  background: var(--crimson, #a6362c);
+
+  color: #ffffff;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.1px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* Hover */
+
+.auth-card .btn-block:hover {
+  background: #8f2e26;
+
+  border-color: #8f2e26;
+}
+
+/* Active */
+
+.auth-card .btn-block:active {
+  background: #7d2821;
+
+  border-color: #7d2821;
+}
+
+/* =========================================================
+   10. FORM FOOTER
+   ========================================================= */
+
+.form-footer {
+  margin: 22px 0 0;
+
+  padding-top: 18px;
+
+  border-top: 1px solid var(--line, #ddd8cc);
+
+  text-align: center;
+
+  color: var(--muted, #6b6759);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 13.5px;
+
+  line-height: 1.5;
+}
+
+.form-footer a {
+  color: var(--brass-dark, #93692f);
+
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+.form-footer a:hover {
+  color: var(--crimson, #a6362c);
+
+  text-decoration: underline;
+}
+
+/* =========================================================
+   11. ALERT
+   ========================================================= */
+
+.alert {
+  display: none;
+
+  margin: 0 0 18px;
+
+  padding: 11px 13px;
+
+  border: 1px solid var(--line, #ddd8cc);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+/* Error */
+
+.alert.is-error {
+  background: #fdf2f1;
+
+  border-color: var(--crimson, #a6362c);
+
+  color: var(--crimson, #a6362c);
+}
+
+/* Info */
+
+.alert.is-info {
+  background: #f8f4eb;
+
+  border-color: var(--brass, #b8934f);
+
+  color: var(--brass-dark, #93692f);
+}
+
+/* =========================================================
+   12. RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .auth-page {
+    padding: 36px 20px;
+  }
+
+  .auth-wrapper {
+    max-width: 420px;
+  }
+}
+
+/* =========================================================
+   13. RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 500px) {
+  .auth-page {
+    padding: 30px 16px;
+  }
+
+  .auth-logo {
+    margin-bottom: 20px;
+
+    gap: 8px;
+  }
+
+  .auth-logo .pulse-mark {
+    width: 24px;
+    height: 24px;
+
+    flex-basis: 24px;
+  }
+
+  .auth-logo .logo__word {
+    font-size: 23px;
+  }
+
+  .auth-card {
+    padding: 28px 22px;
+  }
+
+  .auth-card h1 {
+    font-size: 25px;
+  }
+
+  .auth-card .dek {
+    font-size: 13px;
+  }
+
+  .auth-links {
+    font-size: 12.5px;
+  }
+}
+
+/* =========================================================
+   14. SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .auth-page {
+    padding: 24px 12px;
+  }
+
+  .auth-card {
+    padding: 25px 18px;
+  }
+
+  .auth-logo .logo__word {
+    font-size: 21px;
+  }
+
+  .auth-logo .pulse-mark {
+    width: 22px;
+    height: 22px;
+
+    flex-basis: 22px;
+  }
+
+  .auth-links {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .auth-links a {
+    align-self: flex-end;
+  }
+}

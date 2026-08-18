@@ -3,143 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Đăng nhập — Mạch Tin</title>
+
+    <!-- CSS CHUNG -->
     <link rel="stylesheet" href="style.css" />
 
-    <style>
-      /* =========================
-         AUTH PAGE
-      ========================= */
-      .auth-page {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 48px 24px;
-        background: var(--paper, #f7f6f2);
-      }
-
-      .auth-wrapper {
-        width: 100%;
-        max-width: 420px;
-      }
-
-      /* =========================
-         LOGO MẠCH TIN
-      ========================= */
-      .auth-logo {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 9px;
-        margin-bottom: 24px;
-        text-decoration: none;
-        color: var(--ink, #1e293b);
-      }
-
-      .auth-logo .pulse-mark {
-        color: var(--crimson, #8f1d2c);
-        flex-shrink: 0;
-      }
-
-      .auth-logo .logo__word {
-        font-family: var(--f-display, Georgia, serif);
-        font-size: 25px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        color: var(--ink, #1e293b);
-      }
-
-      .auth-logo .logo__word em {
-        color: var(--brass-dark, #9a7412);
-        font-style: normal;
-      }
-
-      /* =========================
-         AUTH CARD
-      ========================= */
-      .auth-card {
-        width: 100%;
-        background: var(--white);
-        border: 1px solid var(--line);
-        padding: 36px 32px;
-        box-sizing: border-box;
-      }
-
-      .auth-card h1 {
-        font-family: var(--f-display);
-        font-size: 28px;
-        margin: 0 0 8px;
-      }
-
-      .auth-card .dek {
-        margin-bottom: 24px;
-      }
-
-      .auth-links {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        font-size: 14px;
-      }
-
-      .auth-links a {
-        color: var(--brass-dark);
-        font-weight: 600;
-      }
-
-      .form-footer {
-        text-align: center;
-        margin-top: 22px;
-        padding-top: 18px;
-        border-top: 1px solid var(--line);
-        font-size: 14.5px;
-        color: var(--muted);
-      }
-
-      .form-footer a {
-        color: var(--brass-dark);
-        font-weight: 600;
-      }
-
-      .alert {
-        padding: 12px 14px;
-        margin-bottom: 18px;
-        border: 1px solid var(--line);
-        font-size: 14px;
-        display: none;
-      }
-
-      .alert.is-error {
-        background: #fdf2f1;
-        border-color: var(--crimson);
-        color: var(--crimson);
-      }
-
-      .alert.is-info {
-        background: #f8f4eb;
-        border-color: var(--brass);
-        color: var(--brass-dark);
-      }
-
-      /* =========================
-         RESPONSIVE
-      ========================= */
-      @media (max-width: 500px) {
-        .auth-page {
-          padding: 32px 16px;
-        }
-
-        .auth-card {
-          padding: 28px 22px;
-        }
-
-        .auth-logo .logo__word {
-          font-size: 23px;
-        }
-      }
-    </style>
+    <!-- CSS RIÊNG TRANG LOGIN -->
+    <link rel="stylesheet" href="style.css/login.css" />
   </head>
 
   <body>
@@ -149,14 +20,18 @@
     <main>
       <div class="auth-page">
         <div class="auth-wrapper">
-          <!-- LOGO MẠCH TIN -->
+          <!-- =====================================
+               LOGO MẠCH TIN
+          ====================================== -->
           <a href="index.html" class="auth-logo">
+            <!-- NHỊP TIM -->
             <svg
               class="pulse-mark"
               width="26"
               height="26"
               viewBox="0 0 26 26"
               fill="none"
+              aria-hidden="true"
             >
               <path
                 d="M1 13H7L9.5 6L13.5 20L16 13H25"
@@ -167,10 +42,13 @@
               />
             </svg>
 
+            <!-- MẠCH TIN -->
             <span class="logo__word"> MẠCH&nbsp;<em>TIN</em> </span>
           </a>
 
-          <!-- FORM ĐĂNG NHẬP -->
+          <!-- =====================================
+               FORM ĐĂNG NHẬP
+          ====================================== -->
           <section class="auth-card">
             <h1>Đăng nhập</h1>
 
@@ -186,6 +64,9 @@
               Tính năng đang phát triển, vui lòng liên hệ Admin.
             </div>
 
+            <!-- ===================================
+                 LOGIN FORM
+            ==================================== -->
             <form id="login-form">
               <!-- EMAIL / USERNAME -->
               <div class="field">
@@ -211,20 +92,14 @@
                 />
               </div>
 
-              <!-- GHI NHỚ / QUÊN MẬT KHẨU -->
+              <!-- =================================
+                   GHI NHỚ / QUÊN MẬT KHẨU
+              ================================== -->
               <div class="auth-links">
-                <label
-                  style="
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 14px;
-                    color: var(--muted);
-                  "
-                >
-                  <input type="checkbox" style="width: auto" />
+                <label class="remember-login">
+                  <input type="checkbox" id="remember" />
 
-                  Ghi nhớ đăng nhập
+                  <span>Ghi nhớ đăng nhập</span>
                 </label>
 
                 <a href="#" id="forgot-link"> Quên mật khẩu? </a>
@@ -236,7 +111,9 @@
               </button>
             </form>
 
-            <!-- ĐĂNG KÝ -->
+            <!-- =================================
+                 ĐĂNG KÝ
+            ================================== -->
             <p class="form-footer">
               Chưa có tài khoản?
 
@@ -251,9 +128,10 @@
          JAVASCRIPT
     ========================================== -->
     <script>
-      /* =========================
+      /* =========================================
          QUÊN MẬT KHẨU
-      ========================== */
+      ========================================== */
+
       document
         .getElementById("forgot-link")
         .addEventListener("click", function (e) {
@@ -264,10 +142,11 @@
           document.getElementById("login-error").style.display = "none";
         });
 
-      /* =========================
+      /* =========================================
          ĐĂNG NHẬP DEMO
          Mật khẩu: 12345678
-      ========================== */
+      ========================================== */
+
       document
         .getElementById("login-form")
         .addEventListener("submit", function (e) {
@@ -277,7 +156,10 @@
 
           const pass = document.getElementById("password").value;
 
-          /* Tài khoản demo */
+          /* =====================================
+             TÀI KHOẢN DEMO
+          ====================================== */
+
           const validUsers = [
             "user01",
             "user02",
@@ -289,7 +171,10 @@
             "admin01",
           ];
 
-          /* Kiểm tra đăng nhập */
+          /* =====================================
+             KIỂM TRA ĐĂNG NHẬP
+          ====================================== */
+
           if (validUsers.includes(loginId) && pass === "12345678") {
             window.location.href = "index.html";
           } else {
