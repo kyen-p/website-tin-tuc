@@ -3,262 +3,770 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Lịch sử đọc bài — Mạch Tin</title>
+
     <link rel="stylesheet" href="style.css" />
 
     <style>
-      /* ===== FONT ===== */
+      /* =========================================================
+       BẢNG MÀU CHUNG — MẠCH TIN
+       CHỈ ĐƯỢC SỬ DỤNG 7 MÀU NÀY
+       ========================================================= */
+
+      :root {
+        --ink: #131b2e;
+        --paper: #f5f3ee;
+        --paper-alt: #ece7da;
+        --brass: #b8934f;
+        --brass-dark: #93692f;
+        --crimson: #a6362c;
+        --muted: #6b6759;
+      }
+
+      /* =========================================================
+       RESET
+       ========================================================= */
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100%;
+      }
+
       body {
-        font-family: var(--f-body, Arial, sans-serif);
-      }
-
-      /* ===== Layout chính ===== */
-      .history-page {
-        display: grid;
-        grid-template-columns: 220px 1fr;
+        margin: 0;
+        padding: 0;
         min-height: 100vh;
-        background: #f7f6f2;
+
+        background: var(--paper);
+        color: var(--ink);
+
+        /*
+       * FONT CHÍNH
+       * Không dùng Courier New.
+       * Arial hỗ trợ tiếng Việt tốt và ổn định.
+       */
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 14px;
+        line-height: 1.5;
+
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
 
-      /* ===== Sidebar trái ===== */
-      .user-sidebar {
-        background: #0f172a;
-        color: #e2e8f0;
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      /* =========================================================
+       TOÀN BỘ TRANG
+       ========================================================= */
+
+      .history-page {
+        width: 100%;
+        min-height: 100vh;
+
+        display: grid;
+        grid-template-columns: 250px minmax(0, 1fr);
+
+        background: var(--paper);
+      }
+
+      /* =========================================================
+       SIDEBAR
+       ========================================================= */
+
+      .history-sidebar {
+        width: 250px;
+        min-height: 100vh;
+
         display: flex;
         flex-direction: column;
+
+        background: var(--paper-alt);
+
+        border-right: 1px solid var(--paper-alt);
       }
 
-      /* ===== LOGO MẠCH TIN ===== */
-      .user-logo {
-        padding: 20px 18px;
+      /* =========================================================
+       LOGO
+       ========================================================= */
+
+      .history-brand {
+        height: 94px;
+
+        padding: 0 24px;
+
+        display: flex;
+        align-items: center;
+
+        border-bottom: 1px solid var(--paper);
+      }
+
+      .history-brand a {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-family: var(--f-display, Georgia, serif);
-        font-size: 18px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        color: #f1f5f9;
+
+        color: var(--ink);
       }
 
-      .user-logo .pulse-mark {
+      .pulse-mark {
+        width: 25px;
+        height: 25px;
+
         flex-shrink: 0;
-        color: #d4a017;
+
+        color: var(--crimson);
       }
 
-      .user-logo .logo-word {
-        white-space: nowrap;
+      .brand-word {
+        font-family: Georgia, "Times New Roman", serif;
+
+        font-size: 23px;
+        line-height: 1;
+
+        font-weight: 700;
+
+        letter-spacing: -0.5px;
+
+        color: var(--ink);
       }
 
-      .user-logo .logo-word em {
-        color: #d4a017;
-        font-style: normal;
+      .brand-word em {
+        color: var(--brass-dark);
+
+        font-weight: 500;
+        font-style: italic;
       }
 
-      /* ===== Thông tin người dùng ===== */
-      .user-info {
-        padding: 24px 20px 18px;
+      /* =========================================================
+       USER
+       ========================================================= */
+
+      .history-user {
+        padding: 26px 20px 23px;
+
         text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+        border-bottom: 1px solid var(--paper);
       }
 
-      .user-info .avatar {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--f-display, Georgia, serif);
-        font-weight: 600;
-        font-size: 20px;
-        color: #d4a017;
+      .history-avatar {
+        width: 60px;
+        height: 60px;
+
         margin: 0 auto 10px;
-      }
 
-      .user-info .name {
-        font-weight: 600;
-        font-size: 15px;
-        color: #f1f5f9;
-      }
-
-      .user-info .role {
-        font-size: 12.5px;
-        color: #94a3b8;
-        margin-top: 3px;
-      }
-
-      /* ===== Menu ===== */
-      .user-menu {
-        flex: 1;
-        padding: 12px 0;
-      }
-
-      .user-menu a {
-        display: block;
-        padding: 12px 22px;
-        font-size: 14.5px;
-        color: #94a3b8;
-        text-decoration: none;
-        border-left: 3px solid transparent;
-        transition: all 0.15s;
-      }
-
-      .user-menu a:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #f1f5f9;
-      }
-
-      .user-menu a.is-active {
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff;
-        border-left-color: #d4a017;
-        font-weight: 600;
-      }
-
-      .user-menu .logout {
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        color: #64748b;
-        font-size: 13.5px;
-      }
-
-      /* ===== Header ===== */
-      .history-header {
-        background: #fff;
-        border-bottom: 1px solid #e5e2d9;
-        padding: 14px 32px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .history-header h1 {
-        font-family: var(--f-display, Georgia, serif);
-        font-size: 20px;
-        font-weight: 600;
-        margin: 0;
-        color: #1e293b;
-      }
-
-      .user-badge {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 14px;
-        color: #64748b;
-      }
-
-      .user-badge .avatar {
-        width: 32px;
-        height: 32px;
         border-radius: 50%;
-        background: #e2e8f0;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 600;
+
+        overflow: hidden;
+
+        background: var(--paper);
+
+        border: 1px solid var(--brass);
+
+        color: var(--brass-dark);
+
+        font-family: Georgia, "Times New Roman", serif;
+
+        font-size: 19px;
+        font-weight: 700;
+      }
+
+      .history-avatar img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+      }
+
+      .history-user-name {
+        margin: 0;
+
+        color: var(--ink);
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 14px;
+        line-height: 1.4;
+
+        font-weight: 700;
+      }
+
+      .history-user-role {
+        margin-top: 4px;
+
+        color: var(--muted);
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 11px;
+        line-height: 1.4;
+      }
+
+      /* =========================================================
+       MENU
+       ========================================================= */
+
+      .history-menu {
+        display: flex;
+        flex-direction: column;
+
+        padding: 10px 0 0;
+      }
+
+      .history-menu-item {
+        min-height: 48px;
+
+        padding: 0 25px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        color: var(--ink);
+
+        border-left: 3px solid transparent;
+
+        transition:
+          background 0.15s ease,
+          border-color 0.15s ease;
+      }
+
+      .history-menu-item:hover {
+        background: var(--paper);
+      }
+
+      .history-menu-item.active {
+        background: var(--paper);
+
+        border-left-color: var(--crimson);
+
+        font-weight: 700;
+      }
+
+      .history-menu-icon {
+        width: 18px;
+        height: 18px;
+
+        flex-shrink: 0;
+
+        color: var(--muted);
+      }
+
+      .history-menu-item.active .history-menu-icon {
+        color: var(--crimson);
+      }
+
+      .history-menu-text {
+        font-family: Arial, Helvetica, sans-serif;
+
         font-size: 13px;
-        color: #475569;
+        line-height: 1.3;
       }
 
-      /* ===== Nội dung chính ===== */
+      /* =========================================================
+       ĐĂNG XUẤT — LUÔN Ở CUỐI SIDEBAR
+       ========================================================= */
+
+      .history-logout {
+        margin-top: auto;
+
+        padding-top: 12px;
+        padding-bottom: 22px;
+
+        border-top: 1px solid var(--paper);
+      }
+
+      .history-logout .history-menu-item {
+        min-height: 48px;
+      }
+
+      /* =========================================================
+       MAIN
+       ========================================================= */
+
       .history-main {
-        padding: 28px 32px 60px;
+        min-width: 0;
+        min-height: 100vh;
+
+        padding: 42px 50px 70px;
+
+        background: var(--paper);
       }
 
-      .history-card {
-        background: #fff;
-        border: 1px solid #e5e2d9;
-        border-radius: 6px;
-        padding: 28px 32px;
+      .history-main-inner {
+        width: 100%;
+        max-width: 1180px;
+
+        margin: 0 auto;
       }
 
-      .section-desc {
-        font-size: 15px;
-        color: #64748b;
-        margin-bottom: 28px;
+      /* =========================================================
+       TIÊU ĐỀ
+       ========================================================= */
+
+      .history-heading {
+        margin: 0;
+
+        color: var(--ink);
+
+        font-family: Georgia, "Times New Roman", serif;
+
+        font-size: 29px;
+        line-height: 1.25;
+
+        font-weight: 700;
+
+        letter-spacing: -0.3px;
+      }
+
+      .history-heading-line {
+        width: 100%;
+        height: 2px;
+
+        margin-top: 10px;
+
+        background: var(--ink);
+      }
+
+      .history-description {
+        margin: 14px 0 24px;
+
+        color: var(--muted);
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      /* =========================================================
+       LIST
+       ========================================================= */
+
+      .history-list {
+        width: 100%;
+      }
+
+      .history-item {
+        width: 100%;
+        min-height: 105px;
+
+        display: grid;
+
+        grid-template-columns:
+          100px
+          minmax(0, 1fr)
+          145px;
+
+        column-gap: 18px;
+
+        align-items: center;
+
+        padding: 15px 0;
+
+        border-bottom: 1px solid var(--paper-alt);
+      }
+
+      /* =========================================================
+       ẢNH
+       ========================================================= */
+
+      .history-image-link {
+        width: 100px;
+        height: 76px;
+
+        display: block;
+      }
+
+      .history-image {
+        width: 100px;
+        height: 76px;
+
+        display: block;
+
+        object-fit: cover;
+
+        background: var(--paper-alt);
+
+        border: 1px solid var(--paper-alt);
+      }
+
+      .history-image-placeholder {
+        position: relative;
+
+        width: 100px;
+        height: 76px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+
+        padding: 6px;
+
+        overflow: hidden;
+
+        background: var(--paper-alt);
+
+        border: 1px solid var(--paper-alt);
+      }
+
+      /*
+     * Họa tiết placeholder.
+     * Chỉ sử dụng các màu trong bảng chung.
+     */
+      .history-image-placeholder::before {
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        background: linear-gradient(
+          135deg,
+          transparent 48%,
+          var(--paper) 49%,
+          var(--paper) 50%,
+          transparent 51%
+        );
+      }
+
+      .history-image-placeholder::after {
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        background: linear-gradient(
+          135deg,
+          transparent 63%,
+          var(--paper) 64%,
+          var(--paper) 65%,
+          transparent 66%
+        );
+      }
+
+      .history-image-placeholder span {
+        position: relative;
+        z-index: 2;
+
+        display: inline-block;
+
+        padding: 3px 5px;
+
+        background: var(--ink);
+
+        color: var(--paper);
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 8px;
+        line-height: 1;
+
+        font-weight: 700;
+      }
+
+      /* =========================================================
+       THÔNG TIN BÀI VIẾT
+       ========================================================= */
+
+      .history-info {
+        min-width: 0;
+      }
+
+      .history-title {
+        margin: 0 0 5px;
+
+        font-family: Georgia, "Times New Roman", serif;
+
+        font-size: 17px;
+        line-height: 1.35;
+
+        font-weight: 700;
+
+        color: var(--ink);
+      }
+
+      .history-title a {
+        color: var(--ink);
+      }
+
+      .history-title a:hover {
+        color: var(--brass-dark);
+      }
+
+      /* =========================================================
+       META
+       KHÔNG DÙNG COURIER NEW
+       ========================================================= */
+
+      .history-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        gap: 6px;
+
+        color: var(--muted);
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 10.5px;
         line-height: 1.5;
       }
 
-      /* ===== History item ===== */
-      .history-item {
-        display: grid;
-        grid-template-columns: 110px 1fr auto;
-        gap: 18px;
-        padding: 18px 0;
-        border-bottom: 1px solid #e5e2d9;
-        align-items: center;
+      /* =========================================================
+       THỜI GIAN ĐỌC
+       ========================================================= */
+
+      .history-viewed {
+        text-align: right;
+
+        color: var(--muted);
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 10.5px;
+        line-height: 1.5;
+
+        white-space: nowrap;
       }
 
-      .history-item:last-child {
-        border-bottom: none;
+      /* =========================================================
+       EMPTY
+       ========================================================= */
+
+      .history-empty {
+        display: none;
+
+        padding: 40px 20px;
+
+        background: var(--paper-alt);
+
+        border: 1px solid var(--paper-alt);
+
+        text-align: center;
+
+        color: var(--muted);
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 14px;
       }
 
-      .history-item h3 {
-        font-family: var(--f-display, Georgia, serif);
-        font-size: 17px;
-        font-weight: 600;
-        margin: 0 0 6px;
-        line-height: 1.35;
-      }
+      /* =========================================================
+       ERROR
+       ========================================================= */
 
-      .history-item h3 a {
-        color: #1e293b;
-        text-decoration: none;
-      }
+      .history-error {
+        display: none;
 
-      .history-item h3 a:hover {
-        color: #b45309;
-      }
+        margin-bottom: 20px;
 
-      .meta {
+        padding: 14px 16px;
+
+        background: var(--paper-alt);
+
+        border-left: 3px solid var(--crimson);
+
+        color: var(--crimson);
+
+        font-family: Arial, Helvetica, sans-serif;
+
         font-size: 13px;
-        color: #64748b;
       }
 
-      /* ===== Ảnh ===== */
-      .ph {
-        background: #f1f0eb;
-        border: 1px solid #e5e2d9;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
+      /* =========================================================
+       TABLET
+       ========================================================= */
 
-      .ph--4x3 {
-        aspect-ratio: 4/3;
-      }
-
-      .ph__label {
-        font-size: 12px;
-        color: #94a3b8;
-        font-weight: 500;
-      }
-
-      /* ===== Responsive ===== */
-      @media (max-width: 800px) {
+      @media (max-width: 1050px) {
         .history-page {
-          grid-template-columns: 1fr;
+          grid-template-columns: 230px minmax(0, 1fr);
         }
 
-        .user-sidebar {
-          display: none;
+        .history-sidebar {
+          width: 230px;
+        }
+
+        .history-main {
+          padding: 38px 32px 60px;
         }
 
         .history-item {
-          grid-template-columns: 90px 1fr;
+          grid-template-columns:
+            95px
+            minmax(0, 1fr)
+            125px;
+
+          column-gap: 16px;
         }
 
-        .history-item > .meta:last-child {
+        .history-image-link,
+        .history-image,
+        .history-image-placeholder {
+          width: 95px;
+          height: 72px;
+        }
+      }
+
+      /* =========================================================
+       MOBILE
+       ========================================================= */
+
+      @media (max-width: 760px) {
+        .history-page {
+          display: block;
+        }
+
+        .history-sidebar {
+          width: 100%;
+          min-height: auto;
+
+          border-right: none;
+          border-bottom: 1px solid var(--paper);
+        }
+
+        .history-brand {
+          height: 78px;
+
+          padding: 0 20px;
+        }
+
+        .brand-word {
+          font-size: 22px;
+        }
+
+        .history-user {
+          padding: 20px;
+        }
+
+        .history-menu {
+          display: grid;
+
+          grid-template-columns: repeat(2, 1fr);
+
+          padding: 5px 0;
+        }
+
+        .history-menu-item {
+          min-height: 45px;
+
+          padding: 0 16px;
+        }
+
+        /*
+       * Trên mobile logout vẫn nằm cuối danh sách.
+       */
+        .history-logout {
+          padding: 0 0 10px;
+
+          border-top: 1px solid var(--paper);
+        }
+
+        .history-main {
+          min-height: auto;
+
+          padding: 30px 20px 50px;
+        }
+
+        .history-heading {
+          font-size: 25px;
+        }
+
+        .history-item {
+          grid-template-columns:
+            90px
+            minmax(0, 1fr);
+
+          column-gap: 14px;
+
+          row-gap: 6px;
+
+          padding: 15px 0;
+        }
+
+        .history-image-link,
+        .history-image,
+        .history-image-placeholder {
+          width: 90px;
+          height: 68px;
+        }
+
+        .history-viewed {
           grid-column: 2;
-          margin-top: 4px;
+
+          text-align: left;
+        }
+      }
+
+      /* =========================================================
+       SMALL MOBILE
+       ========================================================= */
+
+      @media (max-width: 480px) {
+        .history-menu {
+          grid-template-columns: 1fr;
+        }
+
+        .history-main {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        .history-heading {
+          font-size: 23px;
+        }
+
+        .history-item {
+          grid-template-columns:
+            80px
+            minmax(0, 1fr);
+        }
+
+        .history-image-link,
+        .history-image,
+        .history-image-placeholder {
+          width: 80px;
+          height: 60px;
+        }
+
+        .history-title {
+          font-size: 15px;
+        }
+
+        .history-meta,
+        .history-viewed {
+          font-size: 10px;
         }
       }
     </style>
@@ -266,189 +774,637 @@
 
   <body>
     <div class="history-page">
-      <!-- ===== SIDEBAR TRÁI ===== -->
-      <aside class="user-sidebar">
-        <!-- LOGO -->
-        <div class="user-logo">
-          <svg
-            class="pulse-mark"
-            width="26"
-            height="26"
-            viewBox="0 0 26 26"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M1 13H7L9.5 6L13.5 20L16 13H25"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+      <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
-          <span class="logo-word"> MẠCH&nbsp;<em>TIN</em> </span>
+      <aside class="history-sidebar">
+        <!-- ===================================================
+           LOGO
+           =================================================== -->
+
+        <div class="history-brand">
+          <a href="index.html">
+            <svg
+              class="pulse-mark"
+              viewBox="0 0 26 26"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M1 13H7L9.5 6L13.5 20L16 13H25"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span class="brand-word"> MẠCH <em>TIN</em> </span>
+          </a>
         </div>
 
-        <!-- THÔNG TIN NGƯỜI DÙNG -->
-        <div class="user-info">
-          <div class="avatar">NM</div>
+        <!-- ===================================================
+           USER
+           =================================================== -->
 
-          <div class="name">Nguyễn Minh</div>
+        <div class="history-user">
+          <div class="history-avatar" id="userAvatar">
+            <span id="userInitials">NU</span>
+          </div>
 
-          <div class="role">Độc giả</div>
+          <p class="history-user-name" id="userName">Đang tải...</p>
+
+          <div class="history-user-role" id="userRole">Độc giả</div>
         </div>
 
-        <!-- MENU -->
-        <nav class="user-menu">
-          <a href="profile.html"> Thông tin tài khoản </a>
+        <!-- ===================================================
+           MENU
+           =================================================== -->
 
-          <a href="profile.html"> Đổi mật khẩu </a>
+        <nav class="history-menu">
+          <!-- Thông tin tài khoản -->
 
-          <a href="favorites.html"> Bài viết yêu thích </a>
+          <a href="profile.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="12"
+                cy="8"
+                r="3.2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-          <a href="history.html" class="is-active"> Lịch sử đọc bài </a>
+              <path
+                d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
 
-          <a href="my-comments.html"> Bình luận của tôi </a>
+            <span class="history-menu-text"> Thông tin tài khoản </span>
+          </a>
 
-          <a href="notifications.html"> Thông báo </a>
+          <!-- Đổi mật khẩu -->
 
-          <a href="index.html" class="logout"> ← Đăng xuất </a>
+          <a href="profile.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="5"
+                y="10"
+                width="14"
+                height="10"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+
+              <path
+                d="M8 10V7a4 4 0 018 0v3"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+
+              <circle cx="12" cy="15" r="1" fill="currentColor" />
+            </svg>
+
+            <span class="history-menu-text"> Đổi mật khẩu </span>
+          </a>
+
+          <!-- Bài viết yêu thích -->
+
+          <a href="favorites.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span class="history-menu-text"> Bài viết yêu thích </span>
+          </a>
+
+          <!-- Lịch sử đọc bài -->
+
+          <a href="history.html" class="history-menu-item active">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M5 5.5v11M9 7h7M9 11h7"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span class="history-menu-text"> Lịch sử đọc bài </span>
+          </a>
+
+          <!-- Bình luận -->
+
+          <a href="my-comments.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 1120 11.5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <circle cx="9" cy="11.5" r=".8" fill="currentColor" />
+
+              <circle cx="12" cy="11.5" r=".8" fill="currentColor" />
+
+              <circle cx="15" cy="11.5" r=".8" fill="currentColor" />
+            </svg>
+
+            <span class="history-menu-text"> Bình luận của tôi </span>
+          </a>
+
+          <!-- Thông báo -->
+
+          <a href="notifications.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M10 21h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span class="history-menu-text"> Thông báo </span>
+          </a>
         </nav>
+
+        <!-- ===================================================
+           ĐĂNG XUẤT
+           TÁCH RIÊNG ĐỂ LUÔN Ở CUỐI SIDEBAR
+           =================================================== -->
+
+        <div class="history-logout">
+          <a href="index.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+
+              <path
+                d="M14 8l4 4-4 4M18 12H9"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span class="history-menu-text"> Đăng xuất </span>
+          </a>
+        </div>
       </aside>
 
-      <!-- ===== PHẦN BÊN PHẢI ===== -->
-      <div>
-        <!-- HEADER -->
-        <header class="history-header">
-          <h1>Lịch sử đọc bài</h1>
+      <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
-          <div class="user-badge">
-            <span> Độc giả </span>
+      <main class="history-main">
+        <div class="history-main-inner">
+          <!-- TITLE -->
 
-            <div class="avatar">NM</div>
+          <h1 class="history-heading">Lịch sử đọc bài</h1>
+
+          <div class="history-heading-line"></div>
+
+          <!-- DESCRIPTION -->
+
+          <p class="history-description">
+            Danh sách các bài viết bạn đã xem. Lịch sử được hệ thống tự động ghi
+            nhận.
+          </p>
+
+          <!-- ERROR -->
+
+          <div id="historyError" class="history-error">
+            Không thể tải dữ liệu lịch sử đọc bài.
           </div>
-        </header>
 
-        <!-- NỘI DUNG -->
-        <main class="history-main">
-          <div class="history-card">
-            <p class="section-desc">
-              Danh sách các bài viết bạn đã xem. Lịch sử được hệ thống tự động
-              ghi nhận (không thể xóa).
-            </p>
+          <!-- EMPTY -->
 
-            <!-- BÀI 1 -->
-            <article class="history-item">
-              <a href="article-detail.html">
-                <div class="ph ph--4x3">
-                  <span class="ph__label"> Ảnh </span>
-                </div>
-              </a>
-
-              <div>
-                <h3>
-                  <a href="article-detail.html">
-                    Quốc hội thông qua Luật Thuế thu nhập cá nhân sửa đổi, nâng
-                    mức giảm trừ gia cảnh từ năm 2027
-                  </a>
-                </h3>
-
-                <div class="meta">Thời sự · Thanh Ngân · 08/08/2026</div>
-              </div>
-
-              <div class="meta">Hôm nay, 19:42</div>
-            </article>
-
-            <!-- BÀI 2 -->
-            <article class="history-item">
-              <a href="article-detail.html">
-                <div class="ph ph--4x3">
-                  <span class="ph__label"> Ảnh </span>
-                </div>
-              </a>
-
-              <div>
-                <h3>
-                  <a href="article-detail.html">
-                    Giá vàng miếng SJC lập đỉnh mới, vượt 92 triệu đồng/lượng
-                  </a>
-                </h3>
-
-                <div class="meta">Kinh doanh · Hương · 08/08/2026</div>
-              </div>
-
-              <div class="meta">Hôm nay, 14:20</div>
-            </article>
-
-            <!-- BÀI 3 -->
-            <article class="history-item">
-              <a href="article-detail.html">
-                <div class="ph ph--4x3">
-                  <span class="ph__label"> Ảnh </span>
-                </div>
-              </a>
-
-              <div>
-                <h3>
-                  <a href="article-detail.html">
-                    Việt Nam vào bán kết sau loạt luân lưu nghẹt thở trước Thái
-                    Lan
-                  </a>
-                </h3>
-
-                <div class="meta">Thể thao · Kim Ngân · 07/08/2026</div>
-              </div>
-
-              <div class="meta">Hôm qua, 21:15</div>
-            </article>
-
-            <!-- BÀI 4 -->
-            <article class="history-item">
-              <a href="article-detail.html">
-                <div class="ph ph--4x3">
-                  <span class="ph__label"> Ảnh </span>
-                </div>
-              </a>
-
-              <div>
-                <h3>
-                  <a href="article-detail.html">
-                    Áp thấp nhiệt đới có khả năng mạnh lên thành bão trong 48
-                    giờ tới
-                  </a>
-                </h3>
-
-                <div class="meta">Thời sự · Phương · 07/08/2026</div>
-              </div>
-
-              <div class="meta">Hôm qua, 09:30</div>
-            </article>
-
-            <!-- BÀI 5 -->
-            <article class="history-item">
-              <a href="article-detail.html">
-                <div class="ph ph--4x3">
-                  <span class="ph__label"> Ảnh </span>
-                </div>
-              </a>
-
-              <div>
-                <h3>
-                  <a href="article-detail.html">
-                    Bộ GD-ĐT đề xuất giảm hai môn thi tốt nghiệp THPT từ năm
-                    2027
-                  </a>
-                </h3>
-
-                <div class="meta">Giáo dục · Yến · 06/08/2026</div>
-              </div>
-
-              <div class="meta">06/08/2026</div>
-            </article>
+          <div id="historyEmpty" class="history-empty">
+            Bạn chưa đọc bài viết nào.
           </div>
-        </main>
-      </div>
+
+          <!-- HISTORY -->
+
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </main>
     </div>
+
+    <!-- =======================================================
+       MOCK DATA
+       ======================================================= -->
+
+    <script src="mock-data.js"></script>
+
+    <script>
+      /* =======================================================
+       USER HIỆN TẠI
+       ======================================================= */
+
+      const CURRENT_USER_ID = 1;
+
+      /* =======================================================
+       DOM
+       ======================================================= */
+
+      const historyList = document.getElementById("historyList");
+
+      const historyEmpty = document.getElementById("historyEmpty");
+
+      const historyError = document.getElementById("historyError");
+
+      const userName = document.getElementById("userName");
+
+      const userRole = document.getElementById("userRole");
+
+      const userAvatar = document.getElementById("userAvatar");
+
+      const userInitials = document.getElementById("userInitials");
+
+      /* =======================================================
+       LẤY CHỮ CÁI ĐẦU TÊN
+       ======================================================= */
+
+      function getInitials(name) {
+        if (!name) {
+          return "U";
+        }
+
+        const words = name.trim().split(/\s+/);
+
+        if (words.length === 1) {
+          return words[0].substring(0, 2).toUpperCase();
+        }
+
+        return (
+          words[0].charAt(0) + words[words.length - 1].charAt(0)
+        ).toUpperCase();
+      }
+
+      /* =======================================================
+       LOAD USER
+       ======================================================= */
+
+      function loadUser(user) {
+        if (!user) {
+          return;
+        }
+
+        userName.textContent = user.full_name || user.username || "Người dùng";
+
+        if (user.role === "user") {
+          userRole.textContent = "Độc giả";
+        } else {
+          userRole.textContent = user.role || "Độc giả";
+        }
+
+        userInitials.textContent = getInitials(user.full_name || user.username);
+
+        /* Avatar */
+
+        if (user.avatar) {
+          const img = document.createElement("img");
+
+          img.src = user.avatar;
+
+          img.alt = "Ảnh đại diện " + (user.full_name || user.username);
+
+          img.onload = function () {
+            userInitials.style.display = "none";
+          };
+
+          img.onerror = function () {
+            img.remove();
+
+            userInitials.style.display = "block";
+          };
+
+          userAvatar.appendChild(img);
+        }
+      }
+
+      /* =======================================================
+       CATEGORY
+       ======================================================= */
+
+      function getCategoryName(categoryId) {
+        if (
+          typeof MOCK_DATA === "undefined" ||
+          !Array.isArray(MOCK_DATA.categories)
+        ) {
+          return "Chưa phân loại";
+        }
+
+        const category = MOCK_DATA.categories.find(
+          (category) => category.id === categoryId,
+        );
+
+        return category ? category.name : "Chưa phân loại";
+      }
+
+      /* =======================================================
+       AUTHOR
+       ======================================================= */
+
+      function getAuthorName(authorId) {
+        if (
+          typeof MOCK_DATA === "undefined" ||
+          !Array.isArray(MOCK_DATA.users)
+        ) {
+          return "Không rõ tác giả";
+        }
+
+        const author = MOCK_DATA.users.find((user) => user.id === authorId);
+
+        return author ? author.full_name : "Không rõ tác giả";
+      }
+
+      /* =======================================================
+       FORMAT NGÀY
+       ======================================================= */
+
+      function formatArticleDate(dateString) {
+        if (!dateString) {
+          return "";
+        }
+
+        const date = String(dateString).substring(0, 10);
+
+        const parts = date.split("-");
+
+        if (parts.length !== 3) {
+          return date;
+        }
+
+        return parts[2] + "/" + parts[1] + "/" + parts[0];
+      }
+
+      /* =======================================================
+       FORMAT THỜI GIAN ĐỌC
+       ======================================================= */
+
+      function formatViewedTime(dateString) {
+        if (!dateString) {
+          return "";
+        }
+
+        const value = String(dateString);
+
+        const parts = value.split(" ");
+
+        if (parts.length !== 2) {
+          return value;
+        }
+
+        const dateParts = parts[0].split("-");
+
+        const time = parts[1].substring(0, 5);
+
+        if (dateParts.length !== 3) {
+          return value;
+        }
+
+        return (
+          dateParts[2] + "/" + dateParts[1] + "/" + dateParts[0] + " · " + time
+        );
+      }
+
+      /* =======================================================
+       TẠO HISTORY ITEM
+       ======================================================= */
+
+      function createHistoryItem(history) {
+        const article = MOCK_DATA.articles.find(
+          (article) => article.id === history.article_id,
+        );
+
+        if (!article) {
+          return null;
+        }
+
+        const categoryName = getCategoryName(article.category_id);
+
+        const authorName = getAuthorName(article.author_id);
+
+        const articleUrl =
+          "article-detail.html?slug=" +
+          encodeURIComponent(article.slug || article.id);
+
+        const item = document.createElement("article");
+
+        item.className = "history-item";
+
+        /* =====================================================
+         IMAGE
+         ===================================================== */
+
+        let imageHTML = "";
+
+        if (article.cover_image) {
+          imageHTML = `
+          <img
+            class="history-image"
+            src="${article.cover_image}"
+            alt="${article.title || "Ảnh bài viết"}"
+          >
+
+          <div
+            class="history-image-placeholder"
+            style="display:none;"
+          >
+            <span>ẢNH</span>
+          </div>
+        `;
+        } else {
+          imageHTML = `
+          <div class="history-image-placeholder">
+            <span>ẢNH</span>
+          </div>
+        `;
+        }
+
+        /* =====================================================
+         HTML
+         ===================================================== */
+
+        item.innerHTML = `
+
+        <a
+          href="${articleUrl}"
+          class="history-image-link"
+        >
+          ${imageHTML}
+        </a>
+
+
+        <div class="history-info">
+
+          <h2 class="history-title">
+
+            <a href="${articleUrl}">
+              ${article.title || "Không có tiêu đề"}
+            </a>
+
+          </h2>
+
+
+          <div class="history-meta">
+
+            <span>
+              ${categoryName}
+            </span>
+
+            <span>·</span>
+
+            <span>
+              ${authorName}
+            </span>
+
+            <span>·</span>
+
+            <span>
+              ${formatArticleDate(article.published_at || article.created_at)}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="history-viewed">
+
+          ${formatViewedTime(history.viewed_at)}
+
+        </div>
+
+      `;
+
+        /* =====================================================
+         IMAGE ERROR
+         ===================================================== */
+
+        const image = item.querySelector(".history-image");
+
+        const placeholder = item.querySelector(".history-image-placeholder");
+
+        if (image && placeholder) {
+          image.addEventListener("error", function () {
+            image.style.display = "none";
+
+            placeholder.style.display = "flex";
+          });
+        }
+
+        return item;
+      }
+
+      /* =======================================================
+       LOAD HISTORY
+       ======================================================= */
+
+      function loadReadingHistory() {
+        try {
+          /* Kiểm tra MOCK_DATA */
+
+          if (typeof MOCK_DATA === "undefined") {
+            throw new Error("Không tìm thấy MOCK_DATA.");
+          }
+
+          /* User */
+
+          const currentUser = MOCK_DATA.users.find(
+            (user) => user.id === CURRENT_USER_ID,
+          );
+
+          if (currentUser) {
+            loadUser(currentUser);
+          }
+
+          /* History */
+
+          const userHistory = Array.isArray(MOCK_DATA.reading_history)
+            ? MOCK_DATA.reading_history.filter(
+                (history) => history.user_id === CURRENT_USER_ID,
+              )
+            : [];
+
+          /* Sắp xếp mới nhất */
+
+          userHistory.sort((a, b) => {
+            const dateA = new Date(String(a.viewed_at).replace(" ", "T"));
+
+            const dateB = new Date(String(b.viewed_at).replace(" ", "T"));
+
+            return dateB - dateA;
+          });
+
+          /* Không có */
+
+          if (userHistory.length === 0) {
+            historyEmpty.style.display = "block";
+
+            return;
+          }
+
+          /* Render */
+
+          userHistory.forEach((history) => {
+            const item = createHistoryItem(history);
+
+            if (item) {
+              historyList.appendChild(item);
+            }
+          });
+
+          /* Không có article */
+
+          if (historyList.children.length === 0) {
+            historyEmpty.style.display = "block";
+          }
+        } catch (error) {
+          console.error("History error:", error);
+
+          historyError.style.display = "block";
+        }
+      }
+
+      /* =======================================================
+       CHẠY
+       ======================================================= */
+
+      loadReadingHistory();
+    </script>
   </body>
 </html>
