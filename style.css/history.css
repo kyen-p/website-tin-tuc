@@ -1,6 +1,9 @@
 /* =========================================================
-   BẢNG MÀU CHUNG — MẠCH TIN
-   CHỈ ĐƯỢC SỬ DỤNG 7 MÀU NÀY
+   HISTORY.CSS — MẠCH TIN
+   ========================================================= */
+
+/* =========================================================
+   1. BẢNG MÀU
    ========================================================= */
 
 :root {
@@ -14,7 +17,7 @@
 }
 
 /* =========================================================
-   RESET
+   2. RESET
    ========================================================= */
 
 *,
@@ -26,6 +29,7 @@
 html {
   margin: 0;
   padding: 0;
+
   width: 100%;
   min-height: 100%;
 }
@@ -33,27 +37,27 @@ html {
 body {
   margin: 0;
   padding: 0;
+
   min-height: 100vh;
 
   background: var(--paper);
+
   color: var(--ink);
 
-  /*
-   * FONT CHÍNH
-   * Không dùng Courier New.
-   * Arial hỗ trợ tiếng Việt tốt và ổn định.
-   */
   font-family: Arial, Helvetica, sans-serif;
 
   font-size: 14px;
+
   line-height: 1.5;
 
   -webkit-font-smoothing: antialiased;
+
   -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   color: inherit;
+
   text-decoration: none;
 }
 
@@ -65,92 +69,236 @@ select {
 }
 
 /* =========================================================
-   TOÀN BỘ TRANG
+   3. TOÀN BỘ TRANG
    ========================================================= */
 
 .history-page {
   width: 100%;
+
   min-height: 100vh;
 
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
+
+  grid-template-columns:
+    250px
+    minmax(0, 1fr);
 
   background: var(--paper);
 }
 
 /* =========================================================
-   SIDEBAR
+   4. SIDEBAR
    ========================================================= */
 
 .history-sidebar {
   width: 250px;
+
   min-height: 100vh;
 
   display: flex;
+
   flex-direction: column;
 
   background: var(--paper-alt);
 
-  border-right: 1px solid var(--paper-alt);
+  border-right: none;
 }
 
 /* =========================================================
-   LOGO
+   5. LOGO MẠCH TIN
    ========================================================= */
 
+/*
+   LOGO:
+
+   ❤️  MẠCH TIN
+
+   Tất cả nằm trên MỘT HÀNG.
+*/
+
 .history-brand {
+  width: 100%;
+
   height: 94px;
 
   padding: 0 24px;
 
   display: flex;
+
   align-items: center;
 
   border-bottom: 1px solid var(--paper);
 }
 
-.history-brand a {
+/* =========================================================
+   QUAN TRỌNG:
+   HTML dùng .brand-link
+   nên CSS PHẢI dùng .brand-link
+   ========================================================= */
+
+.brand-link {
   display: flex;
+
+  flex-direction: row;
+
   align-items: center;
+
+  justify-content: flex-start;
+
   gap: 8px;
 
-  color: var(--ink);
-}
+  width: max-content;
 
-.pulse-mark {
-  width: 25px;
-  height: 25px;
+  height: 34px;
+
+  margin: 0;
+
+  padding: 0;
+
+  color: var(--ink);
+
+  text-decoration: none;
+
+  line-height: 1;
+
+  white-space: nowrap;
 
   flex-shrink: 0;
-
-  color: var(--crimson);
 }
 
+/* =========================================================
+   NHỊP TIM
+   ========================================================= */
+
+.pulse-mark {
+  display: block;
+
+  width: 30px;
+
+  height: 24px;
+
+  flex: 0 0 30px;
+
+  margin: 0;
+
+  padding: 0;
+
+  color: var(--crimson);
+
+  align-self: center;
+
+  overflow: visible;
+}
+
+/* =========================================================
+   CỤM CHỮ MẠCH TIN
+   ========================================================= */
+
 .brand-word {
+  display: flex;
+
+  flex-direction: row;
+
+  align-items: baseline;
+
+  justify-content: flex-start;
+
+  width: max-content;
+
+  height: auto;
+
+  margin: 0;
+
+  padding: 0;
+
+  line-height: 1;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   CHỮ "MẠCH"
+   ========================================================= */
+
+.brand-mach {
+  display: inline-block;
+
+  margin: 0;
+
+  padding: 0;
+
+  color: var(--ink);
+
   font-family: Georgia, "Times New Roman", serif;
 
   font-size: 23px;
+
   line-height: 1;
 
   font-weight: 700;
 
-  letter-spacing: -0.5px;
+  font-style: normal;
 
-  color: var(--ink);
-}
+  letter-spacing: -0.7px;
 
-.brand-word em {
-  color: var(--brass-dark);
-
-  font-weight: 500;
-  font-style: italic;
+  white-space: nowrap;
 }
 
 /* =========================================================
-   USER
+   CHỮ "TIN"
+   ========================================================= */
+
+.brand-tin {
+  display: inline-block;
+
+  margin: 0 0 0 4px;
+
+  padding: 0;
+
+  color: var(--brass-dark);
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 23px;
+
+  line-height: 1;
+
+  font-weight: 400;
+
+  font-style: italic;
+
+  letter-spacing: -0.8px;
+
+  white-space: nowrap;
+
+  transform: skewX(-4deg);
+
+  transform-origin: center;
+}
+
+/* =========================================================
+   HIỆU ỨNG LOGO
+   ========================================================= */
+
+.brand-link:hover .pulse-mark {
+  color: #c0392b;
+}
+
+.brand-link:hover .brand-mach {
+  color: #202a40;
+}
+
+.brand-link:hover .brand-tin {
+  color: var(--brass);
+}
+
+/* =========================================================
+   6. USER PROFILE
    ========================================================= */
 
 .history-user {
+  width: 100%;
+
   padding: 26px 20px 23px;
 
   text-align: center;
@@ -158,8 +306,11 @@ select {
   border-bottom: 1px solid var(--paper);
 }
 
+/* Avatar */
+
 .history-avatar {
   width: 60px;
+
   height: 60px;
 
   margin: 0 auto 10px;
@@ -167,7 +318,9 @@ select {
   border-radius: 50%;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   overflow: hidden;
@@ -181,15 +334,21 @@ select {
   font-family: Georgia, "Times New Roman", serif;
 
   font-size: 19px;
+
   font-weight: 700;
 }
 
 .history-avatar img {
   width: 100%;
+
   height: 100%;
+
+  display: block;
 
   object-fit: cover;
 }
+
+/* Tên */
 
 .history-user-name {
   margin: 0;
@@ -199,10 +358,13 @@ select {
   font-family: Arial, Helvetica, sans-serif;
 
   font-size: 14px;
+
   line-height: 1.4;
 
   font-weight: 700;
 }
+
+/* Vai trò */
 
 .history-user-role {
   margin-top: 4px;
@@ -212,26 +374,33 @@ select {
   font-family: Arial, Helvetica, sans-serif;
 
   font-size: 11px;
+
   line-height: 1.4;
 }
 
 /* =========================================================
-   MENU
+   7. MENU
    ========================================================= */
 
 .history-menu {
+  width: 100%;
+
   display: flex;
+
   flex-direction: column;
 
-  padding: 10px 0 0;
+  padding-top: 10px;
 }
 
 .history-menu-item {
+  width: 100%;
+
   min-height: 48px;
 
   padding: 0 25px;
 
   display: flex;
+
   align-items: center;
 
   gap: 12px;
@@ -254,14 +423,19 @@ select {
 
   border-left-color: var(--crimson);
 
+  color: var(--ink);
+
   font-weight: 700;
 }
 
 .history-menu-icon {
   width: 18px;
+
   height: 18px;
 
   flex-shrink: 0;
+
+  display: block;
 
   color: var(--muted);
 }
@@ -274,17 +448,19 @@ select {
   font-family: Arial, Helvetica, sans-serif;
 
   font-size: 13px;
+
   line-height: 1.3;
 }
 
 /* =========================================================
-   ĐĂNG XUẤT — LUÔN Ở CUỐI SIDEBAR
+   8. ĐĂNG XUẤT
    ========================================================= */
 
 .history-logout {
   margin-top: auto;
 
   padding-top: 12px;
+
   padding-bottom: 22px;
 
   border-top: 1px solid var(--paper);
@@ -295,11 +471,12 @@ select {
 }
 
 /* =========================================================
-   MAIN
+   9. MAIN
    ========================================================= */
 
 .history-main {
   min-width: 0;
+
   min-height: 100vh;
 
   padding: 42px 50px 70px;
@@ -309,13 +486,14 @@ select {
 
 .history-main-inner {
   width: 100%;
+
   max-width: 1180px;
 
   margin: 0 auto;
 }
 
 /* =========================================================
-   TIÊU ĐỀ
+   10. TIÊU ĐỀ
    ========================================================= */
 
 .history-heading {
@@ -326,6 +504,7 @@ select {
   font-family: Georgia, "Times New Roman", serif;
 
   font-size: 29px;
+
   line-height: 1.25;
 
   font-weight: 700;
@@ -335,6 +514,7 @@ select {
 
 .history-heading-line {
   width: 100%;
+
   height: 2px;
 
   margin-top: 10px;
@@ -350,11 +530,12 @@ select {
   font-family: Arial, Helvetica, sans-serif;
 
   font-size: 13px;
+
   line-height: 1.6;
 }
 
 /* =========================================================
-   LIST
+   11. HISTORY LIST
    ========================================================= */
 
 .history-list {
@@ -363,6 +544,7 @@ select {
 
 .history-item {
   width: 100%;
+
   min-height: 105px;
 
   display: grid;
@@ -382,18 +564,22 @@ select {
 }
 
 /* =========================================================
-   ẢNH
+   12. ẢNH
    ========================================================= */
 
 .history-image-link {
   width: 100px;
+
   height: 76px;
 
   display: block;
+
+  flex-shrink: 0;
 }
 
 .history-image {
   width: 100px;
+
   height: 76px;
 
   display: block;
@@ -409,10 +595,13 @@ select {
   position: relative;
 
   width: 100px;
+
   height: 76px;
 
   display: flex;
+
   align-items: flex-end;
+
   justify-content: flex-start;
 
   padding: 6px;
@@ -423,11 +612,6 @@ select {
 
   border: 1px solid var(--paper-alt);
 }
-
-/*
- * Họa tiết placeholder.
- * Chỉ sử dụng các màu trong bảng chung.
- */
 
 .history-image-placeholder::before {
   content: "";
@@ -451,9 +635,11 @@ select {
   position: absolute;
 
   top: 0;
+
   left: 0;
 
   width: 100%;
+
   height: 100%;
 
   background: linear-gradient(
@@ -467,6 +653,7 @@ select {
 
 .history-image-placeholder span {
   position: relative;
+
   z-index: 2;
 
   display: inline-block;
@@ -480,13 +667,14 @@ select {
   font-family: Arial, Helvetica, sans-serif;
 
   font-size: 8px;
+
   line-height: 1;
 
   font-weight: 700;
 }
 
 /* =========================================================
-   THÔNG TIN BÀI VIẾT
+   13. THÔNG TIN
    ========================================================= */
 
 .history-info {
@@ -496,14 +684,15 @@ select {
 .history-title {
   margin: 0 0 5px;
 
+  color: var(--ink);
+
   font-family: Georgia, "Times New Roman", serif;
 
   font-size: 17px;
+
   line-height: 1.35;
 
   font-weight: 700;
-
-  color: var(--ink);
 }
 
 .history-title a {
@@ -515,13 +704,14 @@ select {
 }
 
 /* =========================================================
-   META
-   KHÔNG DÙNG COURIER NEW
+   14. META
    ========================================================= */
 
 .history-meta {
   display: flex;
+
   flex-wrap: wrap;
+
   align-items: center;
 
   gap: 6px;
@@ -531,11 +721,12 @@ select {
   font-family: Arial, Helvetica, sans-serif;
 
   font-size: 10.5px;
+
   line-height: 1.5;
 }
 
 /* =========================================================
-   THỜI GIAN ĐỌC
+   15. THỜI GIAN
    ========================================================= */
 
 .history-viewed {
@@ -546,13 +737,14 @@ select {
   font-family: Arial, Helvetica, sans-serif;
 
   font-size: 10.5px;
+
   line-height: 1.5;
 
   white-space: nowrap;
 }
 
 /* =========================================================
-   EMPTY
+   16. EMPTY
    ========================================================= */
 
 .history-empty {
@@ -574,7 +766,7 @@ select {
 }
 
 /* =========================================================
-   ERROR
+   17. ERROR
    ========================================================= */
 
 .history-error {
@@ -596,12 +788,14 @@ select {
 }
 
 /* =========================================================
-   TABLET
+   18. TABLET
    ========================================================= */
 
 @media (max-width: 1050px) {
   .history-page {
-    grid-template-columns: 230px minmax(0, 1fr);
+    grid-template-columns:
+      230px
+      minmax(0, 1fr);
   }
 
   .history-sidebar {
@@ -625,12 +819,38 @@ select {
   .history-image,
   .history-image-placeholder {
     width: 95px;
+
     height: 72px;
+  }
+
+  /* LOGO TABLET */
+
+  .history-brand {
+    padding-left: 20px;
+
+    padding-right: 20px;
+  }
+
+  .brand-link {
+    gap: 7px;
+  }
+
+  .brand-mach,
+  .brand-tin {
+    font-size: 22px;
+  }
+
+  .pulse-mark {
+    width: 27px;
+
+    height: 23px;
+
+    flex-basis: 27px;
   }
 }
 
 /* =========================================================
-   MOBILE
+   19. MOBILE
    ========================================================= */
 
 @media (max-width: 760px) {
@@ -640,11 +860,15 @@ select {
 
   .history-sidebar {
     width: 100%;
+
     min-height: auto;
 
     border-right: none;
+
     border-bottom: 1px solid var(--paper);
   }
+
+  /* LOGO */
 
   .history-brand {
     height: 78px;
@@ -652,13 +876,32 @@ select {
     padding: 0 20px;
   }
 
-  .brand-word {
+  .brand-link {
+    height: 30px;
+
+    gap: 7px;
+  }
+
+  .brand-mach,
+  .brand-tin {
     font-size: 22px;
   }
+
+  .pulse-mark {
+    width: 27px;
+
+    height: 23px;
+
+    flex-basis: 27px;
+  }
+
+  /* USER */
 
   .history-user {
     padding: 20px;
   }
+
+  /* MENU */
 
   .history-menu {
     display: grid;
@@ -674,15 +917,17 @@ select {
     padding: 0 16px;
   }
 
-  /*
-   * Trên mobile logout vẫn nằm cuối danh sách.
-   */
+  /* LOGOUT */
 
   .history-logout {
+    margin-top: 0;
+
     padding: 0 0 10px;
 
     border-top: 1px solid var(--paper);
   }
+
+  /* MAIN */
 
   .history-main {
     min-height: auto;
@@ -693,6 +938,8 @@ select {
   .history-heading {
     font-size: 25px;
   }
+
+  /* HISTORY */
 
   .history-item {
     grid-template-columns:
@@ -710,6 +957,7 @@ select {
   .history-image,
   .history-image-placeholder {
     width: 90px;
+
     height: 68px;
   }
 
@@ -721,7 +969,7 @@ select {
 }
 
 /* =========================================================
-   SMALL MOBILE
+   20. SMALL MOBILE
    ========================================================= */
 
 @media (max-width: 480px) {
@@ -731,6 +979,7 @@ select {
 
   .history-main {
     padding-left: 16px;
+
     padding-right: 16px;
   }
 
@@ -748,6 +997,7 @@ select {
   .history-image,
   .history-image-placeholder {
     width: 80px;
+
     height: 60px;
   }
 
@@ -758,5 +1008,30 @@ select {
   .history-meta,
   .history-viewed {
     font-size: 10px;
+  }
+
+  /* LOGO NHỎ */
+
+  .history-brand {
+    padding-left: 16px;
+
+    padding-right: 16px;
+  }
+
+  .brand-link {
+    gap: 6px;
+  }
+
+  .brand-mach,
+  .brand-tin {
+    font-size: 21px;
+  }
+
+  .pulse-mark {
+    width: 25px;
+
+    height: 22px;
+
+    flex-basis: 25px;
   }
 }
