@@ -1,0 +1,418 @@
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+    margin:0;
+    background:#f4f4f0;
+    color:#182238;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:13px;
+}
+a{text-decoration:none;color:inherit}
+button,input{font-family:inherit}
+
+:root{
+    --navy:#111a2e;
+    --navy2:#1b253b;
+    --gold:#a5824d;
+    --paper:#f7f6f1;
+    --cream:#ebe5d8;
+    --line:#d7d2c6;
+    --muted:#77766f;
+    --red:#9f3029;
+}
+
+.container{
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+}
+
+/* ===== TOP NEWS BAR ===== */
+.hotbar{
+    height:28px;
+    background:#172033;
+    color:#ddd;
+    overflow:hidden;
+    border-bottom:1px solid #30394b;
+}
+.hotbar .container{
+    display:flex;
+    align-items:center;
+    height:100%;
+    gap:38px;
+    white-space:nowrap;
+    font-size:9px;
+}
+.hot-item b{
+    color:#b23a32;
+    margin-right:7px;
+    font-size:8px;
+}
+
+/* ===== DATE / USER ===== */
+.utility{
+    height:32px;
+    background:#f6f5f0;
+    border-bottom:1px solid #e1ded5;
+}
+.utility .container{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    color:#8a887f;
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:9px;
+}
+.utility-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.notice{
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+.notice-dot{
+    width:14px;height:14px;border-radius:50%;
+    background:#a52e29;color:white;
+    display:grid;place-items:center;
+    font:8px Arial;
+}
+.user-mini{
+    display:flex;align-items:center;gap:6px;
+}
+.user-mini-avatar{
+    width:18px;height:18px;border-radius:50%;
+    background:#ddd9cd;color:#81785e;
+    display:grid;place-items:center;
+    font:8px Georgia,serif;
+}
+
+/* ===== MAIN HEADER ===== */
+.main-header{
+    background:#faf9f5;
+    border-bottom:1px solid #ddd8ca;
+}
+.main-header .container{
+    height:68px;
+    display:flex;
+    align-items:center;
+}
+.logo{
+    display:flex;
+    align-items:center;
+    width:235px;
+    flex-shrink:0;
+}
+.logo-mark{
+    color:#b02f29;
+    font-size:20px;
+    line-height:1;
+    margin-right:7px;
+}
+.logo-text{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:21px;
+    font-weight:bold;
+    color:#172239;
+}
+.logo-text em{
+    color:#a17e49;
+    font-style:italic;
+    font-weight:normal;
+}
+.main-nav{
+    display:flex;
+    align-items:center;
+    gap:25px;
+    flex:1;
+}
+.main-nav a{
+    font-size:10px;
+    color:#1d2739;
+}
+.main-nav a:hover{color:#9f3029}
+.search{
+    width:25px;height:25px;border:1px solid #ddd8cb;
+    border-radius:50%;
+    display:grid;place-items:center;
+    font-size:13px;
+    color:#1d2739;
+}
+
+/* ===== CATEGORY ===== */
+.categories{
+    height:29px;
+    background:#ebe7dc;
+    border-bottom:1px solid #bdb7a9;
+}
+.categories .container{
+    height:100%;
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+.categories a{
+    color:#77736a;
+    font:9px Georgia,"Times New Roman",serif;
+}
+
+/* ===== PAGE ===== */
+.page{
+    padding:15px 0 55px;
+}
+.breadcrumb{
+    color:#8a877d;
+    font:9px Georgia,"Times New Roman",serif;
+    margin-bottom:30px;
+}
+.breadcrumb span{margin:0 5px}
+
+/* Same 2-column proportion as history page */
+.account-layout{
+    display:grid;
+    grid-template-columns:176px minmax(0,570px);
+    gap:25px;
+    align-items:start;
+}
+
+/* ===== ACCOUNT SIDEBAR ===== */
+.account-sidebar{
+    background:#fff;
+    border:1px solid #e1ded6;
+}
+.account-profile{
+    text-align:center;
+    padding:16px 10px 13px;
+    border-bottom:1px solid #ddd9cf;
+}
+.avatar{
+    width:43px;height:43px;
+    margin:0 auto 9px;
+    border-radius:50%;
+    background:#f0ece1;
+    color:#a3824d;
+    display:grid;place-items:center;
+    font:17px Georgia,"Times New Roman",serif;
+}
+.account-name{
+    font:bold 10px Arial,sans-serif;
+    color:#263044;
+}
+.account-role{
+    margin-top:4px;
+    color:#8a877e;
+    font:8px Georgia,serif;
+}
+.account-menu a{
+    height:32px;
+    display:flex;
+    align-items:center;
+    padding:0 13px;
+    border-bottom:1px solid #f0ede6;
+    color:#4c4b46;
+    font-size:9px;
+    transition:.15s;
+}
+.account-menu a:last-child{border-bottom:0}
+.account-menu a:hover{
+    background:#f3f0e7;
+}
+.account-menu a.active{
+    background:#ebe5d7;
+    color:#1b2539;
+    border-left:2px solid #a72f29;
+    padding-left:11px;
+    font-weight:bold;
+}
+.account-menu a.logout{color:#7b4a45}
+
+/* ===== CONTENT ===== */
+.content-title{
+    margin:0 0 10px;
+    font:600 19px Georgia,"Times New Roman",serif;
+    color:#1b2539;
+}
+.content-line{
+    height:1px;
+    background:#1b2539;
+    margin-bottom:16px;
+}
+.content-intro{
+    margin:0 0 21px;
+    color:#77766f;
+    font:10px Georgia,"Times New Roman",serif;
+    line-height:1.6;
+}
+
+/* ===== PROFILE CARD ===== */
+.profile-card{
+    background:#fff;
+    border:1px solid #ddd9cf;
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:18px;
+}
+.profile-avatar{
+    width:66px;height:66px;
+    flex:none;
+    border-radius:50%;
+    background:#182238;
+    color:#f4f0e6;
+    display:grid;place-items:center;
+    font:bold 23px Georgia,serif;
+}
+.profile-name{
+    margin:0 0 3px;
+    font:bold 18px Georgia,"Times New Roman",serif;
+    color:#1b2539;
+}
+.profile-username{
+    color:#77756e;
+    font:9px Georgia,serif;
+    margin-bottom:8px;
+}
+.badge{
+    display:inline-block;
+    border:1px solid #cfc8b9;
+    padding:3px 7px;
+    color:#7d6a4c;
+    font:7px Georgia,serif;
+    letter-spacing:.1em;
+}
+.profile-description{
+    color:#77766f;
+    font:9px Georgia,serif;
+    margin:8px 0 0;
+}
+
+/* ===== INFORMATION ===== */
+.info-card{
+    background:#fff;
+    border:1px solid #ddd9cf;
+    margin-bottom:18px;
+}
+.card-heading{
+    padding:15px 18px 11px;
+    border-bottom:1px solid #ddd9cf;
+}
+.card-heading h2{
+    margin:0;
+    font:bold 17px Georgia,"Times New Roman",serif;
+    color:#1b2539;
+}
+.card-heading p{
+    margin:4px 0 0;
+    color:#8a887f;
+    font:9px Georgia,serif;
+}
+.card-body{padding:17px 18px 19px}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:20px;
+    row-gap:14px;
+}
+.field label{
+    display:block;
+    margin-bottom:5px;
+    color:#8a7a62;
+    font:8px Georgia,"Times New Roman",serif;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+}
+.field input,.field textarea{
+    width:100%;
+    border:1px solid #ddd8ca;
+    background:#fffefb;
+    color:#2a3140;
+    padding:8px 9px;
+    font:10px Arial,sans-serif;
+    outline:none;
+}
+.field input{height:34px}
+.field textarea{height:70px;resize:vertical}
+.field input:focus,.field textarea:focus{
+    border-color:#a88a5b;
+}
+.full{grid-column:1/-1}
+.actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:16px;
+}
+.btn{
+    border:1px solid #cfc8ba;
+    background:#fff;
+    color:#394052;
+    padding:7px 13px;
+    font-size:9px;
+    cursor:pointer;
+}
+.btn.primary{
+    background:#182238;
+    color:#fff;
+    border-color:#182238;
+}
+.btn:hover{opacity:.9}
+.message{
+    display:none;
+    margin-top:10px;
+    padding:8px 10px;
+    background:#f0ede4;
+    border-left:2px solid #a5824d;
+    color:#5f5b52;
+    font:9px Arial,sans-serif;
+}
+
+/* ===== PASSWORD ===== */
+.password-card{scroll-margin-top:15px}
+
+/* ===== FOOTER ===== */
+.footer{
+    background:#182238;
+    color:#d8d6ce;
+    padding:25px 0;
+}
+.footer .container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.footer-logo{
+    font:15px Georgia,serif;
+}
+.footer-logo em{color:#b28b53}
+.footer-copy{
+    color:#999a96;
+    font:8px Georgia,serif;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:800px){
+    .container{max-width:94%}
+    .main-nav{gap:14px}
+    .logo{width:190px}
+    .account-layout{grid-template-columns:160px minmax(0,1fr)}
+}
+@media(max-width:650px){
+    .hotbar{display:none}
+    .main-header .container{height:auto;padding:13px 0;flex-wrap:wrap}
+    .logo{width:auto;margin-right:auto}
+    .main-nav{order:3;width:100%;overflow:auto;margin-top:12px}
+    .categories .container{overflow:auto}
+    .account-layout{grid-template-columns:1fr;gap:18px}
+    .account-menu{display:grid;grid-template-columns:1fr 1fr}
+    .account-menu a{border-bottom:0}
+    .account-menu a.logout{grid-column:1/-1}
+    .form-grid{grid-template-columns:1fr}
+    .full{grid-column:auto}
+    .footer .container{display:block}
+    .footer-copy{margin-top:8px}
+}
