@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài viết của tôi — Mạch Tin</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .reporter-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+    .reporter-sidebar {
+      background: var(--ink);
+      color: #C9C6BC;
+      padding: 28px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .reporter-sidebar .logo-area {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      margin-bottom: 16px;
+    }
+    .reporter-sidebar .logo-area .logo__word {
+      color: var(--paper);
+      font-size: 22px;
+    }
+    .reporter-sidebar .logo-area .logo__word em {
+      color: var(--brass);
+    }
+    .reporter-sidebar .nav a {
+      display: block;
+      padding: 12px 20px;
+      font-size: 14.5px;
+      color: #C9C6BC;
+      border-left: 3px solid transparent;
+    }
+    .reporter-sidebar .nav a:hover {
+      background: rgba(255,255,255,.06);
+      color: #fff;
+    }
+    .reporter-sidebar .nav a.is-active {
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      border-left-color: var(--brass);
+      font-weight: 600;
+    }
+    .reporter-sidebar .nav .back-home {
+      margin-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.12);
+      padding-top: 16px;
+    }
+    .reporter-main {
+      background: var(--paper);
+    }
+    .reporter-topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .reporter-topbar .page-title {
+      font-family: var(--f-display);
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .reporter-content {
+      padding: 28px;
+    }
+
+    /* Filter */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .filter-btn:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .filter-btn.is-active {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    /* Table */
+    .articles-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+    .articles-table th {
+      text-align: left;
+      padding: 14px 16px;
+      font-family: var(--f-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      background: var(--paper-alt);
+    }
+    .articles-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14.5px;
+      vertical-align: middle;
+    }
+    .articles-table tr:last-child td {
+      border-bottom: none;
+    }
+    .articles-table tr:hover td {
+      background: #FAF9F5;
+    }
+    .article-title-cell {
+      font-weight: 600;
+      font-family: var(--f-display);
+      font-size: 15.5px;
+    }
+    .article-title-cell a:hover {
+      color: var(--brass-dark);
+    }
+
+    /* Badge trạng thái */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-family: var(--f-mono);
+      border-radius: 2px;
+    }
+    .badge-draft {
+      background: #E8E6DF;
+      color: var(--muted);
+    }
+    .badge-pending {
+      background: #F5EBD7;
+      color: var(--brass-dark);
+    }
+    .badge-rejected {
+      background: #F8E4E2;
+      color: var(--crimson);
+    }
+    .badge-published {
+      background: #E4EFE6;
+      color: #2E6B3E;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .action-btns .btn {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .reject-reason {
+      font-size: 13px;
+      color: var(--crimson);
+      margin-top: 6px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .reporter-layout {
+        grid-template-columns: 1fr;
+      }
+      .reporter-sidebar {
+        height: auto;
+        position: static;
+      }
+      .articles-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="reporter-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="reporter-sidebar">
+    <div class="logo-area">
+      <a href="index.html" class="logo" style="gap:10px;">
+        <svg class="pulse-mark" width="22" height="22" viewBox="0 0 26 26" fill="none">
+          <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo__word">MẠCH&nbsp;<em>TIN</em></span>
+      </a>
+    </div>
+    <nav class="nav">
+      <a href="write-article.html">Soạn bài</a>
+      <a href="my-articles.html" class="is-active">Bài viết của tôi</a>
+      <a href="my-topics.html">Đề tài của tôi</a>
+      <a href="dashboard.html">Thống kê</a>
+      <div class="back-home">
+        <a href="index.html">← Về trang chủ</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="reporter-main">
+    <div class="reporter-topbar">
+      <h1 class="page-title">Bài viết của tôi</h1>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a href="write-article.html" class="btn btn-primary btn-sm">+ Viết bài mới</a>
+        <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);">
+          <span>Phóng viên</span>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--paper-alt);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">PV</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reporter-content">
+
+      <!-- Bộ lọc trạng thái -->
+      <div class="filter-row">
+        <button class="filter-btn is-active" data-filter="all">Tất cả (5)</button>
+        <button class="filter-btn" data-filter="draft">Nháp (1)</button>
+        <button class="filter-btn" data-filter="pending">Chờ duyệt (1)</button>
+        <button class="filter-btn" data-filter="rejected">Từ chối (1)</button>
+        <button class="filter-btn" data-filter="published">Đã đăng (2)</button>
+      </div>
+
+      <!-- Bảng bài viết -->
+      <table class="articles-table">
+        <thead>
+          <tr>
+            <th style="width:38%;">Tiêu đề</th>
+            <th>Chuyên mục</th>
+            <th>Trạng thái</th>
+            <th>Ngày cập nhật</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Đã đăng -->
+          <tr data-status="published">
+            <td>
+              <div class="article-title-cell">
+                <a href="article-detail.html">Công nghệ AI trong giáo dục phổ thông</a>
+              </div>
+            </td>
+            <td>Công nghệ</td>
+            <td><span class="badge badge-published">Đã đăng</span></td>
+            <td>08/08/2026</td>
+            <td>
+              <div class="action-btns">
+                <a href="article-detail.html" class="btn btn-ghost btn-sm">Xem</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Chờ duyệt -->
+          <tr data-status="pending">
+            <td>
+              <div class="article-title-cell">
+                <a href="write-article.html">Xu hướng chuyển đổi số năm 2026</a>
+              </div>
+            </td>
+            <td>Công nghệ</td>
+            <td><span class="badge badge-pending">Chờ duyệt</span></td>
+            <td>09/08/2026</td>
+            <td>
+              <div class="action-btns">
+                <a href="write-article.html" class="btn btn-ghost btn-sm">Sửa</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Từ chối -->
+          <tr data-status="rejected">
+            <td>
+              <div class="article-title-cell">
+                <a href="write-article.html">Thị trường công nghệ Việt Nam quý II</a>
+              </div>
+              <div class="reject-reason">Lý do từ chối: Cần bổ sung nguồn và chỉnh phần tóm tắt.</div>
+            </td>
+            <td>Kinh doanh</td>
+            <td><span class="badge badge-rejected">Từ chối</span></td>
+            <td>06/08/2026</td>
+            <td>
+              <div class="action-btns">
+                <a href="write-article.html" class="btn btn-ghost btn-sm">Sửa</a>
+                <button class="btn btn-primary btn-sm" onclick="alert('Đã gửi duyệt lại!')">Gửi duyệt lại</button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Nháp -->
+          <tr data-status="draft">
+            <td>
+              <div class="article-title-cell">
+                <a href="write-article.html">Bản nháp: Ảnh hưởng của AI đến báo chí</a>
+              </div>
+            </td>
+            <td>Công nghệ</td>
+            <td><span class="badge badge-draft">Nháp</span></td>
+            <td>05/08/2026</td>
+            <td>
+              <div class="action-btns">
+                <a href="write-article.html" class="btn btn-ghost btn-sm">Sửa</a>
+                <button class="btn btn-ghost btn-sm" style="color:var(--crimson);" onclick="if(confirm('Bạn có chắc muốn xóa bài nháp này?')) this.closest('tr').remove();">Xóa</button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Đã đăng 2 -->
+          <tr data-status="published">
+            <td>
+              <div class="article-title-cell">
+                <a href="article-detail.html">Xuất khẩu thủy sản 7 tháng đầu năm tăng 14%</a>
+              </div>
+            </td>
+            <td>Kinh doanh</td>
+            <td><span class="badge badge-published">Đã đăng</span></td>
+            <td>04/08/2026</td>
+            <td>
+              <div class="action-btns">
+                <a href="article-detail.html" class="btn btn-ghost btn-sm">Xem</a>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Lọc theo trạng thái
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('is-active'));
+      this.classList.add('is-active');
+
+      const filter = this.dataset.filter;
+      document.querySelectorAll('.articles-table tbody tr').forEach(function(row) {
+        if (filter === 'all' || row.dataset.status === filter) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
