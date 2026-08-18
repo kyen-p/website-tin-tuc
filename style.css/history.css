@@ -1,0 +1,762 @@
+/* =========================================================
+   BẢNG MÀU CHUNG — MẠCH TIN
+   CHỈ ĐƯỢC SỬ DỤNG 7 MÀU NÀY
+   ========================================================= */
+
+:root {
+  --ink: #131b2e;
+  --paper: #f5f3ee;
+  --paper-alt: #ece7da;
+  --brass: #b8934f;
+  --brass-dark: #93692f;
+  --crimson: #a6362c;
+  --muted: #6b6759;
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+
+  background: var(--paper);
+  color: var(--ink);
+
+  /*
+   * FONT CHÍNH
+   * Không dùng Courier New.
+   * Arial hỗ trợ tiếng Việt tốt và ổn định.
+   */
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================================
+   TOÀN BỘ TRANG
+   ========================================================= */
+
+.history-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+
+  background: var(--paper);
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.history-sidebar {
+  width: 250px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--paper-alt);
+
+  border-right: 1px solid var(--paper-alt);
+}
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.history-brand {
+  height: 94px;
+
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid var(--paper);
+}
+
+.history-brand a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--ink);
+}
+
+.pulse-mark {
+  width: 25px;
+  height: 25px;
+
+  flex-shrink: 0;
+
+  color: var(--crimson);
+}
+
+.brand-word {
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 23px;
+  line-height: 1;
+
+  font-weight: 700;
+
+  letter-spacing: -0.5px;
+
+  color: var(--ink);
+}
+
+.brand-word em {
+  color: var(--brass-dark);
+
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+.history-user {
+  padding: 26px 20px 23px;
+
+  text-align: center;
+
+  border-bottom: 1px solid var(--paper);
+}
+
+.history-avatar {
+  width: 60px;
+  height: 60px;
+
+  margin: 0 auto 10px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: var(--paper);
+
+  border: 1px solid var(--brass);
+
+  color: var(--brass-dark);
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.history-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.history-user-name {
+  margin: 0;
+
+  color: var(--ink);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+  line-height: 1.4;
+
+  font-weight: 700;
+}
+
+.history-user-role {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.history-menu {
+  display: flex;
+  flex-direction: column;
+
+  padding: 10px 0 0;
+}
+
+.history-menu-item {
+  min-height: 48px;
+
+  padding: 0 25px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  color: var(--ink);
+
+  border-left: 3px solid transparent;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.history-menu-item:hover {
+  background: var(--paper);
+}
+
+.history-menu-item.active {
+  background: var(--paper);
+
+  border-left-color: var(--crimson);
+
+  font-weight: 700;
+}
+
+.history-menu-icon {
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+
+  color: var(--muted);
+}
+
+.history-menu-item.active .history-menu-icon {
+  color: var(--crimson);
+}
+
+.history-menu-text {
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+/* =========================================================
+   ĐĂNG XUẤT — LUÔN Ở CUỐI SIDEBAR
+   ========================================================= */
+
+.history-logout {
+  margin-top: auto;
+
+  padding-top: 12px;
+  padding-bottom: 22px;
+
+  border-top: 1px solid var(--paper);
+}
+
+.history-logout .history-menu-item {
+  min-height: 48px;
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.history-main {
+  min-width: 0;
+  min-height: 100vh;
+
+  padding: 42px 50px 70px;
+
+  background: var(--paper);
+}
+
+.history-main-inner {
+  width: 100%;
+  max-width: 1180px;
+
+  margin: 0 auto;
+}
+
+/* =========================================================
+   TIÊU ĐỀ
+   ========================================================= */
+
+.history-heading {
+  margin: 0;
+
+  color: var(--ink);
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 29px;
+  line-height: 1.25;
+
+  font-weight: 700;
+
+  letter-spacing: -0.3px;
+}
+
+.history-heading-line {
+  width: 100%;
+  height: 2px;
+
+  margin-top: 10px;
+
+  background: var(--ink);
+}
+
+.history-description {
+  margin: 14px 0 24px;
+
+  color: var(--muted);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   LIST
+   ========================================================= */
+
+.history-list {
+  width: 100%;
+}
+
+.history-item {
+  width: 100%;
+  min-height: 105px;
+
+  display: grid;
+
+  grid-template-columns:
+    100px
+    minmax(0, 1fr)
+    145px;
+
+  column-gap: 18px;
+
+  align-items: center;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid var(--paper-alt);
+}
+
+/* =========================================================
+   ẢNH
+   ========================================================= */
+
+.history-image-link {
+  width: 100px;
+  height: 76px;
+
+  display: block;
+}
+
+.history-image {
+  width: 100px;
+  height: 76px;
+
+  display: block;
+
+  object-fit: cover;
+
+  background: var(--paper-alt);
+
+  border: 1px solid var(--paper-alt);
+}
+
+.history-image-placeholder {
+  position: relative;
+
+  width: 100px;
+  height: 76px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+
+  padding: 6px;
+
+  overflow: hidden;
+
+  background: var(--paper-alt);
+
+  border: 1px solid var(--paper-alt);
+}
+
+/*
+ * Họa tiết placeholder.
+ * Chỉ sử dụng các màu trong bảng chung.
+ */
+
+.history-image-placeholder::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background: linear-gradient(
+    135deg,
+    transparent 48%,
+    var(--paper) 49%,
+    var(--paper) 50%,
+    transparent 51%
+  );
+}
+
+.history-image-placeholder::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(
+    135deg,
+    transparent 63%,
+    var(--paper) 64%,
+    var(--paper) 65%,
+    transparent 66%
+  );
+}
+
+.history-image-placeholder span {
+  position: relative;
+  z-index: 2;
+
+  display: inline-block;
+
+  padding: 3px 5px;
+
+  background: var(--ink);
+
+  color: var(--paper);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 8px;
+  line-height: 1;
+
+  font-weight: 700;
+}
+
+/* =========================================================
+   THÔNG TIN BÀI VIẾT
+   ========================================================= */
+
+.history-info {
+  min-width: 0;
+}
+
+.history-title {
+  margin: 0 0 5px;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 17px;
+  line-height: 1.35;
+
+  font-weight: 700;
+
+  color: var(--ink);
+}
+
+.history-title a {
+  color: var(--ink);
+}
+
+.history-title a:hover {
+  color: var(--brass-dark);
+}
+
+/* =========================================================
+   META
+   KHÔNG DÙNG COURIER NEW
+   ========================================================= */
+
+.history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+
+  color: var(--muted);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   THỜI GIAN ĐỌC
+   ========================================================= */
+
+.history-viewed {
+  text-align: right;
+
+  color: var(--muted);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 10.5px;
+  line-height: 1.5;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.history-empty {
+  display: none;
+
+  padding: 40px 20px;
+
+  background: var(--paper-alt);
+
+  border: 1px solid var(--paper-alt);
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.history-error {
+  display: none;
+
+  margin-bottom: 20px;
+
+  padding: 14px 16px;
+
+  background: var(--paper-alt);
+
+  border-left: 3px solid var(--crimson);
+
+  color: var(--crimson);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+  .history-page {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+
+  .history-sidebar {
+    width: 230px;
+  }
+
+  .history-main {
+    padding: 38px 32px 60px;
+  }
+
+  .history-item {
+    grid-template-columns:
+      95px
+      minmax(0, 1fr)
+      125px;
+
+    column-gap: 16px;
+  }
+
+  .history-image-link,
+  .history-image,
+  .history-image-placeholder {
+    width: 95px;
+    height: 72px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .history-page {
+    display: block;
+  }
+
+  .history-sidebar {
+    width: 100%;
+    min-height: auto;
+
+    border-right: none;
+    border-bottom: 1px solid var(--paper);
+  }
+
+  .history-brand {
+    height: 78px;
+
+    padding: 0 20px;
+  }
+
+  .brand-word {
+    font-size: 22px;
+  }
+
+  .history-user {
+    padding: 20px;
+  }
+
+  .history-menu {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    padding: 5px 0;
+  }
+
+  .history-menu-item {
+    min-height: 45px;
+
+    padding: 0 16px;
+  }
+
+  /*
+   * Trên mobile logout vẫn nằm cuối danh sách.
+   */
+
+  .history-logout {
+    padding: 0 0 10px;
+
+    border-top: 1px solid var(--paper);
+  }
+
+  .history-main {
+    min-height: auto;
+
+    padding: 30px 20px 50px;
+  }
+
+  .history-heading {
+    font-size: 25px;
+  }
+
+  .history-item {
+    grid-template-columns:
+      90px
+      minmax(0, 1fr);
+
+    column-gap: 14px;
+
+    row-gap: 6px;
+
+    padding: 15px 0;
+  }
+
+  .history-image-link,
+  .history-image,
+  .history-image-placeholder {
+    width: 90px;
+    height: 68px;
+  }
+
+  .history-viewed {
+    grid-column: 2;
+
+    text-align: left;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .history-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .history-main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .history-heading {
+    font-size: 23px;
+  }
+
+  .history-item {
+    grid-template-columns:
+      80px
+      minmax(0, 1fr);
+  }
+
+  .history-image-link,
+  .history-image,
+  .history-image-placeholder {
+    width: 80px;
+    height: 60px;
+  }
+
+  .history-title {
+    font-size: 15px;
+  }
+
+  .history-meta,
+  .history-viewed {
+    font-size: 10px;
+  }
+}
