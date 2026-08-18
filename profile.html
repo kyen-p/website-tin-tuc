@@ -1,262 +1,771 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thông tin tài khoản - Mạch Tin</title>
-<link rel="stylesheet" href="profile.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin tài khoản - MẠCH TIN</title>
+   <link rel="stylesheet" href="/style.css/profile.css">
 </head>
+
 <body>
 
-<div class="hotbar">
-    <div class="container">
-        <div class="hot-item"><b>NÓNG</b> – Đề xuất mới về thuế thu nhập cá nhân</div>
-        <div class="hot-item"><b>NÓNG</b> – Giá vàng miếng SJC vượt mốc 92 triệu đồng/lượng</div>
-        <div class="hot-item"><b>THỂ THAO</b> – Đội tuyển Việt Nam ngành về vòng bán kết</div>
-        <div class="hot-item"><b>NÓNG</b> – Quốc hội thông qua luật sửa đổi</div>
-    </div>
-</div>
+<div class="layout">
 
-<div class="utility">
-    <div class="container">
-        <span>Chủ Nhật, 09/08/2026</span>
-        <div class="utility-right">
-            <div class="notice">♧ <span class="notice-dot">3</span></div>
-            <div class="user-mini">
-                <span class="user-mini-avatar">KH</span>
-                <span>Kim Hana</span>
-            </div>
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+
+        <!-- Logo -->
+        <div class="logo">
+            <span class="logo-wave">⌁</span>
+            <span class="logo-text">MẠCH TIN</span>
         </div>
-    </div>
-</div>
 
-<header class="main-header">
-    <div class="container">
-        <a href="public/index.html" class="logo">
-            <span class="logo-mark">⌁</span>
-            <span class="logo-text">MẠCH <em>TIN</em></span>
-        </a>
+        <!-- User -->
+        <div class="user-box">
 
-        <nav class="main-nav">
-            <a href="public/index.html">Trang chủ</a>
-            <a href="public/category.html">Thời sự</a>
-            <a href="public/category.html">Kinh doanh</a>
-            <a href="public/category.html">Thế giới</a>
-            <a href="public/category.html">Công nghệ</a>
-            <a href="public/category.html">Thể thao</a>
+            <div class="user-avatar">
+                NU
+            </div>
+
+            <div class="user-name">
+                Nguyễn Văn User
+            </div>
+
+            <div class="user-role">
+                Độc giả
+            </div>
+
+        </div>
+
+
+        <!-- Menu -->
+        <nav class="sidebar-menu">
+
+            <a href="#" class="menu-item active">
+                <span class="menu-icon">♙</span>
+                <span>Thông tin tài khoản</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">♙</span>
+                <span>Đổi mật khẩu</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">♡</span>
+                <span>Bài viết yêu thích</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">▤</span>
+                <span>Lịch sử đọc bài</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">◯</span>
+                <span>Bình luận của tôi</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">♧</span>
+                <span>Thông báo</span>
+            </a>
+
+            <a href="#" class="menu-item logout">
+                <span class="menu-icon">↪</span>
+                <span>Đăng xuất</span>
+            </a>
+
         </nav>
 
-        <a href="public/search.html" class="search" aria-label="Tìm kiếm">⌕</a>
-    </div>
-</header>
+    </aside>
 
-<nav class="categories">
-    <div class="container">
-        <a href="public/category.html">Thời sự</a>
-        <a href="public/category.html">Kinh doanh</a>
-        <a href="public/category.html">Thế giới</a>
-        <a href="public/category.html">Công nghệ</a>
-        <a href="public/category.html">Thể thao</a>
-        <a href="public/category.html">Giải trí</a>
-        <a href="public/category.html">Đời sống</a>
-    </div>
-</nav>
 
-<main class="page">
-    <div class="container">
-        <div class="breadcrumb">
-            <a href="public/index.html">Trang chủ</a>
-            <span>/</span>
-            <a href="profile.html">Tài khoản</a>
-            <span>/</span>
-            <span>Thông tin tài khoản</span>
-        </div>
+    <!-- ================= MAIN ================= -->
+    <main class="main-content">
 
-        <div class="account-layout">
+        <div class="content-wrapper">
 
-            <aside class="account-sidebar">
-                <div class="account-profile">
-                    <div class="avatar" id="sideAvatar">KH</div>
-                    <div class="account-name" id="sideName">Kim Hana</div>
-                    <div class="account-role">ĐỘC GIẢ</div>
-                </div>
+            <!-- TITLE -->
+            <div class="page-title">
 
-                <nav class="account-menu">
-                    <a href="profile.html" class="active">Thông tin tài khoản</a>
-                    <a href="profile.html#password">Đổi mật khẩu</a>
-                    <a href="favorites.html">Bài viết yêu thích</a>
-                    <a href="history.html">Lịch sử đọc bài</a>
-                    <a href="my comments.html">Bình luận của tôi</a>
-                    <a href="notifications.html">Thông báo</a>
-                    <a href="public/index.html" class="logout">Đăng xuất</a>
-                </nav>
-            </aside>
+                <h1>Thông tin tài khoản</h1>
 
-            <section class="content">
-                <h1 class="content-title">Thông tin tài khoản</h1>
-                <div class="content-line"></div>
-                <p class="content-intro">
-                    Quản lý thông tin cá nhân và mật khẩu của bạn.
+                <p>
+                    Cập nhật thông tin cá nhân của bạn.
                 </p>
 
-                <div class="profile-card">
-                    <div class="profile-avatar" id="profileAvatar">KH</div>
-                    <div>
-                        <h2 class="profile-name" id="summaryName">Kim Hana</h2>
-                        <div class="profile-username" id="summaryUsername">@kimhana</div>
-                        <span class="badge">ĐỘC GIẢ</span>
-                        <p class="profile-description" id="summaryDescription">Người dùng Mạch Tin.</p>
+            </div>
+
+
+            <!-- ================= ACCOUNT INFO ================= -->
+            <section class="account-section">
+
+                <h2>Thông tin cá nhân</h2>
+
+                <div class="section-line"></div>
+
+
+                <!-- Avatar -->
+                <div class="avatar-row">
+
+                    <div class="profile-avatar-wrapper">
+
+                        <img
+                            id="avatarPreview"
+                            src="https://ui-avatars.com/api/?name=Nguyen+Van+User&background=eee7d8&color=806d48&size=150"
+                            alt="Avatar"
+                            class="profile-avatar"
+                        >
+
+                        <label
+                            for="avatarInput"
+                            class="avatar-camera"
+                            title="Thay đổi ảnh"
+                        >
+                            ✎
+                        </label>
+
+                        <input
+                            type="file"
+                            id="avatarInput"
+                            accept="image/png,image/jpeg,image/gif"
+                            hidden
+                        >
+
                     </div>
+
+
+                    <div class="avatar-description">
+
+                        <strong>Ảnh đại diện</strong>
+
+                        <span>
+                            JPG, PNG hoặc GIF. Kích thước tối đa 2MB.
+                        </span>
+
+                        <label for="avatarInput" class="change-avatar">
+                            Thay đổi ảnh
+                        </label>
+
+                    </div>
+
                 </div>
 
-                <div class="info-card">
-                    <div class="card-heading">
-                        <h2>Thông tin cá nhân</h2>
-                        <p>Cập nhật thông tin tài khoản của bạn.</p>
+
+                <!-- Form -->
+                <div class="form-grid">
+
+
+                    <!-- Họ tên -->
+                    <div class="form-field">
+
+                        <label for="fullName">
+                            Họ và tên
+                        </label>
+
+                        <input
+                            type="text"
+                            id="fullName"
+                            value="Nguyễn Văn User"
+                        >
+
                     </div>
 
-                    <div class="card-body">
-                        <form id="profileForm">
-                            <div class="form-grid">
-                                <div class="field">
-                                    <label for="fullName">Họ và tên</label>
-                                    <input id="fullName" value="Kim Hana" required>
-                                </div>
 
-                                <div class="field">
-                                    <label for="username">Username</label>
-                                    <input id="username" value="kimhana" required>
-                                </div>
+                    <!-- Username -->
+                    <div class="form-field">
 
-                                <div class="field">
-                                    <label for="email">Email</label>
-                                    <input id="email" type="email" value="kimhana@example.com" required>
-                                </div>
+                        <label for="username">
+                            Username
+                        </label>
 
-                                <div class="field">
-                                    <label for="phone">Số điện thoại</label>
-                                    <input id="phone" value="0901234567">
-                                </div>
+                        <input
+                            type="text"
+                            id="username"
+                            value="nguyenvanuser"
+                        >
 
-                                <div class="field">
-                                    <label for="birthday">Ngày sinh</label>
-                                    <input id="birthday" type="date" value="2006-03-29">
-                                </div>
+                        <small
+                            id="usernameError"
+                            class="error"
+                        ></small>
 
-                                <div class="field">
-                                    <label for="gender">Giới tính</label>
-                                    <input id="gender" value="Nữ">
-                                </div>
-
-                                <div class="field full">
-                                    <label for="description">Giới thiệu</label>
-                                    <input id="description" value="Người dùng Mạch Tin.">
-                                </div>
-                            </div>
-
-                            <div class="actions">
-                                <button class="btn" type="reset">Hủy</button>
-                                <button class="btn primary" type="submit">Lưu thay đổi</button>
-                            </div>
-
-                            <div class="message" id="profileMessage"></div>
-                        </form>
                     </div>
+
+
+                    <!-- Email -->
+                    <div class="form-field">
+
+                        <label for="email">
+                            Email
+                        </label>
+
+                        <input
+                            type="text"
+                            id="email"
+                            value="user@gmail.com"
+                        >
+
+                        <small
+                            id="emailError"
+                            class="error"
+                        ></small>
+
+                    </div>
+
+
+                    <!-- SĐT -->
+                    <div class="form-field">
+
+                        <label for="phone">
+                            Số điện thoại
+                        </label>
+
+                        <input
+                            type="text"
+                            id="phone"
+                            value="0901234567"
+                        >
+
+                    </div>
+
+
+                    <!-- Ngày sinh -->
+                    <div class="form-field">
+
+                        <label for="birthday">
+                            Ngày sinh
+                        </label>
+
+                        <input
+                            type="date"
+                            id="birthday"
+                            value="2000-01-15"
+                        >
+
+                    </div>
+
+
+                    <!-- Bio -->
+                    <div class="form-field full-width">
+
+                        <label for="bio">
+                            Tiểu sử
+                        </label>
+
+                        <textarea
+                            id="bio"
+                            rows="4"
+                        >Độc giả của MẠCH TIN.</textarea>
+
+                        <small class="note">
+                            Tiểu sử sẽ được hiển thị công khai trên trang tác giả.
+                        </small>
+
+                    </div>
+
                 </div>
 
-                <div class="info-card password-card" id="password">
-                    <div class="card-heading">
-                        <h2>Đổi mật khẩu</h2>
-                        <p>Thay đổi mật khẩu đăng nhập tài khoản.</p>
-                    </div>
-
-                    <div class="card-body">
-                        <form id="passwordForm">
-                            <div class="form-grid">
-                                <div class="field full">
-                                    <label for="oldPassword">Mật khẩu hiện tại</label>
-                                    <input id="oldPassword" type="password" required>
-                                </div>
-
-                                <div class="field">
-                                    <label for="newPassword">Mật khẩu mới</label>
-                                    <input id="newPassword" type="password" minlength="8" required>
-                                </div>
-
-                                <div class="field">
-                                    <label for="confirmPassword">Xác nhận mật khẩu</label>
-                                    <input id="confirmPassword" type="password" minlength="8" required>
-                                </div>
-                            </div>
-
-                            <div class="actions">
-                                <button class="btn primary" type="submit">Đổi mật khẩu</button>
-                            </div>
-
-                            <div class="message" id="passwordMessage"></div>
-                        </form>
-                    </div>
-                </div>
             </section>
-        </div>
-    </div>
-</main>
 
-<footer class="footer">
-    <div class="container">
-        <div class="footer-logo">MẠCH <em>TIN</em></div>
-        <div class="footer-copy">© 2026 Mạch Tin · Thông tin nhanh, rõ ràng và đáng tin cậy.</div>
-    </div>
-</footer>
+
+            <!-- ================= CHANGE PASSWORD ================= -->
+            <section class="password-section">
+
+                <h2>Đổi mật khẩu</h2>
+
+                <div class="section-line"></div>
+
+                <div class="password-form">
+
+
+                    <!-- Mật khẩu cũ -->
+                    <div class="form-field">
+
+                        <label for="oldPassword">
+                            Mật khẩu cũ
+                        </label>
+
+                        <div class="password-box">
+
+                            <input
+                                type="password"
+                                id="oldPassword"
+                                placeholder="Nhập mật khẩu cũ"
+                            >
+
+                            <button
+                                type="button"
+                                onclick="togglePassword('oldPassword', this)"
+                            >
+                                ◉
+                            </button>
+
+                        </div>
+
+                        <small
+                            id="oldPasswordError"
+                            class="error"
+                        ></small>
+
+                    </div>
+
+
+                    <!-- Mật khẩu mới -->
+                    <div class="form-field">
+
+                        <label for="newPassword">
+                            Mật khẩu mới
+                        </label>
+
+                        <div class="password-box">
+
+                            <input
+                                type="password"
+                                id="newPassword"
+                                placeholder="Nhập mật khẩu mới"
+                            >
+
+                            <button
+                                type="button"
+                                onclick="togglePassword('newPassword', this)"
+                            >
+                                ◉
+                            </button>
+
+                        </div>
+
+                        <small class="note">
+                            Mật khẩu phải có ít nhất 8 ký tự.
+                        </small>
+
+                        <small
+                            id="newPasswordError"
+                            class="error"
+                        ></small>
+
+                    </div>
+
+
+                    <!-- Xác nhận -->
+                    <div class="form-field">
+
+                        <label for="confirmPassword">
+                            Xác nhận mật khẩu mới
+                        </label>
+
+                        <div class="password-box">
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Nhập lại mật khẩu mới"
+                            >
+
+                            <button
+                                type="button"
+                                onclick="togglePassword('confirmPassword', this)"
+                            >
+                                ◉
+                            </button>
+
+                        </div>
+
+                        <small
+                            id="confirmPasswordError"
+                            class="error"
+                        ></small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ================= ACTION ================= -->
+            <div class="action-area">
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    onclick="resetForm()"
+                >
+                    Hủy
+                </button>
+
+                <button
+                    type="button"
+                    class="save-button"
+                    onclick="saveChanges()"
+                >
+                    Lưu thay đổi
+                </button>
+
+            </div>
+
+
+            <!-- SUCCESS -->
+            <div
+                id="successMessage"
+                class="success-message"
+            >
+                ✓ Cập nhật thông tin tài khoản thành công.
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
 
 <script>
-const form = document.getElementById("profileForm");
 
-form.addEventListener("submit", function(e){
-    e.preventDefault();
+    /* ============================
+       AVATAR
+    ============================ */
 
-    const name = document.getElementById("fullName").value.trim() || "Kim Hana";
-    const username = document.getElementById("username").value.trim() || "kimhana";
-    const description = document.getElementById("description").value.trim() || "Người dùng Mạch Tin.";
-    const initials = name.split(/\s+/).map(x => x[0]).join("").slice(0,2).toUpperCase();
+    const avatarInput =
+        document.getElementById("avatarInput");
 
-    document.getElementById("summaryName").textContent = name;
-    document.getElementById("summaryUsername").textContent = "@" + username;
-    document.getElementById("summaryDescription").textContent = description;
-    document.getElementById("profileAvatar").textContent = initials;
-    document.getElementById("sideAvatar").textContent = initials;
-    document.getElementById("sideName").textContent = name;
+    const avatarPreview =
+        document.getElementById("avatarPreview");
 
-    const msg = document.getElementById("profileMessage");
-    msg.textContent = "Đã cập nhật thông tin tài khoản.";
-    msg.style.display = "block";
-});
 
-document.getElementById("passwordForm").addEventListener("submit", function(e){
-    e.preventDefault();
+    avatarInput.addEventListener("change", function () {
 
-    const oldPass = document.getElementById("oldPassword").value;
-    const newPass = document.getElementById("newPassword").value;
-    const confirm = document.getElementById("confirmPassword").value;
-    const msg = document.getElementById("passwordMessage");
+        const file = this.files[0];
 
-    if(!oldPass){
-        msg.textContent = "Vui lòng nhập mật khẩu hiện tại.";
-    }else if(newPass.length < 8){
-        msg.textContent = "Mật khẩu mới phải có ít nhất 8 ký tự.";
-    }else if(newPass !== confirm){
-        msg.textContent = "Mật khẩu xác nhận không khớp.";
-    }else{
-        msg.textContent = "Đổi mật khẩu thành công.";
-        this.reset();
+        if (!file) return;
+
+
+        if (file.size > 2 * 1024 * 1024) {
+
+            alert("Ảnh đại diện không được vượt quá 2MB.");
+
+            this.value = "";
+
+            return;
+        }
+
+
+        const reader = new FileReader();
+
+
+        reader.onload = function (event) {
+
+            avatarPreview.src =
+                event.target.result;
+
+        };
+
+
+        reader.readAsDataURL(file);
+
+    });
+
+
+    /* ============================
+       PASSWORD
+    ============================ */
+
+    function togglePassword(id, button) {
+
+        const input =
+            document.getElementById(id);
+
+
+        if (input.type === "password") {
+
+            input.type = "text";
+
+        } else {
+
+            input.type = "password";
+
+        }
+
     }
 
-    msg.style.display = "block";
-});
 
-if(location.hash === "#password"){
-    setTimeout(() => document.getElementById("password").scrollIntoView(), 50);
-}
+    /* ============================
+       CLEAR ERROR
+    ============================ */
+
+    function clearErrors() {
+
+        document
+            .querySelectorAll(".error")
+            .forEach(function (element) {
+
+                element.textContent = "";
+
+            });
+
+    }
+
+
+    /* ============================
+       ERROR
+    ============================ */
+
+    function showError(id, message) {
+
+        document.getElementById(id).textContent =
+            message;
+
+    }
+
+
+    /* ============================
+       SAVE
+    ============================ */
+
+    function saveChanges() {
+
+        clearErrors();
+
+
+        let valid = true;
+
+
+        const username =
+            document.getElementById("username")
+                .value.trim();
+
+
+        const email =
+            document.getElementById("email")
+                .value.trim();
+
+
+        const oldPassword =
+            document.getElementById("oldPassword")
+                .value;
+
+
+        const newPassword =
+            document.getElementById("newPassword")
+                .value;
+
+
+        const confirmPassword =
+            document.getElementById("confirmPassword")
+                .value;
+
+
+        /* ============================
+           USERNAME
+        ============================ */
+
+        const usedUsernames = [
+            "admin",
+            "admin123",
+            "mach_tin"
+        ];
+
+
+        if (
+            username !== "" &&
+            usedUsernames.includes(
+                username.toLowerCase()
+            )
+        ) {
+
+            showError(
+                "usernameError",
+                "Username đã được sử dụng"
+            );
+
+            valid = false;
+
+        }
+
+
+        /* ============================
+           EMAIL
+        ============================ */
+
+        if (email !== "") {
+
+            const emailRegex =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+            if (!emailRegex.test(email)) {
+
+                showError(
+                    "emailError",
+                    "Email không đúng định dạng"
+                );
+
+                valid = false;
+
+            }
+
+        }
+
+
+        /* ============================
+           CHANGE PASSWORD
+        ============================ */
+
+        const changingPassword =
+            oldPassword !== "" ||
+            newPassword !== "" ||
+            confirmPassword !== "";
+
+
+        if (changingPassword) {
+
+
+            /* Mật khẩu cũ */
+
+            if (oldPassword !== "12345678") {
+
+                showError(
+                    "oldPasswordError",
+                    "Mật khẩu cũ không chính xác"
+                );
+
+                valid = false;
+
+            }
+
+
+            /* Mật khẩu mới */
+
+            if (newPassword.length < 8) {
+
+                showError(
+                    "newPasswordError",
+                    "Mật khẩu phải có ít nhất 8 ký tự"
+                );
+
+                valid = false;
+
+            }
+
+
+            /* Xác nhận */
+
+            if (confirmPassword !== newPassword) {
+
+                showError(
+                    "confirmPasswordError",
+                    "Mật khẩu xác nhận không khớp"
+                );
+
+                valid = false;
+
+            }
+
+        }
+
+
+        /* ============================
+           INVALID
+        ============================ */
+
+        if (!valid) return;
+
+
+        /* ============================
+           SUCCESS
+        ============================ */
+
+        const message =
+            document.getElementById(
+                "successMessage"
+            );
+
+
+        message.classList.add("show");
+
+
+        /*
+            Theo UC-US06:
+            Sau khi lưu thành công,
+            User vẫn ở trang quản lý tài khoản.
+        */
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+
+        setTimeout(function () {
+
+            message.classList.remove("show");
+
+        }, 4000);
+
+    }
+
+
+    /* ============================
+       RESET
+    ============================ */
+
+    function resetForm() {
+
+        clearErrors();
+
+
+        document.getElementById("fullName")
+            .value = "Nguyễn Văn User";
+
+
+        document.getElementById("username")
+            .value = "nguyenvanuser";
+
+
+        document.getElementById("email")
+            .value = "user@gmail.com";
+
+
+        document.getElementById("phone")
+            .value = "0901234567";
+
+
+        document.getElementById("birthday")
+            .value = "2000-01-15";
+
+
+        document.getElementById("bio")
+            .value = "Độc giả của MẠCH TIN.";
+
+
+        document.getElementById("oldPassword")
+            .value = "";
+
+
+        document.getElementById("newPassword")
+            .value = "";
+
+
+        document.getElementById("confirmPassword")
+            .value = "";
+
+
+        document.getElementById("avatarInput")
+            .value = "";
+
+
+        avatarPreview.src =
+            "https://ui-avatars.com/api/?name=Nguyen+Van+User&background=eee7d8&color=806d48&size=150";
+
+
+        document
+            .getElementById("successMessage")
+            .classList.remove("show");
+
+    }
+
 </script>
+
 </body>
 </html>
