@@ -11,19 +11,59 @@
          AUTH PAGE
       ========================= */
       .auth-page {
-        min-height: 70vh;
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 48px 24px;
+        background: var(--paper, #f7f6f2);
       }
 
-      .auth-card {
+      .auth-wrapper {
         width: 100%;
         max-width: 420px;
+      }
+
+      /* =========================
+         LOGO MẠCH TIN
+      ========================= */
+      .auth-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        margin-bottom: 24px;
+        text-decoration: none;
+        color: var(--ink, #1e293b);
+      }
+
+      .auth-logo .pulse-mark {
+        color: var(--crimson, #8f1d2c);
+        flex-shrink: 0;
+      }
+
+      .auth-logo .logo__word {
+        font-family: var(--f-display, Georgia, serif);
+        font-size: 25px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: var(--ink, #1e293b);
+      }
+
+      .auth-logo .logo__word em {
+        color: var(--brass-dark, #9a7412);
+        font-style: normal;
+      }
+
+      /* =========================
+         AUTH CARD
+      ========================= */
+      .auth-card {
+        width: 100%;
         background: var(--white);
         border: 1px solid var(--line);
         padding: 36px 32px;
+        box-sizing: border-box;
       }
 
       .auth-card h1 {
@@ -84,115 +124,19 @@
       }
 
       /* =========================
-         FOOTER - 2 CỘT
-      ========================= */
-
-      .site-footer .footer-top {
-        width: min(100% - 48px, 1100px);
-        margin: 0 auto;
-        display: grid !important;
-        grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr) !important;
-        gap: 90px;
-        justify-content: center;
-        align-items: start;
-      }
-
-      .site-footer .footer-brand,
-      .site-footer .footer-top > div:not(.footer-brand) {
-        text-align: left;
-      }
-
-      /* Căn logo + nội dung cột 1 */
-      .site-footer .footer-brand .logo {
-        display: inline-flex;
-        align-items: center;
-      }
-
-      .site-footer .footer-brand p {
-        max-width: 420px;
-      }
-
-      /* Cột Về Mạch Tin */
-      .site-footer .footer-top > div:last-child {
-        padding-left: 20px;
-      }
-
-      .site-footer .footer-top h4 {
-        margin-bottom: 22px;
-      }
-
-      .site-footer .footer-top ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .site-footer .footer-top ul li {
-        margin-bottom: 18px;
-      }
-
-      /* Social lấy đúng dữ liệu mock-data */
-      .site-footer .footer-social {
-        display: flex;
-        gap: 12px;
-        margin-top: 24px;
-      }
-
-      .site-footer .footer-social a {
-        text-decoration: none;
-      }
-
-      /* =========================
-         FOOTER BOTTOM - CĂN GIỮA
-      ========================= */
-
-      .site-footer .footer-bottom {
-        width: min(100% - 48px, 1100px);
-        margin: 0 auto;
-        text-align: center !important;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .site-footer .footer-bottom span {
-        text-align: center;
-      }
-
-      /* =========================
          RESPONSIVE
       ========================= */
-
-      @media (max-width: 768px) {
-        .site-footer .footer-top {
-          grid-template-columns: 1fr !important;
-          gap: 40px;
+      @media (max-width: 500px) {
+        .auth-page {
+          padding: 32px 16px;
         }
 
-        .site-footer .footer-top > div:last-child {
-          padding-left: 0;
+        .auth-card {
+          padding: 28px 22px;
         }
 
-        .site-footer .footer-brand,
-        .site-footer .footer-top > div:not(.footer-brand) {
-          text-align: center;
-        }
-
-        .site-footer .footer-brand .logo {
-          justify-content: center;
-        }
-
-        .site-footer .footer-brand p {
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .site-footer .footer-social {
-          justify-content: center;
-        }
-
-        .site-footer .footer-top ul {
-          text-align: center;
+        .auth-logo .logo__word {
+          font-size: 23px;
         }
       }
     </style>
@@ -200,55 +144,13 @@
 
   <body>
     <!-- =========================================
-         TICKER
+         LOGIN
     ========================================== -->
-    <div class="ticker">
-      <div class="ticker__inner">
-        <span>
-          <span class="ticker__tag">NÓNG —</span>
-          Quốc hội thông qua luật sửa đổi về thuế thu nhập cá nhân
-        </span>
-
-        <span>
-          <span class="ticker__tag">NÓNG —</span>
-          Giá vàng miếng SJC vượt mốc 92 triệu đồng/lượng
-        </span>
-
-        <span>
-          <span class="ticker__tag">THỂ THAO —</span>
-          Đội tuyển Việt Nam giành vé vào bán kết
-        </span>
-
-        <span>
-          <span class="ticker__tag">NÓNG —</span>
-          Quốc hội thông qua luật sửa đổi về thuế thu nhập cá nhân
-        </span>
-
-        <span>
-          <span class="ticker__tag">NÓNG —</span>
-          Giá vàng miếng SJC vượt mốc 92 triệu đồng/lượng
-        </span>
-      </div>
-    </div>
-
-    <!-- =========================================
-         HEADER - GUEST
-    ========================================== -->
-    <header class="site-header">
-      <div class="header-utility">
-        <div class="wrap">
-          <span>Thứ Năm, 13/08/2026</span>
-
-          <div class="header-utility__links">
-            <a href="login.html">Đăng nhập</a>
-            <a href="register.html">Tạo tài khoản</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="header-main">
-        <div class="wrap">
-          <a href="index.html" class="logo">
+    <main>
+      <div class="auth-page">
+        <div class="auth-wrapper">
+          <!-- LOGO MẠCH TIN -->
+          <a href="index.html" class="auth-logo">
             <svg
               class="pulse-mark"
               width="26"
@@ -268,203 +170,82 @@
             <span class="logo__word"> MẠCH&nbsp;<em>TIN</em> </span>
           </a>
 
-          <nav class="main-nav">
-            <a href="index.html">Trang chủ</a>
-            <a href="category.html">Thời sự</a>
-            <a href="category.html">Kinh doanh</a>
-            <a href="category.html">Thế giới</a>
-            <a href="category.html">Công nghệ</a>
-            <a href="category.html">Thể thao</a>
-          </nav>
+          <!-- FORM ĐĂNG NHẬP -->
+          <section class="auth-card">
+            <h1>Đăng nhập</h1>
 
-          <div class="header-actions">
-            <a href="search.html" class="icon-btn">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                <circle
-                  cx="11"
-                  cy="11"
-                  r="7"
-                  stroke="currentColor"
-                  stroke-width="2"
+            <p class="dek">Đăng nhập để sử dụng các tính năng cá nhân.</p>
+
+            <!-- THÔNG BÁO SAI TÀI KHOẢN -->
+            <div class="alert is-error" id="login-error">
+              Sai thông tin đăng nhập.
+            </div>
+
+            <!-- THÔNG BÁO QUÊN MẬT KHẨU -->
+            <div class="alert is-info" id="forgot-msg">
+              Tính năng đang phát triển, vui lòng liên hệ Admin.
+            </div>
+
+            <form id="login-form">
+              <!-- EMAIL / USERNAME -->
+              <div class="field">
+                <label for="login-id"> Email hoặc username </label>
+
+                <input
+                  type="text"
+                  id="login-id"
+                  placeholder="email@vidu.com hoặc username"
+                  required
                 />
+              </div>
 
-                <path
-                  d="M21 21L16.65 16.65"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
+              <!-- MẬT KHẨU -->
+              <div class="field">
+                <label for="password"> Mật khẩu </label>
+
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Nhập mật khẩu"
+                  required
                 />
-              </svg>
-            </a>
+              </div>
 
-            <a href="login.html" class="btn btn-ghost btn-sm"> Đăng nhập </a>
-          </div>
+              <!-- GHI NHỚ / QUÊN MẬT KHẨU -->
+              <div class="auth-links">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 14px;
+                    color: var(--muted);
+                  "
+                >
+                  <input type="checkbox" style="width: auto" />
+
+                  Ghi nhớ đăng nhập
+                </label>
+
+                <a href="#" id="forgot-link"> Quên mật khẩu? </a>
+              </div>
+
+              <!-- BUTTON -->
+              <button type="submit" class="btn btn-primary btn-block">
+                Đăng nhập
+              </button>
+            </form>
+
+            <!-- ĐĂNG KÝ -->
+            <p class="form-footer">
+              Chưa có tài khoản?
+
+              <a href="register.html"> Đăng ký ngay </a>
+            </p>
+          </section>
         </div>
-      </div>
-    </header>
-
-    <!-- =========================================
-         LOGIN
-    ========================================== -->
-    <main>
-      <div class="auth-page">
-        <section class="auth-card">
-          <h1>Đăng nhập</h1>
-
-          <p class="dek">Đăng nhập để sử dụng các tính năng cá nhân.</p>
-
-          <div class="alert is-error" id="login-error">
-            Sai thông tin đăng nhập.
-          </div>
-
-          <div class="alert is-info" id="forgot-msg">
-            Tính năng đang phát triển, vui lòng liên hệ Admin.
-          </div>
-
-          <form id="login-form">
-            <div class="field">
-              <label for="login-id"> Email hoặc username </label>
-
-              <input
-                type="text"
-                id="login-id"
-                placeholder="email@vidu.com hoặc username"
-                required
-              />
-            </div>
-
-            <div class="field">
-              <label for="password"> Mật khẩu </label>
-
-              <input
-                type="password"
-                id="password"
-                placeholder="Nhập mật khẩu"
-                required
-              />
-            </div>
-
-            <div class="auth-links">
-              <label
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 8px;
-                  font-size: 14px;
-                  color: var(--muted);
-                "
-              >
-                <input type="checkbox" style="width: auto" />
-
-                Ghi nhớ đăng nhập
-              </label>
-
-              <a href="#" id="forgot-link"> Quên mật khẩu? </a>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">
-              Đăng nhập
-            </button>
-          </form>
-
-          <p class="form-footer">
-            Chưa có tài khoản?
-            <a href="register.html">Đăng ký ngay</a>
-          </p>
-        </section>
       </div>
     </main>
-
-    <!-- =========================================
-         FOOTER
-         CHỈ CÒN 2 CỘT
-    ========================================== -->
-    <footer class="site-footer">
-      <div class="wrap footer-top">
-        <!-- =========================
-             CỘT 1 - THƯƠNG HIỆU
-        ========================== -->
-        <div class="footer-brand">
-          <a href="index.html" class="logo">
-            <svg
-              class="pulse-mark"
-              width="24"
-              height="24"
-              viewBox="0 0 26 26"
-              fill="none"
-            >
-              <path
-                d="M1 13H7L9.5 6L13.5 20L16 13H25"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-
-            <span class="logo__word"> MẠCH&nbsp;<em>TIN</em> </span>
-          </a>
-
-          <p>
-            Bắt mạch dòng chảy tin tức Việt Nam — cập nhật liên tục, xác thực
-            trước khi đăng.
-          </p>
-
-          <!-- 3 nút mạng xã hội lấy từ mock-data.js -->
-          <div class="footer-social">
-            <a
-              href="https://facebook.com/machtin"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-            >
-              FB
-            </a>
-
-            <a
-              href="https://youtube.com/machtin"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="YouTube"
-            >
-              YT
-            </a>
-
-            <a
-              href="https://tiktok.com/machtin"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="TikTok"
-            >
-              TT
-            </a>
-          </div>
-        </div>
-
-        <!-- =========================
-             CỘT 2 - VỀ MẠCH TIN
-        ========================== -->
-        <div>
-          <h4>Về Mạch Tin</h4>
-
-          <ul>
-            <li>Số điện thoại: 028 1234 5678</li>
-
-            <li>Email: lienhe@machtin.vn</li>
-
-            <li>Địa chỉ: 02 Võ Oanh, phường Thạnh Mỹ Tây, TP. Hồ Chí Minh</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- =========================================
-           FOOTER BOTTOM
-           CĂN GIỮA
-      ========================================== -->
-      <div class="wrap footer-bottom">
-        <span> © 2026 Mạch Tin · Điều khoản sử dụng · Chính sách bảo mật </span>
-      </div>
-    </footer>
 
     <!-- =========================================
          JAVASCRIPT
@@ -485,8 +266,7 @@
 
       /* =========================
          ĐĂNG NHẬP DEMO
-         Mật khẩu theo mock-data.js:
-         12345678
+         Mật khẩu: 12345678
       ========================== */
       document
         .getElementById("login-form")
@@ -497,19 +277,7 @@
 
           const pass = document.getElementById("password").value;
 
-          /*
-            mock-data.js có các tài khoản:
-
-            user01       / 12345678
-            user02       / 12345678
-            user03       / 12345678
-            user04       / 12345678
-            reporter01   / 12345678
-            reporter02   / 12345678
-            editor01     / 12345678
-            admin01      / 12345678
-          */
-
+          /* Tài khoản demo */
           const validUsers = [
             "user01",
             "user02",
@@ -521,6 +289,7 @@
             "admin01",
           ];
 
+          /* Kiểm tra đăng nhập */
           if (validUsers.includes(loginId) && pass === "12345678") {
             window.location.href = "index.html";
           } else {
