@@ -1,0 +1,569 @@
+/* =========================================================
+   MY-TOPICS.CSS — MẠCH TIN
+   ĐỀ TÀI CỦA TÔI (UC-RP01)
+========================================================= */
+
+
+
+/* =========================================================
+   1. BẢNG MÀU
+========================================================= */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,480;0,9..144,600;1,9..144,420&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+
+
+:root {
+
+
+--ink:#131B2E;
+
+
+--ink-soft:#2B3350;
+
+
+--paper:#F5F3EE;
+
+
+--paper-alt:#ECE7DA;
+
+
+--white:#FFFFFF;
+
+
+--brass:#B8894F;
+
+
+--brass-dark:#93692F;
+
+
+--crimson:#A6362C;
+
+
+--line:#D9D3C2;
+
+
+--line-soft:#E6E1D2;
+
+
+--muted:#6B6759;
+
+
+
+--f-display:
+'Fraunces',
+'Times New Roman',
+serif;
+
+
+
+--f-body:
+'Inter',
+Arial,
+sans-serif;
+
+
+
+--f-mono:
+'IBM Plex Mono',
+monospace;
+
+
+}
+
+
+
+
+
+
+
+/* =========================================================
+   2. RESET
+========================================================= */
+
+
+*,
+*::before,
+*::after {
+
+
+box-sizing:border-box;
+
+
+}
+
+
+
+html {
+
+
+margin:0;
+
+
+padding:0;
+
+
+width:100%;
+
+
+min-height:100%;
+
+
+}
+
+
+
+body {
+
+
+margin:0;
+
+
+padding:0;
+
+
+min-height:100vh;
+
+
+background:var(--paper);
+
+
+color:var(--ink);
+
+
+font-family:var(--f-body);
+
+
+font-size:16px;
+
+
+line-height:1.55;
+
+
+}
+
+
+
+button,
+input,
+textarea {
+
+
+font-family:
+Arial,
+Helvetica,
+sans-serif;
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================================================
+   3. LAYOUT
+========================================================= */
+
+
+.profile-page {
+
+
+width:100%;
+
+
+min-height:100vh;
+
+
+display:grid;
+
+
+grid-template-columns:
+
+250px
+
+minmax(0,1fr);
+
+
+
+background:var(--paper);
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================================================
+   4. SIDEBAR
+========================================================= */
+
+
+.history-sidebar {
+
+
+width:250px;
+
+
+min-height:100vh;
+
+
+display:flex;
+
+
+flex-direction:column;
+
+
+background:var(--paper-alt);
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================================================
+   5. LOGO
+========================================================= */
+
+
+.history-brand {
+
+
+width:100%;
+
+
+height:94px;
+
+
+padding:0 24px;
+
+
+display:flex;
+
+
+align-items:center;
+
+
+border-bottom:
+
+1px solid var(--paper);
+
+
+}
+
+
+
+
+
+.brand-link {
+
+
+display:flex;
+
+
+align-items:center;
+
+
+gap:8px;
+
+
+width:max-content;
+
+
+height:34px;
+
+
+color:var(--ink);
+
+
+text-decoration:none;
+
+
+white-space:nowrap;
+
+
+}
+
+
+
+.pulse-mark {
+
+
+width:30px;
+
+
+height:24px;
+
+
+flex:0 0 30px;
+
+
+color:var(--crimson);
+
+
+}
+
+
+
+.brand-word {
+
+
+display:flex;
+
+
+align-items:baseline;
+
+
+white-space:nowrap;
+
+
+}
+
+
+
+.brand-mach {
+
+
+color:var(--ink);
+
+
+font-family:
+
+Georgia,
+
+"Times New Roman",
+
+serif;
+
+
+font-size:23px;
+
+
+font-weight:700;
+
+
+letter-spacing:-0.7px;
+
+
+}
+
+
+
+.brand-tin {
+
+
+margin-left:4px;
+
+
+color:var(--brass-dark);
+
+
+font-family:
+
+Georgia,
+
+"Times New Roman",
+
+serif;
+
+
+font-size:23px;
+
+
+font-style:italic;
+
+
+font-weight:400;
+
+
+letter-spacing:-0.8px;
+
+
+transform:skewX(-4deg);
+
+
+}
+
+
+
+
+.brand-link:hover .pulse-mark {
+
+
+color:#c0392b;
+
+
+}
+
+
+.brand-link:hover .brand-mach {
+
+
+color:#202a40;
+
+
+}
+
+
+.brand-link:hover .brand-tin {
+
+
+color:var(--brass);
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================================================
+   6. USER PROFILE
+========================================================= */
+
+
+.history-user {
+
+
+width:100%;
+
+
+padding:
+
+26px 20px 23px;
+
+
+text-align:center;
+
+
+border-bottom:
+
+1px solid var(--paper);
+
+
+}
+
+
+
+
+.history-avatar {
+
+
+width:64px;
+
+
+height:64px;
+
+
+aspect-ratio:1 / 1;
+
+
+margin:
+
+0 auto 12px;
+
+
+border-radius:50%;
+
+
+overflow:hidden;
+
+
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+background:var(--white);
+
+
+border:
+
+1px solid var(--line);
+
+
+}
+
+
+
+
+.history-avatar img {
+
+
+width:100%;
+
+
+height:100%;
+
+
+display:block;
+
+
+object-fit:cover;
+
+
+}
+
+
+
+
+
+.history-user-name {
+
+
+margin:0;
+
+
+color:var(--ink);
+
+
+font-size:14px;
+
+
+font-weight:600;
+
+
+}
+
+
+
+
+.history-user-role {
+
+
+margin-top:5px;
+
+
+color:var(--muted);
+
+
+font-family:var(--f-mono);
+
+
+font-size:12px;
+
+
+letter-spacing:.02em;
+
+
+}
