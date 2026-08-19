@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Bài viết yêu thích — Mạch Tin</title>
+
+    <!-- CSS chung -->
+    <link rel="stylesheet" href="style.css/favorites.css" />
+  </head>
+
+  <body class="user-page favorites-page">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="user-sidebar">
+      <!-- Logo -->
+      <div class="sidebar-logo">
+        <a href="index.html" class="brand-logo">
+          <span class="pulse-icon">
+            <svg
+              viewBox="0 0 48 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <polyline points="1,12 10,12 14,4 19,20 24,8 28,12 47,12" />
+            </svg>
+          </span>
+
+          <span class="brand-mach">MẠCH</span>
+          <span class="brand-tin">TIN</span>
+        </a>
+      </div>
+
+      <!-- User -->
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userAvatar">NU</div>
+
+        <div class="user-name" id="userName">Nguyễn Văn User</div>
+
+        <div class="user-role" id="userRole">Độc giả</div>
+      </div>
+
+      <!-- Menu -->
+      <nav class="sidebar-menu">
+        <a href="profile.html" class="menu-item">
+          <span class="menu-icon">♙</span>
+          <span>Thông tin tài khoản</span>
+        </a>
+
+        <a href="#" class="menu-item">
+          <span class="menu-icon">♙</span>
+          <span>Đổi mật khẩu</span>
+        </a>
+
+        <a href="favorites.html" class="menu-item active">
+          <span class="menu-icon heart-icon">♡</span>
+          <span>Bài viết yêu thích</span>
+        </a>
+
+        <a href="history.html" class="menu-item">
+          <span class="menu-icon">▣</span>
+          <span>Lịch sử đọc bài</span>
+        </a>
+
+        <a href="my-comments.html" class="menu-item">
+          <span class="menu-icon">◌</span>
+          <span>Bình luận của tôi</span>
+        </a>
+
+        <a href="#" class="menu-item">
+          <span class="menu-icon">♧</span>
+          <span>Thông báo</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- ==================== MAIN ==================== -->
+    <main class="user-main">
+      <section class="page-header">
+        <h1>Bài viết yêu thích</h1>
+
+        <p>Danh sách các bài viết bạn đã lưu.</p>
+      </section>
+
+      <!-- Danh sách bài yêu thích -->
+      <section id="favoritesList" class="favorites-list">
+        <!-- JavaScript render -->
+      </section>
+    </main>
+
+    <!-- ==================================================
+         CHỈ LINK TRỰC TIẾP TỚI MOCK-DATA.JS
+         ================================================== -->
+    <script src="mock-data.js"></script>
+
+    <script>
+      /*
+       * ==================================================
+       * FAVORITES — UC-US01
+       * ==================================================
+       */
+
+      const CURRENT_USER_ID = 1;
+
+      /*
+       * Lấy MOCK_DATA từ mock-data.js
+       */
+      const data =
+        typeof MOCK_DATA !== "undefined" ? MOCK_DATA : window.MOCK_DATA;
+
+      /* ==================== HELPER ==================== */
+
+      function getUser() {
+        if (!data || !Array.isArray(data.users)) {
+          return null;
+        }
+
+        return data.users.find(
+          (user) => Number(user.id) === Number(CURRENT_USER_ID),
+        );
+      }
+
+      function getInitials(name) {
+        if (!name) return "NU";
+
+        const words = name.trim().split(/\s+/).filter(Boolean);
+
+        if (words.length === 1) {
+          return words[0].substring(0, 2).toUpperCase();
+        }
+
+        return (
+          words[0].charAt(0) + words[words.length - 1].charAt(0)
+        ).toUpperCase();
+      }
+
+      function getArticle(articleId) {
+        if (!data || !Array.isArray(data.articles)) {
+          return null;
+        }
+
+        return data.articles.find(
+          (article) => Number(article.id) === Number(articleId),
+        );
+      }
+
+      function getCategory(categoryId) {
+        if (!data || !Array.isArray(data.categories)) {
+          return "";
+        }
+
+        const category = data.categories.find(
+          (item) => Number(item.id) === Number(categoryId),
+        );
+
+        return category ? category.name : "";
+      }
+
+      function getAuthor(article) {
+        if (!article) return "";
+
+        if (article.author_name) {
+          return article.author_name;
+        }
+
+        if (article.author) {
+          return article.author;
+        }
+
+        if (article.author_id && data.users) {
+          const user = data.users.find(
+            (item) => Number(item.id) === Number(article.author_id),
+          );
+
+          return user ? user.name : "";
+        }
+
+        return "";
+      }
+
+      function getArticleTitle(article) {
+        return article?.title || article?.name || "Bài viết";
+      }
+
+      function getArticleSummary(article) {
+        return (
+          article?.summary || article?.description || article?.excerpt || ""
+        );
+      }
+
+      function getArticleImage(article) {
+        return article?.image || article?.image_url || article?.thumbnail || "";
+      }
+
+      function formatDate(value) {
+        if (!value) return "";
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+          return value;
+        }
+
+        return date.toLocaleDateString("vi-VN", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+      }
+
+      /* ==================== USER ==================== */
+
+      function renderUser() {
+        const user = getUser();
+
+        if (!user) return;
+
+        const name = user.name || user.full_name || "Nguyễn Văn User";
+
+        document.getElementById("userName").textContent = name;
+
+        document.getElementById("userAvatar").textContent = getInitials(name);
+
+        document.getElementById("userRole").textContent =
+          user.role === "reporter" ? "Phóng viên" : "Độc giả";
+      }
+
+      /* ==================== FAVORITES ==================== */
+
+      function getUserFavorites() {
+        if (!data || !Array.isArray(data.favorites)) {
+          return [];
+        }
+
+        return data.favorites.filter(
+          (favorite) =>
+            Number(favorite.user_id ?? favorite.userId) ===
+            Number(CURRENT_USER_ID),
+        );
+      }
+
+      function getFavoriteArticleId(favorite) {
+        return favorite.article_id ?? favorite.articleId;
+      }
+
+      function removeFavorite(favoriteId) {
+        /*
+         * UC-US01:
+         * Bỏ yêu thích ngay.
+         * KHÔNG confirm.
+         * KHÔNG chuyển trang.
+         */
+
+        if (!data || !Array.isArray(data.favorites)) {
+          return;
+        }
+
+        const index = data.favorites.findIndex(
+          (favorite) => Number(favorite.id) === Number(favoriteId),
+        );
+
+        if (index !== -1) {
+          data.favorites.splice(index, 1);
+        }
+
+        renderFavorites();
+      }
+
+      function renderFavorites() {
+        const container = document.getElementById("favoritesList");
+
+        const favorites = getUserFavorites();
+
+        if (!favorites.length) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">♡</div>
+              <h2>Chưa có bài viết yêu thích</h2>
+              <p>
+                Những bài viết bạn yêu thích sẽ xuất hiện ở đây.
+              </p>
+            </div>
+          `;
+
+          return;
+        }
+
+        container.innerHTML = favorites
+          .map((favorite) => {
+            const article = getArticle(getFavoriteArticleId(favorite));
+
+            if (!article) {
+              return "";
+            }
+
+            const image = getArticleImage(article);
+
+            const category = getCategory(
+              article.category_id ?? article.categoryId,
+            );
+
+            const author = getAuthor(article);
+
+            const date = formatDate(
+              article.published_at ?? article.created_at ?? article.date,
+            );
+
+            const title = getArticleTitle(article);
+
+            const summary = getArticleSummary(article);
+
+            return `
+                <article
+                  class="favorite-item"
+                  data-favorite-id="${favorite.id}"
+                >
+
+                  <a
+                    href="article.html?id=${article.id}"
+                    class="favorite-image-link"
+                  >
+                    ${
+                      image
+                        ? `
+                          <img
+                            src="${image}"
+                            alt="${title}"
+                            class="favorite-image"
+                          />
+                        `
+                        : `
+                          <div class="favorite-image placeholder-image">
+                            <span>ẢNH</span>
+                          </div>
+                        `
+                    }
+                  </a>
+
+
+                  <div class="favorite-content">
+
+                    <div class="favorite-meta">
+                      ${category ? `<span>${category}</span>` : ""}
+
+                      ${author ? `<span>· ${author}</span>` : ""}
+
+                      ${date ? `<span>· ${date}</span>` : ""}
+                    </div>
+
+
+                    <h2 class="favorite-title">
+                      <a
+                        href="article.html?id=${article.id}"
+                      >
+                        ${title}
+                      </a>
+                    </h2>
+
+
+                    ${
+                      summary
+                        ? `
+                          <p class="favorite-summary">
+                            ${summary}
+                          </p>
+                        `
+                        : ""
+                    }
+
+
+                    <button
+                      type="button"
+                      class="remove-favorite-btn"
+                      onclick="removeFavorite(${favorite.id})"
+                    >
+                      ♡ Bỏ yêu thích
+                    </button>
+
+                  </div>
+
+                </article>
+              `;
+          })
+          .join("");
+      }
+
+      /* ==================== INIT ==================== */
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderUser();
+        renderFavorites();
+      });
+    </script>
+  </body>
+</html>
