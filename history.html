@@ -6,26 +6,14 @@
 
     <title>Lịch sử đọc bài — Mạch Tin</title>
 
-    <!-- =====================================================
-       LINK CSS
-       history.html và history.css nằm cùng thư mục
-       ===================================================== -->
     <link rel="stylesheet" href="style.css/history.css" />
   </head>
 
   <body>
     <div class="history-page">
-      <!-- ===================================================
-         SIDEBAR
-         =================================================== -->
       <aside class="history-sidebar">
-        <!-- =================================================
-           LOGO MẠCH TIN
-           Logo được dựng trực tiếp bằng SVG + CSS
-           ================================================= -->
         <div class="history-brand">
           <a href="index.html" class="brand-link">
-            <!-- BIỂU TƯỢNG NHỊP MẠCH -->
             <svg
               class="pulse-mark"
               viewBox="0 0 40 32"
@@ -33,12 +21,7 @@
               aria-hidden="true"
             >
               <path
-                d="M2 16
-                 H10
-                 L13.5 7
-                 L19 25
-                 L23 16
-                 H38"
+                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
                 stroke="currentColor"
                 stroke-width="2.7"
                 stroke-linecap="round"
@@ -46,7 +29,6 @@
               />
             </svg>
 
-            <!-- CHỮ MẠCH TIN -->
             <span class="brand-word">
               <span class="brand-mach">MẠCH</span>
               <span class="brand-tin">TIN</span>
@@ -54,9 +36,6 @@
           </a>
         </div>
 
-        <!-- =================================================
-           THÔNG TIN USER
-           ================================================= -->
         <div class="history-user">
           <div class="history-avatar" id="userAvatar">
             <span id="userInitials">NU</span>
@@ -67,11 +46,7 @@
           <div class="history-user-role" id="userRole">Độc giả</div>
         </div>
 
-        <!-- =================================================
-           MENU
-           ================================================= -->
         <nav class="history-menu">
-          <!-- THÔNG TIN TÀI KHOẢN -->
           <a href="profile.html" class="history-menu-item">
             <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
               <circle
@@ -81,7 +56,6 @@
                 stroke="currentColor"
                 stroke-width="1.7"
               />
-
               <path
                 d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
                 stroke="currentColor"
@@ -90,10 +64,9 @@
               />
             </svg>
 
-            <span class="history-menu-text"> Thông tin tài khoản </span>
+            <span class="history-menu-text">Thông tin tài khoản</span>
           </a>
 
-          <!-- ĐỔI MẬT KHẨU -->
           <a href="profile.html" class="history-menu-item">
             <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
               <rect
@@ -105,21 +78,18 @@
                 stroke="currentColor"
                 stroke-width="1.7"
               />
-
               <path
                 d="M8 10V7a4 4 0 018 0v3"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linecap="round"
               />
-
               <circle cx="12" cy="15" r="1" fill="currentColor" />
             </svg>
 
-            <span class="history-menu-text"> Đổi mật khẩu </span>
+            <span class="history-menu-text">Đổi mật khẩu</span>
           </a>
 
-          <!-- BÀI VIẾT YÊU THÍCH -->
           <a href="favorites.html" class="history-menu-item">
             <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
               <path
@@ -130,10 +100,9 @@
               />
             </svg>
 
-            <span class="history-menu-text"> Bài viết yêu thích </span>
+            <span class="history-menu-text">Bài viết yêu thích</span>
           </a>
 
-          <!-- LỊCH SỬ ĐỌC BÀI -->
           <a href="history.html" class="history-menu-item active">
             <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
               <path
@@ -142,7 +111,6 @@
                 stroke-width="1.7"
                 stroke-linejoin="round"
               />
-
               <path
                 d="M5 5.5v11M9 7h7M9 11h7"
                 stroke="currentColor"
@@ -151,10 +119,9 @@
               />
             </svg>
 
-            <span class="history-menu-text"> Lịch sử đọc bài </span>
+            <span class="history-menu-text">Lịch sử đọc bài</span>
           </a>
 
-          <!-- BÌNH LUẬN -->
           <a href="my-comments.html" class="history-menu-item">
             <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
               <path
@@ -163,18 +130,14 @@
                 stroke-width="1.7"
                 stroke-linejoin="round"
               />
-
               <circle cx="9" cy="11.5" r=".8" fill="currentColor" />
-
               <circle cx="12" cy="11.5" r=".8" fill="currentColor" />
-
               <circle cx="15" cy="11.5" r=".8" fill="currentColor" />
             </svg>
 
-            <span class="history-menu-text"> Bình luận của tôi </span>
+            <span class="history-menu-text">Bình luận của tôi</span>
           </a>
 
-          <!-- THÔNG BÁO -->
           <a href="notifications.html" class="history-menu-item">
             <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
               <path
@@ -184,7 +147,6 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
-
               <path
                 d="M10 21h4"
                 stroke="currentColor"
@@ -193,14 +155,10 @@
               />
             </svg>
 
-            <span class="history-menu-text"> Thông báo </span>
+            <span class="history-menu-text">Thông báo</span>
           </a>
         </nav>
 
-        <!-- =================================================
-           ĐĂNG XUẤT
-           LUÔN NẰM CUỐI SIDEBAR
-           ================================================= -->
         <div class="history-logout">
           <a href="index.html" class="history-menu-item">
             <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
@@ -210,7 +168,6 @@
                 stroke-width="1.7"
                 stroke-linecap="round"
               />
-
               <path
                 d="M14 8l4 4-4 4M18 12H9"
                 stroke="currentColor"
@@ -220,14 +177,11 @@
               />
             </svg>
 
-            <span class="history-menu-text"> Đăng xuất </span>
+            <span class="history-menu-text">Đăng xuất</span>
           </a>
         </div>
       </aside>
 
-      <!-- ===================================================
-         MAIN CONTENT
-         =================================================== -->
       <main class="history-main">
         <div class="history-main-inner">
           <h1 class="history-heading">Lịch sử đọc bài</h1>
@@ -239,60 +193,36 @@
             nhận.
           </p>
 
-          <!-- ERROR -->
           <div id="historyError" class="history-error">
             Không thể tải dữ liệu lịch sử đọc bài.
           </div>
 
-          <!-- EMPTY -->
           <div id="historyEmpty" class="history-empty">
             Bạn chưa đọc bài viết nào.
           </div>
 
-          <!-- HISTORY LIST -->
           <div id="historyList" class="history-list"></div>
         </div>
       </main>
     </div>
 
-    <!-- =====================================================
-       MOCK DATA
-       ===================================================== -->
+    <!-- LINK TRỰC TIẾP TỚI MOCK DATA -->
     <script src="mock-data.js"></script>
 
-    <!-- =====================================================
-       JAVASCRIPT
-       GIỮ NGUYÊN CHỨC NĂNG
-       ===================================================== -->
     <script>
       const CURRENT_USER_ID = 1;
 
-      /* =====================================================
-       DOM
-       ===================================================== */
-
       const historyList = document.getElementById("historyList");
-
       const historyEmpty = document.getElementById("historyEmpty");
-
       const historyError = document.getElementById("historyError");
 
       const userName = document.getElementById("userName");
-
       const userRole = document.getElementById("userRole");
-
       const userAvatar = document.getElementById("userAvatar");
-
       const userInitials = document.getElementById("userInitials");
 
-      /* =====================================================
-       CHỮ CÁI ĐẦU
-       ===================================================== */
-
       function getInitials(name) {
-        if (!name) {
-          return "U";
-        }
+        if (!name) return "U";
 
         const words = name.trim().split(/\s+/);
 
@@ -305,34 +235,22 @@
         ).toUpperCase();
       }
 
-      /* =====================================================
-       LOAD USER
-       ===================================================== */
-
       function loadUser(user) {
-        if (!user) {
-          return;
-        }
+        if (!user) return;
 
         const name = user.full_name || user.username || "Người dùng";
 
         userName.textContent = name;
 
-        if (user.role === "user") {
-          userRole.textContent = "Độc giả";
-        } else {
-          userRole.textContent = user.role || "Độc giả";
-        }
+        userRole.textContent =
+          user.role === "user" ? "Độc giả" : user.role || "Độc giả";
 
         userInitials.textContent = getInitials(name);
-
-        /* AVATAR */
 
         if (user.avatar) {
           const img = document.createElement("img");
 
           img.src = user.avatar;
-
           img.alt = "Ảnh đại diện " + name;
 
           img.onload = function () {
@@ -341,17 +259,12 @@
 
           img.onerror = function () {
             img.remove();
-
             userInitials.style.display = "block";
           };
 
           userAvatar.appendChild(img);
         }
       }
-
-      /* =====================================================
-       CATEGORY
-       ===================================================== */
 
       function getCategoryName(categoryId) {
         if (
@@ -368,10 +281,6 @@
         return category ? category.name : "Chưa phân loại";
       }
 
-      /* =====================================================
-       AUTHOR
-       ===================================================== */
-
       function getAuthorName(authorId) {
         if (
           typeof MOCK_DATA === "undefined" ||
@@ -385,71 +294,41 @@
         return author ? author.full_name : "Không rõ tác giả";
       }
 
-      /* =====================================================
-       FORMAT NGÀY
-       ===================================================== */
-
       function formatArticleDate(dateString) {
-        if (!dateString) {
-          return "";
-        }
+        if (!dateString) return "";
 
         const date = String(dateString).substring(0, 10);
-
         const parts = date.split("-");
 
-        if (parts.length !== 3) {
-          return date;
-        }
+        if (parts.length !== 3) return date;
 
-        return parts[2] + "/" + parts[1] + "/" + parts[0];
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
       }
-
-      /* =====================================================
-       FORMAT THỜI GIAN ĐỌC
-       ===================================================== */
 
       function formatViewedTime(dateString) {
-        if (!dateString) {
-          return "";
-        }
+        if (!dateString) return "";
 
         const value = String(dateString);
-
         const parts = value.split(" ");
 
-        if (parts.length !== 2) {
-          return value;
-        }
+        if (parts.length !== 2) return value;
 
         const dateParts = parts[0].split("-");
-
         const time = parts[1].substring(0, 5);
 
-        if (dateParts.length !== 3) {
-          return value;
-        }
+        if (dateParts.length !== 3) return value;
 
-        return (
-          dateParts[2] + "/" + dateParts[1] + "/" + dateParts[0] + " · " + time
-        );
+        return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]} · ${time}`;
       }
-
-      /* =====================================================
-       TẠO HISTORY ITEM
-       ===================================================== */
 
       function createHistoryItem(history) {
         const article = MOCK_DATA.articles.find(
           (article) => article.id === history.article_id,
         );
 
-        if (!article) {
-          return null;
-        }
+        if (!article) return null;
 
         const categoryName = getCategoryName(article.category_id);
-
         const authorName = getAuthorName(article.author_id);
 
         const articleUrl =
@@ -457,110 +336,70 @@
           encodeURIComponent(article.slug || article.id);
 
         const item = document.createElement("article");
-
         item.className = "history-item";
-
-        /* ===================================================
-         IMAGE
-         =================================================== */
 
         let imageHTML = "";
 
         if (article.cover_image) {
           imageHTML = `
+            <img
+              class="history-image"
+              src="${article.cover_image}"
+              alt="${article.title || "Ảnh bài viết"}"
+            >
 
-          <img
-            class="history-image"
-            src="${article.cover_image}"
-            alt="${article.title || "Ảnh bài viết"}"
-          >
-
-          <div
-            class="history-image-placeholder"
-            style="display:none;"
-          >
-            <span>ẢNH</span>
-          </div>
-
-        `;
+            <div
+              class="history-image-placeholder"
+              style="display:none;"
+            >
+              <span>ẢNH</span>
+            </div>
+          `;
         } else {
           imageHTML = `
-
-          <div
-            class="history-image-placeholder"
-          >
-            <span>ẢNH</span>
-          </div>
-
-        `;
+            <div class="history-image-placeholder">
+              <span>ẢNH</span>
+            </div>
+          `;
         }
 
-        /* ===================================================
-         HTML
-         =================================================== */
-
         item.innerHTML = `
+          <a
+            href="${articleUrl}"
+            class="history-image-link"
+          >
+            ${imageHTML}
+          </a>
 
-        <a
-          href="${articleUrl}"
-          class="history-image-link"
-        >
-          ${imageHTML}
-        </a>
+          <div class="history-info">
+            <h2 class="history-title">
+              <a href="${articleUrl}">
+                ${article.title || "Không có tiêu đề"}
+              </a>
+            </h2>
 
-
-        <div class="history-info">
-
-          <h2 class="history-title">
-
-            <a href="${articleUrl}">
-              ${article.title || "Không có tiêu đề"}
-            </a>
-
-          </h2>
-
-
-          <div class="history-meta">
-
-            <span>
-              ${categoryName}
-            </span>
-
-            <span>·</span>
-
-            <span>
-              ${authorName}
-            </span>
-
-            <span>·</span>
-
-            <span>
-              ${formatArticleDate(article.published_at || article.created_at)}
-            </span>
-
+            <div class="history-meta">
+              <span>${categoryName}</span>
+              <span>·</span>
+              <span>${authorName}</span>
+              <span>·</span>
+              <span>
+                ${formatArticleDate(article.published_at || article.created_at)}
+              </span>
+            </div>
           </div>
 
-        </div>
-
-
-        <div class="history-viewed">
-          ${formatViewedTime(history.viewed_at)}
-        </div>
-
-      `;
-
-        /* ===================================================
-         IMAGE ERROR
-         =================================================== */
+          <div class="history-viewed">
+            ${formatViewedTime(history.viewed_at)}
+          </div>
+        `;
 
         const image = item.querySelector(".history-image");
-
         const placeholder = item.querySelector(".history-image-placeholder");
 
         if (image && placeholder) {
           image.addEventListener("error", function () {
             image.style.display = "none";
-
             placeholder.style.display = "flex";
           });
         }
@@ -568,17 +407,11 @@
         return item;
       }
 
-      /* =====================================================
-       LOAD HISTORY
-       ===================================================== */
-
       function loadReadingHistory() {
         try {
           if (typeof MOCK_DATA === "undefined") {
-            throw new Error("Không tìm thấy MOCK_DATA.");
+            throw new Error("Không tìm thấy mock-data.js.");
           }
-
-          /* USER */
 
           const currentUser = MOCK_DATA.users.find(
             (user) => user.id === CURRENT_USER_ID,
@@ -588,15 +421,11 @@
             loadUser(currentUser);
           }
 
-          /* HISTORY */
-
           const userHistory = Array.isArray(MOCK_DATA.reading_history)
             ? MOCK_DATA.reading_history.filter(
                 (history) => history.user_id === CURRENT_USER_ID,
               )
             : [];
-
-          /* MỚI NHẤT -> CŨ NHẤT */
 
           userHistory.sort((a, b) => {
             const dateA = new Date(String(a.viewed_at).replace(" ", "T"));
@@ -606,15 +435,10 @@
             return dateB - dateA;
           });
 
-          /* EMPTY */
-
           if (userHistory.length === 0) {
             historyEmpty.style.display = "block";
-
             return;
           }
-
-          /* RENDER */
 
           userHistory.forEach((history) => {
             const item = createHistoryItem(history);
@@ -624,21 +448,14 @@
             }
           });
 
-          /* ARTICLE KHÔNG TỒN TẠI */
-
           if (historyList.children.length === 0) {
             historyEmpty.style.display = "block";
           }
         } catch (error) {
           console.error("History error:", error);
-
           historyError.style.display = "block";
         }
       }
-
-      /* =====================================================
-       RUN
-       ===================================================== */
 
       loadReadingHistory();
     </script>
