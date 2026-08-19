@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Viết bài — Mạch Tin</title>
-
+    <title>Soạn bài — Mạch Tin</title>
     <link rel="stylesheet" href="style.css/write-article.css" />
   </head>
 
@@ -28,7 +26,6 @@
                 stroke-linejoin="round"
               />
             </svg>
-
             <span class="brand-word">
               <span class="brand-mach">MẠCH</span>
               <span class="brand-tin">TIN</span>
@@ -40,9 +37,7 @@
           <div class="reporter-avatar" id="userAvatar">
             <span id="userInitials">TN</span>
           </div>
-
           <p class="reporter-name" id="userName">Thanh Ngân</p>
-
           <div class="reporter-role">Phóng viên</div>
         </div>
 
@@ -61,8 +56,7 @@
                 stroke-width="1.7"
               />
             </svg>
-
-            <span>Viết bài</span>
+            <span>Soạn bài</span>
           </a>
 
           <a href="my-articles.html" class="reporter-menu-item">
@@ -79,7 +73,6 @@
                 stroke-linecap="round"
               />
             </svg>
-
             <span>Bài viết của tôi</span>
           </a>
 
@@ -99,8 +92,7 @@
                 stroke-linecap="round"
               />
             </svg>
-
-            <span>Đề tài được giao</span>
+            <span>Đề tài của tôi</span>
           </a>
 
           <a href="profile.html" class="reporter-menu-item">
@@ -119,27 +111,7 @@
                 stroke-linecap="round"
               />
             </svg>
-
-            <span>Thông tin tài khoản</span>
-          </a>
-
-          <a href="notifications.html" class="reporter-menu-item">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-              />
-              <path
-                d="M10 21h4"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-              />
-            </svg>
-
-            <span>Thông báo</span>
+            <span>Thống kê bài viết</span>
           </a>
         </nav>
 
@@ -160,7 +132,6 @@
                 stroke-linejoin="round"
               />
             </svg>
-
             <span>Đăng xuất</span>
           </a>
         </div>
@@ -170,14 +141,9 @@
         <div class="reporter-content">
           <div class="page-header">
             <div>
-              <h1>Viết bài</h1>
-
+              <h1>Soạn bài</h1>
               <p>Tạo bài viết mới và gửi đến biên tập viên để duyệt.</p>
             </div>
-
-            <a href="my-articles.html" class="secondary-button">
-              Bài viết của tôi
-            </a>
           </div>
 
           <div class="page-line"></div>
@@ -194,7 +160,6 @@
                   Tiêu đề bài viết
                   <b>*</b>
                 </label>
-
                 <input
                   type="text"
                   id="articleTitle"
@@ -210,15 +175,13 @@
                     Chuyên mục
                     <b>*</b>
                   </label>
-
                   <select id="articleCategory" required>
                     <option value="">Chọn chuyên mục</option>
                   </select>
                 </div>
 
                 <div class="form-group">
-                  <label for="articleTopic"> Đề tài được giao </label>
-
+                  <label for="articleTopic">Đề tài được giao</label>
                   <select id="articleTopic">
                     <option value="">Không thuộc đề tài được giao</option>
                   </select>
@@ -230,7 +193,6 @@
                   Mô tả ngắn
                   <b>*</b>
                 </label>
-
                 <textarea
                   id="articleDescription"
                   rows="4"
@@ -243,7 +205,7 @@
             <section class="form-section">
               <div class="section-title">
                 <span>02</span>
-                <h2>Ảnh đại diện</h2>
+                <h2>Ảnh bìa bài viết</h2>
               </div>
 
               <div class="image-method">
@@ -254,20 +216,16 @@
                     value="upload"
                     checked
                   />
-
                   <span>Tải ảnh lên</span>
                 </label>
-
                 <label class="radio-option">
                   <input type="radio" name="imageMethod" value="url" />
-
                   <span>Nhập URL ảnh</span>
                 </label>
               </div>
 
               <div id="uploadBox" class="image-input-box">
                 <input type="file" id="coverImage" accept="image/*" />
-
                 <p>Chọn ảnh JPG, PNG hoặc WEBP.</p>
               </div>
 
@@ -295,14 +253,12 @@
                   Nội dung bài viết
                   <b>*</b>
                 </label>
-
                 <textarea
                   id="articleContent"
                   class="content-editor"
                   placeholder="Nhập nội dung bài viết..."
                   required
                 ></textarea>
-
                 <div class="character-count">
                   <span id="contentCount">0</span> ký tự
                 </div>
@@ -316,7 +272,6 @@
               </div>
 
               <div id="tagList" class="tag-list"></div>
-
               <p class="form-note">
                 Chọn các thẻ phù hợp với nội dung bài viết.
               </p>
@@ -326,7 +281,6 @@
               <button type="button" class="draft-button" id="saveDraft">
                 Lưu bản nháp
               </button>
-
               <button type="submit" class="submit-button">
                 Gửi biên tập viên
               </button>
@@ -343,36 +297,23 @@
       const CURRENT_REPORTER_ID = 5;
 
       const categorySelect = document.getElementById("articleCategory");
-
       const topicSelect = document.getElementById("articleTopic");
-
       const tagList = document.getElementById("tagList");
-
       const content = document.getElementById("articleContent");
-
       const contentCount = document.getElementById("contentCount");
-
       const uploadBox = document.getElementById("uploadBox");
-
       const urlBox = document.getElementById("urlBox");
-
       const coverImage = document.getElementById("coverImage");
-
       const coverImageUrl = document.getElementById("coverImageUrl");
-
       const imagePreview = document.getElementById("imagePreview");
-
       const previewImage = document.getElementById("previewImage");
 
       function loadReporter() {
         const user = MOCK_DATA.users.find(
           (user) => user.id === CURRENT_REPORTER_ID,
         );
-
         if (!user) return;
-
         document.getElementById("userName").textContent = user.full_name;
-
         document.getElementById("userInitials").textContent = getInitials(
           user.full_name,
         );
@@ -380,23 +321,18 @@
 
       function getInitials(name) {
         if (!name) return "U";
-
         const words = name.trim().split(/\s+/);
-
         if (words.length === 1) {
           return words[0].substring(0, 2).toUpperCase();
         }
-
         return (words[0][0] + words[words.length - 1][0]).toUpperCase();
       }
 
       function loadCategories() {
         MOCK_DATA.categories.forEach((category) => {
           const option = document.createElement("option");
-
           option.value = category.id;
           option.textContent = category.name;
-
           categorySelect.appendChild(option);
         });
       }
@@ -405,13 +341,10 @@
         const topics = MOCK_DATA.topics.filter(
           (topic) => topic.reporter_id === CURRENT_REPORTER_ID,
         );
-
         topics.forEach((topic) => {
           const option = document.createElement("option");
-
           option.value = topic.id;
           option.textContent = topic.title;
-
           topicSelect.appendChild(option);
         });
       }
@@ -419,18 +352,14 @@
       function loadTags() {
         MOCK_DATA.tags.forEach((tag) => {
           const label = document.createElement("label");
-
           label.className = "tag-option";
-
           label.innerHTML = `
             <input
               type="checkbox"
               value="${tag.id}"
             >
-
             <span>${tag.name}</span>
           `;
-
           tagList.appendChild(label);
         });
       }
@@ -451,30 +380,22 @@
 
       coverImage.addEventListener("change", function () {
         const file = this.files[0];
-
         if (!file) return;
-
         const reader = new FileReader();
-
         reader.onload = function (event) {
           previewImage.src = event.target.result;
-
           imagePreview.classList.remove("hidden");
         };
-
         reader.readAsDataURL(file);
       });
 
       coverImageUrl.addEventListener("input", function () {
         const url = this.value.trim();
-
         if (!url) {
           imagePreview.classList.add("hidden");
           return;
         }
-
         previewImage.src = url;
-
         imagePreview.classList.remove("hidden");
       });
 
@@ -486,13 +407,10 @@
         .getElementById("saveDraft")
         .addEventListener("click", function () {
           const title = document.getElementById("articleTitle").value.trim();
-
           if (!title) {
             alert("Vui lòng nhập tiêu đề bài viết.");
-
             return;
           }
-
           alert("Bản nháp đã được lưu thành công.");
         });
 
@@ -502,27 +420,20 @@
           event.preventDefault();
 
           const title = document.getElementById("articleTitle").value.trim();
-
           const description = document
             .getElementById("articleDescription")
             .value.trim();
-
           const articleContent = content.value.trim();
-
           const category = categorySelect.value;
 
           if (!title || !description || !articleContent || !category) {
             alert("Vui lòng điền đầy đủ các trường bắt buộc.");
-
             return;
           }
 
           alert("Bài viết đã được gửi đến biên tập viên để duyệt.");
-
           this.reset();
-
           imagePreview.classList.add("hidden");
-
           contentCount.textContent = "0";
         });
 

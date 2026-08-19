@@ -287,7 +287,7 @@ select:focus-visible {
 }
 
 /* =========================================================
-   WRITE BUTTON
+   WRITE BUTTON (giữ class, không còn dùng trong HTML)
    ========================================================= */
 .write-button {
   display: inline-flex;
