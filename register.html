@@ -3,216 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Đăng ký — Mạch Tin</title>
 
-    <link rel="stylesheet" href="style.css" />
-
-    <style>
-      /* =========================
-       AUTH PAGE
-    ========================= */
-      .auth-page {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 48px 24px;
-        background: var(--paper, #f7f6f2);
-      }
-
-      .auth-wrapper {
-        width: 100%;
-        max-width: 500px;
-      }
-
-      /* =========================
-       LOGO MẠCH TIN
-    ========================= */
-      .auth-logo {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 9px;
-        margin-bottom: 24px;
-        text-decoration: none;
-        color: var(--ink, #1e293b);
-      }
-
-      .auth-logo .pulse-mark {
-        color: var(--crimson, #8f1d2c);
-        flex-shrink: 0;
-      }
-
-      .auth-logo .logo__word {
-        font-family: var(--f-display, Georgia, serif);
-        font-size: 25px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        color: var(--ink, #1e293b);
-      }
-
-      .auth-logo .logo__word em {
-        color: var(--brass-dark, #9a7412);
-        font-style: normal;
-      }
-
-      /* =========================
-       AUTH CARD
-    ========================= */
-      .auth-card {
-        width: 100%;
-        background: var(--white);
-        border: 1px solid var(--line);
-        padding: 36px 32px;
-        box-sizing: border-box;
-      }
-
-      .auth-head h1 {
-        font-family: var(--f-display, Georgia, serif);
-        font-size: 28px;
-        font-weight: 600;
-        margin: 0 0 8px;
-        color: var(--ink);
-      }
-
-      .auth-head p {
-        margin: 0 0 24px;
-        color: var(--muted);
-        font-size: 15px;
-        line-height: 1.5;
-      }
-
-      /* =========================
-       FORM
-    ========================= */
-      .form-group {
-        margin-bottom: 18px;
-      }
-
-      .form-group label {
-        display: block;
-        margin-bottom: 7px;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--ink);
-      }
-
-      .form-control {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 11px 12px;
-        border: 1px solid var(--line);
-        background: var(--white);
-        color: var(--ink);
-        font-family: inherit;
-        font-size: 14.5px;
-        outline: none;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-      }
-
-      .form-control:focus {
-        border-color: var(--brass);
-        box-shadow: 0 0 0 2px rgba(180, 139, 35, 0.12);
-      }
-
-      .form-control::placeholder {
-        color: #9ca3af;
-      }
-
-      /* =========================
-       2 CỘT MẬT KHẨU
-    ========================= */
-      .row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-
-      /* =========================
-       CHECKBOX
-    ========================= */
-      .checkbox {
-        display: flex;
-        align-items: flex-start;
-        gap: 9px;
-        font-size: 13.5px;
-        line-height: 1.5;
-        color: var(--muted);
-        cursor: pointer;
-      }
-
-      .checkbox input {
-        width: auto;
-        margin-top: 3px;
-        flex-shrink: 0;
-      }
-
-      /* =========================
-       BUTTON
-    ========================= */
-      .btn-full {
-        width: 100%;
-      }
-
-      /* =========================
-       FOOTER FORM
-    ========================= */
-      .form-footer {
-        text-align: center;
-        margin: 22px 0 0;
-        padding-top: 18px;
-        border-top: 1px solid var(--line);
-        font-size: 14.5px;
-        color: var(--muted);
-      }
-
-      .form-footer a {
-        color: var(--brass-dark);
-        font-weight: 600;
-        text-decoration: none;
-      }
-
-      .form-footer a:hover {
-        text-decoration: underline;
-      }
-
-      /* =========================
-       RESPONSIVE
-    ========================= */
-      @media (max-width: 600px) {
-        .auth-page {
-          padding: 32px 16px;
-        }
-
-        .auth-card {
-          padding: 28px 22px;
-        }
-
-        .row {
-          grid-template-columns: 1fr;
-          gap: 0;
-        }
-
-        .auth-logo .logo__word {
-          font-size: 23px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="style.css/register.css" />
   </head>
 
   <body>
-    <!-- =========================================
-       REGISTER
-  ========================================== -->
     <main>
       <div class="auth-page">
         <div class="auth-wrapper">
-          <!-- =====================================
-             LOGO MẠCH TIN
-        ====================================== -->
+          <!-- LOGO -->
           <a href="login.html" class="auth-logo">
             <svg
               class="pulse-mark"
@@ -220,6 +20,7 @@
               height="26"
               viewBox="0 0 26 26"
               fill="none"
+              aria-hidden="true"
             >
               <path
                 d="M1 13H7L9.5 6L13.5 20L16 13H25"
@@ -229,17 +30,13 @@
                 stroke-linejoin="round"
               />
             </svg>
-
-            <span class="logo__word"> MẠCH&nbsp;<em>TIN</em> </span>
+            <span class="logo__word">MẠCH&nbsp;<em>TIN</em></span>
           </a>
 
-          <!-- =====================================
-             FORM ĐĂNG KÝ
-        ====================================== -->
+          <!-- FORM ĐĂNG KÝ -->
           <section class="auth-card">
             <div class="auth-head">
               <h1>Tạo tài khoản</h1>
-
               <p>
                 Đăng ký tài khoản để bình luận, lưu bài viết và quản lý hồ sơ.
               </p>
@@ -248,8 +45,7 @@
             <form action="#" method="post">
               <!-- HỌ VÀ TÊN -->
               <div class="form-group">
-                <label for="name"> Họ và tên </label>
-
+                <label for="name">Họ và tên</label>
                 <input
                   class="form-control"
                   type="text"
@@ -262,8 +58,7 @@
 
               <!-- EMAIL -->
               <div class="form-group">
-                <label for="email"> Email </label>
-
+                <label for="email">Email</label>
                 <input
                   class="form-control"
                   type="email"
@@ -277,8 +72,7 @@
               <!-- MẬT KHẨU + XÁC NHẬN -->
               <div class="row">
                 <div class="form-group">
-                  <label for="password"> Mật khẩu </label>
-
+                  <label for="password">Mật khẩu</label>
                   <input
                     class="form-control"
                     type="password"
@@ -291,8 +85,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="confirm"> Xác nhận mật khẩu </label>
-
+                  <label for="confirm">Xác nhận mật khẩu</label>
                   <input
                     class="form-control"
                     type="password"
@@ -305,25 +98,23 @@
               </div>
 
               <!-- ĐIỀU KHOẢN -->
-              <label class="checkbox" style="margin-bottom: 20px">
+              <label class="checkbox">
                 <input type="checkbox" required />
-
                 <span>
                   Tôi đồng ý với Điều khoản sử dụng và Chính sách bảo mật.
                 </span>
               </label>
 
               <!-- BUTTON -->
-              <button class="btn btn-primary btn-full" type="submit">
+              <button class="btn btn-primary btn-block" type="submit">
                 Đăng ký tài khoản
               </button>
             </form>
 
-            <!-- QUAY LẠI ĐĂNG NHẬP -->
+            <!-- FOOTER -->
             <p class="form-footer">
               Đã có tài khoản?
-
-              <a href="login.html"> Đăng nhập </a>
+              <a href="login.html">Đăng nhập</a>
             </p>
           </section>
         </div>

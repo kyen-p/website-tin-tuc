@@ -12,13 +12,7 @@
 
   <body>
     <div class="reporter-page">
-      <!-- =====================================================
-       SIDEBAR
-       ===================================================== -->
-
       <aside class="reporter-sidebar">
-        <!-- LOGO -->
-
         <div class="reporter-brand">
           <a href="index.html" class="brand-link">
             <svg
@@ -28,12 +22,7 @@
               aria-hidden="true"
             >
               <path
-                d="M2 16
-               H10
-               L13.5 7
-               L19 25
-               L23 16
-               H38"
+                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
                 stroke="currentColor"
                 stroke-width="2.7"
                 stroke-linecap="round"
@@ -42,26 +31,21 @@
             </svg>
 
             <span class="brand-word">
-              <span class="brand-mach"> MẠCH </span>
-
-              <span class="brand-tin"> TIN </span>
+              <span class="brand-mach">MẠCH</span>
+              <span class="brand-tin">TIN</span>
             </span>
           </a>
         </div>
 
-        <!-- USER -->
-
         <div class="reporter-user">
           <div class="reporter-avatar">
-            <span id="userInitials"> TN </span>
+            <span id="userInitials">TN</span>
           </div>
 
           <p class="reporter-name" id="userName">Thanh Ngân</p>
 
           <div class="reporter-role">Phóng viên</div>
         </div>
-
-        <!-- MENU -->
 
         <nav class="reporter-menu">
           <a href="write-article.html" class="reporter-menu-item">
@@ -74,7 +58,7 @@
               />
             </svg>
 
-            <span> Viết bài </span>
+            <span>Viết bài</span>
           </a>
 
           <a href="my-articles.html" class="reporter-menu-item active">
@@ -93,7 +77,7 @@
               />
             </svg>
 
-            <span> Bài viết của tôi </span>
+            <span>Bài viết của tôi</span>
           </a>
 
           <a href="my-topics.html" class="reporter-menu-item">
@@ -114,7 +98,7 @@
               />
             </svg>
 
-            <span> Đề tài được giao </span>
+            <span>Đề tài được giao</span>
           </a>
 
           <a href="profile.html" class="reporter-menu-item">
@@ -135,7 +119,7 @@
               />
             </svg>
 
-            <span> Thông tin tài khoản </span>
+            <span>Thông tin tài khoản</span>
           </a>
 
           <a href="notifications.html" class="reporter-menu-item">
@@ -155,11 +139,9 @@
               />
             </svg>
 
-            <span> Thông báo </span>
+            <span>Thông báo</span>
           </a>
         </nav>
-
-        <!-- LOGOUT -->
 
         <div class="reporter-logout">
           <a href="index.html" class="reporter-menu-item">
@@ -176,22 +158,17 @@
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linecap="round"
+                stroke-linejoin="round"
               />
             </svg>
 
-            <span> Đăng xuất </span>
+            <span>Đăng xuất</span>
           </a>
         </div>
       </aside>
 
-      <!-- =====================================================
-       MAIN
-       ===================================================== -->
-
       <main class="reporter-main">
         <div class="reporter-content">
-          <!-- HEADER -->
-
           <div class="page-header">
             <div>
               <h1>Bài viết của tôi</h1>
@@ -208,10 +185,6 @@
           </div>
 
           <div class="page-line"></div>
-
-          <!-- =================================================
-           STATISTICS
-           ================================================= -->
 
           <div class="article-stats">
             <div class="stat-card">
@@ -245,10 +218,6 @@
             </div>
           </div>
 
-          <!-- =================================================
-           FILTER
-           ================================================= -->
-
           <div class="article-toolbar">
             <div class="filter-tabs">
               <button class="filter-tab active" data-filter="all">
@@ -273,10 +242,6 @@
             </select>
           </div>
 
-          <!-- =================================================
-           ARTICLES
-           ================================================= -->
-
           <div id="articleList" class="article-list"></div>
 
           <div id="emptyState" class="empty-state">
@@ -286,13 +251,13 @@
       </main>
     </div>
 
+    <!-- LINK TRỰC TIẾP TỚI MOCK DATA -->
     <script src="mock-data.js"></script>
 
     <script>
       const CURRENT_REPORTER_ID = 5;
 
       let currentStatus = "all";
-
       let currentCategory = "all";
 
       const articleList = document.getElementById("articleList");
@@ -300,10 +265,6 @@
       const emptyState = document.getElementById("emptyState");
 
       const categoryFilter = document.getElementById("categoryFilter");
-
-      /* =====================================================
-   USER
-   ===================================================== */
 
       function loadReporter() {
         const user = MOCK_DATA.users.find(
@@ -320,6 +281,8 @@
       }
 
       function getInitials(name) {
+        if (!name) return "U";
+
         const words = name.trim().split(/\s+/);
 
         if (words.length === 1) {
@@ -328,10 +291,6 @@
 
         return (words[0][0] + words[words.length - 1][0]).toUpperCase();
       }
-
-      /* =====================================================
-   CATEGORY
-   ===================================================== */
 
       function getCategoryName(categoryId) {
         const category = MOCK_DATA.categories.find(
@@ -346,39 +305,25 @@
           const option = document.createElement("option");
 
           option.value = category.id;
-
           option.textContent = category.name;
 
           categoryFilter.appendChild(option);
         });
       }
 
-      /* =====================================================
-   STATUS
-   ===================================================== */
-
       function getStatusText(status) {
         const map = {
           published: "Đã đăng",
-
           pending: "Chờ duyệt",
-
           draft: "Bản nháp",
-
           rejected: "Bị từ chối",
         };
 
         return map[status] || status;
       }
 
-      /* =====================================================
-   DATE
-   ===================================================== */
-
       function formatDate(dateString) {
-        if (!dateString) {
-          return "—";
-        }
+        if (!dateString) return "—";
 
         const date = String(dateString).substring(0, 10).split("-");
 
@@ -388,10 +333,6 @@
 
         return `${date[2]}/${date[1]}/${date[0]}`;
       }
-
-      /* =====================================================
-   STATS
-   ===================================================== */
 
       function updateStats(articles) {
         const count = (status) =>
@@ -412,10 +353,6 @@
           count("rejected");
       }
 
-      /* =====================================================
-   ARTICLE CARD
-   ===================================================== */
-
       function createArticleCard(article) {
         const category = getCategoryName(article.category_id);
 
@@ -427,155 +364,125 @@
 
         if (article.status === "published") {
           actionHTML = `
-
-      <a
-        href="article-detail.html?slug=${encodeURIComponent(article.slug)}"
-        class="card-action"
-      >
-        Xem bài
-      </a>
-
-    `;
+            <a
+              href="article-detail.html?slug=${encodeURIComponent(
+                article.slug,
+              )}"
+              class="card-action"
+            >
+              Xem bài
+            </a>
+          `;
         }
 
         if (article.status === "draft") {
           actionHTML = `
-
-      <a
-        href="write-article.html"
-        class="card-action"
-      >
-        Tiếp tục viết
-      </a>
-
-    `;
+            <a
+              href="write-article.html"
+              class="card-action"
+            >
+              Tiếp tục viết
+            </a>
+          `;
         }
 
         if (article.status === "rejected") {
           actionHTML = `
-
-      <a
-        href="write-article.html"
-        class="card-action"
-      >
-        Chỉnh sửa
-      </a>
-
-    `;
+            <a
+              href="write-article.html"
+              class="card-action"
+            >
+              Chỉnh sửa
+            </a>
+          `;
         }
 
         if (article.status === "pending") {
           actionHTML = `
-
-      <span class="card-action disabled">
-        Đang chờ duyệt
-      </span>
-
-    `;
+            <span
+              class="card-action disabled"
+            >
+              Đang chờ duyệt
+            </span>
+          `;
         }
 
         card.innerHTML = `
-
-    <div class="article-image">
-
-      ${
-        article.cover_image
-          ? `
-          <img
-            src="${article.cover_image}"
-            alt="${article.title}"
-            onerror="this.style.display='none'"
-          >
-        `
-          : `
-          <div class="image-placeholder">
-            ẢNH
+          <div class="article-image">
+            ${
+              article.cover_image
+                ? `
+                  <img
+                    src="${article.cover_image}"
+                    alt="${article.title}"
+                    onerror="this.style.display='none'"
+                  >
+                `
+                : `
+                  <div class="image-placeholder">
+                    ẢNH
+                  </div>
+                `
+            }
           </div>
-        `
-      }
 
-    </div>
+          <div class="article-body">
+            <div class="article-top">
+              <span
+                class="status status-${article.status}"
+              >
+                ${getStatusText(article.status)}
+              </span>
 
+              <span class="category">
+                ${category}
+              </span>
+            </div>
 
-    <div class="article-body">
+            <h2 class="article-title">
+              ${article.title}
+            </h2>
 
-      <div class="article-top">
-
-        <span class="status status-${article.status}">
-          ${getStatusText(article.status)}
-        </span>
-
-        <span class="category">
-          ${category}
-        </span>
-
-      </div>
-
-
-      <h2 class="article-title">
-
-        ${article.title}
-
-      </h2>
-
-
-      <p class="article-description">
-
-        ${article.short_description || ""}
-
-      </p>
-
-
-      <div class="article-meta">
-
-        <span>
-          Tạo: ${formatDate(article.created_at)}
-        </span>
-
-        <span>
-          ${article.view_count || 0} lượt xem
-        </span>
-
-      </div>
-
-
-      ${
-        article.status === "rejected"
-          ? `
-
-          <div class="rejection-box">
-
-            <strong>
-              Lý do từ chối
-            </strong>
-
-            <p>
-              ${article.rejection_reason || "Không có lý do."}
+            <p class="article-description">
+              ${article.short_description || ""}
             </p>
 
+            <div class="article-meta">
+              <span>
+                Tạo:
+                ${formatDate(article.created_at)}
+              </span>
+
+              <span>
+                ${article.view_count || 0}
+                lượt xem
+              </span>
+            </div>
+
+            ${
+              article.status === "rejected"
+                ? `
+                  <div class="rejection-box">
+                    <strong>
+                      Lý do từ chối
+                    </strong>
+
+                    <p>
+                      ${article.rejection_reason || "Không có lý do."}
+                    </p>
+                  </div>
+                `
+                : ""
+            }
           </div>
 
-        `
-          : ""
-      }
-
-    </div>
-
-
-    <div class="article-actions">
-
-      ${actionHTML}
-
-    </div>
-
-  `;
+          <div class="article-actions">
+            ${actionHTML}
+          </div>
+        `;
 
         return card;
       }
-
-      /* =====================================================
-   RENDER
-   ===================================================== */
 
       function renderArticles() {
         articleList.innerHTML = "";
@@ -584,15 +491,11 @@
           (article) => article.author_id === CURRENT_REPORTER_ID,
         );
 
-        /* STATUS */
-
         if (currentStatus !== "all") {
           articles = articles.filter(
             (article) => article.status === currentStatus,
           );
         }
-
-        /* CATEGORY */
 
         if (currentCategory !== "all") {
           articles = articles.filter(
@@ -600,8 +503,6 @@
               String(article.category_id) === String(currentCategory),
           );
         }
-
-        /* SORT */
 
         articles.sort((a, b) => {
           const dateA = new Date(
@@ -628,10 +529,6 @@
         });
       }
 
-      /* =====================================================
-   STATUS FILTER
-   ===================================================== */
-
       document.querySelectorAll(".filter-tab").forEach((button) => {
         button.addEventListener("click", function () {
           document
@@ -646,30 +543,19 @@
         });
       });
 
-      /* =====================================================
-   CATEGORY FILTER
-   ===================================================== */
-
       categoryFilter.addEventListener("change", function () {
         currentCategory = this.value;
 
         renderArticles();
       });
 
-      /* =====================================================
-   INIT
-   ===================================================== */
-
       const reporterArticles = MOCK_DATA.articles.filter(
         (article) => article.author_id === CURRENT_REPORTER_ID,
       );
 
       loadReporter();
-
       loadCategoryFilter();
-
       updateStats(reporterArticles);
-
       renderArticles();
     </script>
   </body>
