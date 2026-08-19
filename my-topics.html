@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Đề tài của tôi - Mạch Tin</title>
+
+    <link rel="stylesheet" href="/style.css/my-topics.css">
+
+</head>
+
+
+<body>
+
+
+<div class="profile-page">
+
+
+    <!-- ===================================================
+         SIDEBAR REPORTER
+    =================================================== -->
+
+    <aside class="history-sidebar">
+
+
+        <!-- LOGO -->
+
+        <div class="history-brand">
+
+            <a href="index.html" class="brand-link">
+
+                <svg
+                    class="pulse-mark"
+                    viewBox="0 0 40 32"
+                    fill="none">
+
+                    <path
+                        d="M2 16
+                        H10
+                        L13.5 7
+                        L19 25
+                        L23 16
+                        H38"
+                        stroke="currentColor"
+                        stroke-width="2.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+
+                </svg>
+
+
+                <span class="brand-word">
+
+                    <span class="brand-mach">
+                        MẠCH
+                    </span>
+
+                    <span class="brand-tin">
+                        TIN
+                    </span>
+
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- USER -->
+
+        <div class="history-user">
+
+            <div class="history-avatar">
+
+                <img
+                    id="sidebarAvatar"
+                    src=""
+                    alt="Avatar">
+
+            </div>
+
+
+            <p
+                class="history-user-name"
+                id="sidebarName">
+
+                Đang tải...
+
+            </p>
+
+
+            <div class="history-user-role">
+                Phóng viên
+            </div>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <nav class="history-menu">
+
+
+            <a
+                href="write-article.html"
+                class="history-menu-item">
+
+                <svg
+                    class="history-menu-icon"
+                    viewBox="0 0 24 24"
+                    fill="none">
+
+                    <path
+                        d="M4 20h4l11-11a2.8 2.8 0 000-4l-.5-.5a2.8 2.8 0 00-4 0L3.5 15.5V20z"
+                        stroke="currentColor"
+                        stroke-width="1.7"/>
+
+                </svg>
+
+                <span class="history-menu-text">
+                    Soạn bài
+                </span>
+
+            </a>
+
+
+            <a
+                href="my-articles.html"
+                class="history-menu-item">
+
+                <svg
+                    class="history-menu-icon"
+                    viewBox="0 0 24 24"
+                    fill="none">
+
+                    <path
+                        d="M5 5h14v14H5z"
+                        stroke="currentColor"
+                        stroke-width="1.7"/>
+
+                    <path
+                        d="M8 9h8M8 13h6"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"/>
+
+                </svg>
+
+                <span class="history-menu-text">
+                    Bài viết của tôi
+                </span>
+
+            </a>
+
+
+            <a
+                href="my-topics.html"
+                class="history-menu-item active">
+
+                <svg
+                    class="history-menu-icon"
+                    viewBox="0 0 24 24"
+                    fill="none">
+
+                    <path
+                        d="M5 4h14v16H5z"
+                        stroke="currentColor"
+                        stroke-width="1.7"/>
+
+                    <path
+                        d="M8 8h8M8 12h8M8 16h5"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"/>
+
+                </svg>
+
+                <span class="history-menu-text">
+                    Đề tài của tôi
+                </span>
+
+            </a>
+
+
+            <a
+                href="dashboard.html"
+                class="history-menu-item">
+
+                <svg
+                    class="history-menu-icon"
+                    viewBox="0 0 24 24"
+                    fill="none">
+
+                    <path
+                        d="M4 19V5M4 19h16"
+                        stroke="currentColor"
+                        stroke-width="1.7"/>
+
+                    <path
+                        d="M8 16v-5M12 16V8M16 16v-8"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"/>
+
+                </svg>
+
+                <span class="history-menu-text">
+                    Thống kê
+                </span>
+
+            </a>
+
+
+            <a
+                href="public/index.html"
+                class="history-menu-item">
+
+                <svg
+                    class="history-menu-icon"
+                    viewBox="0 0 24 24"
+                    fill="none">
+
+                    <path
+                        d="M3 12l9-8 9 8"
+                        stroke="currentColor"
+                        stroke-width="1.7"/>
+
+                    <path
+                        d="M5 10v10h14V10"
+                        stroke="currentColor"
+                        stroke-width="1.7"/>
+
+                </svg>
+
+                <span class="history-menu-text">
+                    Về trang chủ
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+    </aside>
+
+
+    <!-- ===================================================
+         MAIN CONTENT
+    =================================================== -->
+
+    <main class="profile-main">
+
+        <div class="profile-main-inner">
+
+
+            <h1 class="profile-heading">
+                Đề tài của tôi
+            </h1>
+
+
+            <div class="profile-heading-line"></div>
+
+
+            <p class="profile-description">
+                Danh sách các đề tài được Editor phân công và trạng thái thực hiện.
+            </p>
+
+
+            <!-- ===============================
+                 TOPIC LIST
+            ================================ -->
+
+            <section
+                class="topic-list"
+                id="topicList">
+
+                <!--
+                    Dữ liệu đề tài sẽ được
+                    lấy từ MOCK_DATA.topics
+                    và render bằng JavaScript.
+                -->
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+</div>
+
+
+<!-- ===================================================
+     LOAD MOCK DATA
+=================================================== -->
+
+<script src="mock-data.js"></script>
+
+
+<script>
+
+    // =================================================
+    // CURRENT REPORTER
+    // =================================================
+    // Demo đang dùng reporter có id = 5
+    // Đây là Thanh Ngân trong MOCK_DATA.users
+
+    const CURRENT_REPORTER_ID = 5;
+
+
+    // =================================================
+    // LOAD DATA
+    // =================================================
+
+    const users = MOCK_DATA.users;
+    const topics = MOCK_DATA.topics;
+    const categories = MOCK_DATA.categories;
+    const tags = MOCK_DATA.tags;
+    const topicTags = MOCK_DATA.topic_tags;
+
+
+    // =================================================
+    // FIND CURRENT USER
+    // =================================================
+
+    const currentUser = users.find(
+        user => user.id === CURRENT_REPORTER_ID
+    );
+
+
+    // =================================================
+    // LOAD USER TO SIDEBAR
+    // =================================================
+
+    if (currentUser) {
+
+        document.getElementById("sidebarName").innerText =
+            currentUser.full_name;
+
+        document.getElementById("sidebarAvatar").src =
+            currentUser.avatar;
+
+        document.getElementById("sidebarAvatar").alt =
+            currentUser.full_name;
+
+    }
+
+
+    // =================================================
+    // GET CATEGORY NAME
+    // =================================================
+
+    function getCategoryName(categoryId) {
+
+        const category = categories.find(
+            category => category.id === categoryId
+        );
+
+        return category
+            ? category.name
+            : "Chưa phân loại";
+    }
+
+
+    // =================================================
+    // GET TAGS OF TOPIC
+    // =================================================
+
+    function getTopicTags(topicId) {
+
+        const relations = topicTags.filter(
+            relation => relation.topic_id === topicId
+        );
+
+        return relations
+            .map(relation => {
+
+                const tag = tags.find(
+                    tag => tag.id === relation.tag_id
+                );
+
+                return tag ? tag.name : null;
+
+            })
+            .filter(Boolean);
+    }
+
+
+    // =================================================
+    // FORMAT DEADLINE
+    // =================================================
+
+    function formatDeadline(dateString) {
+
+        if (!dateString) {
+            return "Chưa có";
+        }
+
+        const date = new Date(
+            dateString.replace(" ", "T")
+        );
+
+        const day = String(
+            date.getDate()
+        ).padStart(2, "0");
+
+        const month = String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
+    }
+
+
+    // =================================================
+    // STATUS
+    // =================================================
+
+    function getStatusInfo(status) {
+
+        const statusMap = {
+
+            assigned: {
+                text: "Đã giao",
+                className: "assigned"
+            },
+
+            submitted: {
+                text: "Đã nộp",
+                className: "submitted"
+            },
+
+            overdue: {
+                text: "Quá hạn",
+                className: "overdue"
+            }
+
+        };
+
+
+        return statusMap[status] || {
+
+            text: status,
+            className: ""
+
+        };
+    }
+
+
+    // =================================================
+    // GET TOPIC BUTTON
+    // =================================================
+
+    function getTopicButton(topic) {
+
+        if (topic.status === "submitted") {
+
+            return `
+                <a
+                    href="article-detail.html"
+                    class="topic-button secondary">
+
+                    Xem bài đã nộp
+
+                </a>
+            `;
+
+        }
+
+
+        return `
+            <a
+                href="write-article.html?topic_id=${topic.id}"
+                class="topic-button">
+
+                Bắt đầu viết
+
+            </a>
+        `;
+    }
+
+
+    // =================================================
+    // RENDER TOPIC
+    // =================================================
+
+    function renderTopic(topic) {
+
+        const status = getStatusInfo(
+            topic.status
+        );
+
+        const topicTagNames =
+            getTopicTags(topic.id);
+
+
+        const tagText =
+            topicTagNames.length > 0
+                ? topicTagNames.join(", ")
+                : "Chưa có tag";
+
+
+        return `
+
+            <div class="topic-card">
+
+                <div class="topic-header">
+
+                    <h2>
+                        ${topic.title}
+                    </h2>
+
+
+                    <span
+                        class="topic-status ${status.className}">
+
+                        ${status.text}
+
+                    </span>
+
+                </div>
+
+
+                <div class="topic-info">
+
+                    <p>
+
+                        <strong>
+                            Chuyên mục:
+                        </strong>
+
+                        ${getCategoryName(topic.category_id)}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Tag:
+                        </strong>
+
+                        ${tagText}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Deadline:
+                        </strong>
+
+                        ${formatDeadline(topic.deadline)}
+
+                    </p>
+
+                </div>
+
+
+                <div class="topic-actions">
+
+                    ${getTopicButton(topic)}
+
+                </div>
+
+            </div>
+
+        `;
+    }
+
+
+    // =================================================
+    // FILTER TOPICS BY CURRENT REPORTER
+    // =================================================
+
+    const myTopics = topics.filter(
+        topic =>
+            topic.reporter_id === CURRENT_REPORTER_ID
+    );
+
+
+    // =================================================
+    // RENDER TOPIC LIST
+    // =================================================
+
+    const topicList =
+        document.getElementById("topicList");
+
+
+    if (myTopics.length === 0) {
+
+        topicList.innerHTML = `
+
+            <div class="topic-empty">
+
+                <p>
+                    Hiện chưa có đề tài nào được phân công.
+                </p>
+
+            </div>
+
+        `;
+
+    } else {
+
+        topicList.innerHTML =
+            myTopics.map(renderTopic).join("");
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>
+Thống kê bài viết - Mạch Tin
+</title>
+
+<link rel="stylesheet" href="/style.css/dashboard.css">
+
+</head>
+
+
+<body>
+
+
+<div class="reporter-page">
+
+
+
+<!-- ===================================================
+     SIDEBAR REPORTER
+=================================================== -->
+
+<aside class="reporter-sidebar">
+
+
+<!-- ===================================================
+     LOGO
+=================================================== -->
+
+<div class="reporter-brand">
+
+<a href="index.html" class="brand-link">
+
+<svg
+class="pulse-mark"
+viewBox="0 0 40 32"
+fill="none">
+
+<path
+d="M2 16
+H10
+L13.5 7
+L19 25
+L23 16
+H38"
+stroke="currentColor"
+stroke-width="2.7"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+</svg>
+
+
+<span class="brand-word">
+
+<span class="brand-mach">
+MẠCH
+</span>
+
+<span class="brand-tin">
+TIN
+</span>
+
+</span>
+
+</a>
+
+</div>
+
+
+
+<!-- ===================================================
+     USER
+=================================================== -->
+
+<div class="reporter-user">
+
+<div class="reporter-avatar">
+
+<img
+id="sidebarAvatar"
+src=""
+alt="Avatar">
+
+</div>
+
+
+<p
+class="reporter-name"
+id="sidebarName">
+
+Đang tải...
+
+</p>
+
+
+<div class="reporter-role">
+Phóng viên
+</div>
+
+</div>
+
+
+
+<!-- ===================================================
+     MENU
+=================================================== -->
+
+<nav class="reporter-menu">
+
+
+<a
+href="write-article.html"
+class="reporter-menu-item">
+
+<svg
+class="menu-icon"
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M4 20h4l11-11a2.8 2.8 0 000-4l-.5-.5a2.8 2.8 0 00-4 0L3.5 15.5V20z"
+stroke="currentColor"
+stroke-width="1.7"/>
+
+</svg>
+
+<span>
+Soạn bài
+</span>
+
+</a>
+
+
+
+<a
+href="my-articles.html"
+class="reporter-menu-item">
+
+<svg
+class="menu-icon"
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M5 5h14v14H5z"
+stroke="currentColor"
+stroke-width="1.7"/>
+
+<path
+d="M8 9h8M8 13h6"
+stroke="currentColor"
+stroke-width="1.7"
+stroke-linecap="round"/>
+
+</svg>
+
+<span>
+Bài viết của tôi
+</span>
+
+</a>
+
+
+
+<a
+href="my-topics.html"
+class="reporter-menu-item">
+
+<svg
+class="menu-icon"
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M5 4h14v16H5z"
+stroke="currentColor"
+stroke-width="1.7"/>
+
+<path
+d="M8 8h8M8 12h8M8 16h5"
+stroke="currentColor"
+stroke-width="1.7"
+stroke-linecap="round"/>
+
+</svg>
+
+<span>
+Đề tài của tôi
+</span>
+
+</a>
+
+
+
+<a
+href="dashboard.html"
+class="reporter-menu-item active">
+
+<svg
+class="menu-icon"
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M4 19V5M4 19h16"
+stroke="currentColor"
+stroke-width="1.7"/>
+
+<path
+d="M8 16v-5M12 16V8M16 16v-8"
+stroke="currentColor"
+stroke-width="1.7"
+stroke-linecap="round"/>
+
+</svg>
+
+<span>
+Thống kê
+</span>
+
+</a>
+
+
+
+<a
+href="public/index.html"
+class="reporter-menu-item">
+
+<svg
+class="menu-icon"
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M3 12l9-8 9 8"
+stroke="currentColor"
+stroke-width="1.7"/>
+
+<path
+d="M5 10v10h14V10"
+stroke="currentColor"
+stroke-width="1.7"/>
+
+</svg>
+
+<span>
+Về trang chủ
+</span>
+
+</a>
+
+
+</nav>
+
+
+</aside>
+
+
+
+<!-- ===================================================
+     MAIN
+=================================================== -->
+
+<main class="reporter-main">
+
+
+<div class="reporter-content">
+
+
+
+<!-- ===================================================
+     HEADER
+=================================================== -->
+
+<header class="page-header">
+
+<div>
+
+<h1>
+Thống kê bài viết
+</h1>
+
+<p>
+Theo dõi lượt xem, bình luận và lượt thích các bài viết đã đăng.
+</p>
+
+</div>
+
+</header>
+
+
+<div class="page-line"></div>
+
+
+
+<!-- ===================================================
+     STATISTICS TABLE
+=================================================== -->
+
+<section class="statistics-section">
+
+
+<div class="section-heading">
+
+<h2>
+Danh sách bài viết
+</h2>
+
+</div>
+
+<p id="articleCount">
+Đang tải...
+</p>
+
+</div>
+
+
+
+<div
+id="emptyState"
+class="empty-state hidden">
+
+<svg
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M6 4h12v16H6z"
+stroke="currentColor"
+stroke-width="1.5"/>
+
+<path
+d="M9 8h6M9 12h6M9 16h3"
+stroke="currentColor"
+stroke-width="1.5"
+stroke-linecap="round"/>
+
+</svg>
+
+<h3>
+Bạn chưa có bài viết nào được đăng
+</h3>
+
+<p>
+Các bài viết sau khi được duyệt và đăng sẽ xuất hiện tại đây.
+</p>
+
+</div>
+
+
+
+<div
+id="tableWrapper"
+class="table-wrapper">
+
+
+<table class="article-table">
+
+
+<thead>
+
+<tr>
+
+
+<th
+class="title-column"
+data-sort="title">
+
+<button
+class="sort-button"
+type="button">
+
+<span>
+Tiêu đề
+</span>
+
+<span
+class="sort-icon"
+aria-hidden="true">
+
+<svg
+viewBox="0 0 16 16"
+fill="none">
+
+<path
+d="M5 6.5L8 3.5L11 6.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+<path
+d="M5 9.5L8 12.5L11 9.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+</svg>
+
+</span>
+
+</button>
+
+</th>
+
+
+
+<th
+data-sort="date">
+
+<button
+class="sort-button"
+type="button">
+
+<span>
+Ngày đăng
+</span>
+
+<span
+class="sort-icon"
+aria-hidden="true">
+
+<svg
+viewBox="0 0 16 16"
+fill="none">
+
+<path
+d="M5 6.5L8 3.5L11 6.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+<path
+d="M5 9.5L8 12.5L11 9.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+</svg>
+
+</span>
+
+</button>
+
+</th>
+
+
+
+<th
+data-sort="views">
+
+<button
+class="sort-button"
+type="button">
+
+<span>
+Lượt xem
+</span>
+
+<span
+class="sort-icon"
+aria-hidden="true">
+
+<svg
+viewBox="0 0 16 16"
+fill="none">
+
+<path
+d="M5 6.5L8 3.5L11 6.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+<path
+d="M5 9.5L8 12.5L11 9.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+</svg>
+
+</span>
+
+</button>
+
+</th>
+
+
+
+<th
+data-sort="comments">
+
+<button
+class="sort-button"
+type="button">
+
+<span>
+Bình luận
+</span>
+
+<span
+class="sort-icon"
+aria-hidden="true">
+
+<svg
+viewBox="0 0 16 16"
+fill="none">
+
+<path
+d="M5 6.5L8 3.5L11 6.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+<path
+d="M5 9.5L8 12.5L11 9.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+</svg>
+
+</span>
+
+</button>
+
+</th>
+
+
+
+<th
+data-sort="likes">
+
+<button
+class="sort-button"
+type="button">
+
+<span>
+Lượt thích
+</span>
+
+<span
+class="sort-icon"
+aria-hidden="true">
+
+<svg
+viewBox="0 0 16 16"
+fill="none">
+
+<path
+d="M5 6.5L8 3.5L11 6.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+<path
+d="M5 9.5L8 12.5L11 9.5"
+stroke="currentColor"
+stroke-width="1.4"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+</svg>
+
+</span>
+
+</button>
+
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="articleTableBody">
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</section>
+
+
+</div>
+
+
+</main>
+
+
+</div>
+
+
+
+<!-- ===================================================
+     MOCK DATA
+=================================================== -->
+
+<script src="mock-data.js"></script>
+
+
+
+<script>
+
+
+// =====================================================
+// LOAD REPORTER HIỆN TẠI
+// =====================================================
+
+// Nếu hệ thống đăng nhập đã lưu user_id vào localStorage,
+// trang sẽ lấy đúng user đó.
+// Nếu chưa có, tự tìm reporter active đầu tiên trong MOCK_DATA.
+
+const storedUserId =
+localStorage.getItem("user_id");
+
+
+const currentReporter =
+storedUserId
+  ? MOCK_DATA.users.find(
+      user =>
+        String(user.id) === String(storedUserId) &&
+        user.role === "reporter"
+    )
+  : MOCK_DATA.users.find(
+      user =>
+        user.role === "reporter" &&
+        user.status === "active"
+    );
+
+
+
+// =====================================================
+// SIDEBAR USER
+// =====================================================
+
+if (currentReporter) {
+
+  document.getElementById("sidebarName").textContent =
+    currentReporter.full_name;
+
+  document.getElementById("sidebarAvatar").src =
+    currentReporter.avatar;
+
+}
+
+
+
+// =====================================================
+// LẤY BÀI VIẾT ĐÃ ĐĂNG CỦA REPORTER
+// =====================================================
+
+let statisticsArticles = [];
+
+if (currentReporter) {
+
+  statisticsArticles =
+    MOCK_DATA.articles
+      .filter(article =>
+        article.author_id === currentReporter.id &&
+        article.status === "published"
+      )
+      .map(article => {
+
+        const commentCount =
+          MOCK_DATA.comments.filter(comment =>
+            comment.article_id === article.id &&
+            comment.is_deleted === false
+          ).length;
+
+
+        const likeCount =
+          MOCK_DATA.favorites.filter(favorite =>
+            favorite.article_id === article.id
+          ).length;
+
+
+        return {
+
+          ...article,
+
+          commentCount: commentCount,
+
+          likeCount: likeCount
+
+        };
+
+      });
+
+}
+
+
+
+// =====================================================
+// SORT
+// =====================================================
+
+let currentSort = {
+  key: "date",
+  direction: "desc"
+};
+
+
+
+function getSortValue(article, key) {
+
+  switch (key) {
+
+    case "title":
+      return article.title.toLowerCase();
+
+    case "date":
+      return new Date(
+        article.published_at
+      ).getTime();
+
+    case "views":
+      return article.view_count;
+
+    case "comments":
+      return article.commentCount;
+
+    case "likes":
+      return article.likeCount;
+
+    default:
+      return "";
+
+  }
+
+}
+
+
+
+function sortArticles() {
+
+  statisticsArticles.sort(
+    (a, b) => {
+
+      const valueA =
+        getSortValue(a, currentSort.key);
+
+      const valueB =
+        getSortValue(b, currentSort.key);
+
+
+      if (typeof valueA === "string") {
+
+        return currentSort.direction === "asc"
+          ? valueA.localeCompare(valueB, "vi")
+          : valueB.localeCompare(valueA, "vi");
+
+      }
+
+
+      return currentSort.direction === "asc"
+        ? valueA - valueB
+        : valueB - valueA;
+
+    }
+  );
+
+}
+
+
+
+// =====================================================
+// FORMAT DATE
+// =====================================================
+
+function formatDate(dateString) {
+
+  if (!dateString) {
+    return "—";
+  }
+
+  const date =
+    new Date(
+      dateString.replace(" ", "T")
+    );
+
+
+  return date.toLocaleDateString(
+    "vi-VN"
+  );
+
+}
+
+
+
+// =====================================================
+// RENDER TABLE
+// =====================================================
+
+function renderTable() {
+
+  const tbody =
+    document.getElementById(
+      "articleTableBody"
+    );
+
+  const tableWrapper =
+    document.getElementById(
+      "tableWrapper"
+    );
+
+  const emptyState =
+    document.getElementById(
+      "emptyState"
+    );
+
+  const articleCount =
+    document.getElementById(
+      "articleCount"
+    );
+
+
+  tbody.innerHTML = "";
+
+
+
+  // ===============================================
+  // KHÔNG CÓ BÀI
+  // ===============================================
+
+  if (
+    statisticsArticles.length === 0
+  ) {
+
+    tableWrapper.classList.add(
+      "hidden"
+    );
+
+    emptyState.classList.remove(
+      "hidden"
+    );
+
+    articleCount.textContent =
+      "0 bài viết";
+
+    return;
+
+  }
+
+
+
+  // ===============================================
+  // CÓ BÀI
+  // ===============================================
+
+  tableWrapper.classList.remove(
+    "hidden"
+  );
+
+  emptyState.classList.add(
+    "hidden"
+  );
+
+
+  articleCount.textContent =
+    `${statisticsArticles.length} bài viết`;
+
+
+
+  statisticsArticles.forEach(
+    article => {
+
+      const row =
+        document.createElement("tr");
+
+
+      row.innerHTML = `
+
+        <td class="article-title-cell">
+
+          <a
+            href="article-detail.html?id=${article.id}"
+            class="article-title">
+
+            ${article.title}
+
+          </a>
+
+        </td>
+
+
+        <td class="date-cell">
+
+          ${formatDate(article.published_at)}
+
+        </td>
+
+
+        <td class="number-cell">
+
+          ${article.view_count.toLocaleString("vi-VN")}
+
+        </td>
+
+
+        <td class="number-cell">
+
+          ${article.commentCount.toLocaleString("vi-VN")}
+
+        </td>
+
+
+        <td class="number-cell">
+
+          ${article.likeCount.toLocaleString("vi-VN")}
+
+        </td>
+
+      `;
+
+
+      tbody.appendChild(row);
+
+    }
+  );
+
+}
+
+
+
+// =====================================================
+// CLICK SORT HEADER
+// =====================================================
+
+document
+  .querySelectorAll(
+    ".article-table th[data-sort]"
+  )
+  .forEach(header => {
+
+    const button =
+      header.querySelector(
+        ".sort-button"
+      );
+
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const key =
+          header.dataset.sort;
+
+
+        if (
+          currentSort.key === key
+        ) {
+
+          currentSort.direction =
+            currentSort.direction === "asc"
+              ? "desc"
+              : "asc";
+
+        } else {
+
+          currentSort.key = key;
+
+          currentSort.direction =
+            key === "title"
+              ? "asc"
+              : "desc";
+
+        }
+
+
+        document
+          .querySelectorAll(
+            ".article-table th"
+          )
+          .forEach(th => {
+
+            th.classList.remove(
+              "sorted"
+            );
+
+            th.removeAttribute(
+              "data-direction"
+            );
+
+          });
+
+
+        header.classList.add(
+          "sorted"
+        );
+
+        header.setAttribute(
+          "data-direction",
+          currentSort.direction
+        );
+
+
+        sortArticles();
+
+        renderTable();
+
+      }
+    );
+
+  });
+
+
+
+// =====================================================
+// INITIAL RENDER
+// =====================================================
+
+sortArticles();
+
+renderTable();
+
+
+
+</script>
+
+
+</body>
+
+</html>

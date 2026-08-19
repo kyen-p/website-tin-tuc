@@ -1,418 +1,1370 @@
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-    margin:0;
-    background:#f4f4f0;
-    color:#182238;
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:13px;
-}
-a{text-decoration:none;color:inherit}
-button,input{font-family:inherit}
+/* =========================================================
+   PROFILE.CSS — MẠCH TIN
+   QUẢN LÝ TÀI KHOẢN (UC-US06)
+   ========================================================= */
 
-:root{
-    --navy:#111a2e;
-    --navy2:#1b253b;
-    --gold:#a5824d;
-    --paper:#f7f6f1;
-    --cream:#ebe5d8;
-    --line:#d7d2c6;
-    --muted:#77766f;
-    --red:#9f3029;
-}
 
-.container{
-    width:100%;
-    max-width:900px;
-    margin:0 auto;
-}
+/* =========================================================
+   1. BẢNG MÀU
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,480;0,9..144,600;1,9..144,420&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root {
 
-/* ===== TOP NEWS BAR ===== */
-.hotbar{
-    height:28px;
-    background:#172033;
-    color:#ddd;
-    overflow:hidden;
-    border-bottom:1px solid #30394b;
-}
-.hotbar .container{
-    display:flex;
-    align-items:center;
-    height:100%;
-    gap:38px;
-    white-space:nowrap;
-    font-size:9px;
-}
-.hot-item b{
-    color:#b23a32;
-    margin-right:7px;
-    font-size:8px;
-}
+  --ink:#131B2E;
 
-/* ===== DATE / USER ===== */
-.utility{
-    height:32px;
-    background:#f6f5f0;
-    border-bottom:1px solid #e1ded5;
-}
-.utility .container{
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    color:#8a887f;
-    font-family:Georgia,"Times New Roman",serif;
-    font-size:9px;
-}
-.utility-right{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-.notice{
-    display:flex;
-    align-items:center;
-    gap:4px;
-}
-.notice-dot{
-    width:14px;height:14px;border-radius:50%;
-    background:#a52e29;color:white;
-    display:grid;place-items:center;
-    font:8px Arial;
-}
-.user-mini{
-    display:flex;align-items:center;gap:6px;
-}
-.user-mini-avatar{
-    width:18px;height:18px;border-radius:50%;
-    background:#ddd9cd;color:#81785e;
-    display:grid;place-items:center;
-    font:8px Georgia,serif;
+  --ink-soft:#2B3350;
+
+  --paper:#F5F3EE;
+
+  --paper-alt:#ECE7DA;
+
+  --white:#FFFFFF;
+
+  --brass:#B8894F;
+
+  --brass-dark:#93692F;
+
+  --crimson:#A6362C;
+
+  --line:#D9D3C2;
+
+  --line-soft:#E6E1D2;
+
+  --muted:#6B6759;
+  --f-display:
+  'Fraunces',
+  'Times New Roman',
+  serif;
+
+
+  --f-body:
+  'Inter',
+  Arial,
+  sans-serif;
+
+
+  --f-mono:
+  'IBM Plex Mono',
+  monospace;
 }
 
-/* ===== MAIN HEADER ===== */
-.main-header{
-    background:#faf9f5;
-    border-bottom:1px solid #ddd8ca;
-}
-.main-header .container{
-    height:68px;
-    display:flex;
-    align-items:center;
-}
-.logo{
-    display:flex;
-    align-items:center;
-    width:235px;
-    flex-shrink:0;
-}
-.logo-mark{
-    color:#b02f29;
-    font-size:20px;
-    line-height:1;
-    margin-right:7px;
-}
-.logo-text{
-    font-family:Georgia,"Times New Roman",serif;
-    font-size:21px;
-    font-weight:bold;
-    color:#172239;
-}
-.logo-text em{
-    color:#a17e49;
-    font-style:italic;
-    font-weight:normal;
-}
-.main-nav{
-    display:flex;
-    align-items:center;
-    gap:25px;
-    flex:1;
-}
-.main-nav a{
-    font-size:10px;
-    color:#1d2739;
-}
-.main-nav a:hover{color:#9f3029}
-.search{
-    width:25px;height:25px;border:1px solid #ddd8cb;
-    border-radius:50%;
-    display:grid;place-items:center;
-    font-size:13px;
-    color:#1d2739;
+
+
+/* =========================================================
+   2. RESET
+   ========================================================= */
+
+
+*,
+*::before,
+*::after {
+
+  box-sizing:border-box;
+
 }
 
-/* ===== CATEGORY ===== */
-.categories{
-    height:29px;
-    background:#ebe7dc;
-    border-bottom:1px solid #bdb7a9;
-}
-.categories .container{
-    height:100%;
-    display:flex;
-    align-items:center;
-    gap:20px;
-}
-.categories a{
-    color:#77736a;
-    font:9px Georgia,"Times New Roman",serif;
+
+html {
+
+  margin:0;
+
+  padding:0;
+
+  width:100%;
+
+  min-height:100%;
+
 }
 
-/* ===== PAGE ===== */
-.page{
-    padding:15px 0 55px;
-}
-.breadcrumb{
-    color:#8a877d;
-    font:9px Georgia,"Times New Roman",serif;
-    margin-bottom:30px;
-}
-.breadcrumb span{margin:0 5px}
 
-/* Same 2-column proportion as history page */
-.account-layout{
-    display:grid;
-    grid-template-columns:176px minmax(0,570px);
-    gap:25px;
-    align-items:start;
-}
+body {
 
-/* ===== ACCOUNT SIDEBAR ===== */
-.account-sidebar{
-    background:#fff;
-    border:1px solid #e1ded6;
-}
-.account-profile{
-    text-align:center;
-    padding:16px 10px 13px;
-    border-bottom:1px solid #ddd9cf;
-}
-.avatar{
-    width:43px;height:43px;
-    margin:0 auto 9px;
-    border-radius:50%;
-    background:#f0ece1;
-    color:#a3824d;
-    display:grid;place-items:center;
-    font:17px Georgia,"Times New Roman",serif;
-}
-.account-name{
-    font:bold 10px Arial,sans-serif;
-    color:#263044;
-}
-.account-role{
-    margin-top:4px;
-    color:#8a877e;
-    font:8px Georgia,serif;
-}
-.account-menu a{
-    height:32px;
-    display:flex;
-    align-items:center;
-    padding:0 13px;
-    border-bottom:1px solid #f0ede6;
-    color:#4c4b46;
-    font-size:9px;
-    transition:.15s;
-}
-.account-menu a:last-child{border-bottom:0}
-.account-menu a:hover{
-    background:#f3f0e7;
-}
-.account-menu a.active{
-    background:#ebe5d7;
-    color:#1b2539;
-    border-left:2px solid #a72f29;
-    padding-left:11px;
-    font-weight:bold;
-}
-.account-menu a.logout{color:#7b4a45}
+  margin:0;
 
-/* ===== CONTENT ===== */
-.content-title{
-    margin:0 0 10px;
-    font:600 19px Georgia,"Times New Roman",serif;
-    color:#1b2539;
-}
-.content-line{
-    height:1px;
-    background:#1b2539;
-    margin-bottom:16px;
-}
-.content-intro{
-    margin:0 0 21px;
-    color:#77766f;
-    font:10px Georgia,"Times New Roman",serif;
-    line-height:1.6;
+  padding:0;
+
+  min-height:100vh;
+
+  background:var(--paper);
+
+  color:var(--ink);
+
+  font-family:var(--f-body);
+
+  font-size:16px;
+
+  line-height:1.55;
+
+
 }
 
-/* ===== PROFILE CARD ===== */
-.profile-card{
-    background:#fff;
-    border:1px solid #ddd9cf;
-    padding:18px 20px;
-    display:flex;
-    align-items:center;
-    gap:18px;
-    margin-bottom:18px;
-}
-.profile-avatar{
-    width:66px;height:66px;
-    flex:none;
-    border-radius:50%;
-    background:#182238;
-    color:#f4f0e6;
-    display:grid;place-items:center;
-    font:bold 23px Georgia,serif;
-}
-.profile-name{
-    margin:0 0 3px;
-    font:bold 18px Georgia,"Times New Roman",serif;
-    color:#1b2539;
-}
-.profile-username{
-    color:#77756e;
-    font:9px Georgia,serif;
-    margin-bottom:8px;
-}
-.badge{
-    display:inline-block;
-    border:1px solid #cfc8b9;
-    padding:3px 7px;
-    color:#7d6a4c;
-    font:7px Georgia,serif;
-    letter-spacing:.1em;
-}
-.profile-description{
-    color:#77766f;
-    font:9px Georgia,serif;
-    margin:8px 0 0;
+
+button,
+input,
+textarea {
+
+  font-family:
+
+  Arial,
+
+  Helvetica,
+
+  sans-serif;
+
 }
 
-/* ===== INFORMATION ===== */
-.info-card{
-    background:#fff;
-    border:1px solid #ddd9cf;
-    margin-bottom:18px;
-}
-.card-heading{
-    padding:15px 18px 11px;
-    border-bottom:1px solid #ddd9cf;
-}
-.card-heading h2{
-    margin:0;
-    font:bold 17px Georgia,"Times New Roman",serif;
-    color:#1b2539;
-}
-.card-heading p{
-    margin:4px 0 0;
-    color:#8a887f;
-    font:9px Georgia,serif;
-}
-.card-body{padding:17px 18px 19px}
 
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    column-gap:20px;
-    row-gap:14px;
-}
-.field label{
-    display:block;
-    margin-bottom:5px;
-    color:#8a7a62;
-    font:8px Georgia,"Times New Roman",serif;
-    letter-spacing:.09em;
-    text-transform:uppercase;
-}
-.field input,.field textarea{
-    width:100%;
-    border:1px solid #ddd8ca;
-    background:#fffefb;
-    color:#2a3140;
-    padding:8px 9px;
-    font:10px Arial,sans-serif;
-    outline:none;
-}
-.field input{height:34px}
-.field textarea{height:70px;resize:vertical}
-.field input:focus,.field textarea:focus{
-    border-color:#a88a5b;
-}
-.full{grid-column:1/-1}
-.actions{
-    display:flex;
-    justify-content:flex-end;
-    gap:8px;
-    margin-top:16px;
-}
-.btn{
-    border:1px solid #cfc8ba;
-    background:#fff;
-    color:#394052;
-    padding:7px 13px;
-    font-size:9px;
-    cursor:pointer;
-}
-.btn.primary{
-    background:#182238;
-    color:#fff;
-    border-color:#182238;
-}
-.btn:hover{opacity:.9}
-.message{
-    display:none;
-    margin-top:10px;
-    padding:8px 10px;
-    background:#f0ede4;
-    border-left:2px solid #a5824d;
-    color:#5f5b52;
-    font:9px Arial,sans-serif;
+
+/* =========================================================
+   3. LAYOUT
+   ========================================================= */
+
+
+.profile-page {
+
+  width:100%;
+
+  min-height:100vh;
+
+
+  display:grid;
+
+
+  grid-template-columns:
+
+  250px
+
+  minmax(0,1fr);
+
+
+  background:var(--paper);
+
 }
 
-/* ===== PASSWORD ===== */
-.password-card{scroll-margin-top:15px}
 
-/* ===== FOOTER ===== */
-.footer{
-    background:#182238;
-    color:#d8d6ce;
-    padding:25px 0;
-}
-.footer .container{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-.footer-logo{
-    font:15px Georgia,serif;
-}
-.footer-logo em{color:#b28b53}
-.footer-copy{
-    color:#999a96;
-    font:8px Georgia,serif;
+
+/* =========================================================
+   4. SIDEBAR
+   ========================================================= */
+
+
+.history-sidebar {
+
+  width:250px;
+
+  min-height:100vh;
+
+
+  display:flex;
+
+  flex-direction:column;
+
+
+  background:var(--paper-alt);
+
 }
 
-/* ===== RESPONSIVE ===== */
-@media(max-width:800px){
-    .container{max-width:94%}
-    .main-nav{gap:14px}
-    .logo{width:190px}
-    .account-layout{grid-template-columns:160px minmax(0,1fr)}
+
+
+/* =========================================================
+   5. LOGO
+   ========================================================= */
+
+
+.history-brand {
+
+
+  width:100%;
+
+
+  height:94px;
+
+
+  padding:0 24px;
+
+
+  display:flex;
+
+
+  align-items:center;
+
+
+  border-bottom:
+
+  1px solid var(--paper);
+
+
 }
-@media(max-width:650px){
-    .hotbar{display:none}
-    .main-header .container{height:auto;padding:13px 0;flex-wrap:wrap}
-    .logo{width:auto;margin-right:auto}
-    .main-nav{order:3;width:100%;overflow:auto;margin-top:12px}
-    .categories .container{overflow:auto}
-    .account-layout{grid-template-columns:1fr;gap:18px}
-    .account-menu{display:grid;grid-template-columns:1fr 1fr}
-    .account-menu a{border-bottom:0}
-    .account-menu a.logout{grid-column:1/-1}
-    .form-grid{grid-template-columns:1fr}
-    .full{grid-column:auto}
-    .footer .container{display:block}
-    .footer-copy{margin-top:8px}
+
+
+
+.brand-link {
+
+
+  display:flex;
+
+
+  flex-direction:row;
+
+
+  align-items:center;
+
+
+  gap:8px;
+
+
+  width:max-content;
+
+
+  height:34px;
+
+
+  color:var(--ink);
+
+
+  text-decoration:none;
+
+
+  white-space:nowrap;
+
+
+}
+
+
+
+.pulse-mark {
+
+
+  width:30px;
+
+
+  height:24px;
+
+
+  flex:0 0 30px;
+
+
+  color:var(--crimson);
+
+
+}
+
+
+
+.brand-word {
+
+
+  display:flex;
+
+
+  align-items:baseline;
+
+
+  white-space:nowrap;
+
+
+}
+
+
+
+.brand-mach {
+
+  color:var(--ink);
+
+  font-family:
+
+  Georgia,
+
+  "Times New Roman",
+
+  serif;
+
+  font-size:23px;
+
+  font-weight:700;
+
+  letter-spacing:-0.7px;
+
+}
+
+
+
+.brand-tin {
+
+  margin-left:4px;
+
+  color:var(--brass-dark);
+
+  font-family:
+
+  Georgia,
+
+  "Times New Roman",
+
+  serif;
+
+  font-size:23px;
+
+  font-style:italic;
+
+  font-weight:400;
+
+  letter-spacing:-0.8px;
+
+  transform:skewX(-4deg);
+
+}
+
+
+/* hover logo */
+
+
+.brand-link:hover .pulse-mark {
+
+  color:#c0392b;
+
+}
+
+
+.brand-link:hover .brand-mach {
+
+  color:#202a40;
+
+}
+
+
+.brand-link:hover .brand-tin {
+
+  color:var(--brass);
+
+}
+
+
+
+
+
+/* =========================================================
+   6. USER PROFILE
+   ========================================================= */
+
+
+.history-user {
+
+
+  width:100%;
+
+
+  padding:
+
+  26px 20px 23px;
+
+
+  text-align:center;
+
+
+  border-bottom:
+
+  1px solid var(--paper);
+
+
+}
+
+
+
+
+.history-avatar {
+
+
+  width:64px;
+
+
+  height:64px;
+
+
+  aspect-ratio:1 / 1;
+
+
+  margin:
+
+  0 auto 12px;
+
+
+  border-radius:50%;
+
+
+  overflow:hidden;
+
+
+  display:flex;
+
+
+  align-items:center;
+
+
+  justify-content:center;
+
+
+  background:var(--white);
+
+
+  border:
+
+  1px solid var(--line);
+
+
+}
+
+
+
+.history-avatar img {
+
+
+  width:100%;
+
+
+  height:100%;
+
+
+  display:block;
+
+
+  object-fit:cover;
+
+
+}
+
+
+
+.history-user-name {
+
+
+  margin:0;
+
+
+  color:var(--ink);
+
+
+  font-family:var(--f-body);
+
+
+  font-size:14px;
+
+
+  font-weight:600;
+
+
+}
+
+
+
+.history-user-role {
+
+
+  margin-top:5px;
+
+
+  color:var(--muted);
+
+
+  font-family:var(--f-mono);
+
+
+  font-size:12px;
+
+
+  letter-spacing:.02em;
+
+
+}
+
+
+
+
+/* =========================================================
+   7. MENU
+   ========================================================= */
+
+
+.history-menu {
+
+
+  width:100%;
+
+
+  display:flex;
+
+
+  flex-direction:column;
+
+
+  padding-top:14px;
+
+
+  gap:2px;
+
+
+}
+
+
+
+.history-menu-item {
+
+
+  width:100%;
+
+
+  min-height:50px;
+
+
+  padding:0 28px;
+
+
+  display:flex;
+
+
+  align-items:center;
+
+
+  gap:14px;
+
+
+  color:var(--ink-soft);
+
+
+  font-family:var(--f-body);
+
+
+  font-size:14px;
+
+
+  font-weight:500;
+
+
+  text-decoration:none;
+
+
+  border-left:
+
+  3px solid transparent;
+
+
+  transition:
+
+  background .15s ease,
+
+  border-color .15s ease,
+
+  color .15s ease;
+
+
+}
+
+
+
+.history-menu-item:hover {
+
+
+  background:var(--paper);
+
+
+  color:var(--ink);
+
+
+}
+
+
+
+.history-menu-item.active {
+
+
+  background:var(--paper-alt);
+
+
+  border-left-color:var(--crimson);
+
+
+  color:var(--ink);
+
+
+  font-weight:600;
+
+
+}
+
+
+
+.history-menu-icon {
+
+
+  width:18px;
+
+
+  height:18px;
+
+
+  display:block;
+
+
+  flex-shrink:0;
+
+
+  color:var(--muted);
+  
+
+
+}
+
+
+
+.history-menu-item.active .history-menu-icon {
+
+
+  color:var(--crimson);
+
+
+}
+
+
+
+.history-menu-text {
+
+
+  font-family:var(--f-body);
+
+
+  font-size:14px;
+
+
+  line-height:1.4;
+
+
+}
+
+
+
+
+/* =========================================================
+   8. LOGOUT
+   ========================================================= */
+
+
+/* =========================================================
+   8. LOGOUT
+   ========================================================= */
+
+
+.history-logout {
+
+
+  margin-top:auto;
+
+
+  padding-bottom:22px;
+
+
+  border-top:
+
+  1px solid var(--line);
+
+
+}
+
+
+
+.history-logout .history-menu-item {
+
+
+  min-height:50px;
+
+
+}
+
+/* =========================================================
+   9. MAIN CONTENT
+   ========================================================= */
+
+
+/* =========================================================
+   9. MAIN CONTENT
+   ========================================================= */
+
+
+.profile-main {
+
+
+  min-width:0;
+
+
+  min-height:100vh;
+
+
+  padding:
+
+  42px 24px 70px;
+
+
+  background:var(--paper);
+
+
+}
+
+
+
+.profile-main-inner {
+
+
+  width:100%;
+
+
+  max-width:1180px;
+
+
+  margin:0 auto;
+
+
+}
+
+/* =========================================================
+   10. TIÊU ĐỀ
+   ========================================================= */
+
+
+/* =========================================================
+   10. TIÊU ĐỀ
+   ========================================================= */
+
+
+.profile-heading {
+
+
+  margin:0;
+
+
+  color:var(--ink);
+
+
+  font-family:var(--f-display);
+
+
+  font-size:36px;
+
+
+  line-height:1.18;
+
+
+  font-weight:600;
+
+
+  letter-spacing:-0.01em;
+
+
+}
+
+
+
+.profile-heading-line {
+
+
+  width:100%;
+
+
+  height:2px;
+
+
+  margin-top:12px;
+
+
+  background:var(--ink);
+
+
+}
+
+
+
+.profile-description {
+
+
+  margin:
+
+
+  16px 0 32px;
+
+
+  color:var(--muted);
+
+
+  font-size:16px;
+
+
+  line-height:1.6;
+
+
+}
+
+
+
+/* =========================================================
+   11. PROFILE CARD
+   ========================================================= */
+
+
+/* =========================================================
+   11. PROFILE CARD
+   ========================================================= */
+
+
+.profile-card {
+
+
+  width:100%;
+
+
+  padding-bottom:24px;
+
+
+  margin-bottom:28px;
+
+
+  border-bottom:
+
+  1px solid var(--line);
+
+
+}
+
+
+
+.profile-card h2 {
+
+
+  margin:
+
+  0 0 18px;
+
+
+  color:var(--ink);
+
+
+  font-family:var(--f-display);
+
+
+  font-size:24px;
+
+
+  font-weight:600;
+
+
+}
+
+/* =========================================================
+   12. AVATAR UPLOAD
+   ========================================================= */
+
+
+.profile-avatar-upload {
+
+
+  margin-bottom:25px;
+
+
+}
+
+
+
+.profile-avatar-upload img {
+
+
+  width:100px;
+
+
+  height:100px;
+
+
+  display:block;
+
+
+  margin-bottom:12px;
+
+
+  object-fit:cover;
+
+
+  border-radius:50%;
+
+
+  border:
+
+  1px solid var(--brass);
+
+
+  background:var(--paper-alt);
+
+
+}
+
+
+
+.profile-avatar-upload input {
+
+
+  color:var(--muted);
+
+
+  font-size:12px;
+
+
+}
+
+
+
+
+
+/* =========================================================
+   13. FORM
+   ========================================================= */
+
+
+.profile-form {
+
+
+  width:100%;
+
+
+}
+
+
+
+.profile-form label {
+
+
+  display:block;
+
+
+  margin-top:16px;
+
+
+  margin-bottom:6px;
+
+
+  color:var(--ink);
+
+
+  font-size:13px;
+
+
+  font-weight:700;
+
+
+}
+
+
+
+.profile-form input,
+
+.profile-form textarea {
+
+
+  width:100%;
+
+
+  padding:
+
+  11px 12px;
+
+
+  background:transparent;
+
+
+  color:var(--ink);
+
+
+  border:
+
+  1px solid #d5cdbd;
+
+
+  border-radius:0;
+
+
+  outline:none;
+
+
+  font-size:14px;
+
+
+}
+
+
+
+.profile-form textarea {
+
+
+  min-height:120px;
+
+
+  resize:none;
+
+
+}
+
+
+
+.profile-form input:focus,
+
+.profile-form textarea:focus {
+
+
+  border-color:var(--brass);
+
+
+}
+
+
+
+
+
+/* =========================================================
+   14. BUTTON
+   ========================================================= */
+
+
+.profile-button {
+
+
+  width:180px;
+
+
+  height:45px;
+
+
+  border:none;
+
+
+  cursor:pointer;
+
+
+  background:var(--crimson);
+
+
+  color:white;
+
+
+  font-size:14px;
+
+
+  font-weight:700;
+
+
+  transition:
+
+  background .15s ease;
+
+
+}
+
+
+
+.profile-button:hover {
+
+
+  background:#8f2d25;
+
+
+}
+
+
+
+
+
+/* =========================================================
+   15. MESSAGE
+   ========================================================= */
+
+
+#message {
+
+
+  margin-top:18px;
+
+
+  font-size:13px;
+
+
+  font-weight:700;
+
+
+}
+
+
+
+
+
+/* =========================================================
+   16. TABLET
+   ========================================================= */
+
+
+@media(max-width:1050px){
+
+
+.profile-page {
+
+
+  grid-template-columns:
+
+  230px
+
+  minmax(0,1fr);
+
+
+}
+
+
+
+.history-sidebar {
+
+
+  width:230px;
+
+
+}
+
+
+
+.profile-main {
+
+
+  padding:
+
+  38px 32px 60px;
+
+
+}
+
+
+
+.history-brand {
+
+
+  padding-left:20px;
+
+  padding-right:20px;
+
+
+}
+
+
+
+.brand-mach,
+
+.brand-tin {
+
+
+  font-size:22px;
+
+
+}
+
+
+}
+
+
+
+
+/* =========================================================
+   17. MOBILE
+   ========================================================= */
+
+
+@media(max-width:760px){
+
+
+.profile-page {
+
+
+  display:block;
+
+
+}
+
+
+
+.history-sidebar {
+
+
+  width:100%;
+
+
+  min-height:auto;
+
+
+}
+
+
+
+.history-brand {
+
+
+  height:78px;
+
+
+  padding:0 20px;
+
+
+}
+
+
+
+.history-menu {
+
+
+  display:grid;
+
+
+  grid-template-columns:
+
+  repeat(2,1fr);
+
+
+}
+
+
+
+.history-menu-item {
+
+
+  min-height:45px;
+
+
+  padding:0 16px;
+
+
+}
+
+
+
+.history-logout {
+
+
+  margin-top:0;
+
+
+}
+
+
+
+.profile-main {
+
+
+  padding:
+
+  30px 20px 50px;
+
+
+}
+
+
+
+.profile-heading {
+
+
+  font-size:25px;
+
+
+}
+
+
+
+.profile-button {
+
+
+  width:100%;
+
+
+}
+
+
+}
+
+
+
+
+
+/* =========================================================
+   18. SMALL MOBILE
+   ========================================================= */
+
+
+@media(max-width:480px){
+
+
+.history-menu {
+
+
+  grid-template-columns:
+
+  1fr;
+
+
+}
+
+
+
+.profile-main {
+
+
+  padding-left:16px;
+
+
+  padding-right:16px;
+
+
+}
+
+
+
+.profile-heading {
+
+
+  font-size:23px;
+
+
+}
+
+
+
+.profile-card h2 {
+
+
+  font-size:18px;
+
+
+}
+
+
+
+.brand-mach,
+
+.brand-tin {
+
+
+  font-size:21px;
+
+
+}
+
+
+
+.pulse-mark {
+
+
+  width:25px;
+
+
+  height:22px;
+
+
+}
+
+
 }
