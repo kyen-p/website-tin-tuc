@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Mạch Tin Admin</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+
+<body class="admin-body">
+
+    <!-- ============ CHECKBOX HACK CHO SIDEBAR MOBILE ============ -->
+    <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+    <div class="admin-shell">
+
+        <!-- =====================================================
+             PHẦN CHUNG - SIDEBAR (dùng cho cả 3 trang admin)
+             - Logo thương hiệu
+             - Menu điều hướng chính
+             - Menu phụ (về trang công khai + đăng xuất)
+             ===================================================== -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar__brand">
+                <svg class="pulse-mark" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 12h4l2 7 4-14 2 7h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span class="logo__word">Mạch <em>Tin</em></span>
+            </div>
+
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="admin-nav__link is-active">Dashboard</a>
+                <a href="users.html" class="admin-nav__link">Quản lý người dùng</a>
+                <a href="settings.html" class="admin-nav__link">Cấu hình hệ thống</a>
+
+                <div class="admin-nav__bottom">
+                    <a href="../public/index.html" class="admin-nav__link">Về trang công khai</a>
+                    <a href="../user/login.html" class="admin-nav__link admin-nav__link--logout">Đăng xuất</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Lớp phủ tối khi mở sidebar trên mobile -->
+        <label for="sidebar-toggle" class="sidebar-backdrop"></label>
+
+        <div class="admin-content">
+
+            <!-- =====================================================
+                 PHẦN CHUNG - TOPBAR (dùng cho cả 3 trang admin)
+                 - Nút ☰ mở sidebar mobile
+                 - Tiêu đề trang
+                 - Avatar + tên + vai trò admin
+                 ===================================================== -->
+            <header class="admin-topbar">
+                <label for="sidebar-toggle" class="sidebar-toggle-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round">
+                        <line x1="4" y1="6" x2="20" y2="6"></line>
+                        <line x1="4" y1="12" x2="20" y2="12"></line>
+                        <line x1="4" y1="18" x2="20" y2="18"></line>
+                    </svg>
+                </label>
+                <h1 class="admin-topbar__title">Dashboard</h1>
+                <div class="admin-topbar__user">
+                    <div class="ph ph--avatar admin-topbar__avatar"></div>
+                    <div class="admin-topbar__info">
+                        <span class="admin-topbar__name">Nguyễn Quản Trị</span>
+                        <span class="admin-topbar__role">Quản trị viên</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- =====================================================
+                 RIÊNG DASHBOARD - nội dung trang Dashboard
+                 ===================================================== -->
+            <main class="admin-main">
+
+                <!-- 4 thẻ thống kê nhanh: tổng user, bài đã đăng, bình luận, lượt đọc -->
+                <section class="stat-grid">
+                    <div class="stat-card">
+                        <span class="eyebrow"><b>Tổng người dùng</b></span>
+                        <span class="stat-card__scope">Toàn hệ thống</span>
+                        <strong class="stat-card__number" id="stat-total-users">0</strong>
+                        <ul class="stat-card__breakdown" id="stat-users-breakdown"></ul>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="eyebrow"><b>Bài viết đã đăng</b></span>
+                        <span class="stat-card__scope">Toàn hệ thống</span>
+                        <strong class="stat-card__number" id="stat-published-articles">0</strong>
+                        <ul class="stat-card__breakdown" id="stat-articles-breakdown"></ul>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="eyebrow"><b>Tổng bình luận</b></span>
+                        <span class="stat-card__scope">Toàn hệ thống</span>
+                        <strong class="stat-card__number" id="stat-total-comments">0</strong>
+                        <ul class="stat-card__breakdown" id="stat-comments-breakdown"></ul>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="eyebrow"><b>Tổng lượt đọc</b></span>
+                        <span class="stat-card__scope">Toàn hệ thống</span>
+                        <strong class="stat-card__number" id="stat-total-views">0</strong>
+                        <p class="stat-card__hint">Tổng lượt đọc từ trước đến nay</p>
+                    </div>
+                </section>
+
+                <!-- Khối biểu đồ phân tích: 1 line chart + 2 bar chart + toplist + doughnut -->
+                <section class="charts-dashboard">
+                    <div class="charts-dashboard__head">
+                        <h2 class="charts-dashboard__title">Phân tích chi tiết</h2>
+                        <div class="charts-tabs">
+                            <button class="charts-tab is-active" data-range="d7">7 ngày qua</button>
+                            <button class="charts-tab" data-range="d30">30 ngày qua</button>
+                            <button class="charts-tab" data-range="d90">90 ngày qua</button>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 1: Line chart (full width) -->
+                    <div class="charts-row charts-row--full">
+                        <div class="chart-box">
+                            <div class="chart-box__head">
+                                <h3 class="chart-box__title">Tổng lượt đọc bài</h3>
+                            </div>
+                            <div class="chart-box__body">
+                                <canvas id="chart-views-time"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 2: Chuyên mục + Tag (chia đôi) -->
+                    <div class="charts-row charts-row--half">
+                        <div class="chart-box">
+                            <div class="chart-box__head">
+                                <h3 class="chart-box__title">Lượt xem theo chuyên mục</h3>
+                            </div>
+                            <div class="chart-box__body"><canvas id="chart-views-category"></canvas></div>
+                        </div>
+                        <div class="chart-box">
+                            <div class="chart-box__head">
+                                <h3 class="chart-box__title">Lượt xem theo tag</h3>
+                            </div>
+                            <div class="chart-box__body"><canvas id="chart-views-tag"></canvas></div>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 3: Top bài viết + trạng thái tài khoản (chia đôi) -->
+                    <div class="charts-row charts-row--half">
+                        <div class="chart-box">
+                            <div class="chart-box__head">
+                                <h3 class="chart-box__title">Bài viết nhiều lượt xem nhất</h3>
+                                <span class="chart-box__hint">Bấm vào bài để mở chi tiết</span>
+                            </div>
+                            <div class="toplist" id="top-articles-list"></div>
+                        </div>
+                        <div class="chart-box">
+                            <div class="chart-box__head">
+                                <h3 class="chart-box__title">Trạng thái tài khoản</h3>
+                                <span class="chart-box__hint">Tỉ lệ user hoạt động / bị khóa</span>
+                            </div>
+                            <div class="chart-box__body chart-box__body--doughnut">
+                                <canvas id="chart-user-status"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/js/mock-data.js"></script>
+    <script src="../assets/js/admin-dashboard.js"></script>
+
+</body>
+
+</html>

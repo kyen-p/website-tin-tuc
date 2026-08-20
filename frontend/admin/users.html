@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý người dùng - Mạch Tin Admin</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+
+<body class="admin-body">
+
+    <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+    <div class="admin-shell">
+
+        <!-- PHẦN CHUNG - SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar__brand">
+                <svg class="pulse-mark" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 12h4l2 7 4-14 2 7h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span class="logo__word">Mạch <em>Tin</em></span>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="admin-nav__link">Dashboard</a>
+                <a href="users.html" class="admin-nav__link is-active">Quản lý người dùng</a>
+                <a href="settings.html" class="admin-nav__link">Cấu hình hệ thống</a>
+                <div class="admin-nav__bottom">
+                    <a href="../public/index.html" class="admin-nav__link">Về trang công khai</a>
+                    <a href="../user/login.html" class="admin-nav__link admin-nav__link--logout">Đăng xuất</a>
+                </div>
+            </nav>
+        </aside>
+
+        <label for="sidebar-toggle" class="sidebar-backdrop"></label>
+
+        <div class="admin-content">
+
+            <!-- PHẦN CHUNG - TOPBAR -->
+            <header class="admin-topbar">
+                <label for="sidebar-toggle" class="sidebar-toggle-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round">
+                        <line x1="4" y1="6" x2="20" y2="6"></line>
+                        <line x1="4" y1="12" x2="20" y2="12"></line>
+                        <line x1="4" y1="18" x2="20" y2="18"></line>
+                    </svg>
+                </label>
+                <h1 class="admin-topbar__title">Quản lý người dùng</h1>
+                <div class="admin-topbar__user">
+                    <div class="ph ph--avatar admin-topbar__avatar"></div>
+                    <div class="admin-topbar__info">
+                        <span class="admin-topbar__name">Nguyễn Quản Trị</span>
+                        <span class="admin-topbar__role">Quản trị viên</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- =====================================================
+                 RIÊNG USERS - nội dung trang Quản lý người dùng
+                 ===================================================== -->
+            <main class="admin-main">
+
+                <!-- Toolbar: tìm kiếm + lọc vai trò + lọc trạng thái -->
+                <div class="toolbar">
+                    <div class="toolbar__search">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                        <input type="text" id="search-input" placeholder="Tìm theo tên hoặc email...">
+                    </div>
+                    <select class="toolbar__select" id="filter-role" aria-label="Lọc theo vai trò">
+                        <option value="all">Tất cả vai trò</option>
+                        <option value="user">Độc giả</option>
+                        <option value="reporter">Phóng viên</option>
+                        <option value="editor">Biên tập viên</option>
+                        <option value="admin">Quản trị viên</option>
+                    </select>
+                    <select class="toolbar__select" id="filter-status" aria-label="Lọc theo trạng thái">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="active">Đang hoạt động</option>
+                        <option value="locked">Đã khóa</option>
+                    </select>
+                </div>
+
+                <!-- Bảng users -->
+                <div class="panel panel--scroll">
+                    <table class="data-table user-table">
+                        <thead>
+                            <tr>
+                                <th>Người dùng</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tham gia</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody"></tbody>
+                    </table>
+
+                    <div class="table-pagination">
+                        <span class="table-pagination__info" id="page-info"></span>
+                        <div class="table-pagination__pages" id="page-buttons"></div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Khóa tài khoản -->
+    <div id="lockModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-box__head">
+                <h3 class="modal-box__title">Khóa tài khoản</h3>
+                <button class="modal-box__close" onclick="closeLockModal()">✕</button>
+            </div>
+            <div class="modal-box__body">
+                <div class="modal-user-preview">
+                    <div class="user-avatar" id="lockModalAvatar">??</div>
+                    <div>
+                        <div class="data-table__title" id="lockModalName">Tên</div>
+                        <div class="data-table__meta" id="lockModalEmail">email</div>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label for="lockReason">Lý do khóa tài khoản</label>
+                    <select id="lockReason" onchange="toggleOtherReason()">
+                        <option value="">-- Chọn lý do --</option>
+                        <option value="spam">Spam / quảng cáo trái phép</option>
+                        <option value="comment">Vi phạm quy định bình luận</option>
+                        <option value="fake_news">Đăng tải nội dung sai sự thật</option>
+                        <option value="fake_account">Sử dụng tài khoản ảo / mạo danh</option>
+                        <option value="copyright">Vi phạm bản quyền nội dung</option>
+                        <option value="legal">Yêu cầu từ cơ quan chức năng</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+                <div class="form-field" id="otherReasonField" style="display:none;">
+                    <label for="otherReasonText">Nhập lý do cụ thể</label>
+                    <textarea id="otherReasonText" rows="3" placeholder="Mô tả lý do..."></textarea>
+                </div>
+            </div>
+            <div class="modal-box__foot">
+                <button class="btn-chip" onclick="closeLockModal()">Hủy</button>
+                <button class="btn-chip btn-chip--danger btn-chip--solid" onclick="confirmLock()">Xác nhận khóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Đổi vai trò (2 bước) -->
+    <div id="roleModal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="roleStep1">
+                <div class="modal-box__head">
+                    <h3 class="modal-box__title">Đổi vai trò người dùng</h3>
+                    <button class="modal-box__close" onclick="closeRoleModal()">✕</button>
+                </div>
+                <div class="modal-box__body">
+                    <div class="modal-user-preview">
+                        <div class="user-avatar" id="roleModalAvatar">??</div>
+                        <div>
+                            <div class="data-table__title" id="roleModalName">Tên</div>
+                            <div class="data-table__meta">Vai trò hiện tại: <span id="roleModalCurrent">...</span></div>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label for="newRoleSelect">Chọn vai trò mới</label>
+                        <select id="newRoleSelect">
+                            <option value="user">Độc giả</option>
+                            <option value="reporter">Phóng viên</option>
+                            <option value="editor">Biên tập viên</option>
+                            <option value="admin">Quản trị viên</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-box__foot">
+                    <button class="btn-chip" onclick="closeRoleModal()">Hủy</button>
+                    <button class="btn-chip btn-chip--primary" onclick="proceedRoleChange()">Tiếp tục</button>
+                </div>
+            </div>
+            <div id="roleStep2" style="display:none;">
+                <div class="modal-box__head">
+                    <h3 class="modal-box__title">Xác nhận cấp quyền quản trị</h3>
+                    <button class="modal-box__close" onclick="closeRoleModal()">✕</button>
+                </div>
+                <div class="modal-box__body">
+                    <div class="modal-warning">
+                        <span class="modal-warning__icon">⚠</span>
+                        <div>
+                            <p class="modal-warning__text">Bạn sắp cấp quyền <strong id="roleWarningTarget">Biên tập
+                                    viên</strong> cho <strong id="roleWarningName">...</strong>.</p>
+                            <p class="modal-warning__text">Vai trò này có quyền truy cập và thao tác sâu vào hệ thống.
+                                Vui lòng xác nhận bạn chắc chắn.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-box__foot">
+                    <button class="btn-chip" onclick="backToRoleStep1()">Quay lại</button>
+                    <button class="btn-chip btn-chip--primary btn-chip--solid" onclick="confirmRoleChange()">Xác nhận
+                        cấp quyền</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/mock-data.js"></script>
+    <script src="../assets/js/admin-users.js"></script>
+</body>
+
+</html>
