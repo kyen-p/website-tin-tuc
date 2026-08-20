@@ -1,5 +1,6 @@
 /* =========================================================
-   MY-COMMENTS.CSS — MẠCH TIN (chuẩn hóa theo style.css)
+   MY-COMMENTS.CSS — MẠCH TIN
+   Đã sửa font chữ tiêu đề "Bình luận của tôi" giống favorites.css
    ========================================================= */
 
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,480;0,9..144,600;1,9..144,420&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
@@ -54,6 +55,7 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
 button,
 input,
 textarea,
@@ -175,9 +177,11 @@ select:focus-visible {
 .brand-link:hover .pulse-mark {
   color: #c0392b;
 }
+
 .brand-link:hover .brand-mach {
   color: var(--ink-soft);
 }
+
 .brand-link:hover .brand-tin {
   color: var(--brass);
 }
@@ -320,16 +324,20 @@ select:focus-visible {
 }
 
 /* =========================================================
-   HEADING
+   HEADING — ĐÃ SỬA MẠNH (chống ghi đè từ style.css)
    ========================================================= */
-.comments-heading {
-  margin: 0;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: 28px;
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+h1.comments-heading,
+.comments-main h1.comments-heading,
+.comments-main-inner h1.comments-heading {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--ink) !important;
+  font-family: var(--f-display) !important; /* Fraunces */
+  font-size: 28px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
 }
 
 .comments-heading-line {
@@ -359,7 +367,7 @@ select:focus-visible {
 
 .comment-item {
   width: 100%;
-  padding: 20px 0;
+  padding: 16px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -370,6 +378,7 @@ select:focus-visible {
   font-family: var(--f-mono);
   font-size: 12px;
   letter-spacing: 0.02em;
+  line-height: 1.5;
 }
 
 .comment-article-link:hover {
@@ -430,6 +439,7 @@ select:focus-visible {
   font-family: var(--f-mono);
   font-size: 12px;
   letter-spacing: 0.02em;
+  line-height: 1.5;
 }
 
 .comment-actions {
@@ -441,7 +451,8 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 7px 14px;
+  gap: 6px;
+  padding: 8px 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--white);
@@ -460,16 +471,19 @@ select:focus-visible {
 .btn-comment:hover {
   border-color: var(--ink);
   color: var(--ink);
+  background: #faf6f0;
 }
 
 .btn-comment--edit:hover {
   border-color: var(--brass);
   color: var(--brass-dark);
+  background: #faf6f0;
 }
 
 .btn-comment--delete:hover {
   border-color: var(--crimson);
   color: var(--crimson);
+  background: #faf6f0;
 }
 
 .btn-comment--save {
@@ -481,10 +495,17 @@ select:focus-visible {
 .btn-comment--save:hover {
   background: var(--ink-soft);
   color: var(--paper);
+  border-color: var(--ink-soft);
 }
 
 .btn-comment--cancel {
   background: transparent;
+}
+
+.btn-comment--cancel:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: #faf6f0;
 }
 
 /* =========================================================
@@ -519,23 +540,29 @@ select:focus-visible {
   .comments-page {
     grid-template-columns: 230px minmax(0, 1fr);
   }
+
   .comments-sidebar {
     width: 230px;
   }
+
   .comments-main {
     padding: 38px 32px 60px;
   }
+
   .comments-brand {
     padding-left: 20px;
     padding-right: 20px;
   }
+
   .brand-link {
     gap: 8px;
   }
+
   .brand-mach,
   .brand-tin {
     font-size: 22px;
   }
+
   .pulse-mark {
     width: 26px;
     height: 22px;
@@ -547,53 +574,67 @@ select:focus-visible {
   .comments-page {
     display: block;
   }
+
   .comments-sidebar {
     width: 100%;
     min-height: auto;
     border-right: none;
     border-bottom: 1px solid var(--line);
   }
+
   .comments-brand {
     height: 78px;
     padding: 0 20px;
   }
+
   .brand-link {
     height: 30px;
     gap: 8px;
   }
+
   .brand-mach,
   .brand-tin {
     font-size: 21px;
   }
+
   .pulse-mark {
     width: 24px;
     height: 20px;
     flex-basis: 24px;
   }
+
   .comments-user {
     padding: 20px;
   }
+
   .comments-menu {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     padding: 5px 0;
   }
+
   .comments-menu-item {
     min-height: 45px;
     padding: 0 16px;
   }
+
   .comments-logout {
     margin-top: 0;
     padding: 0 0 10px;
     border-top: 1px solid var(--line);
   }
+
   .comments-main {
     min-height: auto;
     padding: 30px 20px 50px;
   }
-  .comments-heading {
-    font-size: 24px;
+
+  h1.comments-heading,
+  .comments-main h1.comments-heading,
+  .comments-main-inner h1.comments-heading {
+    font-size: 24px !important;
   }
+
   .comment-meta-row {
     flex-direction: column;
     align-items: flex-start;
@@ -604,30 +645,43 @@ select:focus-visible {
   .comments-menu {
     grid-template-columns: 1fr;
   }
+
   .comments-main {
     padding-left: 16px;
     padding-right: 16px;
   }
-  .comments-heading {
-    font-size: 22px;
+
+  h1.comments-heading,
+  .comments-main h1.comments-heading,
+  .comments-main-inner h1.comments-heading {
+    font-size: 22px !important;
   }
+
   .comments-brand {
     padding-left: 16px;
     padding-right: 16px;
   }
+
   .brand-link {
     gap: 7px;
   }
+
   .brand-mach,
   .brand-tin {
     font-size: 20px;
   }
+
   .pulse-mark {
     width: 22px;
     height: 19px;
     flex-basis: 22px;
   }
+
   .comment-content {
     font-size: 14.5px;
+  }
+
+  .comment-item {
+    padding: 15px 0;
   }
 }
