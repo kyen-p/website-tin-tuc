@@ -1,1985 +1,1001 @@
 <!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="UTF-8">
+    <title>Bình luận của tôi - Mạch Tin</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+    <link rel="stylesheet" href="../assets/style.css/my-comments.css" />
+  </head>
 
-  <title>Bình luận của tôi - Mạch Tin</title>
-
-
-  <!-- ===================================================
-       CSS
-       my-comments.html nằm trong assets/user/
-       nên đi lên 1 cấp để vào assets/style.css/
-  =================================================== -->
-
-  <link
-    rel="stylesheet"
-    href="../assets/style.css/my-comments.css"
-  >
-
-</head>
-
-
-<body>
-
-<div class="comments-page">
-
-
-  <!-- ===================================================
+  <body>
+    <div class="comments-page">
+      <!-- ===================================================
        SIDEBAR
   =================================================== -->
 
-  <aside class="comments-sidebar">
-
-
-    <!-- =================================================
+      <aside class="comments-sidebar">
+        <!-- =================================================
          LOGO
     ================================================== -->
 
-    <div class="comments-brand">
+        <div class="comments-brand">
+          <a href="/frontend/public/index.html" class="brand-link">
+            <svg
+              class="pulse-mark"
+              viewBox="0 0 40 32"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
+                stroke="currentColor"
+                stroke-width="2.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
 
-      <a
-        href="/frontend/public/index.html"
-        class="brand-link"
-      >
+            <span class="brand-word">
+              <span class="brand-mach"> MẠCH </span>
 
-        <svg
-          class="pulse-mark"
-          viewBox="0 0 40 32"
-          fill="none"
-          aria-hidden="true"
-        >
+              <span class="brand-tin"> TIN </span>
+            </span>
+          </a>
+        </div>
 
-          <path
-            d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
-            stroke="currentColor"
-            stroke-width="2.7"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-
-        </svg>
-
-
-        <span class="brand-word">
-
-          <span class="brand-mach">
-            MẠCH
-          </span>
-
-          <span class="brand-tin">
-            TIN
-          </span>
-
-        </span>
-
-      </a>
-
-    </div>
-
-
-
-    <!-- =================================================
+        <!-- =================================================
          USER
     ================================================== -->
 
-    <div class="comments-user">
+        <div class="comments-user">
+          <div class="comments-avatar" id="userAvatar">
+            <span id="userInitials"> U </span>
+          </div>
 
-      <div
-        class="comments-avatar"
-        id="userAvatar"
-      >
+          <p class="comments-user-name" id="userName">Đang tải...</p>
 
-        <span id="userInitials">
-          U
-        </span>
+          <div class="comments-user-role" id="userRole">Độc giả</div>
+        </div>
 
-      </div>
-
-
-      <p
-        class="comments-user-name"
-        id="userName"
-      >
-        Đang tải...
-      </p>
-
-
-      <div
-        class="comments-user-role"
-        id="userRole"
-      >
-        Độc giả
-      </div>
-
-    </div>
-
-
-
-    <!-- =================================================
+        <!-- =================================================
          MENU
     ================================================== -->
 
-    <nav class="comments-menu">
-
-
-      <!-- THÔNG TIN TÀI KHOẢN -->
-
-      <a
-        href="profile.html"
-        class="comments-menu-item"
-      >
-
-        <svg
-          class="comments-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <circle
-            cx="12"
-            cy="8"
-            r="3.2"
-            stroke="currentColor"
-            stroke-width="1.7"
-          />
-
-          <path
-            d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-        </svg>
-
-
-        <span class="comments-menu-text">
-          Thông tin tài khoản
-        </span>
-
-      </a>
-
-
-
-      <!-- ĐỔI MẬT KHẨU -->
-
-      <a
-        href="profile.html#password"
-        class="comments-menu-item"
-      >
-
-        <svg
-          class="comments-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <rect
-            x="5"
-            y="10"
-            width="14"
-            height="10"
-            rx="2"
-            stroke="currentColor"
-            stroke-width="1.7"
-          />
-
-          <path
-            d="M8 10V7a4 4 0 018 0v3"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-          <circle
-            cx="12"
-            cy="15"
-            r="1"
-            fill="currentColor"
-          />
-
-        </svg>
-
-
-        <span class="comments-menu-text">
-          Đổi mật khẩu
-        </span>
-
-      </a>
-
-
-
-      <!-- BÀI VIẾT YÊU THÍCH -->
-
-      <a
-        href="favorites.html"
-        class="comments-menu-item"
-      >
-
-        <svg
-          class="comments-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <path
-            d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linejoin="round"
-          />
-
-        </svg>
-
-
-        <span class="comments-menu-text">
-          Bài viết yêu thích
-        </span>
-
-      </a>
-
-
-
-      <!-- LỊCH SỬ -->
-
-      <a
-        href="history.html"
-        class="comments-menu-item"
-      >
-
-        <svg
-          class="comments-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <path
-            d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linejoin="round"
-          />
-
-          <path
-            d="M5 5.5v11M9 7h7M9 11h7"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-        </svg>
-
-
-        <span class="comments-menu-text">
-          Lịch sử đọc
-        </span>
-
-      </a>
-
-
-
-      <!-- BÌNH LUẬN -->
-
-      <a
-        href="my-comments.html"
-        class="comments-menu-item active"
-      >
-
-        <svg
-          class="comments-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <path
-            d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 0120 11.5z"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linejoin="round"
-          />
-
-          <circle
-            cx="9"
-            cy="11.5"
-            r=".8"
-            fill="currentColor"
-          />
-
-          <circle
-            cx="12"
-            cy="11.5"
-            r=".8"
-            fill="currentColor"
-          />
-
-          <circle
-            cx="15"
-            cy="11.5"
-            r=".8"
-            fill="currentColor"
-          />
-
-        </svg>
-
-
-        <span class="comments-menu-text">
-          Bình luận của tôi
-        </span>
-
-      </a>
-
-
-
-      <!-- THÔNG BÁO -->
-
-      <a
-        href="notifications.html"
-        class="comments-menu-item"
-      >
-
-        <svg
-          class="comments-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <path
-            d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-
-          <path
-            d="M10 21h4"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-        </svg>
-
-
-        <span class="comments-menu-text">
-          Thông báo
-        </span>
-
-      </a>
-
-
-    </nav>
-
-
-
-    <!-- =================================================
+        <nav class="comments-menu">
+          <!-- THÔNG TIN TÀI KHOẢN -->
+
+          <a href="profile.html" class="comments-menu-item">
+            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="12"
+                cy="8"
+                r="3.2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+
+              <path
+                d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span class="comments-menu-text"> Thông tin tài khoản </span>
+          </a>
+
+          <!-- ĐỔI MẬT KHẨU -->
+
+          <a href="profile.html#password" class="comments-menu-item">
+            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="5"
+                y="10"
+                width="14"
+                height="10"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+
+              <path
+                d="M8 10V7a4 4 0 018 0v3"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+
+              <circle cx="12" cy="15" r="1" fill="currentColor" />
+            </svg>
+
+            <span class="comments-menu-text"> Đổi mật khẩu </span>
+          </a>
+
+          <!-- BÀI VIẾT YÊU THÍCH -->
+
+          <a href="favorites.html" class="comments-menu-item">
+            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span class="comments-menu-text"> Bài viết yêu thích </span>
+          </a>
+
+          <!-- LỊCH SỬ -->
+
+          <a href="history.html" class="comments-menu-item">
+            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M5 5.5v11M9 7h7M9 11h7"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span class="comments-menu-text"> Lịch sử đọc </span>
+          </a>
+
+          <!-- BÌNH LUẬN -->
+
+          <a href="my-comments.html" class="comments-menu-item active">
+            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 0120 11.5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <circle cx="9" cy="11.5" r=".8" fill="currentColor" />
+
+              <circle cx="12" cy="11.5" r=".8" fill="currentColor" />
+
+              <circle cx="15" cy="11.5" r=".8" fill="currentColor" />
+            </svg>
+
+            <span class="comments-menu-text"> Bình luận của tôi </span>
+          </a>
+
+          <!-- THÔNG BÁO -->
+
+          <a href="notifications.html" class="comments-menu-item">
+            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M10 21h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span class="comments-menu-text"> Thông báo </span>
+          </a>
+        </nav>
+
+        <!-- =================================================
          LOGOUT
     ================================================== -->
 
-    <div class="comments-logout">
+        <div class="comments-logout">
+          <a href="/frontend/public/index.html" class="comments-menu-item">
+            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
 
-      <a
-        href="/frontend/public/index.html"
-        class="comments-menu-item"
-      >
+              <path
+                d="M14 8l4 4-4 4M18 12H9"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
 
-        <svg
-          class="comments-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
+            <span class="comments-menu-text"> Đăng xuất </span>
+          </a>
+        </div>
+      </aside>
 
-          <path
-            d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-          <path
-            d="M14 8l4 4-4 4M18 12H9"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-
-        </svg>
-
-
-        <span class="comments-menu-text">
-          Đăng xuất
-        </span>
-
-      </a>
-
-    </div>
-
-
-  </aside>
-
-
-
-  <!-- ===================================================
+      <!-- ===================================================
        MAIN
   =================================================== -->
 
-  <main class="comments-main">
+      <main class="comments-main">
+        <div class="comments-main-inner">
+          <h1 class="comments-heading">Bình luận của tôi</h1>
 
-    <div class="comments-main-inner">
+          <div class="comments-heading-line"></div>
 
+          <p class="comments-description">
+            Danh sách bình luận bạn đã đăng. Bạn có thể sửa hoặc xóa bất kỳ lúc
+            nào.
+          </p>
 
-      <h1 class="comments-heading">
-        Bình luận của tôi
-      </h1>
+          <!-- ERROR -->
 
+          <div id="commentsError" class="comments-error">
+            Không thể tải dữ liệu bình luận.
+          </div>
 
-      <div class="comments-heading-line"></div>
+          <!-- EMPTY -->
 
+          <div id="commentsEmpty" class="comments-empty">
+            Bạn chưa có bình luận nào.
+          </div>
 
-      <p class="comments-description">
-        Danh sách bình luận bạn đã đăng. Bạn có thể sửa hoặc xóa
-        bất kỳ lúc nào.
-      </p>
+          <!-- LIST -->
 
-
-
-      <!-- ERROR -->
-
-      <div
-        id="commentsError"
-        class="comments-error"
-      >
-        Không thể tải dữ liệu bình luận.
-      </div>
-
-
-
-      <!-- EMPTY -->
-
-      <div
-        id="commentsEmpty"
-        class="comments-empty"
-      >
-        Bạn chưa có bình luận nào.
-      </div>
-
-
-
-      <!-- LIST -->
-
-      <div
-        id="commentsList"
-        class="comments-list"
-      ></div>
-
-
+          <div id="commentsList" class="comments-list"></div>
+        </div>
+      </main>
     </div>
 
-  </main>
+    <script src="../assets/mock-data.js"></script>
 
-
-</div>
-
-
-
-<!-- =====================================================
-     MOCK DATA
-
-     my-comments.html nằm trong user/
-     mock-data.js nằm trong assets/
-     => ../assets/mock-data.js
-===================================================== -->
-
-<script src="../assets/mock-data.js"></script>
-
-
-<script>
-
-
-/* =====================================================
+    <script>
+      /* =====================================================
    LẤY USER HIỆN TẠI
 ===================================================== */
 
-const storedUserId =
-  localStorage.getItem("user_id");
+      const storedUserId = localStorage.getItem("user_id");
 
+      let currentUser = null;
 
-let currentUser = null;
-
-
-
-/* =====================================================
+      /* =====================================================
    KIỂM TRA MOCK DATA
 ===================================================== */
 
-if (
-  typeof MOCK_DATA !== "undefined" &&
-  Array.isArray(MOCK_DATA.users)
-) {
-
-
-  /* =================================================
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.users)) {
+        /* =================================================
      ƯU TIÊN USER ĐANG ĐĂNG NHẬP
   ================================================= */
 
-  if (storedUserId) {
+        if (storedUserId) {
+          currentUser = MOCK_DATA.users.find(
+            (user) =>
+              String(user.id) === String(storedUserId) && user.role === "user",
+          );
+        }
 
-    currentUser =
-      MOCK_DATA.users.find(
-        user =>
-          String(user.id) ===
-          String(storedUserId) &&
-
-          user.role === "user"
-      );
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      NẾU KHÔNG CÓ -> USER ACTIVE
   ================================================= */
 
-  if (!currentUser) {
+        if (!currentUser) {
+          currentUser = MOCK_DATA.users.find(
+            (user) => user.role === "user" && user.status === "active",
+          );
+        }
 
-    currentUser =
-      MOCK_DATA.users.find(
-        user =>
-          user.role === "user" &&
-          user.status === "active"
-      );
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      NẾU KHÔNG CÓ ACTIVE -> USER BẤT KỲ
   ================================================= */
 
-  if (!currentUser) {
+        if (!currentUser) {
+          currentUser = MOCK_DATA.users.find((user) => user.role === "user");
+        }
+      }
 
-    currentUser =
-      MOCK_DATA.users.find(
-        user =>
-          user.role === "user"
-      );
-
-  }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    DATA
 ===================================================== */
 
-const users =
-  typeof MOCK_DATA !== "undefined" &&
-  Array.isArray(MOCK_DATA.users)
+      const users =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.users)
+          ? MOCK_DATA.users
+          : [];
 
-    ? MOCK_DATA.users
+      const articles =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.articles)
+          ? MOCK_DATA.articles
+          : [];
 
-    : [];
-
-
-const articles =
-  typeof MOCK_DATA !== "undefined" &&
-  Array.isArray(MOCK_DATA.articles)
-
-    ? MOCK_DATA.articles
-
-    : [];
-
-
-
-/* =====================================================
+      /* =====================================================
    ELEMENT
 ===================================================== */
 
-const commentsList =
-  document.getElementById(
-    "commentsList"
-  );
+      const commentsList = document.getElementById("commentsList");
 
+      const commentsEmpty = document.getElementById("commentsEmpty");
 
-const commentsEmpty =
-  document.getElementById(
-    "commentsEmpty"
-  );
+      const commentsError = document.getElementById("commentsError");
 
+      const userName = document.getElementById("userName");
 
-const commentsError =
-  document.getElementById(
-    "commentsError"
-  );
+      const userRole = document.getElementById("userRole");
 
+      const userAvatar = document.getElementById("userAvatar");
 
-const userName =
-  document.getElementById(
-    "userName"
-  );
+      const userInitials = document.getElementById("userInitials");
 
-
-const userRole =
-  document.getElementById(
-    "userRole"
-  );
-
-
-const userAvatar =
-  document.getElementById(
-    "userAvatar"
-  );
-
-
-const userInitials =
-  document.getElementById(
-    "userInitials"
-  );
-
-
-
-/* =====================================================
+      /* =====================================================
    INITIALS
 ===================================================== */
 
-function getInitials(name) {
+      function getInitials(name) {
+        if (!name) {
+          return "U";
+        }
 
-  if (!name) {
+        const words = name.trim().split(/\s+/);
 
-    return "U";
+        if (words.length === 1) {
+          return words[0].substring(0, 2).toUpperCase();
+        }
 
-  }
+        return (
+          words[0].charAt(0) + words[words.length - 1].charAt(0)
+        ).toUpperCase();
+      }
 
-
-  const words =
-    name
-      .trim()
-      .split(/\s+/);
-
-
-  if (words.length === 1) {
-
-    return words[0]
-      .substring(0, 2)
-      .toUpperCase();
-
-  }
-
-
-  return (
-
-    words[0].charAt(0) +
-
-    words[words.length - 1].charAt(0)
-
-  ).toUpperCase();
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    ROLE
 ===================================================== */
 
-function getRoleName(role) {
+      function getRoleName(role) {
+        if (role === "user") {
+          return "Độc giả";
+        }
 
-  if (role === "user") {
+        if (role === "reporter") {
+          return "Phóng viên";
+        }
 
-    return "Độc giả";
+        if (role === "editor") {
+          return "Biên tập viên";
+        }
 
-  }
+        if (role === "admin") {
+          return "Quản trị viên";
+        }
 
+        return role || "Độc giả";
+      }
 
-  if (role === "reporter") {
-
-    return "Phóng viên";
-
-  }
-
-
-  if (role === "editor") {
-
-    return "Biên tập viên";
-
-  }
-
-
-  if (role === "admin") {
-
-    return "Quản trị viên";
-
-  }
-
-
-  return role || "Độc giả";
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD USER SIDEBAR
    AVATAR:
    LOCAL STORAGE -> MOCK DATA
 ===================================================== */
 
-function loadUser(user) {
+      function loadUser(user) {
+        if (!user) {
+          userName.textContent = "Người dùng";
 
-  if (!user) {
+          userRole.textContent = "Độc giả";
 
-    userName.textContent =
-      "Người dùng";
+          userInitials.textContent = "U";
 
-    userRole.textContent =
-      "Độc giả";
+          userInitials.style.display = "block";
 
-    userInitials.textContent =
-      "U";
+          return;
+        }
 
-    userInitials.style.display =
-      "block";
-
-    return;
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      NAME
   ================================================= */
 
-  const name =
-    user.full_name ||
-    user.username ||
-    "Người dùng";
+        const name = user.full_name || user.username || "Người dùng";
 
+        userName.textContent = name;
 
-  userName.textContent =
-    name;
-
-
-
-  /* =================================================
+        /* =================================================
      ROLE
   ================================================= */
 
-  userRole.textContent =
-    getRoleName(user.role);
+        userRole.textContent = getRoleName(user.role);
 
-
-
-  /* =================================================
+        /* =================================================
      INITIALS
   ================================================= */
 
-  userInitials.textContent =
-    getInitials(name);
+        userInitials.textContent = getInitials(name);
 
-  userInitials.style.display =
-    "block";
+        userInitials.style.display = "block";
 
-
-
-  /* =================================================
+        /* =================================================
      XÓA AVATAR CŨ
   ================================================= */
 
-  const oldImage =
-    userAvatar.querySelector("img");
+        const oldImage = userAvatar.querySelector("img");
 
+        if (oldImage) {
+          oldImage.remove();
+        }
 
-  if (oldImage) {
-
-    oldImage.remove();
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      LẤY AVATAR
   ================================================= */
 
-  const savedAvatar =
-    localStorage.getItem(
-      "userAvatar_" + user.id
-    );
+        const savedAvatar = localStorage.getItem("userAvatar_" + user.id);
 
+        const avatarURL = savedAvatar || user.avatar || "";
 
-  const avatarURL =
-    savedAvatar ||
-    user.avatar ||
-    "";
-
-
-
-  /* =================================================
+        /* =================================================
      KHÔNG CÓ AVATAR
   ================================================= */
 
-  if (!avatarURL) {
+        if (!avatarURL) {
+          return;
+        }
 
-    return;
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      CREATE IMAGE
   ================================================= */
 
-  const img =
-    document.createElement("img");
+        const img = document.createElement("img");
 
+        img.src = avatarURL;
 
-  img.src =
-    avatarURL;
+        img.alt = "Ảnh đại diện " + name;
 
-
-  img.alt =
-    "Ảnh đại diện " + name;
-
-
-
-  /* =================================================
+        /* =================================================
      AVATAR LOAD SUCCESS
   ================================================= */
 
-  img.onload =
-    function () {
+        img.onload = function () {
+          userInitials.style.display = "none";
+        };
 
-      userInitials.style.display =
-        "none";
-
-    };
-
-
-
-  /* =================================================
+        /* =================================================
      AVATAR LOAD ERROR
   ================================================= */
 
-  img.onerror =
-    function () {
+        img.onerror = function () {
+          img.remove();
 
-      img.remove();
+          userInitials.style.display = "block";
+        };
 
-      userInitials.style.display =
-        "block";
+        userAvatar.appendChild(img);
+      }
 
-    };
-
-
-  userAvatar.appendChild(img);
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    GET ARTICLE
 ===================================================== */
 
-function getArticle(articleId) {
+      function getArticle(articleId) {
+        return (
+          articles.find(
+            (article) => String(article.id) === String(articleId),
+          ) || null
+        );
+      }
 
-  return articles.find(
-    article =>
-      String(article.id) ===
-      String(articleId)
-  ) || null;
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    FORMAT COMMENT TIME
 ===================================================== */
 
-function formatCommentTime(
-  dateString
-) {
+      function formatCommentTime(dateString) {
+        if (!dateString) {
+          return "";
+        }
 
-  if (!dateString) {
+        const value = String(dateString);
 
-    return "";
+        const date = new Date(
+          value.includes("T") ? value : value.replace(" ", "T"),
+        );
 
-  }
+        if (isNaN(date.getTime())) {
+          return value;
+        }
 
+        const day = String(date.getDate()).padStart(2, "0");
 
-  const value =
-    String(dateString);
+        const month = String(date.getMonth() + 1).padStart(2, "0");
 
+        const year = date.getFullYear();
 
-  const date =
-    new Date(
-      value.includes("T")
-        ? value
-        : value.replace(
-            " ",
-            "T"
-          )
-    );
+        const hours = String(date.getHours()).padStart(2, "0");
 
+        const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  if (
-    isNaN(
-      date.getTime()
-    )
-  ) {
+        return `${day}/${month}/${year}` + ` · ${hours}:${minutes}`;
+      }
 
-    return value;
-
-  }
-
-
-  const day =
-    String(
-      date.getDate()
-    ).padStart(2, "0");
-
-
-  const month =
-    String(
-      date.getMonth() + 1
-    ).padStart(2, "0");
-
-
-  const year =
-    date.getFullYear();
-
-
-  const hours =
-    String(
-      date.getHours()
-    ).padStart(2, "0");
-
-
-  const minutes =
-    String(
-      date.getMinutes()
-    ).padStart(2, "0");
-
-
-  return (
-    `${day}/${month}/${year}` +
-    ` · ${hours}:${minutes}`
-  );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    SAVE COMMENTS
 ===================================================== */
 
-function saveCommentsToStorage() {
+      function saveCommentsToStorage() {
+        if (
+          typeof MOCK_DATA === "undefined" ||
+          !Array.isArray(MOCK_DATA.comments)
+        ) {
+          return;
+        }
 
-  if (
-    typeof MOCK_DATA === "undefined" ||
-    !Array.isArray(
-      MOCK_DATA.comments
-    )
-  ) {
+        try {
+          localStorage.setItem(
+            "mockComments",
+            JSON.stringify(MOCK_DATA.comments),
+          );
+        } catch (error) {
+          console.error("Không thể lưu comments:", error);
+        }
+      }
 
-    return;
-
-  }
-
-
-  try {
-
-    localStorage.setItem(
-      "mockComments",
-      JSON.stringify(
-        MOCK_DATA.comments
-      )
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Không thể lưu comments:",
-      error
-    );
-
-  }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD COMMENTS
 ===================================================== */
 
-function loadCommentsFromStorage() {
+      function loadCommentsFromStorage() {
+        try {
+          const saved = localStorage.getItem("mockComments");
 
-  try {
+          if (!saved) {
+            return;
+          }
 
-    const saved =
-      localStorage.getItem(
-        "mockComments"
-      );
+          const parsed = JSON.parse(saved);
 
+          if (Array.isArray(parsed) && typeof MOCK_DATA !== "undefined") {
+            MOCK_DATA.comments = parsed;
+          }
+        } catch (error) {
+          console.error("Không thể đọc comments:", error);
+        }
+      }
 
-    if (!saved) {
-
-      return;
-
-    }
-
-
-    const parsed =
-      JSON.parse(saved);
-
-
-    if (
-      Array.isArray(parsed) &&
-      typeof MOCK_DATA !==
-        "undefined"
-    ) {
-
-      MOCK_DATA.comments =
-        parsed;
-
-    }
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Không thể đọc comments:",
-      error
-    );
-
-  }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    CREATE COMMENT ITEM
 ===================================================== */
 
-function createCommentItem(
-  comment
-) {
+      function createCommentItem(comment) {
+        const article = getArticle(comment.article_id);
 
-  const article =
-    getArticle(
-      comment.article_id
-    );
+        if (!article) {
+          return null;
+        }
 
+        const item = document.createElement("article");
 
-  if (!article) {
+        item.className = "comment-item";
 
-    return null;
+        item.dataset.commentId = String(comment.id);
 
-  }
-
-
-
-  const item =
-    document.createElement(
-      "article"
-    );
-
-
-  item.className =
-    "comment-item";
-
-
-  item.dataset.commentId =
-    String(comment.id);
-
-
-
-  /* =================================================
+        /* =================================================
      ARTICLE LINK
   ================================================= */
 
-  const articleLink =
-    document.createElement(
-      "a"
-    );
+        const articleLink = document.createElement("a");
 
+        articleLink.className = "comment-article-link";
 
-  articleLink.className =
-    "comment-article-link";
+        articleLink.href =
+          "/frontend/public/article-detail.html?slug=" +
+          encodeURIComponent(article.slug || article.id);
 
+        articleLink.textContent =
+          "Bài: " + (article.title || "Không có tiêu đề");
 
-  articleLink.href =
-    "/frontend/public/article-detail.html?slug=" +
-    encodeURIComponent(
-      article.slug ||
-      article.id
-    );
+        item.appendChild(articleLink);
 
-
-  articleLink.textContent =
-    "Bài: " +
-    (
-      article.title ||
-      "Không có tiêu đề"
-    );
-
-
-  item.appendChild(
-    articleLink
-  );
-
-
-
-  /* =================================================
+        /* =================================================
      CONTENT
   ================================================= */
 
-  const content =
-    document.createElement(
-      "p"
-    );
+        const content = document.createElement("p");
 
+        content.className = "comment-content";
 
-  content.className =
-    "comment-content";
+        content.dataset.role = "content";
 
+        content.textContent = comment.content || "";
 
-  content.dataset.role =
-    "content";
+        item.appendChild(content);
 
-
-  content.textContent =
-    comment.content ||
-    "";
-
-
-  item.appendChild(
-    content
-  );
-
-
-
-  /* =================================================
+        /* =================================================
      EDIT BOX
   ================================================= */
 
-  const editBox =
-    document.createElement(
-      "div"
-    );
+        const editBox = document.createElement("div");
 
+        editBox.className = "comment-edit-box";
 
-  editBox.className =
-    "comment-edit-box";
+        editBox.dataset.role = "edit-box";
 
+        const textarea = document.createElement("textarea");
 
-  editBox.dataset.role =
-    "edit-box";
+        textarea.className = "comment-edit-textarea";
 
+        textarea.dataset.role = "textarea";
 
-  const textarea =
-    document.createElement(
-      "textarea"
-    );
+        textarea.value = comment.content || "";
 
+        editBox.appendChild(textarea);
 
-  textarea.className =
-    "comment-edit-textarea";
+        const editActions = document.createElement("div");
 
+        editActions.className = "comment-actions";
 
-  textarea.dataset.role =
-    "textarea";
+        editActions.style.marginTop = "10px";
 
-
-  textarea.value =
-    comment.content ||
-    "";
-
-
-  editBox.appendChild(
-    textarea
-  );
-
-
-
-  const editActions =
-    document.createElement(
-      "div"
-    );
-
-
-  editActions.className =
-    "comment-actions";
-
-
-  editActions.style.marginTop =
-    "10px";
-
-
-
-  /* =================================================
+        /* =================================================
      SAVE BUTTON
   ================================================= */
 
-  const saveButton =
-    document.createElement(
-      "button"
-    );
+        const saveButton = document.createElement("button");
 
+        saveButton.type = "button";
 
-  saveButton.type =
-    "button";
+        saveButton.className = "btn-comment btn-comment--save";
 
+        saveButton.dataset.role = "save";
 
-  saveButton.className =
-    "btn-comment btn-comment--save";
+        saveButton.textContent = "Lưu";
 
-
-  saveButton.dataset.role =
-    "save";
-
-
-  saveButton.textContent =
-    "Lưu";
-
-
-
-  /* =================================================
+        /* =================================================
      CANCEL BUTTON
   ================================================= */
 
-  const cancelButton =
-    document.createElement(
-      "button"
-    );
+        const cancelButton = document.createElement("button");
 
+        cancelButton.type = "button";
 
-  cancelButton.type =
-    "button";
+        cancelButton.className = "btn-comment btn-comment--cancel";
 
+        cancelButton.dataset.role = "cancel";
 
-  cancelButton.className =
-    "btn-comment btn-comment--cancel";
+        cancelButton.textContent = "Hủy";
 
+        editActions.appendChild(saveButton);
 
-  cancelButton.dataset.role =
-    "cancel";
+        editActions.appendChild(cancelButton);
 
+        editBox.appendChild(editActions);
 
-  cancelButton.textContent =
-    "Hủy";
+        item.appendChild(editBox);
 
-
-  editActions.appendChild(
-    saveButton
-  );
-
-
-  editActions.appendChild(
-    cancelButton
-  );
-
-
-  editBox.appendChild(
-    editActions
-  );
-
-
-  item.appendChild(
-    editBox
-  );
-
-
-
-  /* =================================================
+        /* =================================================
      META ROW
   ================================================= */
 
-  const metaRow =
-    document.createElement(
-      "div"
-    );
+        const metaRow = document.createElement("div");
 
+        metaRow.className = "comment-meta-row";
 
-  metaRow.className =
-    "comment-meta-row";
+        const time = document.createElement("span");
 
+        time.className = "comment-time";
 
+        time.textContent = formatCommentTime(comment.created_at);
 
-  const time =
-    document.createElement(
-      "span"
-    );
+        metaRow.appendChild(time);
 
-
-  time.className =
-    "comment-time";
-
-
-  time.textContent =
-    formatCommentTime(
-      comment.created_at
-    );
-
-
-  metaRow.appendChild(
-    time
-  );
-
-
-
-  /* =================================================
+        /* =================================================
      ACTIONS
   ================================================= */
 
-  const actions =
-    document.createElement(
-      "div"
-    );
+        const actions = document.createElement("div");
 
+        actions.className = "comment-actions";
 
-  actions.className =
-    "comment-actions";
+        actions.dataset.role = "actions";
 
-
-  actions.dataset.role =
-    "actions";
-
-
-
-  /* =================================================
+        /* =================================================
      EDIT BUTTON
   ================================================= */
 
-  const editButton =
-    document.createElement(
-      "button"
-    );
+        const editButton = document.createElement("button");
 
+        editButton.type = "button";
 
-  editButton.type =
-    "button";
+        editButton.className = "btn-comment btn-comment--edit";
 
+        editButton.dataset.role = "edit";
 
-  editButton.className =
-    "btn-comment btn-comment--edit";
+        editButton.textContent = "Sửa";
 
-
-  editButton.dataset.role =
-    "edit";
-
-
-  editButton.textContent =
-    "Sửa";
-
-
-
-  /* =================================================
+        /* =================================================
      DELETE BUTTON
   ================================================= */
 
-  const deleteButton =
-    document.createElement(
-      "button"
-    );
+        const deleteButton = document.createElement("button");
 
+        deleteButton.type = "button";
 
-  deleteButton.type =
-    "button";
+        deleteButton.className = "btn-comment btn-comment--delete";
 
+        deleteButton.dataset.role = "delete";
 
-  deleteButton.className =
-    "btn-comment btn-comment--delete";
+        deleteButton.textContent = "Xóa";
 
+        actions.appendChild(editButton);
 
-  deleteButton.dataset.role =
-    "delete";
+        actions.appendChild(deleteButton);
 
+        metaRow.appendChild(actions);
 
-  deleteButton.textContent =
-    "Xóa";
+        item.appendChild(metaRow);
 
-
-  actions.appendChild(
-    editButton
-  );
-
-
-  actions.appendChild(
-    deleteButton
-  );
-
-
-  metaRow.appendChild(
-    actions
-  );
-
-
-  item.appendChild(
-    metaRow
-  );
-
-
-
-  /* =================================================
+        /* =================================================
      EDIT
   ================================================= */
 
-  editButton.addEventListener(
-    "click",
-    function () {
+        editButton.addEventListener("click", function () {
+          textarea.value = comment.content || "";
 
-      textarea.value =
-        comment.content ||
-        "";
+          content.classList.add("is-editing");
 
+          editBox.classList.add("is-open");
 
-      content.classList.add(
-        "is-editing"
-      );
+          actions.style.display = "none";
 
+          textarea.focus();
+        });
 
-      editBox.classList.add(
-        "is-open"
-      );
-
-
-      actions.style.display =
-        "none";
-
-
-      textarea.focus();
-
-    }
-  );
-
-
-
-  /* =================================================
+        /* =================================================
      CANCEL
   ================================================= */
 
-  cancelButton.addEventListener(
-    "click",
-    function () {
+        cancelButton.addEventListener("click", function () {
+          textarea.value = comment.content || "";
 
-      textarea.value =
-        comment.content ||
-        "";
+          content.classList.remove("is-editing");
 
+          editBox.classList.remove("is-open");
 
-      content.classList.remove(
-        "is-editing"
-      );
+          actions.style.display = "flex";
+        });
 
-
-      editBox.classList.remove(
-        "is-open"
-      );
-
-
-      actions.style.display =
-        "flex";
-
-    }
-  );
-
-
-
-  /* =================================================
+        /* =================================================
      SAVE
   ================================================= */
 
-  saveButton.addEventListener(
-    "click",
-    function () {
+        saveButton.addEventListener("click", function () {
+          const newContent = textarea.value.trim();
 
-      const newContent =
-        textarea.value.trim();
+          if (!newContent) {
+            alert("Nội dung bình luận không được để trống.");
 
+            textarea.focus();
 
-      if (!newContent) {
+            return;
+          }
 
-        alert(
-          "Nội dung bình luận không được để trống."
-        );
+          const currentComment = MOCK_DATA.comments.find(
+            (x) => String(x.id) === String(comment.id),
+          );
 
+          if (currentComment) {
+            currentComment.content = newContent;
 
-        textarea.focus();
+            currentComment.updated_at = new Date()
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " ");
+          }
 
+          comment.content = newContent;
 
-        return;
+          comment.updated_at = currentComment
+            ? currentComment.updated_at
+            : comment.updated_at;
 
-      }
+          content.textContent = newContent;
 
+          content.classList.remove("is-editing");
 
+          editBox.classList.remove("is-open");
 
-      const currentComment =
-        MOCK_DATA.comments.find(
-          x =>
-            String(x.id) ===
-            String(comment.id)
-        );
+          actions.style.display = "flex";
 
+          saveCommentsToStorage();
+        });
 
-      if (currentComment) {
-
-        currentComment.content =
-          newContent;
-
-
-        currentComment.updated_at =
-          new Date()
-            .toISOString()
-            .slice(0, 19)
-            .replace(
-              "T",
-              " "
-            );
-
-      }
-
-
-
-      comment.content =
-        newContent;
-
-
-      comment.updated_at =
-        currentComment
-          ? currentComment.updated_at
-          : comment.updated_at;
-
-
-
-      content.textContent =
-        newContent;
-
-
-
-      content.classList.remove(
-        "is-editing"
-      );
-
-
-      editBox.classList.remove(
-        "is-open"
-      );
-
-
-      actions.style.display =
-        "flex";
-
-
-
-      saveCommentsToStorage();
-
-    }
-  );
-
-
-
-  /* =================================================
+        /* =================================================
      DELETE
   ================================================= */
 
-  deleteButton.addEventListener(
-    "click",
-    function () {
+        deleteButton.addEventListener("click", function () {
+          const ok = confirm("Bạn có chắc muốn xóa bình luận này?");
 
-      const ok =
-        confirm(
-          "Bạn có chắc muốn xóa bình luận này?"
-        );
+          if (!ok) {
+            return;
+          }
 
+          const index = MOCK_DATA.comments.findIndex(
+            (x) => String(x.id) === String(comment.id),
+          );
 
-      if (!ok) {
+          if (index !== -1) {
+            MOCK_DATA.comments.splice(index, 1);
+          }
 
-        return;
+          saveCommentsToStorage();
 
+          item.remove();
+
+          if (commentsList.children.length === 0) {
+            commentsEmpty.style.display = "block";
+          }
+        });
+
+        return item;
       }
 
-
-
-      const index =
-        MOCK_DATA.comments.findIndex(
-          x =>
-            String(x.id) ===
-            String(comment.id)
-        );
-
-
-      if (index !== -1) {
-
-        MOCK_DATA.comments.splice(
-          index,
-          1
-        );
-
-      }
-
-
-
-      saveCommentsToStorage();
-
-
-
-      item.remove();
-
-
-
-      if (
-        commentsList.children.length ===
-        0
-      ) {
-
-        commentsEmpty.style.display =
-          "block";
-
-      }
-
-    }
-  );
-
-
-
-  return item;
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD MY COMMENTS
 ===================================================== */
 
-function loadMyComments() {
-
-  try {
-
-
-    /* =================================================
+      function loadMyComments() {
+        try {
+          /* =================================================
        CHECK MOCK DATA
     ================================================= */
 
-    if (
-      typeof MOCK_DATA ===
-      "undefined"
-    ) {
+          if (typeof MOCK_DATA === "undefined") {
+            throw new Error("Không tìm thấy mock-data.js.");
+          }
 
-      throw new Error(
-        "Không tìm thấy mock-data.js."
-      );
-
-    }
-
-
-
-    /* =================================================
+          /* =================================================
        LOAD SAVED COMMENTS
     ================================================= */
 
-    loadCommentsFromStorage();
+          loadCommentsFromStorage();
 
-
-
-    /* =================================================
+          /* =================================================
        CHECK CURRENT USER
     ================================================= */
 
-    if (!currentUser) {
+          if (!currentUser) {
+            commentsList.innerHTML = "";
 
-      commentsList.innerHTML =
-        "";
+            commentsEmpty.textContent = "Không tìm thấy người dùng hiện tại.";
 
+            commentsEmpty.style.display = "block";
 
-      commentsEmpty.textContent =
-        "Không tìm thấy người dùng hiện tại.";
+            commentsError.style.display = "none";
 
+            return;
+          }
 
-      commentsEmpty.style.display =
-        "block";
-
-
-      commentsError.style.display =
-        "none";
-
-
-      return;
-
-    }
-
-
-
-    /* =================================================
+          /* =================================================
        LOAD USER SIDEBAR
     ================================================= */
 
-    loadUser(
-      currentUser
-    );
+          loadUser(currentUser);
 
-
-
-    /* =================================================
+          /* =================================================
        GET COMMENTS
     ================================================= */
 
-    let userComments =
-      Array.isArray(
-        MOCK_DATA.comments
-      )
+          let userComments = Array.isArray(MOCK_DATA.comments)
+            ? MOCK_DATA.comments.filter(
+                (comment) =>
+                  String(comment.user_id) === String(currentUser.id) &&
+                  comment.is_deleted !== true,
+              )
+            : [];
 
-        ? MOCK_DATA.comments.filter(
-            comment =>
-
-              String(
-                comment.user_id
-              ) ===
-              String(
-                currentUser.id
-              ) &&
-
-              comment.is_deleted !==
-                true
-          )
-
-        : [];
-
-
-
-    /* =================================================
+          /* =================================================
        SORT
     ================================================= */
 
-    userComments.sort(
-      function (a, b) {
+          userComments.sort(function (a, b) {
+            const dateA = new Date(
+              String(a.created_at || "").replace(" ", "T"),
+            );
 
-        const dateA =
-          new Date(
-            String(
-              a.created_at ||
-              ""
-            ).replace(
-              " ",
-              "T"
-            )
-          );
+            const dateB = new Date(
+              String(b.created_at || "").replace(" ", "T"),
+            );
 
+            return dateB - dateA;
+          });
 
-        const dateB =
-          new Date(
-            String(
-              b.created_at ||
-              ""
-            ).replace(
-              " ",
-              "T"
-            )
-          );
-
-
-        return dateB - dateA;
-
-      }
-    );
-
-
-
-    /* =================================================
+          /* =================================================
        RESET
     ================================================= */
 
-    commentsList.innerHTML =
-      "";
+          commentsList.innerHTML = "";
 
+          commentsEmpty.style.display = "none";
 
-    commentsEmpty.style.display =
-      "none";
+          commentsError.style.display = "none";
 
-
-    commentsError.style.display =
-      "none";
-
-
-
-    /* =================================================
+          /* =================================================
        EMPTY
     ================================================= */
 
-    if (
-      userComments.length ===
-      0
-    ) {
+          if (userComments.length === 0) {
+            commentsEmpty.textContent = "Bạn chưa có bình luận nào.";
 
-      commentsEmpty.textContent =
-        "Bạn chưa có bình luận nào.";
+            commentsEmpty.style.display = "block";
 
+            return;
+          }
 
-      commentsEmpty.style.display =
-        "block";
-
-
-      return;
-
-    }
-
-
-
-    /* =================================================
+          /* =================================================
        RENDER
     ================================================= */
 
-    userComments.forEach(
-      function (comment) {
+          userComments.forEach(function (comment) {
+            const item = createCommentItem(comment);
 
-        const item =
-          createCommentItem(
-            comment
-          );
+            if (item) {
+              commentsList.appendChild(item);
+            }
+          });
 
-
-        if (item) {
-
-          commentsList.appendChild(
-            item
-          );
-
-        }
-
-      }
-    );
-
-
-
-    /* =================================================
+          /* =================================================
        NO VALID ARTICLE
     ================================================= */
 
-    if (
-      commentsList.children.length ===
-      0
-    ) {
+          if (commentsList.children.length === 0) {
+            commentsEmpty.textContent =
+              "Không tìm thấy bài viết tương ứng với các bình luận.";
 
-      commentsEmpty.textContent =
-        "Không tìm thấy bài viết tương ứng với các bình luận.";
+            commentsEmpty.style.display = "block";
+          }
+        } catch (error) {
+          console.error("My comments error:", error);
 
+          commentsError.textContent =
+            "Không thể tải dữ liệu bình luận: " + error.message;
 
-      commentsEmpty.style.display =
-        "block";
+          commentsError.style.display = "block";
+        }
+      }
 
-    }
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "My comments error:",
-      error
-    );
-
-
-    commentsError.textContent =
-      "Không thể tải dữ liệu bình luận: " +
-      error.message;
-
-
-    commentsError.style.display =
-      "block";
-
-  }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD PAGE
 ===================================================== */
 
-loadUser(
-  currentUser
-);
+      loadUser(currentUser);
 
+      loadMyComments();
 
-loadMyComments();
-
-
-
-/* =====================================================
+      /* =====================================================
    PAGE SHOW
 ===================================================== */
 
-window.addEventListener(
-  "pageshow",
-  function () {
+      window.addEventListener("pageshow", function () {
+        if (typeof MOCK_DATA !== "undefined") {
+          loadUser(currentUser);
+        }
+      });
 
-    if (
-      typeof MOCK_DATA !==
-      "undefined"
-    ) {
-
-      loadUser(
-        currentUser
-      );
-
-    }
-
-  }
-);
-
-
-/* =====================================================
+      /* =====================================================
    AVATAR CHANGE
 ===================================================== */
 
-window.addEventListener(
-  "storage",
-  function (event) {
-
-    if (
-      currentUser &&
-      event.key ===
-        "userAvatar_" +
-        currentUser.id
-    ) {
-
-      loadUser(
-        currentUser
-      );
-
-    }
-
-  }
-);
-
-
-</script>
-
-
-</body>
-
+      window.addEventListener("storage", function (event) {
+        if (currentUser && event.key === "userAvatar_" + currentUser.id) {
+          loadUser(currentUser);
+        }
+      });
+    </script>
+  </body>
 </html>
