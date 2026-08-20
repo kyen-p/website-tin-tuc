@@ -127,59 +127,41 @@
     <!-- =========================================
          JAVASCRIPT
     ========================================== -->
-    <script>
-      /* =========================================
-         QUÊN MẬT KHẨU
-      ========================================== */
+    <script src="mock-data.js"></script>
 
+    <script>
       document
         .getElementById("forgot-link")
         .addEventListener("click", function (e) {
           e.preventDefault();
-
           document.getElementById("forgot-msg").style.display = "block";
-
           document.getElementById("login-error").style.display = "none";
         });
-
-      /* =========================================
-         ĐĂNG NHẬP DEMO
-         Mật khẩu: 12345678
-      ========================================== */
 
       document
         .getElementById("login-form")
         .addEventListener("submit", function (e) {
           e.preventDefault();
 
-          const loginId = document.getElementById("login-id").value.trim();
-
+          const loginId = document
+            .getElementById("login-id")
+            .value.trim()
+            .toLowerCase();
           const pass = document.getElementById("password").value;
 
-          /* =====================================
-             TÀI KHOẢN DEMO
-          ====================================== */
+          // Tìm theo username hoặc email (không phân biệt hoa thường)
+          const user = MOCK_DATA.users.find(
+            (u) =>
+              u.username.toLowerCase() === loginId ||
+              u.email.toLowerCase() === loginId,
+          );
 
-          const validUsers = [
-            "user01",
-            "user02",
-            "user03",
-            "user04",
-            "reporter01",
-            "reporter02",
-            "editor01",
-            "admin01",
-          ];
-
-          /* =====================================
-             KIỂM TRA ĐĂNG NHẬP
-          ====================================== */
-
-          if (validUsers.includes(loginId) && pass === "12345678") {
+          if (user && user.password === pass && user.status === "active") {
+            // Có thể lưu thông tin user vào localStorage nếu cần
+            // localStorage.setItem("currentUser", JSON.stringify(user));
             window.location.href = "index.html";
           } else {
             document.getElementById("login-error").style.display = "block";
-
             document.getElementById("forgot-msg").style.display = "none";
           }
         });
