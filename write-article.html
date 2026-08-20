@@ -1,17 +1,28 @@
+```html
 <!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Soạn bài — Mạch Tin</title>
-    <link rel="stylesheet" href="style.css/write-article.css" />
+
+    <title>Bình luận của tôi — Mạch Tin</title>
+
+    <link rel="stylesheet" href="style.css/my-comments.css" />
   </head>
 
   <body>
-    <div class="reporter-page">
-      <aside class="reporter-sidebar">
-        <div class="reporter-brand">
+    <div class="comments-page">
+
+      <!-- =====================================================
+           SIDEBAR
+      ====================================================== -->
+
+      <aside class="comments-sidebar">
+
+        <!-- LOGO -->
+        <div class="comments-brand">
           <a href="index.html" class="brand-link">
+
             <svg
               class="pulse-mark"
               viewBox="0 0 40 32"
@@ -26,405 +37,1191 @@
                 stroke-linejoin="round"
               />
             </svg>
+
             <span class="brand-word">
               <span class="brand-mach">MẠCH</span>
               <span class="brand-tin">TIN</span>
             </span>
+
           </a>
         </div>
 
-        <div class="reporter-user">
-          <div class="reporter-avatar" id="userAvatar">
-            <span id="userInitials">TN</span>
+
+        <!-- USER -->
+        <div class="comments-user">
+
+          <div class="comments-avatar" id="userAvatar">
+            <span id="userInitials">U</span>
           </div>
-          <p class="reporter-name" id="userName">Thanh Ngân</p>
-          <div class="reporter-role">Phóng viên</div>
+
+          <p
+            class="comments-user-name"
+            id="userName"
+          >
+            Đang tải...
+          </p>
+
+          <div
+            class="comments-user-role"
+            id="userRole"
+          >
+            Độc giả
+          </div>
+
         </div>
 
-        <nav class="reporter-menu">
-          <a href="write-article.html" class="reporter-menu-item active">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M4 20h4L19 9l-4-4L4 16v4z"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M13.5 6.5l4 4"
-                stroke="currentColor"
-                stroke-width="1.7"
-              />
-            </svg>
-            <span>Soạn bài</span>
-          </a>
 
-          <a href="my-articles.html" class="reporter-menu-item">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M5 4h14v16H5z"
+        <!-- MENU -->
+        <nav class="comments-menu">
+
+          <!-- THÔNG TIN TÀI KHOẢN -->
+          <a
+            href="profile.html"
+            class="comments-menu-item"
+          >
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                cx="12"
+                cy="8"
+                r="3.2"
                 stroke="currentColor"
                 stroke-width="1.7"
               />
+
               <path
-                d="M8 8h8M8 12h8M8 16h5"
+                d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linecap="round"
               />
             </svg>
-            <span>Bài viết của tôi</span>
+
+            <span class="comments-menu-text">
+              Thông tin tài khoản
+            </span>
           </a>
 
-          <a href="my-topics.html" class="reporter-menu-item">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <!-- ĐỔI MẬT KHẨU -->
+          <a
+            href="profile.html#password"
+            class="comments-menu-item"
+          >
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <rect
+                x="5"
+                y="10"
+                width="14"
+                height="10"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+
               <path
-                d="M8 4h9l3 3v13H8z"
+                d="M8 10V7a4 4 0 018 0v3"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+
+              <circle
+                cx="12"
+                cy="15"
+                r="1"
+                fill="currentColor"
+              />
+            </svg>
+
+            <span class="comments-menu-text">
+              Đổi mật khẩu
+            </span>
+          </a>
+
+
+          <!-- BÀI VIẾT YÊU THÍCH -->
+          <a
+            href="favorites.html"
+            class="comments-menu-item"
+          >
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linejoin="round"
               />
+            </svg>
+
+            <span class="comments-menu-text">
+              Bài viết yêu thích
+            </span>
+          </a>
+
+
+          <!-- LỊCH SỬ -->
+          <a
+            href="history.html"
+            class="comments-menu-item"
+          >
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
-                d="M11 10h6M11 14h6"
+                d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M5 5.5v11M9 7h7M9 11h7"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linecap="round"
               />
             </svg>
-            <span>Đề tài của tôi</span>
+
+            <span class="comments-menu-text">
+              Lịch sử đọc bài
+            </span>
           </a>
 
-          <a href="dashboard.html" class="reporter-menu-item">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <!-- BÌNH LUẬN -->
+          <a
+            href="my-comments.html"
+            class="comments-menu-item active"
+          >
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
-                d="M4 19V10M10 19V5M16 19v-7M22 19H2"
+                d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 1120 11.5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <circle
+                cx="9"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
+
+              <circle
+                cx="12"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
+
+              <circle
+                cx="15"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
+            </svg>
+
+            <span class="comments-menu-text">
+              Bình luận của tôi
+            </span>
+          </a>
+
+
+          <!-- THÔNG BÁO -->
+          <a
+            href="notifications.html"
+            class="comments-menu-item"
+          >
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
-            </svg>
-            <span>Thống kê</span>
-          </a>
 
-          <a href="index.html" class="reporter-menu-item">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
               <path
-                d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9z"
+                d="M10 21h4"
                 stroke="currentColor"
                 stroke-width="1.7"
-                stroke-linejoin="round"
+                stroke-linecap="round"
               />
             </svg>
-            <span>Về trang chủ</span>
+
+            <span class="comments-menu-text">
+              Thông báo
+            </span>
           </a>
+
         </nav>
+
+
+        <!-- LOGOUT -->
+        <div class="comments-logout">
+
+          <a
+            href="index.html"
+            class="comments-menu-item"
+          >
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+
+              <path
+                d="M14 8l4 4-4 4M18 12H9"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span class="comments-menu-text">
+              Đăng xuất
+            </span>
+          </a>
+
+        </div>
+
       </aside>
 
-      <main class="reporter-main">
-        <div class="reporter-content">
-          <div class="page-header">
-            <div>
-              <h1>Soạn bài</h1>
-              <p>Tạo bài viết mới và gửi đến biên tập viên để duyệt.</p>
-            </div>
+
+      <!-- =====================================================
+           MAIN
+      ====================================================== -->
+
+      <main class="comments-main">
+
+        <div class="comments-main-inner">
+
+          <h1 class="comments-heading">
+            Bình luận của tôi
+          </h1>
+
+          <div class="comments-heading-line"></div>
+
+          <p class="comments-description">
+            Danh sách bình luận bạn đã đăng. Bạn có thể sửa hoặc
+            xóa bất kỳ lúc nào (không giới hạn thời gian).
+          </p>
+
+
+          <!-- ERROR -->
+          <div
+            id="commentsError"
+            class="comments-error"
+          >
+            Không thể tải dữ liệu bình luận.
           </div>
 
-          <div class="page-line"></div>
 
-          <form id="articleForm" class="article-form">
-            <section class="form-section">
-              <div class="section-title">
-                <span>01</span>
-                <h2>Thông tin bài viết</h2>
-              </div>
+          <!-- EMPTY -->
+          <div
+            id="commentsEmpty"
+            class="comments-empty"
+          >
+            Bạn chưa có bình luận nào.
+          </div>
 
-              <div class="form-group">
-                <label for="articleTitle">
-                  Tiêu đề bài viết
-                  <b>*</b>
-                </label>
-                <input
-                  type="text"
-                  id="articleTitle"
-                  name="title"
-                  placeholder="Nhập tiêu đề bài viết..."
-                  required
-                />
-              </div>
 
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="articleCategory">
-                    Chuyên mục
-                    <b>*</b>
-                  </label>
-                  <select id="articleCategory" required>
-                    <option value="">Chọn chuyên mục</option>
-                  </select>
-                </div>
+          <!-- LIST -->
+          <div
+            id="commentsList"
+            class="comments-list"
+          ></div>
 
-                <div class="form-group">
-                  <label for="articleTopic">Đề tài được giao</label>
-                  <select id="articleTopic">
-                    <option value="">Không thuộc đề tài được giao</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="articleDescription">
-                  Mô tả ngắn
-                  <b>*</b>
-                </label>
-                <textarea
-                  id="articleDescription"
-                  rows="4"
-                  placeholder="Tóm tắt nội dung chính của bài viết..."
-                  required
-                ></textarea>
-              </div>
-            </section>
-
-            <section class="form-section">
-              <div class="section-title">
-                <span>02</span>
-                <h2>Ảnh bìa bài viết</h2>
-              </div>
-
-              <div class="image-method">
-                <label class="radio-option">
-                  <input
-                    type="radio"
-                    name="imageMethod"
-                    value="upload"
-                    checked
-                  />
-                  <span>Tải ảnh lên</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="imageMethod" value="url" />
-                  <span>Nhập URL ảnh</span>
-                </label>
-              </div>
-
-              <div id="uploadBox" class="image-input-box">
-                <input type="file" id="coverImage" accept="image/*" />
-                <p>Chọn ảnh JPG, PNG hoặc WEBP.</p>
-              </div>
-
-              <div id="urlBox" class="image-input-box hidden">
-                <input
-                  type="url"
-                  id="coverImageUrl"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-
-              <div id="imagePreview" class="image-preview hidden">
-                <img id="previewImage" src="" alt="Xem trước ảnh" />
-              </div>
-            </section>
-
-            <section class="form-section">
-              <div class="section-title">
-                <span>03</span>
-                <h2>Nội dung</h2>
-              </div>
-
-              <div class="form-group">
-                <label for="articleContent">
-                  Nội dung bài viết
-                  <b>*</b>
-                </label>
-                <textarea
-                  id="articleContent"
-                  class="content-editor"
-                  placeholder="Nhập nội dung bài viết..."
-                  required
-                ></textarea>
-                <div class="character-count">
-                  <span id="contentCount">0</span> ký tự
-                </div>
-              </div>
-            </section>
-
-            <section class="form-section">
-              <div class="section-title">
-                <span>04</span>
-                <h2>Thẻ bài viết</h2>
-              </div>
-
-              <div id="tagList" class="tag-list"></div>
-              <p class="form-note">
-                Chọn các thẻ phù hợp với nội dung bài viết.
-              </p>
-            </section>
-
-            <div class="form-actions">
-              <button type="button" class="draft-button" id="saveDraft">
-                Lưu bản nháp
-              </button>
-              <button type="submit" class="submit-button">
-                Gửi biên tập viên
-              </button>
-            </div>
-          </form>
         </div>
+
       </main>
+
     </div>
 
-    <!-- LINK TRỰC TIẾP TỚI MOCK DATA -->
+
+    <!-- =====================================================
+         MOCK DATA
+    ====================================================== -->
+
     <script src="mock-data.js"></script>
 
+
     <script>
-      const CURRENT_REPORTER_ID = 5;
 
-      const categorySelect = document.getElementById("articleCategory");
-      const topicSelect = document.getElementById("articleTopic");
-      const tagList = document.getElementById("tagList");
-      const content = document.getElementById("articleContent");
-      const contentCount = document.getElementById("contentCount");
-      const uploadBox = document.getElementById("uploadBox");
-      const urlBox = document.getElementById("urlBox");
-      const coverImage = document.getElementById("coverImage");
-      const coverImageUrl = document.getElementById("coverImageUrl");
-      const imagePreview = document.getElementById("imagePreview");
-      const previewImage = document.getElementById("previewImage");
+      /* =====================================================
+         CURRENT USER
+      ===================================================== */
 
-      function loadReporter() {
-        const user = MOCK_DATA.users.find(
-          (user) => user.id === CURRENT_REPORTER_ID,
-        );
-        if (!user) return;
-        document.getElementById("userName").textContent = user.full_name;
-        document.getElementById("userInitials").textContent = getInitials(
-          user.full_name,
-        );
-      }
+      const CURRENT_USER_ID = 1;
+
+
+      /* =====================================================
+         DOM
+      ===================================================== */
+
+      const commentsList =
+        document.getElementById("commentsList");
+
+      const commentsEmpty =
+        document.getElementById("commentsEmpty");
+
+      const commentsError =
+        document.getElementById("commentsError");
+
+      const userName =
+        document.getElementById("userName");
+
+      const userRole =
+        document.getElementById("userRole");
+
+      const userAvatar =
+        document.getElementById("userAvatar");
+
+      const userInitials =
+        document.getElementById("userInitials");
+
+
+      /* =====================================================
+         INITIALS
+      ===================================================== */
 
       function getInitials(name) {
-        if (!name) return "U";
-        const words = name.trim().split(/\s+/);
+
+        if (!name) {
+          return "U";
+        }
+
+        const words =
+          name.trim().split(/\s+/);
+
+
         if (words.length === 1) {
-          return words[0].substring(0, 2).toUpperCase();
+
+          return words[0]
+            .substring(0, 2)
+            .toUpperCase();
+
         }
-        return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+
+
+        return (
+          words[0].charAt(0) +
+          words[words.length - 1].charAt(0)
+        ).toUpperCase();
+
       }
 
-      function loadCategories() {
-        MOCK_DATA.categories.forEach((category) => {
-          const option = document.createElement("option");
-          option.value = category.id;
-          option.textContent = category.name;
-          categorySelect.appendChild(option);
-        });
+
+      /* =====================================================
+         ROLE
+      ===================================================== */
+
+      function roleName(role) {
+
+        if (role === "user") {
+          return "Độc giả";
+        }
+
+        if (role === "reporter") {
+          return "Phóng viên";
+        }
+
+        if (role === "editor") {
+          return "Biên tập viên";
+        }
+
+        if (role === "admin") {
+          return "Quản trị viên";
+        }
+
+        return role || "Độc giả";
+
       }
 
-      function loadTopics() {
-        const topics = MOCK_DATA.topics.filter(
-          (topic) => topic.reporter_id === CURRENT_REPORTER_ID,
-        );
-        topics.forEach((topic) => {
-          const option = document.createElement("option");
-          option.value = topic.id;
-          option.textContent = topic.title;
-          topicSelect.appendChild(option);
-        });
-      }
 
-      function loadTags() {
-        MOCK_DATA.tags.forEach((tag) => {
-          const label = document.createElement("label");
-          label.className = "tag-option";
-          label.innerHTML = `
-            <input
-              type="checkbox"
-              value="${tag.id}"
-            >
-            <span>${tag.name}</span>
-          `;
-          tagList.appendChild(label);
-        });
-      }
+      /* =====================================================
+         LOAD USER + AVATAR
+         LẤY TRỰC TIẾP TỪ MOCK_DATA
+         GIỐNG WRITE-ARTICLE.HTML
+      ===================================================== */
 
-      document
-        .querySelectorAll('input[name="imageMethod"]')
-        .forEach((radio) => {
-          radio.addEventListener("change", function () {
-            if (this.value === "upload") {
-              uploadBox.classList.remove("hidden");
-              urlBox.classList.add("hidden");
-            } else {
-              uploadBox.classList.add("hidden");
-              urlBox.classList.remove("hidden");
-            }
-          });
-        });
+      function loadUser(user) {
 
-      coverImage.addEventListener("change", function () {
-        const file = this.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          previewImage.src = event.target.result;
-          imagePreview.classList.remove("hidden");
-        };
-        reader.readAsDataURL(file);
-      });
+        if (!user) {
 
-      coverImageUrl.addEventListener("input", function () {
-        const url = this.value.trim();
-        if (!url) {
-          imagePreview.classList.add("hidden");
+          userName.textContent =
+            "Người dùng";
+
+          userRole.textContent =
+            "Độc giả";
+
+          userAvatar.innerHTML =
+            "<span>U</span>";
+
           return;
+
         }
-        previewImage.src = url;
-        imagePreview.classList.remove("hidden");
-      });
 
-      content.addEventListener("input", function () {
-        contentCount.textContent = this.value.length;
-      });
 
-      document
-        .getElementById("saveDraft")
-        .addEventListener("click", function () {
-          const title = document.getElementById("articleTitle").value.trim();
-          if (!title) {
-            alert("Vui lòng nhập tiêu đề bài viết.");
-            return;
+        /* TÊN */
+
+        userName.textContent =
+          user.full_name ||
+          user.username ||
+          "Người dùng";
+
+
+        /* ROLE */
+
+        userRole.textContent =
+          roleName(user.role);
+
+
+        /* AVATAR */
+
+        userAvatar.innerHTML = "";
+
+
+        /*
+         * Nếu mock-data có avatar
+         * thì lấy đúng đường dẫn avatar
+         */
+
+        if (user.avatar) {
+
+          const img =
+            document.createElement("img");
+
+          img.src =
+            user.avatar;
+
+          img.alt =
+            "Ảnh đại diện " +
+            (user.full_name || "Người dùng");
+
+
+          /*
+           * Avatar tải thành công
+           */
+
+          img.onload =
+            function () {
+
+              userAvatar.classList.remove(
+                "avatar-fallback"
+              );
+
+            };
+
+
+          /*
+           * Avatar lỗi
+           * => quay về initials
+           */
+
+          img.onerror =
+            function () {
+
+              img.remove();
+
+              userAvatar.classList.add(
+                "avatar-fallback"
+              );
+
+              userInitials.textContent =
+                getInitials(
+                  user.full_name ||
+                  user.username
+                );
+
+              userInitials.style.display =
+                "block";
+
+            };
+
+
+          userAvatar.appendChild(img);
+
+
+          /*
+           * Khi có ảnh thì ẩn chữ
+           */
+
+          userInitials.style.display =
+            "none";
+
+        }
+
+        else {
+
+          /*
+           * Không có avatar
+           * => hiện initials
+           */
+
+          userAvatar.classList.add(
+            "avatar-fallback"
+          );
+
+          userInitials.textContent =
+            getInitials(
+              user.full_name ||
+              user.username
+            );
+
+          userInitials.style.display =
+            "block";
+
+        }
+
+      }
+
+
+      /* =====================================================
+         GET ARTICLE
+      ===================================================== */
+
+      function getArticle(articleId) {
+
+        if (
+          typeof MOCK_DATA === "undefined" ||
+          !Array.isArray(MOCK_DATA.articles)
+        ) {
+
+          return null;
+
+        }
+
+
+        return (
+          MOCK_DATA.articles.find(
+            article =>
+              Number(article.id) ===
+              Number(articleId)
+          ) || null
+        );
+
+      }
+
+
+      /* =====================================================
+         FORMAT COMMENT TIME
+      ===================================================== */
+
+      function formatCommentTime(dateString) {
+
+        if (!dateString) {
+          return "";
+        }
+
+        const value =
+          String(dateString);
+
+        const parts =
+          value.split(" ");
+
+
+        if (parts.length !== 2) {
+          return value;
+        }
+
+
+        const dateParts =
+          parts[0].split("-");
+
+        const time =
+          parts[1].substring(0, 5);
+
+
+        if (dateParts.length !== 3) {
+          return value;
+        }
+
+
+        return (
+          `${dateParts[2]}/` +
+          `${dateParts[1]}/` +
+          `${dateParts[0]} · ` +
+          `${time}`
+        );
+
+      }
+
+
+      /* =====================================================
+         CREATE COMMENT ITEM
+      ===================================================== */
+
+      function createCommentItem(comment) {
+
+        const article =
+          getArticle(
+            comment.article_id
+          );
+
+
+        if (!article) {
+          return null;
+        }
+
+
+        const articleUrl =
+          "article-detail.html?slug=" +
+          encodeURIComponent(
+            article.slug ||
+            article.id
+          );
+
+
+        const item =
+          document.createElement("article");
+
+
+        item.className =
+          "comment-item";
+
+
+        item.dataset.commentId =
+          String(comment.id);
+
+
+        item.innerHTML = `
+
+          <a
+            href="${articleUrl}"
+            class="comment-article-link"
+          >
+            Bài:
+            ${article.title || "Không có tiêu đề"}
+          </a>
+
+
+          <p
+            class="comment-content"
+            data-role="content"
+          >
+            ${comment.content || ""}
+          </p>
+
+
+          <div
+            class="comment-edit-box"
+            data-role="edit-box"
+          >
+
+            <textarea
+              class="comment-edit-textarea"
+              data-role="textarea"
+            >${comment.content || ""}</textarea>
+
+
+            <div
+              class="comment-actions"
+              style="margin-top:10px;"
+            >
+
+              <button
+                type="button"
+                class="btn-comment btn-comment--save"
+                data-role="save"
+              >
+                Lưu
+              </button>
+
+
+              <button
+                type="button"
+                class="btn-comment btn-comment--cancel"
+                data-role="cancel"
+              >
+                Hủy
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="comment-meta-row">
+
+            <span class="comment-time">
+              ${formatCommentTime(
+                comment.created_at
+              )}
+            </span>
+
+
+            <div
+              class="comment-actions"
+              data-role="actions"
+            >
+
+              <button
+                type="button"
+                class="btn-comment btn-comment--edit"
+                data-role="edit"
+              >
+                Sửa
+              </button>
+
+
+              <button
+                type="button"
+                class="btn-comment btn-comment--delete"
+                data-role="delete"
+              >
+                Xóa
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+
+        /* DOM */
+
+        const contentEl =
+          item.querySelector(
+            '[data-role="content"]'
+          );
+
+        const editBox =
+          item.querySelector(
+            '[data-role="edit-box"]'
+          );
+
+        const textarea =
+          item.querySelector(
+            '[data-role="textarea"]'
+          );
+
+        const actionsEl =
+          item.querySelector(
+            '[data-role="actions"]'
+          );
+
+        const btnEdit =
+          item.querySelector(
+            '[data-role="edit"]'
+          );
+
+        const btnDelete =
+          item.querySelector(
+            '[data-role="delete"]'
+          );
+
+        const btnSave =
+          item.querySelector(
+            '[data-role="save"]'
+          );
+
+        const btnCancel =
+          item.querySelector(
+            '[data-role="cancel"]'
+          );
+
+
+        /* =================================================
+           EDIT
+        ================================================= */
+
+        btnEdit.addEventListener(
+          "click",
+          function () {
+
+            contentEl.classList.add(
+              "is-editing"
+            );
+
+            editBox.classList.add(
+              "is-open"
+            );
+
+            actionsEl.style.display =
+              "none";
+
+            textarea.value =
+              contentEl.textContent.trim();
+
+            textarea.focus();
+
           }
-          alert("Bản nháp đã được lưu thành công.");
-        });
+        );
 
-      document
-        .getElementById("articleForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
 
-          const title = document.getElementById("articleTitle").value.trim();
-          const description = document
-            .getElementById("articleDescription")
-            .value.trim();
-          const articleContent = content.value.trim();
-          const category = categorySelect.value;
+        /* =================================================
+           CANCEL
+        ================================================= */
 
-          if (!title || !description || !articleContent || !category) {
-            alert("Vui lòng điền đầy đủ các trường bắt buộc.");
-            return;
+        btnCancel.addEventListener(
+          "click",
+          function () {
+
+            contentEl.classList.remove(
+              "is-editing"
+            );
+
+            editBox.classList.remove(
+              "is-open"
+            );
+
+            actionsEl.style.display =
+              "flex";
+
+            textarea.value =
+              contentEl.textContent.trim();
+
+          }
+        );
+
+
+        /* =================================================
+           SAVE
+        ================================================= */
+
+        btnSave.addEventListener(
+          "click",
+          function () {
+
+            const newContent =
+              textarea.value.trim();
+
+
+            if (!newContent) {
+
+              alert(
+                "Nội dung bình luận không được để trống."
+              );
+
+              return;
+
+            }
+
+
+            if (
+              Array.isArray(
+                MOCK_DATA.comments
+              )
+            ) {
+
+              const currentComment =
+                MOCK_DATA.comments.find(
+                  commentData =>
+                    Number(commentData.id) ===
+                    Number(comment.id)
+                );
+
+
+              if (currentComment) {
+
+                currentComment.content =
+                  newContent;
+
+
+                currentComment.updated_at =
+                  new Date()
+                    .toISOString()
+                    .slice(0, 19)
+                    .replace("T", " ");
+
+              }
+
+            }
+
+
+            contentEl.textContent =
+              newContent;
+
+
+            contentEl.classList.remove(
+              "is-editing"
+            );
+
+
+            editBox.classList.remove(
+              "is-open"
+            );
+
+
+            actionsEl.style.display =
+              "flex";
+
+          }
+        );
+
+
+        /* =================================================
+           DELETE
+        ================================================= */
+
+        btnDelete.addEventListener(
+          "click",
+          function () {
+
+            const ok =
+              confirm(
+                "Bạn có chắc muốn xóa bình luận này? Thao tác không thể hoàn tác."
+              );
+
+
+            if (!ok) {
+              return;
+            }
+
+
+            if (
+              Array.isArray(
+                MOCK_DATA.comments
+              )
+            ) {
+
+              const index =
+                MOCK_DATA.comments.findIndex(
+                  commentData =>
+                    Number(commentData.id) ===
+                    Number(comment.id)
+                );
+
+
+              if (index !== -1) {
+
+                MOCK_DATA.comments.splice(
+                  index,
+                  1
+                );
+
+              }
+
+            }
+
+
+            item.remove();
+
+
+            if (
+              commentsList.children.length ===
+              0
+            ) {
+
+              commentsEmpty.style.display =
+                "block";
+
+            }
+
+          }
+        );
+
+
+        return item;
+
+      }
+
+
+      /* =====================================================
+         LOAD MY COMMENTS
+      ===================================================== */
+
+      function loadMyComments() {
+
+        try {
+
+          if (
+            typeof MOCK_DATA ===
+            "undefined"
+          ) {
+
+            throw new Error(
+              "Không tìm thấy mock-data.js."
+            );
+
           }
 
-          alert("Bài viết đã được gửi đến biên tập viên để duyệt.");
-          this.reset();
-          imagePreview.classList.add("hidden");
-          contentCount.textContent = "0";
-        });
 
-      loadReporter();
-      loadCategories();
-      loadTopics();
-      loadTags();
+          /* USER */
+
+          const currentUser =
+            Array.isArray(
+              MOCK_DATA.users
+            )
+              ? MOCK_DATA.users.find(
+                  user =>
+                    Number(user.id) ===
+                    Number(CURRENT_USER_ID)
+                )
+              : null;
+
+
+          if (currentUser) {
+
+            loadUser(
+              currentUser
+            );
+
+          }
+
+
+          /* COMMENTS */
+
+          const userComments =
+            Array.isArray(
+              MOCK_DATA.comments
+            )
+
+              ? MOCK_DATA.comments.filter(
+                  comment =>
+                    Number(
+                      comment.user_id
+                    ) ===
+                    Number(
+                      CURRENT_USER_ID
+                    ) &&
+                    comment.is_deleted !==
+                      true
+                )
+
+              : [];
+
+
+          /* SORT */
+
+          userComments.sort(
+            (a, b) => {
+
+              const dateA =
+                new Date(
+                  String(
+                    a.created_at || ""
+                  ).replace(
+                    " ",
+                    "T"
+                  )
+                );
+
+
+              const dateB =
+                new Date(
+                  String(
+                    b.created_at || ""
+                  ).replace(
+                    " ",
+                    "T"
+                  )
+                );
+
+
+              return dateB - dateA;
+
+            }
+          );
+
+
+          /* EMPTY */
+
+          if (
+            userComments.length ===
+            0
+          ) {
+
+            commentsEmpty.style.display =
+              "block";
+
+            return;
+
+          }
+
+
+          /* RENDER */
+
+          userComments.forEach(
+            comment => {
+
+              const item =
+                createCommentItem(
+                  comment
+                );
+
+
+              if (item) {
+
+                commentsList.appendChild(
+                  item
+                );
+
+              }
+
+            }
+          );
+
+
+          if (
+            commentsList.children.length ===
+            0
+          ) {
+
+            commentsEmpty.style.display =
+              "block";
+
+          }
+
+        }
+
+        catch (error) {
+
+          console.error(
+            "My comments error:",
+            error
+          );
+
+
+          commentsError.style.display =
+            "block";
+
+        }
+
+      }
+
+
+      /* =====================================================
+         INIT
+      ===================================================== */
+
+      loadMyComments();
+
     </script>
+
   </body>
 </html>
+```

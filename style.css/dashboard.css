@@ -1,9 +1,7 @@
 /* =========================================================
    DASHBOARD.CSS — MẠCH TIN
    THỐNG KÊ BÀI VIẾT (UC-RP03)
-   Đồng bộ giao diện với MY-TOPICS.CSS
    ========================================================= */
-
 
 /* =========================================================
    1. VARIABLES
@@ -447,31 +445,6 @@ select:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
-.section-heading-left {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  min-width: 0;
-}
-
-.section-label {
-  flex-shrink: 0;
-
-  color: var(--crimson);
-
-  font-family: var(--f-mono);
-
-  font-size: 11px;
-
-  line-height: 1.4;
-
-  letter-spacing: 0.06em;
-
-  font-weight: 500;
-}
-
 .section-heading h2 {
   margin: 0;
 
@@ -487,10 +460,21 @@ select:focus-visible {
   letter-spacing: -0.005em;
 }
 
-#articleCount {
+
+/* =========================================================
+   Ô HIỂN THỊ SỐ BÀI VIẾT
+   ========================================================= */
+
+.article-count-box {
   flex-shrink: 0;
 
-  margin: 0;
+  padding: 9px 14px;
+
+  background: var(--paper);
+
+  border: 1px solid var(--line);
+
+  border-radius: var(--radius);
 
   color: var(--muted);
 
@@ -858,9 +842,7 @@ select:focus-visible {
   }
 
   .section-heading {
-    align-items: flex-start;
-
-    flex-direction: column;
+    align-items: center;
 
     padding: 20px;
   }
@@ -906,12 +888,13 @@ select:focus-visible {
     padding: 18px 16px;
   }
 
-  .section-heading-left {
-    gap: 9px;
-  }
-
   .section-heading h2 {
     font-size: 18px;
+  }
+
+  .article-count-box {
+    padding: 8px 12px;
+    font-size: 11px;
   }
 
   .article-table {

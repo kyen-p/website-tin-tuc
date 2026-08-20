@@ -9,9 +9,17 @@
 
   <body>
     <div class="favorites-page">
+
+      <!-- ===================================================
+           SIDEBAR
+      =================================================== -->
+
       <aside class="favorites-sidebar">
+
+        <!-- LOGO -->
         <div class="favorites-brand">
           <a href="index.html" class="brand-link">
+
             <svg
               class="pulse-mark"
               viewBox="0 0 40 32"
@@ -26,24 +34,56 @@
                 stroke-linejoin="round"
               />
             </svg>
+
             <span class="brand-word">
               <span class="brand-mach">MẠCH</span>
               <span class="brand-tin">TIN</span>
             </span>
+
           </a>
         </div>
 
+
+        <!-- USER -->
         <div class="favorites-user">
+
           <div class="favorites-avatar" id="userAvatar">
+
+            <!-- Avatar sẽ được JavaScript load -->
             <span id="userInitials">NU</span>
+
           </div>
-          <p class="favorites-user-name" id="userName">Đang tải...</p>
-          <div class="favorites-user-role" id="userRole">Độc giả</div>
+
+          <p
+            class="favorites-user-name"
+            id="userName"
+          >
+            Đang tải...
+          </p>
+
+          <div
+            class="favorites-user-role"
+            id="userRole"
+          >
+            Độc giả
+          </div>
+
         </div>
 
+
+        <!-- MENU -->
         <nav class="favorites-menu">
-          <a href="profile.html" class="favorites-menu-item">
-            <svg class="favorites-menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <!-- THÔNG TIN TÀI KHOẢN -->
+          <a
+            href="profile.html"
+            class="favorites-menu-item"
+          >
+            <svg
+              class="favorites-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <circle
                 cx="12"
                 cy="8"
@@ -51,6 +91,7 @@
                 stroke="currentColor"
                 stroke-width="1.7"
               />
+
               <path
                 d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
                 stroke="currentColor"
@@ -58,11 +99,23 @@
                 stroke-linecap="round"
               />
             </svg>
-            <span class="favorites-menu-text">Thông tin tài khoản</span>
+
+            <span class="favorites-menu-text">
+              Thông tin tài khoản
+            </span>
           </a>
 
-          <a href="profile.html" class="favorites-menu-item">
-            <svg class="favorites-menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <!-- ĐỔI MẬT KHẨU -->
+          <a
+            href="profile.html"
+            class="favorites-menu-item"
+          >
+            <svg
+              class="favorites-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <rect
                 x="5"
                 y="10"
@@ -72,19 +125,38 @@
                 stroke="currentColor"
                 stroke-width="1.7"
               />
+
               <path
                 d="M8 10V7a4 4 0 018 0v3"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linecap="round"
               />
-              <circle cx="12" cy="15" r="1" fill="currentColor" />
+
+              <circle
+                cx="12"
+                cy="15"
+                r="1"
+                fill="currentColor"
+              />
             </svg>
-            <span class="favorites-menu-text">Đổi mật khẩu</span>
+
+            <span class="favorites-menu-text">
+              Đổi mật khẩu
+            </span>
           </a>
 
-          <a href="favorites.html" class="favorites-menu-item active">
-            <svg class="favorites-menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <!-- BÀI VIẾT YÊU THÍCH -->
+          <a
+            href="favorites.html"
+            class="favorites-menu-item active"
+          >
+            <svg
+              class="favorites-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
                 stroke="currentColor"
@@ -92,17 +164,30 @@
                 stroke-linejoin="round"
               />
             </svg>
-            <span class="favorites-menu-text">Bài viết yêu thích</span>
+
+            <span class="favorites-menu-text">
+              Bài viết yêu thích
+            </span>
           </a>
 
-          <a href="history.html" class="favorites-menu-item">
-            <svg class="favorites-menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <!-- LỊCH SỬ -->
+          <a
+            href="history.html"
+            class="favorites-menu-item"
+          >
+            <svg
+              class="favorites-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linejoin="round"
               />
+
               <path
                 d="M5 5.5v11M9 7h7M9 11h7"
                 stroke="currentColor"
@@ -110,26 +195,68 @@
                 stroke-linecap="round"
               />
             </svg>
-            <span class="favorites-menu-text">Lịch sử đọc bài</span>
+
+            <span class="favorites-menu-text">
+              Lịch sử đọc bài
+            </span>
           </a>
 
-          <a href="my-comments.html" class="favorites-menu-item">
-            <svg class="favorites-menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <!-- BÌNH LUẬN -->
+          <a
+            href="my-comments.html"
+            class="favorites-menu-item"
+          >
+            <svg
+              class="favorites-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 1120 11.5z"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linejoin="round"
               />
-              <circle cx="9" cy="11.5" r=".8" fill="currentColor" />
-              <circle cx="12" cy="11.5" r=".8" fill="currentColor" />
-              <circle cx="15" cy="11.5" r=".8" fill="currentColor" />
+
+              <circle
+                cx="9"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
+
+              <circle
+                cx="12"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
+
+              <circle
+                cx="15"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
             </svg>
-            <span class="favorites-menu-text">Bình luận của tôi</span>
+
+            <span class="favorites-menu-text">
+              Bình luận của tôi
+            </span>
           </a>
 
-          <a href="notifications.html" class="favorites-menu-item">
-            <svg class="favorites-menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <!-- THÔNG BÁO -->
+          <a
+            href="notifications.html"
+            class="favorites-menu-item"
+          >
+            <svg
+              class="favorites-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
                 stroke="currentColor"
@@ -137,6 +264,7 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
+
               <path
                 d="M10 21h4"
                 stroke="currentColor"
@@ -144,19 +272,34 @@
                 stroke-linecap="round"
               />
             </svg>
-            <span class="favorites-menu-text">Thông báo</span>
+
+            <span class="favorites-menu-text">
+              Thông báo
+            </span>
           </a>
+
         </nav>
 
+
+        <!-- LOGOUT -->
         <div class="favorites-logout">
-          <a href="index.html" class="favorites-menu-item">
-            <svg class="favorites-menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <a
+            href="index.html"
+            class="favorites-menu-item"
+          >
+            <svg
+              class="favorites-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
                 stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linecap="round"
               />
+
               <path
                 d="M14 8l4 4-4 4M18 12H9"
                 stroke="currentColor"
@@ -165,252 +308,823 @@
                 stroke-linejoin="round"
               />
             </svg>
-            <span class="favorites-menu-text">Đăng xuất</span>
+
+            <span class="favorites-menu-text">
+              Đăng xuất
+            </span>
           </a>
+
         </div>
+
       </aside>
 
+
+      <!-- ===================================================
+           MAIN
+      =================================================== -->
+
       <main class="favorites-main">
+
         <div class="favorites-main-inner">
-          <h1 class="favorites-heading">Bài viết yêu thích</h1>
+
+          <h1 class="favorites-heading">
+            Bài viết yêu thích
+          </h1>
+
           <div class="favorites-heading-line"></div>
+
           <p class="favorites-description">
-            Danh sách các bài viết bạn đã lưu. Nhấn &quot;Bỏ yêu thích&quot; để
-            xóa khỏi danh sách (không cần xác nhận).
+            Danh sách các bài viết bạn đã lưu. Nhấn
+            &quot;Bỏ yêu thích&quot; để xóa khỏi danh sách
+            (không cần xác nhận).
           </p>
 
-          <div id="favoritesError" class="favorites-error">
+
+          <div
+            id="favoritesError"
+            class="favorites-error"
+          >
             Không thể tải dữ liệu bài viết yêu thích.
           </div>
 
-          <div id="favoritesEmpty" class="favorites-empty">
+
+          <div
+            id="favoritesEmpty"
+            class="favorites-empty"
+          >
             Bạn chưa có bài viết yêu thích nào.
           </div>
 
-          <div id="favoritesList" class="favorites-list"></div>
+
+          <div
+            id="favoritesList"
+            class="favorites-list"
+          ></div>
+
         </div>
+
       </main>
+
     </div>
 
-    <!-- LINK TRỰC TIẾP TỚI MOCK DATA -->
+
+    <!-- ===================================================
+         MOCK DATA
+    =================================================== -->
+
     <script src="mock-data.js"></script>
 
+
     <script>
+
+      // =====================================================
+      // USER HIỆN TẠI
+      // =====================================================
+
       const CURRENT_USER_ID = 1;
 
-      const favoritesList = document.getElementById("favoritesList");
-      const favoritesEmpty = document.getElementById("favoritesEmpty");
-      const favoritesError = document.getElementById("favoritesError");
 
-      const userName = document.getElementById("userName");
-      const userRole = document.getElementById("userRole");
-      const userAvatar = document.getElementById("userAvatar");
-      const userInitials = document.getElementById("userInitials");
+      // =====================================================
+      // ELEMENT
+      // =====================================================
+
+      const favoritesList =
+        document.getElementById("favoritesList");
+
+      const favoritesEmpty =
+        document.getElementById("favoritesEmpty");
+
+      const favoritesError =
+        document.getElementById("favoritesError");
+
+      const userName =
+        document.getElementById("userName");
+
+      const userRole =
+        document.getElementById("userRole");
+
+      const userAvatar =
+        document.getElementById("userAvatar");
+
+      const userInitials =
+        document.getElementById("userInitials");
+
+
+      // =====================================================
+      // LẤY CHỮ VIẾT TẮT
+      // =====================================================
 
       function getInitials(name) {
-        if (!name) return "U";
-        const words = name.trim().split(/\s+/);
-        if (words.length === 1) {
-          return words[0].substring(0, 2).toUpperCase();
+
+        if (!name) {
+          return "U";
         }
+
+        const words =
+          name.trim().split(/\s+/);
+
+
+        if (words.length === 1) {
+
+          return words[0]
+            .substring(0, 2)
+            .toUpperCase();
+
+        }
+
+
         return (
-          words[0].charAt(0) + words[words.length - 1].charAt(0)
+          words[0].charAt(0) +
+          words[words.length - 1].charAt(0)
         ).toUpperCase();
+
       }
+
+
+      // =====================================================
+      // LOAD USER
+      //
+      // ƯU TIÊN:
+      //
+      // 1. Avatar mới trong localStorage
+      // 2. Avatar mặc định trong mock-data.js
+      // 3. Nếu cả hai không có -> chữ viết tắt
+      // =====================================================
 
       function loadUser(user) {
-        if (!user) return;
-        const name = user.full_name || user.username || "Người dùng";
-        userName.textContent = name;
-        userRole.textContent =
-          user.role === "user" ? "Độc giả" : user.role || "Độc giả";
-        userInitials.textContent = getInitials(name);
 
-        if (user.avatar) {
-          const img = document.createElement("img");
-          img.src = user.avatar;
-          img.alt = "Ảnh đại diện " + name;
-          img.onload = function () {
-            userInitials.style.display = "none";
-          };
-          img.onerror = function () {
-            img.remove();
-            userInitials.style.display = "block";
-          };
-          userAvatar.appendChild(img);
+        if (!user) {
+          return;
         }
+
+
+        // ---------------------------------------------------
+        // TÊN
+        // ---------------------------------------------------
+
+        const name =
+          user.full_name ||
+          user.username ||
+          "Người dùng";
+
+
+        userName.textContent = name;
+
+
+        // ---------------------------------------------------
+        // ROLE
+        // ---------------------------------------------------
+
+        if (user.role === "user") {
+
+          userRole.textContent =
+            "Độc giả";
+
+        }
+        else if (user.role === "reporter") {
+
+          userRole.textContent =
+            "Phóng viên";
+
+        }
+        else {
+
+          userRole.textContent =
+            user.role || "Độc giả";
+
+        }
+
+
+        // ---------------------------------------------------
+        // CHỮ VIẾT TẮT
+        // ---------------------------------------------------
+
+        userInitials.textContent =
+          getInitials(name);
+
+
+        // ---------------------------------------------------
+        // AVATAR
+        // ---------------------------------------------------
+
+        const savedAvatar =
+          localStorage.getItem(
+            "userAvatar_" + user.id
+          );
+
+
+        const avatarURL =
+          savedAvatar || user.avatar;
+
+
+        // Xóa avatar cũ nếu có
+
+        const oldImage =
+          userAvatar.querySelector("img");
+
+
+        if (oldImage) {
+          oldImage.remove();
+        }
+
+
+        // ---------------------------------------------------
+        // NẾU CÓ AVATAR
+        // ---------------------------------------------------
+
+        if (avatarURL) {
+
+          const img =
+            document.createElement("img");
+
+
+          img.src = avatarURL;
+
+          img.alt =
+            "Ảnh đại diện " + name;
+
+
+          // CSS trực tiếp để đảm bảo ảnh hiển thị đúng
+
+          img.style.width = "100%";
+
+          img.style.height = "100%";
+
+          img.style.objectFit = "cover";
+
+          img.style.borderRadius = "50%";
+
+          img.style.display = "block";
+
+
+          // Khi ảnh load thành công
+
+          img.onload = function () {
+
+            userInitials.style.display =
+              "none";
+
+          };
+
+
+          // Nếu ảnh lỗi
+
+          img.onerror = function () {
+
+            img.remove();
+
+            userInitials.style.display =
+              "block";
+
+          };
+
+
+          userAvatar.appendChild(img);
+
+        }
+
+        else {
+
+          // Không có avatar
+          // Hiện chữ viết tắt
+
+          userInitials.style.display =
+            "block";
+
+        }
+
       }
 
+
+      // =====================================================
+      // CATEGORY
+      // =====================================================
+
       function getCategoryName(categoryId) {
+
         if (
           typeof MOCK_DATA === "undefined" ||
           !Array.isArray(MOCK_DATA.categories)
         ) {
+
           return "Chưa phân loại";
+
         }
-        const category = MOCK_DATA.categories.find((c) => c.id === categoryId);
-        return category ? category.name : "Chưa phân loại";
+
+
+        const category =
+          MOCK_DATA.categories.find(
+            (c) => c.id === categoryId
+          );
+
+
+        return category
+          ? category.name
+          : "Chưa phân loại";
+
       }
 
+
+      // =====================================================
+      // AUTHOR
+      // =====================================================
+
       function getAuthorName(authorId) {
+
         if (
           typeof MOCK_DATA === "undefined" ||
           !Array.isArray(MOCK_DATA.users)
         ) {
+
           return "Không rõ tác giả";
+
         }
-        const author = MOCK_DATA.users.find((u) => u.id === authorId);
-        return author ? author.full_name : "Không rõ tác giả";
+
+
+        const author =
+          MOCK_DATA.users.find(
+            (u) => u.id === authorId
+          );
+
+
+        return author
+          ? author.full_name
+          : "Không rõ tác giả";
+
       }
+
+
+      // =====================================================
+      // FORMAT DATE
+      // =====================================================
 
       function formatArticleDate(dateString) {
-        if (!dateString) return "";
-        const date = String(dateString).substring(0, 10);
-        const parts = date.split("-");
-        if (parts.length !== 3) return date;
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+        if (!dateString) {
+          return "";
+        }
+
+
+        const date =
+          String(dateString).substring(0, 10);
+
+
+        const parts =
+          date.split("-");
+
+
+        if (parts.length !== 3) {
+          return date;
+        }
+
+
+        return (
+          `${parts[2]}/${parts[1]}/${parts[0]}`
+        );
+
       }
 
-      function createFavoriteItem(fav) {
-        const article = MOCK_DATA.articles.find((a) => a.id === fav.article_id);
-        if (!article) return null;
 
-        const categoryName = getCategoryName(article.category_id);
-        const authorName = getAuthorName(article.author_id);
+      // =====================================================
+      // CREATE FAVORITE ITEM
+      // =====================================================
+
+      function createFavoriteItem(fav) {
+
+        const article =
+          MOCK_DATA.articles.find(
+            (a) => a.id === fav.article_id
+          );
+
+
+        if (!article) {
+          return null;
+        }
+
+
+        const categoryName =
+          getCategoryName(article.category_id);
+
+
+        const authorName =
+          getAuthorName(article.author_id);
+
+
         const articleUrl =
           "article-detail.html?slug=" +
-          encodeURIComponent(article.slug || article.id);
+          encodeURIComponent(
+            article.slug || article.id
+          );
 
-        const item = document.createElement("article");
-        item.className = "favorites-item";
-        item.dataset.articleId = String(article.id);
+
+        const item =
+          document.createElement("article");
+
+
+        item.className =
+          "favorites-item";
+
+
+        item.dataset.articleId =
+          String(article.id);
+
+
+        // ---------------------------------------------------
+        // IMAGE
+        // ---------------------------------------------------
 
         let imageHTML = "";
+
+
         if (article.cover_image) {
+
           imageHTML = `
             <img
               class="favorites-image"
               src="${article.cover_image}"
               alt="${article.title || "Ảnh bài viết"}"
             >
-            <div class="favorites-image-placeholder" style="display:none;">
+
+            <div
+              class="favorites-image-placeholder"
+              style="display:none;"
+            >
               <span>ẢNH</span>
             </div>
           `;
-        } else {
+
+        }
+        else {
+
           imageHTML = `
             <div class="favorites-image-placeholder">
               <span>ẢNH</span>
             </div>
           `;
+
         }
+
+
+        // ---------------------------------------------------
+        // HTML ITEM
+        // ---------------------------------------------------
 
         item.innerHTML = `
-          <a href="${articleUrl}" class="favorites-image-link">
+
+          <a
+            href="${articleUrl}"
+            class="favorites-image-link"
+          >
             ${imageHTML}
           </a>
+
+
           <div class="favorites-info">
+
             <h2 class="favorites-title">
-              <a href="${articleUrl}">${article.title || "Không có tiêu đề"}</a>
+
+              <a href="${articleUrl}">
+                ${article.title || "Không có tiêu đề"}
+              </a>
+
             </h2>
+
+
             <div class="favorites-meta">
-              <span>${categoryName}</span>
+
+              <span>
+                ${categoryName}
+              </span>
+
               <span>·</span>
-              <span>${authorName}</span>
+
+              <span>
+                ${authorName}
+              </span>
+
               <span>·</span>
-              <span>${formatArticleDate(article.published_at || article.created_at)}</span>
+
+              <span>
+                ${formatArticleDate(
+                  article.published_at ||
+                  article.created_at
+                )}
+              </span>
+
             </div>
+
           </div>
+
+
           <div class="favorites-action">
-            <button type="button" class="btn-unfavorite" data-article-id="${article.id}">
+
+            <button
+              type="button"
+              class="btn-unfavorite"
+              data-article-id="${article.id}"
+            >
               Bỏ yêu thích
             </button>
+
           </div>
+
         `;
 
-        const image = item.querySelector(".favorites-image");
-        const placeholder = item.querySelector(".favorites-image-placeholder");
+
+        // ---------------------------------------------------
+        // IMAGE ERROR
+        // ---------------------------------------------------
+
+        const image =
+          item.querySelector(".favorites-image");
+
+
+        const placeholder =
+          item.querySelector(
+            ".favorites-image-placeholder"
+          );
+
+
         if (image && placeholder) {
-          image.addEventListener("error", function () {
-            image.style.display = "none";
-            placeholder.style.display = "flex";
-          });
+
+          image.addEventListener(
+            "error",
+            function () {
+
+              image.style.display =
+                "none";
+
+              placeholder.style.display =
+                "flex";
+
+            }
+          );
+
         }
 
-        const btn = item.querySelector(".btn-unfavorite");
-        btn.addEventListener("click", function () {
-          removeFavorite(article.id, item);
-        });
+
+        // ---------------------------------------------------
+        // REMOVE FAVORITE
+        // ---------------------------------------------------
+
+        const btn =
+          item.querySelector(
+            ".btn-unfavorite"
+          );
+
+
+        btn.addEventListener(
+          "click",
+          function () {
+
+            removeFavorite(
+              article.id,
+              item
+            );
+
+          }
+        );
+
 
         return item;
+
       }
 
-      function removeFavorite(articleId, itemEl) {
-        // Xóa ngay, KHÔNG hỏi xác nhận (UC-US01)
-        if (Array.isArray(MOCK_DATA.favorites)) {
-          const idx = MOCK_DATA.favorites.findIndex(
-            (f) => f.user_id === CURRENT_USER_ID && f.article_id === articleId,
-          );
+
+      // =====================================================
+      // REMOVE FAVORITE
+      // =====================================================
+
+      function removeFavorite(
+        articleId,
+        itemEl
+      ) {
+
+        if (
+          Array.isArray(
+            MOCK_DATA.favorites
+          )
+        ) {
+
+          const idx =
+            MOCK_DATA.favorites.findIndex(
+              (f) =>
+                f.user_id === CURRENT_USER_ID &&
+                f.article_id === articleId
+            );
+
+
           if (idx !== -1) {
-            MOCK_DATA.favorites.splice(idx, 1);
+
+            MOCK_DATA.favorites.splice(
+              idx,
+              1
+            );
+
           }
+
         }
+
+
         itemEl.remove();
 
-        if (favoritesList.children.length === 0) {
-          favoritesEmpty.style.display = "block";
+
+        if (
+          favoritesList.children.length === 0
+        ) {
+
+          favoritesEmpty.style.display =
+            "block";
+
         }
+
       }
+
+
+      // =====================================================
+      // LOAD FAVORITES
+      // =====================================================
 
       function loadFavorites() {
+
         try {
-          if (typeof MOCK_DATA === "undefined") {
-            throw new Error("Không tìm thấy mock-data.js.");
+
+          // -------------------------------------------------
+          // CHECK MOCK DATA
+          // -------------------------------------------------
+
+          if (
+            typeof MOCK_DATA === "undefined"
+          ) {
+
+            throw new Error(
+              "Không tìm thấy mock-data.js."
+            );
+
           }
 
-          const currentUser = MOCK_DATA.users.find(
-            (u) => u.id === CURRENT_USER_ID,
-          );
+
+          // -------------------------------------------------
+          // CURRENT USER
+          // -------------------------------------------------
+
+          const currentUser =
+            MOCK_DATA.users.find(
+              (u) =>
+                u.id === CURRENT_USER_ID
+            );
+
+
           if (currentUser) {
+
             loadUser(currentUser);
+
           }
 
-          const userFavs = Array.isArray(MOCK_DATA.favorites)
-            ? MOCK_DATA.favorites.filter((f) => f.user_id === CURRENT_USER_ID)
-            : [];
 
-          userFavs.sort((a, b) => {
-            const dateA = new Date(
-              String(a.created_at || "").replace(" ", "T"),
-            );
-            const dateB = new Date(
-              String(b.created_at || "").replace(" ", "T"),
-            );
-            return dateB - dateA;
-          });
+          // -------------------------------------------------
+          // FAVORITES
+          // -------------------------------------------------
 
-          if (userFavs.length === 0) {
-            favoritesEmpty.style.display = "block";
-            return;
-          }
+          const userFavs =
+            Array.isArray(
+              MOCK_DATA.favorites
+            )
+              ? MOCK_DATA.favorites.filter(
+                  (f) =>
+                    f.user_id ===
+                    CURRENT_USER_ID
+                )
+              : [];
 
-          userFavs.forEach((fav) => {
-            const item = createFavoriteItem(fav);
-            if (item) {
-              favoritesList.appendChild(item);
+
+          // -------------------------------------------------
+          // SORT
+          // -------------------------------------------------
+
+          userFavs.sort(
+            (a, b) => {
+
+              const dateA =
+                new Date(
+                  String(
+                    a.created_at || ""
+                  ).replace(" ", "T")
+                );
+
+
+              const dateB =
+                new Date(
+                  String(
+                    b.created_at || ""
+                  ).replace(" ", "T")
+                );
+
+
+              return dateB - dateA;
+
             }
-          });
+          );
 
-          if (favoritesList.children.length === 0) {
-            favoritesEmpty.style.display = "block";
+
+          // -------------------------------------------------
+          // EMPTY
+          // -------------------------------------------------
+
+          if (
+            userFavs.length === 0
+          ) {
+
+            favoritesEmpty.style.display =
+              "block";
+
+            return;
+
           }
-        } catch (error) {
-          console.error("Favorites error:", error);
-          favoritesError.style.display = "block";
+
+
+          // -------------------------------------------------
+          // RENDER
+          // -------------------------------------------------
+
+          userFavs.forEach(
+            (fav) => {
+
+              const item =
+                createFavoriteItem(fav);
+
+
+              if (item) {
+
+                favoritesList.appendChild(
+                  item
+                );
+
+              }
+
+            }
+          );
+
+
+          if (
+            favoritesList.children.length === 0
+          ) {
+
+            favoritesEmpty.style.display =
+              "block";
+
+          }
+
         }
+        catch (error) {
+
+          console.error(
+            "Favorites error:",
+            error
+          );
+
+
+          favoritesError.style.display =
+            "block";
+
+        }
+
       }
 
+
+      // =====================================================
+      // CHẠY
+      // =====================================================
+
       loadFavorites();
+
+
+      // =====================================================
+      // KHI QUAY LẠI TRANG
+      // LOAD LẠI AVATAR
+      // =====================================================
+
+      window.addEventListener(
+        "pageshow",
+        function () {
+
+          const currentUser =
+            MOCK_DATA.users.find(
+              (u) =>
+                u.id === CURRENT_USER_ID
+            );
+
+
+          if (currentUser) {
+
+            loadUser(currentUser);
+
+          }
+
+        }
+      );
+
     </script>
+
   </body>
 </html>

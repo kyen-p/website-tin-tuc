@@ -29,9 +29,7 @@
   <aside class="notifications-sidebar">
 
 
-    <!-- =================================================
-         LOGO
-    ================================================= -->
+    <!-- LOGO -->
 
     <div class="notifications-brand">
 
@@ -77,24 +75,17 @@
     </div>
 
 
-    <!-- =================================================
-         USER
-    ================================================= -->
+    <!-- USER -->
 
     <div class="notifications-user">
 
+      <div
+        class="notifications-avatar"
+        id="userAvatar">
 
-      <!-- AVATAR
-           Lấy giống profile.html
-      -->
-
-      <div class="notifications-avatar"
-           id="userAvatar">
-
-        <img
-          id="sidebarAvatar"
-          src=""
-          alt="Avatar">
+        <span id="userInitials">
+          NU
+        </span>
 
       </div>
 
@@ -116,13 +107,10 @@
 
       </div>
 
-
     </div>
 
 
-    <!-- =================================================
-         MENU
-    ================================================= -->
+    <!-- MENU -->
 
     <nav class="notifications-menu">
 
@@ -160,7 +148,6 @@
           </path>
 
         </svg>
-
 
         <span class="notifications-menu-text">
           Thông tin tài khoản
@@ -207,7 +194,6 @@
 
         </svg>
 
-
         <span class="notifications-menu-text">
           Đổi mật khẩu
         </span>
@@ -244,7 +230,6 @@
           </path>
 
         </svg>
-
 
         <span class="notifications-menu-text">
           Bài viết yêu thích
@@ -287,7 +272,6 @@
 
         </svg>
 
-
         <span class="notifications-menu-text">
           Lịch sử đọc bài
         </span>
@@ -320,7 +304,6 @@
           </path>
 
         </svg>
-
 
         <span class="notifications-menu-text">
           Bình luận của tôi
@@ -360,7 +343,6 @@
 
         </svg>
 
-
         <span class="notifications-menu-text">
           Thông báo
         </span>
@@ -371,9 +353,7 @@
     </nav>
 
 
-    <!-- =================================================
-         LOGOUT
-    ================================================= -->
+    <!-- LOGOUT -->
 
     <div class="notifications-logout">
 
@@ -406,7 +386,6 @@
           </path>
 
         </svg>
-
 
         <span class="notifications-menu-text">
           Đăng xuất
@@ -523,8 +502,12 @@
    1. LẤY USER
 ===================================================== */
 
+const CURRENT_USER_ID = 1;
+
 const user =
-    MOCK_DATA.users[0];
+    MOCK_DATA.users.find(
+        u => Number(u.id) === CURRENT_USER_ID
+    );
 
 
 /* =====================================================
@@ -569,7 +552,7 @@ function getInitials(name) {
     if (words.length === 1) {
 
         return words[0]
-            .charAt(0)
+            .substring(0, 2)
             .toUpperCase();
 
     }
@@ -583,7 +566,34 @@ function getInitials(name) {
 
 
 /* =====================================================
-   4. HIỂN THỊ USER SIDEBAR
+   4. LẤY AVATAR
+   ƯU TIÊN:
+   1. Avatar mới trong localStorage
+   2. Avatar trong mock-data.js
+===================================================== */
+
+function getUserAvatar() {
+
+    if (!user) {
+        return "";
+    }
+
+    const savedAvatar =
+        localStorage.getItem(
+            "userAvatar_" + user.id
+        );
+
+    if (savedAvatar) {
+        return savedAvatar;
+    }
+
+    return user.avatar || "";
+
+}
+
+
+/* =====================================================
+   5. HIỂN THỊ USER SIDEBAR
 ===================================================== */
 
 function renderUser() {
@@ -597,6 +607,9 @@ function renderUser() {
     const userAvatar =
         document.getElementById("userAvatar");
 
+    const userInitials =
+        document.getElementById("userInitials");
+
 
     if (!user) {
 
@@ -606,17 +619,20 @@ function renderUser() {
         userRole.innerText =
             "Độc giả";
 
-        userAvatar.innerHTML =
-            "<span>U</span>";
+        userInitials.innerText =
+            "U";
 
         return;
+
     }
 
 
     /* TÊN */
 
     userName.innerText =
-        user.full_name || "Người dùng";
+        user.full_name ||
+        user.username ||
+        "Người dùng";
 
 
     /* ROLE */
@@ -625,78 +641,92 @@ function renderUser() {
         roleName(user.role);
 
 
-    /* =================================================
-       AVATAR
-       GIỐNG PROFILE.HTML
-    ================================================= */
+    /* AVATAR */
 
-    userAvatar.innerHTML = "";
-
-
-    const image =
-        document.createElement("img");
-
-
-    image.id =
-        "sidebarAvatar";
-
-
-    image.alt =
-        "Avatar";
+    const avatar =
+        getUserAvatar();
 
 
     /*
-       Lấy trực tiếp từ MOCK_DATA
-       giống profile.html
+       Xóa avatar cũ trước khi render
     */
 
-    image.src =
-        user.avatar || "";
+    const oldImage =
+        userAvatar.querySelector("img");
+
+    if (oldImage) {
+        oldImage.remove();
+    }
 
 
     /*
-       Nếu avatar không tồn tại
-       thì hiện chữ cái
+       Nếu có avatar
     */
 
-    image.onerror =
-        function () {
+    if (avatar) {
 
-            userAvatar.innerHTML = "";
+        const image =
+            document.createElement("img");
 
-            userAvatar.classList.add(
-                "avatar-fallback"
+        image.id =
+            "sidebarAvatar";
+
+        image.src =
+            avatar;
+
+        image.alt =
+            "Ảnh đại diện " +
+            (user.full_name || "Người dùng");
+
+
+        image.onload =
+            function () {
+
+                userInitials.style.display =
+                    "none";
+
+            };
+
+
+        image.onerror =
+            function () {
+
+                image.remove();
+
+                userInitials.innerText =
+                    getInitials(
+                        user.full_name ||
+                        user.username
+                    );
+
+                userInitials.style.display =
+                    "block";
+
+            };
+
+
+        userAvatar.appendChild(image);
+
+    }
+
+    else {
+
+        userInitials.innerText =
+            getInitials(
+                user.full_name ||
+                user.username
             );
 
-            userAvatar.innerText =
-                getInitials(
-                    user.full_name
-                );
+        userInitials.style.display =
+            "block";
 
-        };
-
-
-    /*
-       Nếu có avatar thì bỏ fallback
-    */
-
-    image.onload =
-        function () {
-
-            userAvatar.classList.remove(
-                "avatar-fallback"
-            );
-
-        };
-
-
-    userAvatar.appendChild(image);
+    }
 
 }
 
 
 /* =====================================================
-   5. FORMAT NGÀY
+   6. FORMAT NGÀY
 ===================================================== */
 
 function formatDate(dateString) {
@@ -707,43 +737,54 @@ function formatDate(dateString) {
 
     const date =
         new Date(
-            dateString.replace(" ", "T")
+            String(dateString)
+                .replace(" ", "T")
         );
+
 
     if (Number.isNaN(date.getTime())) {
         return dateString;
     }
+
 
     const day =
         String(
             date.getDate()
         ).padStart(2, "0");
 
+
     const month =
         String(
             date.getMonth() + 1
         ).padStart(2, "0");
 
+
     const year =
         date.getFullYear();
+
 
     const hours =
         String(
             date.getHours()
         ).padStart(2, "0");
 
+
     const minutes =
         String(
             date.getMinutes()
         ).padStart(2, "0");
 
-    return `${day}/${month}/${year} · ${hours}:${minutes}`;
+
+    return (
+        `${day}/${month}/${year} · ` +
+        `${hours}:${minutes}`
+    );
 
 }
 
 
 /* =====================================================
-   6. LOẠI THÔNG BÁO
+   7. LOẠI THÔNG BÁO
 ===================================================== */
 
 function getNotificationType(type) {
@@ -764,6 +805,7 @@ function getNotificationType(type) {
 
     };
 
+
     return (
         types[type] ||
         "THÔNG BÁO"
@@ -773,7 +815,7 @@ function getNotificationType(type) {
 
 
 /* =====================================================
-   7. LINK
+   8. LINK
 ===================================================== */
 
 function resolveNotificationLink(link) {
@@ -782,12 +824,14 @@ function resolveNotificationLink(link) {
         return "notifications.html";
     }
 
+
     if (link.startsWith("/")) {
 
         const parts =
             link
                 .split("/")
                 .filter(Boolean);
+
 
         if (parts.length > 0) {
 
@@ -799,20 +843,23 @@ function resolveNotificationLink(link) {
 
     }
 
+
     return link;
 
 }
 
 
 /* =====================================================
-   8. CLICK NOTIFICATION
+   9. CLICK NOTIFICATION
 ===================================================== */
 
 function handleNotificationClick(
     notification
 ) {
 
-    notification.is_read = true;
+    notification.is_read =
+        true;
+
 
     localStorage.setItem(
         "mockNotifications",
@@ -821,10 +868,12 @@ function handleNotificationClick(
         )
     );
 
+
     const target =
         resolveNotificationLink(
             notification.link
         );
+
 
     window.location.href =
         target;
@@ -833,7 +882,7 @@ function handleNotificationClick(
 
 
 /* =====================================================
-   9. LOAD TRẠNG THÁI ĐỌC
+   10. LOAD TRẠNG THÁI ĐỌC
 ===================================================== */
 
 function loadNotificationState() {
@@ -843,14 +892,17 @@ function loadNotificationState() {
             "mockNotifications"
         );
 
+
     if (!saved) {
         return;
     }
+
 
     try {
 
         const savedNotifications =
             JSON.parse(saved);
+
 
         if (
             !Array.isArray(
@@ -861,6 +913,7 @@ function loadNotificationState() {
             return;
 
         }
+
 
         savedNotifications.forEach(
             savedNotification => {
@@ -873,6 +926,7 @@ function loadNotificationState() {
                                 savedNotification.id
                             )
                     );
+
 
                 if (notification) {
 
@@ -899,7 +953,7 @@ function loadNotificationState() {
 
 
 /* =====================================================
-   10. RENDER NOTIFICATIONS
+   11. RENDER NOTIFICATIONS
 ===================================================== */
 
 function renderNotifications() {
@@ -909,10 +963,12 @@ function renderNotifications() {
             "notificationsList"
         );
 
+
     const empty =
         document.getElementById(
             "notificationsEmpty"
         );
+
 
     const error =
         document.getElementById(
@@ -920,11 +976,16 @@ function renderNotifications() {
         );
 
 
-    list.innerHTML = "";
+    list.innerHTML =
+        "";
 
-    empty.style.display = "none";
 
-    error.style.display = "none";
+    empty.style.display =
+        "none";
+
+
+    error.style.display =
+        "none";
 
 
     if (!user) {
@@ -938,29 +999,43 @@ function renderNotifications() {
 
 
     const userNotifications =
-        MOCK_DATA.notifications
+        Array.isArray(
+            MOCK_DATA.notifications
+        )
 
-            .filter(
-                notification =>
-                    Number(
-                        notification.user_id
-                    ) ===
-                    Number(
-                        user.id
-                    )
-            )
+            ? MOCK_DATA.notifications
 
-            .sort(
-                (a, b) =>
-                    new Date(
-                        b.created_at
-                            .replace(" ", "T")
-                    ) -
-                    new Date(
-                        a.created_at
-                            .replace(" ", "T")
-                    )
-            );
+                .filter(
+                    notification =>
+                        Number(
+                            notification.user_id
+                        ) ===
+                        Number(
+                            user.id
+                        )
+                )
+
+                .sort(
+                    (a, b) =>
+                        new Date(
+                            String(
+                                b.created_at
+                            ).replace(
+                                " ",
+                                "T"
+                            )
+                        ) -
+                        new Date(
+                            String(
+                                a.created_at
+                            ).replace(
+                                " ",
+                                "T"
+                            )
+                        )
+                )
+
+            : [];
 
 
     if (
@@ -1009,8 +1084,10 @@ function renderNotifications() {
                     "div"
                 );
 
+
             icon.className =
                 "notifications-item-icon";
+
 
             icon.innerHTML =
                 getNotificationIcon(
@@ -1025,6 +1102,7 @@ function renderNotifications() {
                     "div"
                 );
 
+
             content.className =
                 "notifications-item-content";
 
@@ -1036,6 +1114,7 @@ function renderNotifications() {
                     "div"
                 );
 
+
             top.className =
                 "notifications-item-top";
 
@@ -1045,8 +1124,10 @@ function renderNotifications() {
                     "span"
                 );
 
+
             type.className =
                 "notifications-item-type";
+
 
             type.textContent =
                 getNotificationType(
@@ -1059,8 +1140,10 @@ function renderNotifications() {
                     "time"
                 );
 
+
             date.className =
                 "notifications-item-date";
+
 
             date.textContent =
                 formatDate(
@@ -1069,6 +1152,7 @@ function renderNotifications() {
 
 
             top.appendChild(type);
+
             top.appendChild(date);
 
 
@@ -1079,8 +1163,10 @@ function renderNotifications() {
                     "h2"
                 );
 
+
             title.className =
                 "notifications-item-title";
+
 
             title.textContent =
                 notification.title;
@@ -1093,8 +1179,10 @@ function renderNotifications() {
                     "p"
                 );
 
+
             description.className =
                 "notifications-item-description";
+
 
             description.textContent =
                 notification.content;
@@ -1107,8 +1195,10 @@ function renderNotifications() {
                     "span"
                 );
 
+
             status.className =
                 "notifications-item-status";
+
 
             status.textContent =
                 notification.is_read
@@ -1133,6 +1223,7 @@ function renderNotifications() {
                 document.createElement(
                     "div"
                 );
+
 
             arrow.className =
                 "notifications-item-arrow";
@@ -1189,7 +1280,7 @@ function renderNotifications() {
 
 
 /* =====================================================
-   11. ICON NOTIFICATION
+   12. ICON NOTIFICATION
 ===================================================== */
 
 function getNotificationIcon(type) {
@@ -1384,18 +1475,44 @@ function getNotificationIcon(type) {
 
 
 /* =====================================================
-   12. INIT
+   13. INIT
 ===================================================== */
+
+function initNotificationsPage() {
+
+    /*
+       Quan trọng:
+       Mỗi lần trang được mở lại,
+       lấy avatar mới nhất từ localStorage.
+    */
+
+    renderUser();
+
+    loadNotificationState();
+
+    renderNotifications();
+
+}
+
+
+/* Chạy lần đầu */
 
 document.addEventListener(
     "DOMContentLoaded",
+    initNotificationsPage
+);
+
+
+/*
+   Khi quay lại trang bằng nút Back/Forward
+   hoặc chuyển giữa các trang.
+*/
+
+window.addEventListener(
+    "pageshow",
     function () {
 
-        loadNotificationState();
-
         renderUser();
-
-        renderNotifications();
 
     }
 );
@@ -1405,3 +1522,4 @@ document.addEventListener(
 
 </body>
 </html>
+```
