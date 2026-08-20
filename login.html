@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Đăng nhập — Mạch Tin</title>
-
-    <!-- CSS CHUNG -->
     <link rel="stylesheet" href="style.css" />
 
-    <!-- CSS RIÊNG TRANG LOGIN -->
     <link rel="stylesheet" href="style.css/login.css" />
   </head>
 
@@ -24,7 +21,6 @@
                LOGO MẠCH TIN
           ====================================== -->
           <a href="index.html" class="auth-logo">
-            <!-- NHỊP TIM -->
             <svg
               class="pulse-mark"
               width="26"
@@ -41,11 +37,8 @@
                 stroke-linejoin="round"
               />
             </svg>
-
-            <!-- MẠCH TIN -->
             <span class="logo__word"> MẠCH&nbsp;<em>TIN</em> </span>
           </a>
-
           <!-- =====================================
                FORM ĐĂNG NHẬP
           ====================================== -->
@@ -53,13 +46,9 @@
             <h1>Đăng nhập</h1>
 
             <p class="dek">Đăng nhập để sử dụng các tính năng cá nhân.</p>
-
-            <!-- THÔNG BÁO SAI TÀI KHOẢN -->
             <div class="alert is-error" id="login-error">
               Sai thông tin đăng nhập.
             </div>
-
-            <!-- THÔNG BÁO QUÊN MẬT KHẨU -->
             <div class="alert is-info" id="forgot-msg">
               Tính năng đang phát triển, vui lòng liên hệ Admin.
             </div>
@@ -68,7 +57,6 @@
                  LOGIN FORM
             ==================================== -->
             <form id="login-form">
-              <!-- EMAIL / USERNAME -->
               <div class="field">
                 <label for="login-id"> Email hoặc username </label>
 
@@ -80,7 +68,6 @@
                 />
               </div>
 
-              <!-- MẬT KHẨU -->
               <div class="field">
                 <label for="password"> Mật khẩu </label>
 
@@ -91,10 +78,7 @@
                   required
                 />
               </div>
-
-              <!-- =================================
-                   GHI NHỚ / QUÊN MẬT KHẨU
-              ================================== -->
+              <!-- ===================== GHI NHỚ / QUÊN MẬT KHẨU================= -->
               <div class="auth-links">
                 <label class="remember-login">
                   <input type="checkbox" id="remember" />
@@ -104,16 +88,10 @@
 
                 <a href="#" id="forgot-link"> Quên mật khẩu? </a>
               </div>
-
-              <!-- BUTTON -->
               <button type="submit" class="btn btn-primary btn-block">
                 Đăng nhập
               </button>
             </form>
-
-            <!-- =================================
-                 ĐĂNG KÝ
-            ================================== -->
             <p class="form-footer">
               Chưa có tài khoản?
 
@@ -124,9 +102,6 @@
       </div>
     </main>
 
-    <!-- =========================================
-         JAVASCRIPT
-    ========================================== -->
     <script src="mock-data.js"></script>
 
     <script>
@@ -148,7 +123,6 @@
             .value.trim()
             .toLowerCase();
           const pass = document.getElementById("password").value;
-
           // Tìm theo username hoặc email (không phân biệt hoa thường)
           const user = MOCK_DATA.users.find(
             (u) =>
@@ -157,8 +131,6 @@
           );
 
           if (user && user.password === pass && user.status === "active") {
-            // Có thể lưu thông tin user vào localStorage nếu cần
-            // localStorage.setItem("currentUser", JSON.stringify(user));
             window.location.href = "index.html";
           } else {
             document.getElementById("login-error").style.display = "block";

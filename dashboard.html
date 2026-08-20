@@ -95,8 +95,6 @@
 
         </div>
 
-
-
         <!-- ===================================================
              MENU
         =================================================== -->
@@ -126,8 +124,6 @@
 
             </a>
 
-
-
             <a
                 href="my-articles.html"
                 class="reporter-menu-item">
@@ -156,8 +152,6 @@
 
             </a>
 
-
-
             <a
                 href="my-topics.html"
                 class="reporter-menu-item">
@@ -185,9 +179,6 @@
                 </span>
 
             </a>
-
-
-
             <a
                 href="dashboard.html"
                 class="reporter-menu-item active">
@@ -215,8 +206,6 @@
                 </span>
 
             </a>
-
-
 
             <a
                 href="public/index.html"
@@ -251,8 +240,6 @@
 
     </aside>
 
-
-
     <!-- ===================================================
          MAIN
     =================================================== -->
@@ -261,8 +248,6 @@
 
 
         <div class="reporter-content">
-
-
 
             <!-- ===================================================
                  HEADER
@@ -286,9 +271,6 @@
 
 
             <div class="page-line"></div>
-
-
-
             <!-- ===================================================
                  STATISTICS TABLE
             =================================================== -->
@@ -306,13 +288,6 @@
                         Danh sách bài viết
                     </h2>
 
-
-                    <!--
-                        Ô số lượng bài viết
-                        Đã đưa vào trong section-heading
-                        để nằm bên phải
-                    -->
-
                     <div
                         id="articleCount"
                         class="article-count-box">
@@ -322,9 +297,6 @@
                     </div>
 
                 </div>
-
-
-
                 <!-- ===================================================
                      EMPTY STATE
                 =================================================== -->
@@ -360,8 +332,6 @@
 
                 </div>
 
-
-
                 <!-- ===================================================
                      TABLE WRAPPER
                 =================================================== -->
@@ -370,10 +340,7 @@
                     id="tableWrapper"
                     class="table-wrapper">
 
-
                     <table class="article-table">
-
-
                         <!-- ===================================================
                              TABLE HEADER
                         =================================================== -->
@@ -381,9 +348,6 @@
                         <thead>
 
                             <tr>
-
-
-                                <!-- TIÊU ĐỀ -->
 
                                 <th
                                     class="title-column"
@@ -426,9 +390,6 @@
                                     </button>
 
                                 </th>
-
-
-
                                 <!-- NGÀY ĐĂNG -->
 
                                 <th
@@ -471,8 +432,6 @@
                                     </button>
 
                                 </th>
-
-
 
                                 <!-- LƯỢT XEM -->
 
@@ -517,8 +476,6 @@
 
                                 </th>
 
-
-
                                 <!-- BÌNH LUẬN -->
 
                                 <th
@@ -561,8 +518,6 @@
                                     </button>
 
                                 </th>
-
-
 
                                 <!-- LƯỢT THÍCH -->
 
@@ -612,8 +567,6 @@
 
                         </thead>
 
-
-
                         <!-- ===================================================
                              TABLE BODY
                         =================================================== -->
@@ -638,27 +591,9 @@
 
 
 </div>
-
-
-
-<!-- ===================================================
-     MOCK DATA
-=================================================== -->
-
 <script src="mock-data.js"></script>
 
-
-
 <script>
-
-
-// =====================================================
-// LOAD REPORTER HIỆN TẠI
-// =====================================================
-
-// Nếu hệ thống đăng nhập đã lưu user_id vào localStorage,
-// trang sẽ lấy đúng user đó.
-// Nếu chưa có, tự tìm reporter active đầu tiên trong MOCK_DATA.
 
 const storedUserId =
     localStorage.getItem("user_id");
@@ -677,8 +612,6 @@ const currentReporter =
                 user.status === "active"
         );
 
-
-
 // =====================================================
 // SIDEBAR USER
 // =====================================================
@@ -692,13 +625,6 @@ if (currentReporter) {
         currentReporter.avatar;
 
 }
-
-
-
-// =====================================================
-// LẤY BÀI VIẾT ĐÃ ĐĂNG CỦA REPORTER
-// =====================================================
-
 let statisticsArticles = [];
 
 
@@ -742,18 +668,10 @@ if (currentReporter) {
 
 }
 
-
-
-// =====================================================
-// SORT
-// =====================================================
-
 let currentSort = {
     key: "date",
     direction: "desc"
 };
-
-
 
 function getSortValue(article, key) {
 
@@ -793,8 +711,6 @@ function getSortValue(article, key) {
     }
 
 }
-
-
 
 function sortArticles() {
 
@@ -845,8 +761,6 @@ function sortArticles() {
 
 }
 
-
-
 // =====================================================
 // FORMAT DATE
 // =====================================================
@@ -871,8 +785,6 @@ function formatDate(dateString) {
     );
 
 }
-
-
 
 // =====================================================
 // RENDER TABLE
@@ -908,11 +820,6 @@ function renderTable() {
     tbody.innerHTML = "";
 
 
-
-    // ===============================================
-    // KHÔNG CÓ BÀI
-    // ===============================================
-
     if (
         statisticsArticles.length === 0
     ) {
@@ -934,12 +841,6 @@ function renderTable() {
         return;
 
     }
-
-
-
-    // ===============================================
-    // CÓ BÀI
-    // ===============================================
 
     tableWrapper.classList.remove(
         "hidden"
@@ -1018,8 +919,6 @@ function renderTable() {
 
 }
 
-
-
 // =====================================================
 // CLICK SORT HEADER
 // =====================================================
@@ -1068,8 +967,6 @@ document
 
                 }
 
-
-
                 document
                     .querySelectorAll(
                         ".article-table th"
@@ -1109,8 +1006,6 @@ document
         );
 
     });
-
-
 
 // =====================================================
 // INITIAL RENDER
