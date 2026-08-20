@@ -1,0 +1,903 @@
+/* =========================================================
+   DASHBOARD.CSS — MẠCH TIN
+   THỐNG KÊ BÀI VIẾT (UC-RP03)
+   ========================================================= */
+
+/* =========================================================
+   1. VARIABLES
+   ========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,480;0,9..144,600;1,9..144,420&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  --ink: #131B2E;
+  --ink-soft: #2B3350;
+
+  --paper: #F5F3EE;
+  --paper-alt: #ECE7DA;
+
+  --white: #FFFFFF;
+
+  --brass: #B8934F;
+  --brass-dark: #93692F;
+
+  --crimson: #A6362C;
+
+  --line: #D9D3C2;
+  --line-soft: #E6E1D2;
+
+  --muted: #6B6759;
+
+  --f-display:
+    "Fraunces",
+    "Times New Roman",
+    serif;
+
+  --f-body:
+    "Inter",
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+
+  --f-mono:
+    "IBM Plex Mono",
+    "Courier New",
+    monospace;
+
+  --radius: 2px;
+}
+
+
+/* =========================================================
+   2. RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.55;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   3. PAGE
+   ========================================================= */
+
+.reporter-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+}
+
+
+/* =========================================================
+   4. SIDEBAR
+   ========================================================= */
+
+.reporter-sidebar {
+  width: 250px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--paper-alt);
+
+  border-right: 1px solid var(--line);
+}
+
+
+/* =========================================================
+   5. LOGO
+   ========================================================= */
+
+.reporter-brand {
+  width: 100%;
+  height: 94px;
+
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  width: max-content;
+
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.pulse-mark {
+  width: 26px;
+  height: 24px;
+
+  flex: 0 0 26px;
+
+  display: block;
+
+  color: var(--crimson);
+}
+
+.brand-word {
+  display: flex;
+  align-items: baseline;
+
+  white-space: nowrap;
+}
+
+.brand-mach {
+  color: var(--ink);
+
+  font-family: var(--f-display);
+
+  font-size: 23px;
+  line-height: 1;
+
+  font-weight: 600;
+
+  letter-spacing: -0.01em;
+}
+
+.brand-tin {
+  margin-left: 3px;
+
+  color: var(--brass-dark);
+
+  font-family: var(--f-display);
+
+  font-size: 23px;
+  line-height: 1;
+
+  font-weight: 480;
+  font-style: italic;
+
+  letter-spacing: -0.01em;
+}
+
+
+/* =========================================================
+   6. USER
+   ========================================================= */
+
+.reporter-user {
+  width: 100%;
+
+  padding: 26px 20px 23px;
+
+  text-align: center;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.reporter-avatar {
+  width: 60px;
+  height: 60px;
+
+  margin: 0 auto 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  background: var(--white);
+
+  border: 1px solid var(--brass);
+
+  color: var(--brass-dark);
+
+  font-family: var(--f-display);
+
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.reporter-avatar img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.reporter-name {
+  margin: 0;
+
+  color: var(--ink);
+
+  font-size: 14.5px;
+  line-height: 1.4;
+
+  font-weight: 600;
+}
+
+.reporter-role {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-family: var(--f-mono);
+
+  font-size: 11.5px;
+
+  letter-spacing: 0.02em;
+}
+
+
+/* =========================================================
+   7. MENU
+   ========================================================= */
+
+.reporter-menu {
+  padding-top: 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.reporter-menu-item {
+  width: 100%;
+  min-height: 48px;
+
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  color: var(--ink-soft);
+
+  border-left: 3px solid transparent;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.reporter-menu-item:hover {
+  background: var(--paper);
+
+  color: var(--ink);
+}
+
+.reporter-menu-item.active {
+  background: var(--paper);
+
+  border-left-color: var(--crimson);
+
+  color: var(--ink);
+
+  font-weight: 600;
+}
+
+.menu-icon {
+  width: 18px;
+  height: 18px;
+
+  flex: 0 0 18px;
+
+  display: block;
+
+  color: var(--muted);
+}
+
+.reporter-menu-item.active .menu-icon {
+  color: var(--crimson);
+}
+
+.reporter-menu-item span {
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   8. MAIN
+   ========================================================= */
+
+.reporter-main {
+  min-width: 0;
+  min-height: 100vh;
+
+  padding: 42px 50px 70px;
+}
+
+.reporter-content {
+  width: 100%;
+  max-width: 1100px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   9. PAGE HEADER
+   ========================================================= */
+
+.page-header {
+  width: 100%;
+}
+
+.page-header h1 {
+  margin: 0;
+
+  color: var(--ink);
+
+  font-family: var(--f-display);
+
+  font-size: 28px;
+  line-height: 1.2;
+
+  font-weight: 600;
+
+  letter-spacing: -0.01em;
+}
+
+.page-header p {
+  margin: 8px 0 0;
+
+  color: var(--muted);
+
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.page-line {
+  width: 100%;
+  height: 2px;
+
+  margin-top: 12px;
+
+  background: var(--ink);
+}
+
+
+/* =========================================================
+   10. STATISTICS SECTION
+   ========================================================= */
+
+.statistics-section {
+  width: 100%;
+
+  margin-top: 30px;
+
+  background: var(--white);
+
+  border: 1px solid var(--line);
+
+  border-radius: var(--radius);
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   11. SECTION HEADER
+   ========================================================= */
+
+.section-heading {
+  width: 100%;
+  min-height: 82px;
+
+  padding: 20px 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.section-heading h2 {
+  margin: 0;
+
+  color: var(--ink);
+
+  font-family: var(--f-display);
+
+  font-size: 20px;
+  line-height: 1.3;
+
+  font-weight: 600;
+
+  letter-spacing: -0.005em;
+}
+
+
+/* =========================================================
+   Ô HIỂN THỊ SỐ BÀI VIẾT
+   ========================================================= */
+
+.article-count-box {
+  flex-shrink: 0;
+
+  padding: 9px 14px;
+
+  background: var(--paper);
+
+  border: 1px solid var(--line);
+
+  border-radius: var(--radius);
+
+  color: var(--muted);
+
+  font-family: var(--f-mono);
+
+  font-size: 11.5px;
+
+  line-height: 1.4;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   12. TABLE WRAPPER
+   ========================================================= */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+
+/* =========================================================
+   13. TABLE
+   ========================================================= */
+
+.article-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
+}
+
+.article-table th {
+  height: 58px;
+
+  padding: 0 20px;
+
+  background: var(--paper);
+
+  border-bottom: 1px solid var(--line);
+
+  color: var(--muted);
+
+  text-align: left;
+
+  font-family: var(--f-mono);
+
+  font-size: 11px;
+
+  line-height: 1.4;
+
+  font-weight: 500;
+
+  letter-spacing: 0.055em;
+
+  text-transform: uppercase;
+}
+
+
+/* WIDTH */
+
+.article-table th:first-child {
+  width: 46%;
+}
+
+.article-table th:nth-child(2) {
+  width: 15%;
+}
+
+.article-table th:nth-child(3) {
+  width: 13%;
+}
+
+.article-table th:nth-child(4) {
+  width: 13%;
+}
+
+.article-table th:nth-child(5) {
+  width: 13%;
+}
+
+
+/* BODY */
+
+.article-table td {
+  padding: 20px;
+
+  border-bottom: 1px solid var(--line-soft);
+
+  vertical-align: middle;
+
+  font-size: 13.5px;
+
+  line-height: 1.5;
+}
+
+.article-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.article-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.article-table tbody tr:hover {
+  background: #FAF9F5;
+}
+
+
+/* =========================================================
+   14. SORT BUTTON
+   ========================================================= */
+
+.sort-button {
+  width: auto;
+
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+
+  border: none;
+
+  background: transparent;
+
+  color: inherit;
+
+  font: inherit;
+
+  letter-spacing: inherit;
+
+  text-transform: inherit;
+
+  cursor: pointer;
+
+  text-align: left;
+}
+
+.sort-button:hover {
+  color: var(--ink);
+}
+
+.sort-icon {
+  width: 15px;
+  height: 15px;
+
+  margin-left: 9px;
+
+  flex: 0 0 15px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--brass);
+
+  transition:
+    transform 0.18s ease,
+    color 0.18s ease;
+}
+
+.sort-icon svg {
+  width: 11px;
+  height: 11px;
+
+  display: block;
+}
+
+.article-table th.sorted {
+  color: var(--ink);
+}
+
+.article-table th.sorted .sort-icon {
+  color: var(--crimson);
+}
+
+.article-table th[data-direction="asc"] .sort-icon {
+  transform: rotate(180deg);
+}
+
+.article-table th[data-direction="desc"] .sort-icon {
+  transform: rotate(0deg);
+}
+
+
+/* =========================================================
+   15. ARTICLE TITLE
+   ========================================================= */
+
+.article-title-cell {
+  padding-right: 30px !important;
+}
+
+.article-title {
+  display: inline;
+
+  color: var(--ink);
+
+  font-family: var(--f-display);
+
+  font-size: 16px;
+  line-height: 1.4;
+
+  font-weight: 480;
+
+  transition: color 0.15s ease;
+}
+
+.article-title:hover {
+  color: var(--crimson);
+}
+
+
+/* =========================================================
+   16. DATE
+   ========================================================= */
+
+.date-cell {
+  color: var(--muted);
+
+  font-family: var(--f-mono);
+
+  font-size: 12px !important;
+}
+
+
+/* =========================================================
+   17. NUMBERS
+   ========================================================= */
+
+.number-cell {
+  color: var(--ink);
+
+  font-family: var(--f-mono);
+
+  font-size: 12.5px !important;
+
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   18. EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+  min-height: 300px;
+
+  padding: 55px 30px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.empty-state svg {
+  width: 38px;
+  height: 38px;
+
+  margin-bottom: 15px;
+
+  color: var(--brass);
+}
+
+.empty-state h3 {
+  margin: 0;
+
+  color: var(--ink);
+
+  font-family: var(--f-display);
+
+  font-size: 20px;
+
+  line-height: 1.3;
+
+  font-weight: 600;
+}
+
+.empty-state p {
+  max-width: 430px;
+
+  margin: 8px 0 0;
+
+  color: var(--muted);
+
+  font-size: 13.5px;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   19. UTILITY
+   ========================================================= */
+
+.hidden {
+  display: none !important;
+}
+
+
+/* =========================================================
+   20. RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .reporter-page {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+
+  .reporter-sidebar {
+    width: 230px;
+  }
+
+  .reporter-main {
+    padding: 38px 32px 60px;
+  }
+}
+
+
+/* =========================================================
+   21. RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+  .reporter-page {
+    display: block;
+  }
+
+  .reporter-sidebar {
+    width: 100%;
+    min-height: auto;
+
+    border-right: none;
+
+    border-bottom: 1px solid var(--line);
+  }
+
+  .reporter-brand {
+    height: 78px;
+  }
+
+  .reporter-menu {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reporter-main {
+    padding: 30px 20px 50px;
+  }
+
+  .statistics-section {
+    margin-top: 26px;
+  }
+
+  .section-heading {
+    align-items: center;
+
+    padding: 20px;
+  }
+
+  .article-table {
+    min-width: 780px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+}
+
+
+/* =========================================================
+   22. RESPONSIVE — SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .reporter-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .reporter-main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 25px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+  }
+
+  .statistics-section {
+    margin-top: 24px;
+  }
+
+  .section-heading {
+    padding: 18px 16px;
+  }
+
+  .section-heading h2 {
+    font-size: 18px;
+  }
+
+  .article-count-box {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .article-table {
+    min-width: 740px;
+  }
+}
