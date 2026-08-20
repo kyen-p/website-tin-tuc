@@ -1,1225 +1,626 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Soạn bài - Mạch Tin</title>
 
+    <link rel="stylesheet" href="../assets/style.css/write-article.css" />
+  </head>
 
-    <!-- ===================================================
-         CSS
-         write-article.html nằm trong reporter/
-         nên đi lên 1 cấp để vào assets/
-    =================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="../assets/style.css/write-article.css"
-    >
-
-</head>
-
-
-<body>
-
-
-<div class="reporter-page">
-
-
-    <!-- ===================================================
+  <body>
+    <div class="reporter-page">
+      <!-- ===================================================
          SIDEBAR
     =================================================== -->
 
-    <aside class="reporter-sidebar">
-
-
+      <aside class="reporter-sidebar">
         <!-- =================================================
              LOGO
         ================================================== -->
 
         <div class="reporter-brand">
-
-            <a
-                href="/frontend/public/index.html"
-                class="brand-link"
+          <a href="/frontend/public/index.html" class="brand-link">
+            <svg
+              class="pulse-mark"
+              viewBox="0 0 40 32"
+              fill="none"
+              aria-hidden="true"
             >
+              <path
+                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
+                stroke="currentColor"
+                stroke-width="2.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
 
-                <svg
-                    class="pulse-mark"
-                    viewBox="0 0 40 32"
-                    fill="none"
-                    aria-hidden="true"
-                >
+            <span class="brand-word">
+              <span class="brand-mach"> MẠCH </span>
 
-                    <path
-                        d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
-                        stroke="currentColor"
-                        stroke-width="2.7"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-
-                </svg>
-
-
-                <span class="brand-word">
-
-                    <span class="brand-mach">
-                        MẠCH
-                    </span>
-
-                    <span class="brand-tin">
-                        TIN
-                    </span>
-
-                </span>
-
-            </a>
-
+              <span class="brand-tin"> TIN </span>
+            </span>
+          </a>
         </div>
-
-
 
         <!-- =================================================
              USER
         ================================================== -->
 
         <div class="reporter-user">
+          <div class="reporter-avatar" id="userAvatar">
+            <span id="userInitials"> U </span>
+          </div>
 
+          <p class="reporter-name" id="userName">Đang tải...</p>
 
-            <div
-                class="reporter-avatar"
-                id="userAvatar"
-            >
-
-                <span id="userInitials">
-                    U
-                </span>
-
-            </div>
-
-
-            <p
-                class="reporter-name"
-                id="userName"
-            >
-                Đang tải...
-            </p>
-
-
-            <div
-                class="reporter-role"
-                id="userRole"
-            >
-                Phóng viên
-            </div>
-
-
+          <div class="reporter-role" id="userRole">Phóng viên</div>
         </div>
-
-
 
         <!-- =================================================
              MENU
         ================================================== -->
 
         <nav class="reporter-menu">
-
-
-            <!-- =================================================
+          <!-- =================================================
                  SOẠN BÀI
             ================================================== -->
 
-            <a
-                href="write-article.html"
-                class="reporter-menu-item active"
-            >
+          <a href="write-article.html" class="reporter-menu-item active">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 20h4L19 9l-4-4L4 16v4z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M13.5 6.5l4 4"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+            </svg>
 
-                    <path
-                        d="M4 20h4L19 9l-4-4L4 16v4z"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linejoin="round"
-                    />
+            <span> Soạn bài </span>
+          </a>
 
-                    <path
-                        d="M13.5 6.5l4 4"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-
-                </svg>
-
-
-                <span>
-                    Soạn bài
-                </span>
-
-            </a>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  BÀI VIẾT CỦA TÔI
             ================================================== -->
 
-            <a
-                href="my-articles.html"
-                class="reporter-menu-item"
-            >
+          <a href="my-articles.html" class="reporter-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 5h14v14H5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M8 9h8M8 13h6"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
 
-                    <path
-                        d="M5 5h14v14H5z"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
+            <span> Bài viết của tôi </span>
+          </a>
 
-                    <path
-                        d="M8 9h8M8 13h6"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
-
-                </svg>
-
-
-                <span>
-                    Bài viết của tôi
-                </span>
-
-            </a>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  ĐỀ TÀI CỦA TÔI
             ================================================== -->
 
-            <a
-                href="my-topics.html"
-                class="reporter-menu-item"
-            >
+          <a href="my-topics.html" class="reporter-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 4h14v16H5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M8 8h8M8 12h8M8 16h5"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
 
-                    <path
-                        d="M5 4h14v16H5z"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
+            <span> Đề tài của tôi </span>
+          </a>
 
-                    <path
-                        d="M8 8h8M8 12h8M8 16h5"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
-
-                </svg>
-
-
-                <span>
-                    Đề tài của tôi
-                </span>
-
-            </a>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  THỐNG KÊ
             ================================================== -->
 
-            <a
-                href="dashboard.html"
-                class="reporter-menu-item"
-            >
+          <a href="dashboard.html" class="reporter-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 19V5M4 19h16"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M8 16v-5M12 16V8M16 16v-8"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
 
-                    <path
-                        d="M4 19V5M4 19h16"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
+            <span> Thống kê </span>
+          </a>
 
-                    <path
-                        d="M8 16v-5M12 16V8M16 16v-8"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
-
-                </svg>
-
-
-                <span>
-                    Thống kê
-                </span>
-
-            </a>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  VỀ TRANG CHỦ
             ================================================== -->
 
-            <a
-                href="/frontend/public/index.html"
-                class="reporter-menu-item"
-            >
+          <a href="/frontend/public/index.html" class="reporter-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 12l9-8 9 8"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M5 10v10h14V10"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+            </svg>
 
-                    <path
-                        d="M3 12l9-8 9 8"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-
-                    <path
-                        d="M5 10v10h14V10"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-
-                </svg>
-
-
-                <span>
-                    Về trang chủ
-                </span>
-
-            </a>
-
-
+            <span> Về trang chủ </span>
+          </a>
         </nav>
+      </aside>
 
-
-    </aside>
-
-
-
-    <!-- ===================================================
+      <!-- ===================================================
          MAIN
     =================================================== -->
 
-    <main class="reporter-main">
-
-
+      <main class="reporter-main">
         <div class="reporter-content">
-
-
-            <!-- =================================================
+          <!-- =================================================
                  HEADER
             ================================================== -->
 
-            <div class="page-header">
+          <div class="page-header">
+            <div>
+              <h1>Soạn bài</h1>
 
-                <div>
-
-                    <h1>
-                        Soạn bài
-                    </h1>
-
-
-                    <p>
-                        Tạo bài viết mới và gửi đến biên tập viên để duyệt.
-                    </p>
-
-                </div>
-
+              <p>Tạo bài viết mới và gửi đến biên tập viên để duyệt.</p>
             </div>
+          </div>
 
+          <div class="page-line"></div>
 
-            <div class="page-line"></div>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  FORM
             ================================================== -->
 
-            <form
-                id="articleForm"
-                class="article-form"
-            >
-
-
-                <!-- =================================================
+          <form id="articleForm" class="article-form">
+            <!-- =================================================
                      01 - THÔNG TIN BÀI VIẾT
                 ================================================== -->
 
-                <section class="form-section">
+            <section class="form-section">
+              <div class="section-title">
+                <span> 01 </span>
 
+                <h2>Thông tin bài viết</h2>
+              </div>
 
-                    <div class="section-title">
+              <!-- TIÊU ĐỀ -->
 
-                        <span>
-                            01
-                        </span>
+              <div class="form-group">
+                <label for="articleTitle">
+                  Tiêu đề bài viết
 
-                        <h2>
-                            Thông tin bài viết
-                        </h2>
+                  <b>*</b>
+                </label>
 
-                    </div>
+                <input
+                  type="text"
+                  id="articleTitle"
+                  name="title"
+                  placeholder="Nhập tiêu đề bài viết..."
+                  required
+                />
+              </div>
 
+              <!-- CHUYÊN MỤC + ĐỀ TÀI -->
 
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="articleCategory">
+                    Chuyên mục
 
-                    <!-- TIÊU ĐỀ -->
+                    <b>*</b>
+                  </label>
 
-                    <div class="form-group">
+                  <select id="articleCategory" required>
+                    <option value="">Chọn chuyên mục</option>
+                  </select>
+                </div>
 
-                        <label for="articleTitle">
+                <div class="form-group">
+                  <label for="articleTopic"> Đề tài được giao </label>
 
-                            Tiêu đề bài viết
+                  <select id="articleTopic">
+                    <option value="">Không thuộc đề tài được giao</option>
+                  </select>
+                </div>
+              </div>
 
-                            <b>*</b>
+              <!-- MÔ TẢ -->
 
-                        </label>
+              <div class="form-group">
+                <label for="articleDescription">
+                  Mô tả ngắn
 
+                  <b>*</b>
+                </label>
 
-                        <input
-                            type="text"
-                            id="articleTitle"
-                            name="title"
-                            placeholder="Nhập tiêu đề bài viết..."
-                            required
-                        >
+                <textarea
+                  id="articleDescription"
+                  rows="4"
+                  placeholder="Tóm tắt nội dung chính của bài viết..."
+                  required
+                ></textarea>
+              </div>
+            </section>
 
-                    </div>
-
-
-
-                    <!-- CHUYÊN MỤC + ĐỀ TÀI -->
-
-                    <div class="form-row">
-
-
-                        <div class="form-group">
-
-                            <label for="articleCategory">
-
-                                Chuyên mục
-
-                                <b>*</b>
-
-                            </label>
-
-
-                            <select
-                                id="articleCategory"
-                                required
-                            >
-
-                                <option value="">
-                                    Chọn chuyên mục
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <div class="form-group">
-
-                            <label for="articleTopic">
-                                Đề tài được giao
-                            </label>
-
-
-                            <select id="articleTopic">
-
-                                <option value="">
-                                    Không thuộc đề tài được giao
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                    </div>
-
-
-
-                    <!-- MÔ TẢ -->
-
-                    <div class="form-group">
-
-                        <label for="articleDescription">
-
-                            Mô tả ngắn
-
-                            <b>*</b>
-
-                        </label>
-
-
-                        <textarea
-                            id="articleDescription"
-                            rows="4"
-                            placeholder="Tóm tắt nội dung chính của bài viết..."
-                            required
-                        ></textarea>
-
-                    </div>
-
-
-                </section>
-
-
-
-                <!-- =================================================
+            <!-- =================================================
                      02 - ẢNH BÌA
                 ================================================== -->
 
-                <section class="form-section">
+            <section class="form-section">
+              <div class="section-title">
+                <span> 02 </span>
 
+                <h2>Ảnh bìa bài viết</h2>
+              </div>
 
-                    <div class="section-title">
+              <div class="image-method">
+                <label class="radio-option">
+                  <input
+                    type="radio"
+                    name="imageMethod"
+                    value="upload"
+                    checked
+                  />
 
-                        <span>
-                            02
-                        </span>
+                  <span> Tải ảnh lên </span>
+                </label>
 
-                        <h2>
-                            Ảnh bìa bài viết
-                        </h2>
+                <label class="radio-option">
+                  <input type="radio" name="imageMethod" value="url" />
 
-                    </div>
+                  <span> Nhập URL ảnh </span>
+                </label>
+              </div>
 
+              <!-- UPLOAD -->
 
+              <div id="uploadBox" class="image-input-box">
+                <input type="file" id="coverImage" accept="image/*" />
 
-                    <div class="image-method">
+                <p>Chọn ảnh JPG, PNG hoặc WEBP.</p>
+              </div>
 
+              <!-- URL -->
 
-                        <label class="radio-option">
+              <div id="urlBox" class="image-input-box hidden">
+                <input
+                  type="url"
+                  id="coverImageUrl"
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
 
-                            <input
-                                type="radio"
-                                name="imageMethod"
-                                value="upload"
-                                checked
-                            >
+              <!-- PREVIEW -->
 
-                            <span>
-                                Tải ảnh lên
-                            </span>
+              <div id="imagePreview" class="image-preview hidden">
+                <img id="previewImage" src="" alt="Xem trước ảnh" />
+              </div>
+            </section>
 
-                        </label>
-
-
-
-                        <label class="radio-option">
-
-                            <input
-                                type="radio"
-                                name="imageMethod"
-                                value="url"
-                            >
-
-                            <span>
-                                Nhập URL ảnh
-                            </span>
-
-                        </label>
-
-
-                    </div>
-
-
-
-                    <!-- UPLOAD -->
-
-                    <div
-                        id="uploadBox"
-                        class="image-input-box"
-                    >
-
-                        <input
-                            type="file"
-                            id="coverImage"
-                            accept="image/*"
-                        >
-
-
-                        <p>
-                            Chọn ảnh JPG, PNG hoặc WEBP.
-                        </p>
-
-                    </div>
-
-
-
-                    <!-- URL -->
-
-                    <div
-                        id="urlBox"
-                        class="image-input-box hidden"
-                    >
-
-                        <input
-                            type="url"
-                            id="coverImageUrl"
-                            placeholder="https://example.com/image.jpg"
-                        >
-
-                    </div>
-
-
-
-                    <!-- PREVIEW -->
-
-                    <div
-                        id="imagePreview"
-                        class="image-preview hidden"
-                    >
-
-                        <img
-                            id="previewImage"
-                            src=""
-                            alt="Xem trước ảnh"
-                        >
-
-                    </div>
-
-
-                </section>
-
-
-
-                <!-- =================================================
+            <!-- =================================================
                      03 - NỘI DUNG
                 ================================================== -->
 
-                <section class="form-section">
+            <section class="form-section">
+              <div class="section-title">
+                <span> 03 </span>
 
+                <h2>Nội dung</h2>
+              </div>
 
-                    <div class="section-title">
+              <div class="form-group">
+                <label for="articleContent">
+                  Nội dung bài viết
 
-                        <span>
-                            03
-                        </span>
+                  <b>*</b>
+                </label>
 
-                        <h2>
-                            Nội dung
-                        </h2>
+                <textarea
+                  id="articleContent"
+                  class="content-editor"
+                  placeholder="Nhập nội dung bài viết..."
+                  required
+                ></textarea>
 
-                    </div>
+                <div class="character-count">
+                  <span id="contentCount"> 0 </span>
 
+                  ký tự
+                </div>
+              </div>
+            </section>
 
-
-                    <div class="form-group">
-
-
-                        <label for="articleContent">
-
-                            Nội dung bài viết
-
-                            <b>*</b>
-
-                        </label>
-
-
-                        <textarea
-                            id="articleContent"
-                            class="content-editor"
-                            placeholder="Nhập nội dung bài viết..."
-                            required
-                        ></textarea>
-
-
-                        <div class="character-count">
-
-                            <span id="contentCount">
-                                0
-                            </span>
-
-                            ký tự
-
-                        </div>
-
-
-                    </div>
-
-
-                </section>
-
-
-
-                <!-- =================================================
+            <!-- =================================================
                      04 - THẺ
                 ================================================== -->
 
-                <section class="form-section">
+            <section class="form-section">
+              <div class="section-title">
+                <span> 04 </span>
 
+                <h2>Thẻ bài viết</h2>
+              </div>
 
-                    <div class="section-title">
+              <div id="tagList" class="tag-list"></div>
 
-                        <span>
-                            04
-                        </span>
+              <p class="form-note">
+                Chọn các thẻ phù hợp với nội dung bài viết.
+              </p>
+            </section>
 
-                        <h2>
-                            Thẻ bài viết
-                        </h2>
-
-                    </div>
-
-
-
-                    <div
-                        id="tagList"
-                        class="tag-list"
-                    ></div>
-
-
-                    <p class="form-note">
-
-                        Chọn các thẻ phù hợp với nội dung bài viết.
-
-                    </p>
-
-
-                </section>
-
-
-
-                <!-- =================================================
+            <!-- =================================================
                      BUTTON
                 ================================================== -->
 
-                <div class="form-actions">
+            <div class="form-actions">
+              <button type="button" class="draft-button" id="saveDraft">
+                Lưu bản nháp
+              </button>
 
-
-                    <button
-                        type="button"
-                        class="draft-button"
-                        id="saveDraft"
-                    >
-
-                        Lưu bản nháp
-
-                    </button>
-
-
-
-                    <button
-                        type="submit"
-                        class="submit-button"
-                    >
-
-                        Gửi biên tập viên
-
-                    </button>
-
-
-                </div>
-
-
-            </form>
-
-
+              <button type="submit" class="submit-button">
+                Gửi biên tập viên
+              </button>
+            </div>
+          </form>
         </div>
+      </main>
+    </div>
 
+    <script src="../assets/mock-data.js"></script>
 
-    </main>
-
-
-</div>
-
-
-
-<!-- ===================================================
-     MOCK DATA
-     write-article.html nằm trong reporter/
-     mock-data.js nằm trong assets/
-     => ../assets/mock-data.js
-=================================================== -->
-
-<script src="../assets/mock-data.js"></script>
-
-
-
-<script>
-
-
-/* =====================================================
+    <script>
+      /* =====================================================
    LẤY USER HIỆN TẠI
 ===================================================== */
 
-const storedUserId =
-    localStorage.getItem("user_id");
+      const storedUserId = localStorage.getItem("user_id");
 
+      let currentReporter = null;
 
-let currentReporter = null;
-
-
-
-/* =====================================================
+      /* =====================================================
    KIỂM TRA MOCK DATA
 ===================================================== */
 
-if (
-    typeof MOCK_DATA !== "undefined" &&
-    Array.isArray(MOCK_DATA.users)
-) {
-
-
-    /* =================================================
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.users)) {
+        /* =================================================
        ƯU TIÊN USER_ID ĐANG ĐĂNG NHẬP
     ================================================= */
 
-    if (storedUserId) {
+        if (storedUserId) {
+          currentReporter = MOCK_DATA.users.find(
+            (user) =>
+              String(user.id) === String(storedUserId) &&
+              user.role === "reporter",
+          );
+        }
 
-        currentReporter =
-            MOCK_DATA.users.find(
-                user =>
-
-                    String(user.id) ===
-                    String(storedUserId) &&
-
-                    user.role === "reporter"
-            );
-
-    }
-
-
-
-    /* =================================================
+        /* =================================================
        NẾU KHÔNG CÓ -> REPORTER ACTIVE
     ================================================= */
 
-    if (!currentReporter) {
+        if (!currentReporter) {
+          currentReporter = MOCK_DATA.users.find(
+            (user) => user.role === "reporter" && user.status === "active",
+          );
+        }
 
-        currentReporter =
-            MOCK_DATA.users.find(
-                user =>
-
-                    user.role === "reporter" &&
-
-                    user.status === "active"
-            );
-
-    }
-
-
-
-    /* =================================================
+        /* =================================================
        NẾU KHÔNG CÓ ACTIVE -> REPORTER BẤT KỲ
     ================================================= */
 
-    if (!currentReporter) {
+        if (!currentReporter) {
+          currentReporter = MOCK_DATA.users.find(
+            (user) => user.role === "reporter",
+          );
+        }
+      }
 
-        currentReporter =
-            MOCK_DATA.users.find(
-                user =>
-                    user.role === "reporter"
-            );
-
-    }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    DATA
 ===================================================== */
 
-const users =
-    typeof MOCK_DATA !== "undefined" &&
-    Array.isArray(MOCK_DATA.users)
+      const users =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.users)
+          ? MOCK_DATA.users
+          : [];
 
-        ? MOCK_DATA.users
+      const categories =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.categories)
+          ? MOCK_DATA.categories
+          : [];
 
-        : [];
+      const topics =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.topics)
+          ? MOCK_DATA.topics
+          : [];
 
+      const tags =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.tags)
+          ? MOCK_DATA.tags
+          : [];
 
-const categories =
-    typeof MOCK_DATA !== "undefined" &&
-    Array.isArray(MOCK_DATA.categories)
-
-        ? MOCK_DATA.categories
-
-        : [];
-
-
-const topics =
-    typeof MOCK_DATA !== "undefined" &&
-    Array.isArray(MOCK_DATA.topics)
-
-        ? MOCK_DATA.topics
-
-        : [];
-
-
-const tags =
-    typeof MOCK_DATA !== "undefined" &&
-    Array.isArray(MOCK_DATA.tags)
-
-        ? MOCK_DATA.tags
-
-        : [];
-
-
-
-/* =====================================================
+      /* =====================================================
    DOM
 ===================================================== */
 
-const categorySelect =
-    document.getElementById(
-        "articleCategory"
-    );
+      const categorySelect = document.getElementById("articleCategory");
 
+      const topicSelect = document.getElementById("articleTopic");
 
-const topicSelect =
-    document.getElementById(
-        "articleTopic"
-    );
+      const tagList = document.getElementById("tagList");
 
+      const content = document.getElementById("articleContent");
 
-const tagList =
-    document.getElementById(
-        "tagList"
-    );
+      const contentCount = document.getElementById("contentCount");
 
+      const uploadBox = document.getElementById("uploadBox");
 
-const content =
-    document.getElementById(
-        "articleContent"
-    );
+      const urlBox = document.getElementById("urlBox");
 
+      const coverImage = document.getElementById("coverImage");
 
-const contentCount =
-    document.getElementById(
-        "contentCount"
-    );
+      const coverImageUrl = document.getElementById("coverImageUrl");
 
+      const imagePreview = document.getElementById("imagePreview");
 
-const uploadBox =
-    document.getElementById(
-        "uploadBox"
-    );
+      const previewImage = document.getElementById("previewImage");
 
-
-const urlBox =
-    document.getElementById(
-        "urlBox"
-    );
-
-
-const coverImage =
-    document.getElementById(
-        "coverImage"
-    );
-
-
-const coverImageUrl =
-    document.getElementById(
-        "coverImageUrl"
-    );
-
-
-const imagePreview =
-    document.getElementById(
-        "imagePreview"
-    );
-
-
-const previewImage =
-    document.getElementById(
-        "previewImage"
-    );
-
-
-
-/* =====================================================
+      /* =====================================================
    GET INITIALS
 ===================================================== */
 
-function getInitials(name) {
+      function getInitials(name) {
+        if (!name) {
+          return "U";
+        }
 
-    if (!name) {
+        const words = String(name).trim().split(/\s+/);
 
-        return "U";
+        if (words.length === 1) {
+          return words[0].substring(0, 2).toUpperCase();
+        }
 
-    }
+        return (
+          words[0].charAt(0) + words[words.length - 1].charAt(0)
+        ).toUpperCase();
+      }
 
-
-    const words =
-        String(name)
-            .trim()
-            .split(/\s+/);
-
-
-    if (words.length === 1) {
-
-        return words[0]
-            .substring(0, 2)
-            .toUpperCase();
-
-    }
-
-
-    return (
-        words[0].charAt(0) +
-        words[words.length - 1].charAt(0)
-    ).toUpperCase();
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD USER SIDEBAR
-   AVATAR LẤY TRỰC TIẾP TỪ MOCK_DATA
 ===================================================== */
 
-function loadUser(user) {
+      function loadUser(user) {
+        const userName = document.getElementById("userName");
 
+        const userRole = document.getElementById("userRole");
 
-    const userName =
-        document.getElementById(
-            "userName"
-        );
+        const avatar = document.getElementById("userAvatar");
 
+        if (!user) {
+          userName.textContent = "Người dùng";
 
-    const userRole =
-        document.getElementById(
-            "userRole"
-        );
+          userRole.textContent = "Phóng viên";
 
+          avatar.innerHTML = "<span>U</span>";
 
-    const avatar =
-        document.getElementById(
-            "userAvatar"
-        );
+          return;
+        }
 
-
-    if (!user) {
-
-        userName.textContent =
-            "Người dùng";
-
-
-        userRole.textContent =
-            "Phóng viên";
-
-
-        avatar.innerHTML =
-            "<span>U</span>";
-
-
-        return;
-
-    }
-
-
-
-    /* =================================================
+        /* =================================================
        NAME
     ================================================= */
 
-    const name =
-        user.full_name ||
-        user.username ||
-        "Người dùng";
+        const name = user.full_name || user.username || "Người dùng";
 
+        userName.textContent = name;
 
-    userName.textContent =
-        name;
-
-
-
-    /* =================================================
+        /* =================================================
        ROLE
     ================================================= */
 
-    userRole.textContent =
-        "Phóng viên";
+        userRole.textContent = "Phóng viên";
 
-
-
-    /* =================================================
+        /* =================================================
        AVATAR
-       ƯU TIÊN AVATAR TRONG MOCK_DATA
     ================================================= */
 
-    avatar.innerHTML = "";
+        avatar.innerHTML = "";
 
+        avatar.classList.remove("avatar-fallback");
 
-    avatar.classList.remove(
-        "avatar-fallback"
-    );
+        const avatarURL = user.avatar || "";
 
+        if (avatarURL) {
+          const img = document.createElement("img");
 
-    const avatarURL =
-        user.avatar ||
-        "";
+          img.src = avatarURL;
 
+          img.alt = "Ảnh đại diện " + name;
 
+          /*
+           * ÉP ẢNH NẰM GỌN TRONG KHUNG
+           */
 
-    if (avatarURL) {
+          img.style.width = "100%";
 
+          img.style.height = "100%";
 
-        const img =
-            document.createElement(
-                "img"
-            );
+          img.style.display = "block";
 
+          img.style.objectFit = "cover";
 
-        img.src =
-            avatarURL;
+          img.style.borderRadius = "inherit";
 
+          /*
+           * NẾU AVATAR LỖI
+           * HIỆN CHỮ CÁI TÊN
+           */
 
-        img.alt =
-            "Ảnh đại diện " + name;
+          img.onerror = function () {
+            avatar.innerHTML = "";
 
+            avatar.classList.add("avatar-fallback");
 
-        /*
-         * ÉP ẢNH NẰM GỌN TRONG KHUNG
-         */
+            const initials = document.createElement("span");
 
-        img.style.width =
-            "100%";
+            initials.textContent = getInitials(name);
 
+            avatar.appendChild(initials);
+          };
 
-        img.style.height =
-            "100%";
+          avatar.appendChild(img);
+        } else {
+          avatar.classList.add("avatar-fallback");
 
+          const initials = document.createElement("span");
 
-        img.style.display =
-            "block";
+          initials.textContent = getInitials(name);
 
+          avatar.appendChild(initials);
+        }
+      }
 
-        img.style.objectFit =
-            "cover";
-
-
-        img.style.borderRadius =
-            "inherit";
-
-
-
-        /*
-         * NẾU AVATAR LỖI
-         * HIỆN CHỮ CÁI TÊN
-         */
-
-        img.onerror =
-            function () {
-
-                avatar.innerHTML =
-                    "";
-
-
-                avatar.classList.add(
-                    "avatar-fallback"
-                );
-
-
-                const initials =
-                    document.createElement(
-                        "span"
-                    );
-
-
-                initials.textContent =
-                    getInitials(
-                        name
-                    );
-
-
-                avatar.appendChild(
-                    initials
-                );
-
-            };
-
-
-
-        avatar.appendChild(
-            img
-        );
-
-    }
-
-    else {
-
-
-        avatar.classList.add(
-            "avatar-fallback"
-        );
-
-
-        const initials =
-            document.createElement(
-                "span"
-            );
-
-
-        initials.textContent =
-            getInitials(
-                name
-            );
-
-
-        avatar.appendChild(
-            initials
-        );
-
-    }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD CATEGORY
 ===================================================== */
 
-function loadCategories() {
-
-
-    categorySelect.innerHTML = `
+      function loadCategories() {
+        categorySelect.innerHTML = `
 
         <option value="">
             Chọn chuyên mục
@@ -1227,45 +628,24 @@ function loadCategories() {
 
     `;
 
+        categories.forEach((category) => {
+          const option = document.createElement("option");
 
-    categories.forEach(
-        category => {
+          option.value = category.id;
 
+          option.textContent = category.name;
 
-            const option =
-                document.createElement(
-                    "option"
-                );
+          categorySelect.appendChild(option);
+        });
+      }
 
-
-            option.value =
-                category.id;
-
-
-            option.textContent =
-                category.name;
-
-
-            categorySelect.appendChild(
-                option
-            );
-
-        }
-    );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD TOPICS
    CHỈ LẤY ĐỀ TÀI CỦA REPORTER HIỆN TẠI
 ===================================================== */
 
-function loadTopics() {
-
-
-    topicSelect.innerHTML = `
+      function loadTopics() {
+        topicSelect.innerHTML = `
 
         <option value="">
             Không thuộc đề tài được giao
@@ -1273,83 +653,38 @@ function loadTopics() {
 
     `;
 
+        if (!currentReporter) {
+          return;
+        }
 
-    if (!currentReporter) {
-
-        return;
-
-    }
-
-
-    const myTopics =
-        topics.filter(
-            topic =>
-
-                String(
-                    topic.reporter_id
-                ) ===
-
-                String(
-                    currentReporter.id
-                )
+        const myTopics = topics.filter(
+          (topic) => String(topic.reporter_id) === String(currentReporter.id),
         );
 
+        myTopics.forEach((topic) => {
+          const option = document.createElement("option");
 
-    myTopics.forEach(
-        topic => {
+          option.value = topic.id;
 
+          option.textContent = topic.title || "Không có tiêu đề";
 
-            const option =
-                document.createElement(
-                    "option"
-                );
+          topicSelect.appendChild(option);
+        });
+      }
 
-
-            option.value =
-                topic.id;
-
-
-            option.textContent =
-                topic.title ||
-                "Không có tiêu đề";
-
-
-            topicSelect.appendChild(
-                option
-            );
-
-        }
-    );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD TAGS
 ===================================================== */
 
-function loadTags() {
+      function loadTags() {
+        tagList.innerHTML = "";
 
+        tags.forEach((tag) => {
+          const label = document.createElement("label");
 
-    tagList.innerHTML = "";
+          label.className = "tag-option";
 
-
-    tags.forEach(
-        tag => {
-
-
-            const label =
-                document.createElement(
-                    "label"
-                );
-
-
-            label.className =
-                "tag-option";
-
-
-            label.innerHTML = `
+          label.innerHTML = `
 
                 <input
                     type="checkbox"
@@ -1357,439 +692,192 @@ function loadTags() {
                 >
 
                 <span>
-                    ${escapeHtml(
-                        tag.name
-                    )}
+                    ${escapeHtml(tag.name)}
                 </span>
 
             `;
 
+          tagList.appendChild(label);
+        });
+      }
 
-            tagList.appendChild(
-                label
-            );
-
-        }
-    );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    ESCAPE HTML
 ===================================================== */
 
-function escapeHtml(
-    value
-) {
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
 
-    return String(
-        value || ""
-    )
+          .replace(/</g, "&lt;")
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+          .replace(/>/g, "&gt;")
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+          .replace(/"/g, "&quot;")
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+          .replace(/'/g, "&#039;");
+      }
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    IMAGE METHOD
 ===================================================== */
 
-document
-    .querySelectorAll(
-        'input[name="imageMethod"]'
-    )
-    .forEach(
-        radio => {
+      document
+        .querySelectorAll('input[name="imageMethod"]')
+        .forEach((radio) => {
+          radio.addEventListener("change", function () {
+            if (this.value === "upload") {
+              uploadBox.classList.remove("hidden");
 
+              urlBox.classList.add("hidden");
+            } else {
+              uploadBox.classList.add("hidden");
 
-            radio.addEventListener(
-                "change",
-                function () {
+              urlBox.classList.remove("hidden");
+            }
+          });
+        });
 
-
-                    if (
-                        this.value ===
-                        "upload"
-                    ) {
-
-
-                        uploadBox.classList.remove(
-                            "hidden"
-                        );
-
-
-                        urlBox.classList.add(
-                            "hidden"
-                        );
-
-
-                    }
-
-                    else {
-
-
-                        uploadBox.classList.add(
-                            "hidden"
-                        );
-
-
-                        urlBox.classList.remove(
-                            "hidden"
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-
-/* =====================================================
+      /* =====================================================
    UPLOAD IMAGE
 ===================================================== */
 
-coverImage.addEventListener(
-    "change",
-    function () {
-
-
-        const file =
-            this.files[0];
-
+      coverImage.addEventListener("change", function () {
+        const file = this.files[0];
 
         if (!file) {
-
-            return;
-
+          return;
         }
 
+        if (!file.type.startsWith("image/")) {
+          alert("Vui lòng chọn file ảnh.");
 
+          this.value = "";
 
-        if (
-            !file.type.startsWith(
-                "image/"
-            )
-        ) {
-
-            alert(
-                "Vui lòng chọn file ảnh."
-            );
-
-
-            this.value = "";
-
-
-            return;
-
+          return;
         }
 
+        const reader = new FileReader();
 
+        reader.onload = function (event) {
+          previewImage.src = event.target.result;
 
-        const reader =
-            new FileReader();
+          imagePreview.classList.remove("hidden");
+        };
 
+        reader.readAsDataURL(file);
+      });
 
-        reader.onload =
-            function (event) {
-
-
-                previewImage.src =
-                    event.target.result;
-
-
-                imagePreview.classList.remove(
-                    "hidden"
-                );
-
-            };
-
-
-        reader.readAsDataURL(
-            file
-        );
-
-    }
-);
-
-
-
-/* =====================================================
+      /* =====================================================
    IMAGE URL
 ===================================================== */
 
-coverImageUrl.addEventListener(
-    "input",
-    function () {
-
-
-        const url =
-            this.value.trim();
-
+      coverImageUrl.addEventListener("input", function () {
+        const url = this.value.trim();
 
         if (!url) {
+          imagePreview.classList.add("hidden");
 
+          previewImage.removeAttribute("src");
 
-            imagePreview.classList.add(
-                "hidden"
-            );
-
-
-            previewImage.removeAttribute(
-                "src"
-            );
-
-
-            return;
-
+          return;
         }
 
+        previewImage.src = url;
 
-        previewImage.src =
-            url;
+        imagePreview.classList.remove("hidden");
+      });
 
-
-        imagePreview.classList.remove(
-            "hidden"
-        );
-
-    }
-);
-
-
-
-/* =====================================================
+      /* =====================================================
    IMAGE URL ERROR
 ===================================================== */
 
-previewImage.onerror =
-    function () {
+      previewImage.onerror = function () {
+        imagePreview.classList.add("hidden");
+      };
 
-        imagePreview.classList.add(
-            "hidden"
-        );
-
-    };
-
-
-
-/* =====================================================
+      /* =====================================================
    CONTENT COUNT
 ===================================================== */
 
-content.addEventListener(
-    "input",
-    function () {
+      content.addEventListener("input", function () {
+        contentCount.textContent = this.value.length;
+      });
 
-
-        contentCount.textContent =
-            this.value.length;
-
-    }
-);
-
-
-
-/* =====================================================
+      /* =====================================================
    SAVE DRAFT
 ===================================================== */
 
-document
-    .getElementById(
-        "saveDraft"
-    )
-    .addEventListener(
-        "click",
-        function () {
+      document
+        .getElementById("saveDraft")
+        .addEventListener("click", function () {
+          const title = document.getElementById("articleTitle").value.trim();
 
+          if (!title) {
+            alert("Vui lòng nhập tiêu đề bài viết.");
 
-            const title =
-                document
-                    .getElementById(
-                        "articleTitle"
-                    )
-                    .value
-                    .trim();
+            return;
+          }
 
+          alert("Bản nháp đã được lưu thành công.");
+        });
 
-            if (!title) {
-
-
-                alert(
-                    "Vui lòng nhập tiêu đề bài viết."
-                );
-
-
-                return;
-
-            }
-
-
-            alert(
-                "Bản nháp đã được lưu thành công."
-            );
-
-        }
-    );
-
-
-
-/* =====================================================
+      /* =====================================================
    SUBMIT ARTICLE
 ===================================================== */
 
-document
-    .getElementById(
-        "articleForm"
-    )
-    .addEventListener(
-        "submit",
-        function (event) {
+      document
+        .getElementById("articleForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
 
+          const title = document.getElementById("articleTitle").value.trim();
 
-            event.preventDefault();
+          const description = document
+            .getElementById("articleDescription")
+            .value.trim();
 
+          const articleContent = content.value.trim();
 
+          const category = categorySelect.value;
 
-            const title =
-                document
-                    .getElementById(
-                        "articleTitle"
-                    )
-                    .value
-                    .trim();
+          if (!title || !description || !articleContent || !category) {
+            alert("Vui lòng điền đầy đủ các trường bắt buộc.");
 
+            return;
+          }
 
-            const description =
-                document
-                    .getElementById(
-                        "articleDescription"
-                    )
-                    .value
-                    .trim();
+          alert("Bài viết đã được gửi đến biên tập viên để duyệt.");
 
+          this.reset();
 
-            const articleContent =
-                content.value.trim();
+          imagePreview.classList.add("hidden");
 
+          previewImage.removeAttribute("src");
 
-            const category =
-                categorySelect.value;
+          contentCount.textContent = "0";
 
+          /*
+           * Sau reset, đưa lại chế độ
+           * tải ảnh lên
+           */
 
+          uploadBox.classList.remove("hidden");
 
-            if (
-                !title ||
-                !description ||
-                !articleContent ||
-                !category
-            ) {
+          urlBox.classList.add("hidden");
+        });
 
-
-                alert(
-                    "Vui lòng điền đầy đủ các trường bắt buộc."
-                );
-
-
-                return;
-
-            }
-
-
-
-            alert(
-                "Bài viết đã được gửi đến biên tập viên để duyệt."
-            );
-
-
-
-            this.reset();
-
-
-
-            imagePreview.classList.add(
-                "hidden"
-            );
-
-
-            previewImage.removeAttribute(
-                "src"
-            );
-
-
-            contentCount.textContent =
-                "0";
-
-
-            /*
-             * Sau reset, đưa lại chế độ
-             * tải ảnh lên
-             */
-
-            uploadBox.classList.remove(
-                "hidden"
-            );
-
-
-            urlBox.classList.add(
-                "hidden"
-            );
-
-        }
-    );
-
-
-
-/* =====================================================
+      /* =====================================================
    INIT
 ===================================================== */
 
-loadUser(
-    currentReporter
-);
+      loadUser(currentReporter);
 
+      loadCategories();
 
-loadCategories();
+      loadTopics();
 
-
-loadTopics();
-
-
-loadTags();
-
-
-</script>
-
-
-</body>
-
+      loadTags();
+    </script>
+  </body>
 </html>
