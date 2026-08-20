@@ -1,1213 +1,1193 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Bài viết của tôi — Mạch Tin</title>
+<head>
 
-    <link
-      rel="stylesheet"
-      href="style.css/my-articles.css"
-    />
-  </head>
+  <meta charset="UTF-8" />
 
-  <body>
-    <div class="reporter-page">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-      <!-- =====================================================
-           SIDEBAR
-      ===================================================== -->
+  <title>Bài viết của tôi — Mạch Tin</title>
 
-      <aside class="reporter-sidebar">
+  <link
+    rel="stylesheet"
+    href="style.css/my-articles.css"
+  />
 
-        <!-- LOGO -->
+</head>
 
-        <div class="reporter-brand">
-          <a
-            href="index.html"
-            class="brand-link"
-          >
-            <svg
-              class="pulse-mark"
-              viewBox="0 0 40 32"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
-                stroke="currentColor"
-                stroke-width="2.7"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
 
-            <span class="brand-word">
-              <span class="brand-mach">
-                MẠCH
-              </span>
+<body>
 
-              <span class="brand-tin">
-                TIN
-              </span>
-            </span>
-          </a>
-        </div>
-
-
-        <!-- =================================================
-             USER
-        ================================================= -->
-
-        <div class="reporter-user">
-
-          <div
-            class="reporter-avatar"
-            id="userAvatar"
-          >
-            <span id="userInitials">
-              TN
-            </span>
-          </div>
-
-          <p
-            class="reporter-name"
-            id="userName"
-          >
-            Thanh Ngân
-          </p>
-
-          <div class="reporter-role">
-            Phóng viên
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             MENU
-        ================================================= -->
-
-        <nav class="reporter-menu">
-
-          <!-- SOẠN BÀI -->
-
-          <a
-            href="write-article.html"
-            class="reporter-menu-item"
-          >
-            <svg
-              class="menu-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M4 20h4L19 9l-4-4L4 16v4z"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linejoin="round"
-              />
-
-              <path
-                d="M13.5 6.5l4 4"
-                stroke="currentColor"
-                stroke-width="1.7"
-              />
-            </svg>
-
-            <span>
-              Soạn bài
-            </span>
-          </a>
-
-
-          <!-- BÀI VIẾT CỦA TÔI -->
-
-          <a
-            href="my-articles.html"
-            class="reporter-menu-item active"
-          >
-            <svg
-              class="menu-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M5 4h14v16H5z"
-                stroke="currentColor"
-                stroke-width="1.7"
-              />
-
-              <path
-                d="M8 8h8M8 12h8M8 16h5"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-              />
-            </svg>
-
-            <span>
-              Bài viết của tôi
-            </span>
-          </a>
-
-
-          <!-- ĐỀ TÀI -->
-
-          <a
-            href="my-topics.html"
-            class="reporter-menu-item"
-          >
-            <svg
-              class="menu-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M8 4h9l3 3v13H8z"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linejoin="round"
-              />
-
-              <path
-                d="M11 10h6M11 14h6"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-              />
-            </svg>
-
-            <span>
-              Đề tài của tôi
-            </span>
-          </a>
-
-
-          <!-- THỐNG KÊ -->
-
-          <a
-            href="dashboard.html"
-            class="reporter-menu-item"
-          >
-            <svg
-              class="menu-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M4 19V10M10 19V5M16 19v-7M22 19H2"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-
-            <span>
-              Thống kê
-            </span>
-          </a>
-
-
-          <!-- TRANG CHỦ -->
-
-          <a
-            href="index.html"
-            class="reporter-menu-item"
-          >
-            <svg
-              class="menu-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9z"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linejoin="round"
-              />
-            </svg>
-
-            <span>
-              Về trang chủ
-            </span>
-          </a>
-
-        </nav>
-
-      </aside>
-
-
-      <!-- =====================================================
-           MAIN
-      ===================================================== -->
-
-      <main class="reporter-main">
-
-        <div class="reporter-content">
-
-          <!-- HEADER -->
-
-          <div class="page-header">
-
-            <div>
-
-              <h1>
-                Bài viết của tôi
-              </h1>
-
-              <p>
-                Quản lý các bài viết bạn đã viết và theo dõi trạng thái biên tập.
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <div class="page-line"></div>
-
-
-          <!-- =================================================
-               STATS
-          ================================================= -->
-
-          <div class="article-stats">
-
-            <div class="stat-card">
-
-              <span
-                class="stat-number"
-                id="totalArticles"
-              >
-                0
-              </span>
-
-              <span class="stat-label">
-                Tổng bài
-              </span>
-
-            </div>
-
-
-            <div class="stat-card">
-
-              <span
-                class="stat-number published"
-              >
-                0
-              </span>
-
-              <span class="stat-label">
-                Đã đăng
-              </span>
-
-            </div>
-
-
-            <div class="stat-card">
-
-              <span
-                class="stat-number pending"
-              >
-                0
-              </span>
-
-              <span class="stat-label">
-                Chờ duyệt
-              </span>
-
-            </div>
-
-
-            <div class="stat-card">
-
-              <span
-                class="stat-number draft"
-              >
-                0
-              </span>
-
-              <span class="stat-label">
-                Bản nháp
-              </span>
-
-            </div>
-
-
-            <div class="stat-card">
-
-              <span
-                class="stat-number rejected"
-              >
-                0
-              </span>
-
-              <span class="stat-label">
-                Bị từ chối
-              </span>
-
-            </div>
-
-          </div>
-
-
-          <!-- =================================================
-               TOOLBAR
-          ================================================= -->
-
-          <div class="article-toolbar">
-
-            <div class="filter-tabs">
-
-              <button
-                class="filter-tab active"
-                data-filter="all"
-              >
-                Tất cả
-              </button>
-
-              <button
-                class="filter-tab"
-                data-filter="published"
-              >
-                Đã đăng
-              </button>
-
-              <button
-                class="filter-tab"
-                data-filter="pending"
-              >
-                Chờ duyệt
-              </button>
-
-              <button
-                class="filter-tab"
-                data-filter="draft"
-              >
-                Bản nháp
-              </button>
-
-              <button
-                class="filter-tab"
-                data-filter="rejected"
-              >
-                Từ chối
-              </button>
-
-            </div>
-
-
-            <select id="categoryFilter">
-
-              <option value="all">
-                Tất cả chuyên mục
-              </option>
-
-            </select>
-
-          </div>
-
-
-          <!-- =================================================
-               ARTICLE LIST
-          ================================================= -->
-
-          <div
-            id="articleList"
-            class="article-list"
-          ></div>
-
-
-          <!-- =================================================
-               EMPTY
-          ================================================= -->
-
-          <div
-            id="emptyState"
-            class="empty-state"
-          >
-            Không có bài viết phù hợp.
-          </div>
-
-        </div>
-
-      </main>
-
-    </div>
+  <div class="reporter-page">
 
 
     <!-- =====================================================
-         MOCK DATA
-    ===================================================== -->
+         SIDEBAR
+    ====================================================== -->
 
-    <script src="mock-data.js"></script>
+    <aside class="reporter-sidebar">
 
 
-    <script>
+      <!-- LOGO -->
 
-      /* =====================================================
-         CURRENT REPORTER
-      ===================================================== */
+      <div class="reporter-brand">
 
-      const CURRENT_REPORTER_ID = 5;
+        <a
+          href="index.html"
+          class="brand-link"
+        >
 
-      let currentStatus = "all";
-      let currentCategory = "all";
+          <svg
+            class="pulse-mark"
+            viewBox="0 0 40 32"
+            fill="none"
+            aria-hidden="true"
+          >
 
+            <path
+              d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
+              stroke="currentColor"
+              stroke-width="2.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
 
-      const articleList =
-        document.getElementById("articleList");
+          </svg>
 
-      const emptyState =
-        document.getElementById("emptyState");
 
-      const categoryFilter =
-        document.getElementById("categoryFilter");
+          <span class="brand-word">
 
-
-      /* =====================================================
-         GET CURRENT REPORTER
-      ===================================================== */
-
-      function getCurrentReporter() {
-
-        return MOCK_DATA.users.find(
-          (user) =>
-            Number(user.id) ===
-            Number(CURRENT_REPORTER_ID)
-        );
-
-      }
-
-
-      /* =====================================================
-         INITIALS
-      ===================================================== */
-
-      function getInitials(name) {
-
-        if (!name) {
-          return "U";
-        }
-
-        const words =
-          name
-            .trim()
-            .split(/\s+/);
-
-
-        if (words.length === 1) {
-
-          return words[0]
-            .substring(0, 2)
-            .toUpperCase();
-
-        }
-
-
-        return (
-          words[0].charAt(0) +
-          words[words.length - 1].charAt(0)
-        ).toUpperCase();
-
-      }
-
-
-      /* =====================================================
-         LOAD REPORTER
-         LẤY AVATAR TỪ MOCK DATA
-      ===================================================== */
-
-      function loadReporter() {
-
-        const user =
-          getCurrentReporter();
-
-
-        if (!user) {
-          return;
-        }
-
-
-        /* TÊN */
-
-        document.getElementById(
-          "userName"
-        ).textContent =
-          user.full_name ||
-          "Người dùng";
-
-
-        /* AVATAR */
-
-        const avatar =
-          document.getElementById(
-            "userAvatar"
-          );
-
-
-        const avatarUrl =
-          user.avatar;
-
-
-        /* Có avatar trong MOCK DATA */
-
-        if (avatarUrl) {
-
-          avatar.innerHTML = "";
-
-
-          const image =
-            document.createElement("img");
-
-
-          image.src =
-            avatarUrl;
-
-
-          image.alt =
-            user.full_name ||
-            "Avatar";
-
-
-          image.className =
-            "reporter-avatar-image";
-
-
-          /*
-             Không set width / height bằng JS.
-             Kích thước được quản lý hoàn toàn bằng CSS.
-          */
-
-
-          /* Nếu ảnh bị lỗi thì quay về initials */
-
-          image.onerror =
-            function () {
-
-              avatar.innerHTML = "";
-
-
-              const fallback =
-                document.createElement("span");
-
-
-              fallback.id =
-                "userInitials";
-
-
-              fallback.textContent =
-                getInitials(
-                  user.full_name
-                );
-
-
-              avatar.appendChild(
-                fallback
-              );
-
-            };
-
-
-          avatar.appendChild(
-            image
-          );
-
-        }
-
-        else {
-
-          /* Không có avatar */
-
-          const initials =
-            document.getElementById(
-              "userInitials"
-            );
-
-
-          initials.textContent =
-            getInitials(
-              user.full_name
-            );
-
-        }
-
-      }
-
-
-      /* =====================================================
-         CATEGORY NAME
-      ===================================================== */
-
-      function getCategoryName(categoryId) {
-
-        const category =
-          MOCK_DATA.categories.find(
-            (category) =>
-              category.id ===
-              categoryId
-          );
-
-
-        return category
-          ? category.name
-          : "Chưa phân loại";
-
-      }
-
-
-      /* =====================================================
-         CATEGORY FILTER
-      ===================================================== */
-
-      function loadCategoryFilter() {
-
-        MOCK_DATA.categories.forEach(
-          (category) => {
-
-            const option =
-              document.createElement("option");
-
-
-            option.value =
-              category.id;
-
-
-            option.textContent =
-              category.name;
-
-
-            categoryFilter.appendChild(
-              option
-            );
-
-          }
-        );
-
-      }
-
-
-      /* =====================================================
-         STATUS TEXT
-      ===================================================== */
-
-      function getStatusText(status) {
-
-        const map = {
-
-          published:
-            "Đã đăng",
-
-          pending:
-            "Chờ duyệt",
-
-          draft:
-            "Bản nháp",
-
-          rejected:
-            "Bị từ chối"
-
-        };
-
-
-        return (
-          map[status] ||
-          status
-        );
-
-      }
-
-
-      /* =====================================================
-         FORMAT DATE
-      ===================================================== */
-
-      function formatDate(dateString) {
-
-        if (!dateString) {
-          return "—";
-        }
-
-
-        const date =
-          String(dateString)
-            .substring(0, 10)
-            .split("-");
-
-
-        if (date.length !== 3) {
-          return dateString;
-        }
-
-
-        return `${date[2]}/${date[1]}/${date[0]}`;
-
-      }
-
-
-      /* =====================================================
-         UPDATE STATS
-      ===================================================== */
-
-      function updateStats(articles) {
-
-        const count =
-          (status) =>
-            articles.filter(
-              (article) =>
-                article.status === status
-            ).length;
-
-
-        document.getElementById(
-          "totalArticles"
-        ).textContent =
-          articles.length;
-
-
-        document.querySelector(
-          ".stat-number.published"
-        ).textContent =
-          count("published");
-
-
-        document.querySelector(
-          ".stat-number.pending"
-        ).textContent =
-          count("pending");
-
-
-        document.querySelector(
-          ".stat-number.draft"
-        ).textContent =
-          count("draft");
-
-
-        document.querySelector(
-          ".stat-number.rejected"
-        ).textContent =
-          count("rejected");
-
-      }
-
-
-      /* =====================================================
-         CREATE ARTICLE CARD
-      ===================================================== */
-
-      function createArticleCard(article) {
-
-        const category =
-          getCategoryName(
-            article.category_id
-          );
-
-
-        const card =
-          document.createElement("article");
-
-
-        card.className =
-          "article-card";
-
-
-        let actionHTML = "";
-
-
-        if (
-          article.status ===
-          "published"
-        ) {
-
-          actionHTML = `
-
-            <a
-              href="article-detail.html?slug=${encodeURIComponent(
-                article.slug
-              )}"
-              class="card-action"
-            >
-              Xem bài
-            </a>
-
-          `;
-
-        }
-
-
-        if (
-          article.status ===
-          "draft"
-        ) {
-
-          actionHTML = `
-
-            <a
-              href="write-article.html"
-              class="card-action"
-            >
-              Tiếp tục viết
-            </a>
-
-          `;
-
-        }
-
-
-        if (
-          article.status ===
-          "rejected"
-        ) {
-
-          actionHTML = `
-
-            <a
-              href="write-article.html"
-              class="card-action"
-            >
-              Chỉnh sửa
-            </a>
-
-          `;
-
-        }
-
-
-        if (
-          article.status ===
-          "pending"
-        ) {
-
-          actionHTML = `
-
-            <span
-              class="card-action disabled"
-            >
-              Đang chờ duyệt
+            <span class="brand-mach">
+              MẠCH
             </span>
 
-          `;
+            <span class="brand-tin">
+              TIN
+            </span>
 
-        }
+          </span>
 
+        </a>
 
-        card.innerHTML = `
-
-          <div class="article-image">
-
-            ${
-              article.cover_image
-                ? `
-
-                  <img
-                    src="${article.cover_image}"
-                    alt="${article.title}"
-                    onerror="this.style.display='none'"
-                  >
-
-                `
-                : `
-
-                  <div class="image-placeholder">
-                    ẢNH
-                  </div>
-
-                `
-            }
-
-          </div>
+      </div>
 
 
-          <div class="article-body">
 
-            <div class="article-top">
+      <!-- =================================================
+           USER
+      ================================================== -->
 
-              <span
-                class="status status-${article.status}"
-              >
-                ${getStatusText(
-                  article.status
-                )}
-              </span>
+      <div class="reporter-user">
 
+        <div
+          class="reporter-avatar"
+          id="userAvatar"
+        >
 
-              <span class="category">
-                ${category}
-              </span>
+          <span id="userInitials">
+            TN
+          </span>
 
-            </div>
-
-
-            <h2 class="article-title">
-              ${article.title}
-            </h2>
+        </div>
 
 
-            <p class="article-description">
-              ${
-                article.short_description ||
-                ""
-              }
+        <p
+          class="reporter-name"
+          id="userName"
+        >
+          Thanh Ngân
+        </p>
+
+
+        <div class="reporter-role">
+          Phóng viên
+        </div>
+
+      </div>
+
+
+
+      <!-- =================================================
+           MENU
+      ================================================== -->
+
+      <nav class="reporter-menu">
+
+
+        <!-- SOẠN BÀI -->
+
+        <a
+          href="write-article.html"
+          class="reporter-menu-item"
+        >
+
+          <svg
+            class="menu-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+
+            <path
+              d="M4 20h4L19 9l-4-4L4 16v4z"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linejoin="round"
+            />
+
+            <path
+              d="M13.5 6.5l4 4"
+              stroke="currentColor"
+              stroke-width="1.7"
+            />
+
+          </svg>
+
+          <span>
+            Soạn bài
+          </span>
+
+        </a>
+
+
+
+        <!-- BÀI VIẾT CỦA TÔI -->
+
+        <a
+          href="my-articles.html"
+          class="reporter-menu-item active"
+        >
+
+          <svg
+            class="menu-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+
+            <path
+              d="M5 4h14v16H5z"
+              stroke="currentColor"
+              stroke-width="1.7"
+            />
+
+            <path
+              d="M8 8h8M8 12h8M8 16h5"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+            />
+
+          </svg>
+
+          <span>
+            Bài viết của tôi
+          </span>
+
+        </a>
+
+
+
+        <!-- ĐỀ TÀI -->
+
+        <a
+          href="my-topics.html"
+          class="reporter-menu-item"
+        >
+
+          <svg
+            class="menu-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+
+            <path
+              d="M8 4h9l3 3v13H8z"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linejoin="round"
+            />
+
+            <path
+              d="M11 10h6M11 14h6"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+            />
+
+          </svg>
+
+          <span>
+            Đề tài của tôi
+          </span>
+
+        </a>
+
+
+
+        <!-- THỐNG KÊ -->
+
+        <a
+          href="dashboard.html"
+          class="reporter-menu-item"
+        >
+
+          <svg
+            class="menu-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+
+            <path
+              d="M4 19V10M10 19V5M16 19v-7M22 19H2"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+          </svg>
+
+          <span>
+            Thống kê
+          </span>
+
+        </a>
+
+
+
+        <!-- TRANG CHỦ -->
+
+        <a
+          href="index.html"
+          class="reporter-menu-item"
+        >
+
+          <svg
+            class="menu-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+
+            <path
+              d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9z"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linejoin="round"
+            />
+
+          </svg>
+
+          <span>
+            Về trang chủ
+          </span>
+
+        </a>
+
+      </nav>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="reporter-main">
+
+      <div class="reporter-content">
+
+
+        <!-- HEADER -->
+
+        <div class="page-header">
+
+          <div>
+
+            <h1>
+              Bài viết của tôi
+            </h1>
+
+            <p>
+              Quản lý các bài viết bạn đã viết và theo dõi trạng thái biên tập.
             </p>
 
+          </div>
 
-            <div class="article-meta">
-
-              <span>
-                Tạo:
-                ${formatDate(
-                  article.created_at
-                )}
-              </span>
+        </div>
 
 
-              <span>
-                ${
-                  article.view_count ||
-                  0
-                }
-                lượt xem
-              </span>
-
-            </div>
+        <div class="page-line"></div>
 
 
-            ${
-              article.status ===
-              "rejected"
 
-                ? `
+        <!-- =================================================
+             STATS
+        ================================================== -->
 
-                  <div class="rejection-box">
+        <div class="article-stats">
 
-                    <strong>
-                      Lý do từ chối
-                    </strong>
 
-                    <p>
-                      ${
-                        article.rejection_reason ||
-                        "Không có lý do."
-                      }
-                    </p>
+          <div class="stat-card">
 
-                  </div>
+            <span
+              class="stat-number"
+              id="totalArticles"
+            >
+              0
+            </span>
 
-                `
-
-                : ""
-            }
+            <span class="stat-label">
+              Tổng bài
+            </span>
 
           </div>
 
 
-          <div class="article-actions">
+          <div class="stat-card">
 
-            ${actionHTML}
+            <span
+              class="stat-number published"
+            >
+              0
+            </span>
+
+            <span class="stat-label">
+              Đã đăng
+            </span>
 
           </div>
 
-        `;
+
+          <div class="stat-card">
+
+            <span
+              class="stat-number pending"
+            >
+              0
+            </span>
+
+            <span class="stat-label">
+              Chờ duyệt
+            </span>
+
+          </div>
 
 
-        return card;
+          <div class="stat-card">
+
+            <span
+              class="stat-number draft"
+            >
+              0
+            </span>
+
+            <span class="stat-label">
+              Bản nháp
+            </span>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <span
+              class="stat-number rejected"
+            >
+              0
+            </span>
+
+            <span class="stat-label">
+              Bị từ chối
+            </span>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             TOOLBAR
+        ================================================== -->
+
+        <div class="article-toolbar">
+
+
+          <div class="filter-tabs">
+
+
+            <button
+              class="filter-tab active"
+              data-filter="all"
+            >
+              Tất cả
+            </button>
+
+
+            <button
+              class="filter-tab"
+              data-filter="published"
+            >
+              Đã đăng
+            </button>
+
+
+            <button
+              class="filter-tab"
+              data-filter="pending"
+            >
+              Chờ duyệt
+            </button>
+
+
+            <button
+              class="filter-tab"
+              data-filter="draft"
+            >
+              Bản nháp
+            </button>
+
+
+            <button
+              class="filter-tab"
+              data-filter="rejected"
+            >
+              Từ chối
+            </button>
+
+          </div>
+
+
+          <select id="categoryFilter">
+
+            <option value="all">
+              Tất cả chuyên mục
+            </option>
+
+          </select>
+
+        </div>
+
+
+
+        <!-- =================================================
+             ARTICLE LIST
+        ================================================== -->
+
+        <div
+          id="articleList"
+          class="article-list"
+        ></div>
+
+
+
+        <!-- =================================================
+             EMPTY
+        ================================================== -->
+
+        <div
+          id="emptyState"
+          class="empty-state"
+        >
+          Không có bài viết phù hợp.
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       MOCK DATA
+  ====================================================== -->
+
+  <script src="mock-data.js"></script>
+
+
+
+  <script>
+
+
+    /* =====================================================
+       CURRENT REPORTER
+    ===================================================== */
+
+    const CURRENT_REPORTER_ID = 5;
+
+    let currentStatus = "all";
+
+    let currentCategory = "all";
+
+
+    const articleList =
+      document.getElementById("articleList");
+
+
+    const emptyState =
+      document.getElementById("emptyState");
+
+
+    const categoryFilter =
+      document.getElementById("categoryFilter");
+
+
+
+    /* =====================================================
+       GET CURRENT REPORTER
+    ===================================================== */
+
+    function getCurrentReporter() {
+
+      return MOCK_DATA.users.find(
+        (user) =>
+          Number(user.id) ===
+          Number(CURRENT_REPORTER_ID)
+      );
+
+    }
+
+
+
+    /* =====================================================
+       INITIALS
+    ===================================================== */
+
+    function getInitials(name) {
+
+      if (!name) {
+        return "U";
+      }
+
+
+      const words =
+        name
+          .trim()
+          .split(/\s+/);
+
+
+      if (words.length === 1) {
+
+        return words[0]
+          .substring(0, 2)
+          .toUpperCase();
 
       }
 
 
-      /* =====================================================
-         RENDER ARTICLES
-      ===================================================== */
+      return (
+        words[0].charAt(0) +
+        words[words.length - 1].charAt(0)
+      ).toUpperCase();
 
-      function renderArticles() {
-
-        articleList.innerHTML = "";
+    }
 
 
-        let articles =
-          MOCK_DATA.articles.filter(
-            (article) =>
-              Number(article.author_id) ===
-              Number(CURRENT_REPORTER_ID)
+
+    /* =====================================================
+       LOAD REPORTER
+       LẤY AVATAR TỪ MOCK DATA
+    ===================================================== */
+
+    function loadReporter() {
+
+      const user =
+        getCurrentReporter();
+
+
+      if (!user) {
+        return;
+      }
+
+
+      /* TÊN */
+
+      document.getElementById(
+        "userName"
+      ).textContent =
+        user.full_name ||
+        "Người dùng";
+
+
+      /* AVATAR */
+
+      const avatar =
+        document.getElementById(
+          "userAvatar"
+        );
+
+
+      const avatarUrl =
+        user.avatar;
+
+
+      /* Có avatar trong MOCK DATA */
+
+      if (avatarUrl) {
+
+        avatar.innerHTML = "";
+
+
+        const image =
+          document.createElement("img");
+
+
+        image.src =
+          avatarUrl;
+
+
+        image.alt =
+          user.full_name ||
+          "Avatar";
+
+
+        image.className =
+          "reporter-avatar-image";
+
+
+        image.onerror =
+          function () {
+
+            avatar.innerHTML = "";
+
+
+            const fallback =
+              document.createElement("span");
+
+
+            fallback.id =
+              "userInitials";
+
+
+            fallback.textContent =
+              getInitials(
+                user.full_name
+              );
+
+
+            avatar.appendChild(
+              fallback
+            );
+
+          };
+
+
+        avatar.appendChild(
+          image
+        );
+
+      }
+
+      else {
+
+        const initials =
+          document.getElementById(
+            "userInitials"
           );
 
 
-        /* STATUS */
-
-        if (
-          currentStatus !==
-          "all"
-        ) {
-
-          articles =
-            articles.filter(
-              (article) =>
-                article.status ===
-                currentStatus
-            );
-
-        }
-
-
-        /* CATEGORY */
-
-        if (
-          currentCategory !==
-          "all"
-        ) {
-
-          articles =
-            articles.filter(
-              (article) =>
-                String(
-                  article.category_id
-                ) ===
-                String(
-                  currentCategory
-                )
-            );
-
-        }
-
-
-        /* SORT */
-
-        articles.sort(
-          (a, b) => {
-
-            const dateA =
-              new Date(
-                String(
-                  a.updated_at ||
-                  a.created_at
-                ).replace(
-                  " ",
-                  "T"
-                )
-              );
-
-
-            const dateB =
-              new Date(
-                String(
-                  b.updated_at ||
-                  b.created_at
-                ).replace(
-                  " ",
-                  "T"
-                )
-              );
-
-
-            return dateB - dateA;
-
-          }
-        );
-
-
-        /* EMPTY */
-
-        if (
-          articles.length ===
-          0
-        ) {
-
-          emptyState.style.display =
-            "block";
-
-          return;
-
-        }
-
-
-        emptyState.style.display =
-          "none";
-
-
-        /* RENDER */
-
-        articles.forEach(
-          (article) => {
-
-            articleList.appendChild(
-              createArticleCard(
-                article
-              )
-            );
-
-          }
-        );
+        initials.textContent =
+          getInitials(
+            user.full_name
+          );
 
       }
 
-
-      /* =====================================================
-         STATUS FILTER
-      ===================================================== */
-
-      document
-        .querySelectorAll(".filter-tab")
-        .forEach(
-          (button) => {
-
-            button.addEventListener(
-              "click",
-              function () {
-
-                document
-                  .querySelectorAll(".filter-tab")
-                  .forEach(
-                    (item) =>
-                      item.classList.remove(
-                        "active"
-                      )
-                  );
+    }
 
 
-                this.classList.add(
-                  "active"
-                );
 
+    /* =====================================================
+       CATEGORY NAME
+    ===================================================== */
 
-                currentStatus =
-                  this.dataset.filter;
+    function getCategoryName(categoryId) {
 
-
-                renderArticles();
-
-              }
-            );
-
-          }
+      const category =
+        MOCK_DATA.categories.find(
+          (category) =>
+            category.id ===
+            categoryId
         );
 
 
-      /* =====================================================
-         CATEGORY FILTER
-      ===================================================== */
+      return category
+        ? category.name
+        : "Chưa phân loại";
 
-      categoryFilter.addEventListener(
-        "change",
-        function () {
-
-          currentCategory =
-            this.value;
+    }
 
 
-          renderArticles();
+
+    /* =====================================================
+       CATEGORY FILTER
+    ===================================================== */
+
+    function loadCategoryFilter() {
+
+      MOCK_DATA.categories.forEach(
+        (category) => {
+
+          const option =
+            document.createElement("option");
+
+
+          option.value =
+            category.id;
+
+
+          option.textContent =
+            category.name;
+
+
+          categoryFilter.appendChild(
+            option
+          );
 
         }
       );
 
+    }
 
-      /* =====================================================
-         INIT
-      ===================================================== */
 
-      const reporterArticles =
+
+    /* =====================================================
+       STATUS TEXT
+    ===================================================== */
+
+    function getStatusText(status) {
+
+      const map = {
+
+        published:
+          "Đã đăng",
+
+        pending:
+          "Chờ duyệt",
+
+        draft:
+          "Bản nháp",
+
+        rejected:
+          "Bị từ chối"
+
+      };
+
+
+      return (
+        map[status] ||
+        status
+      );
+
+    }
+
+
+
+    /* =====================================================
+       FORMAT DATE
+    ===================================================== */
+
+    function formatDate(dateString) {
+
+      if (!dateString) {
+        return "—";
+      }
+
+
+      const date =
+        String(dateString)
+          .substring(0, 10)
+          .split("-");
+
+
+      if (date.length !== 3) {
+        return dateString;
+      }
+
+
+      return `${date[2]}/${date[1]}/${date[0]}`;
+
+    }
+
+
+
+    /* =====================================================
+       UPDATE STATS
+    ===================================================== */
+
+    function updateStats(articles) {
+
+      const count =
+        (status) =>
+          articles.filter(
+            (article) =>
+              article.status === status
+          ).length;
+
+
+      document.getElementById(
+        "totalArticles"
+      ).textContent =
+        articles.length;
+
+
+      document.querySelector(
+        ".stat-number.published"
+      ).textContent =
+        count("published");
+
+
+      document.querySelector(
+        ".stat-number.pending"
+      ).textContent =
+        count("pending");
+
+
+      document.querySelector(
+        ".stat-number.draft"
+      ).textContent =
+        count("draft");
+
+
+      document.querySelector(
+        ".stat-number.rejected"
+      ).textContent =
+        count("rejected");
+
+    }
+
+
+
+    /* =====================================================
+       CREATE ARTICLE CARD
+       ẢNH ĐƯỢC LẤY TRỰC TIẾP TỪ MOCK_DATA
+    ===================================================== */
+
+    function createArticleCard(article) {
+
+      const category =
+        getCategoryName(
+          article.category_id
+        );
+
+
+      const card =
+        document.createElement("article");
+
+
+      card.className =
+        "article-card";
+
+
+      let actionHTML = "";
+
+
+
+      /* =================================================
+         ACTION — PUBLISHED
+      ================================================== */
+
+      if (
+        article.status ===
+        "published"
+      ) {
+
+        actionHTML = `
+
+          <a
+            href="article-detail.html?slug=${encodeURIComponent(
+              article.slug
+            )}"
+            class="card-action"
+          >
+            Xem bài
+          </a>
+
+        `;
+
+      }
+
+
+
+      /* =================================================
+         ACTION — DRAFT
+      ================================================== */
+
+      if (
+        article.status ===
+        "draft"
+      ) {
+
+        actionHTML = `
+
+          <a
+            href="write-article.html"
+            class="card-action"
+          >
+            Tiếp tục viết
+          </a>
+
+        `;
+
+      }
+
+
+
+      /* =================================================
+         ACTION — REJECTED
+      ================================================== */
+
+      if (
+        article.status ===
+        "rejected"
+      ) {
+
+        actionHTML = `
+
+          <a
+            href="write-article.html"
+            class="card-action"
+          >
+            Chỉnh sửa
+          </a>
+
+        `;
+
+      }
+
+
+
+      /* =================================================
+         ACTION — PENDING
+      ================================================== */
+
+      if (
+        article.status ===
+        "pending"
+      ) {
+
+        actionHTML = `
+
+          <span
+            class="card-action disabled"
+          >
+            Đang chờ duyệt
+          </span>
+
+        `;
+
+      }
+
+
+
+      /* =================================================
+         ARTICLE CARD
+         cover_image LẤY TỪ MOCK_DATA
+      ================================================== */
+
+      card.innerHTML = `
+
+        <div class="article-image">
+
+          ${
+            article.cover_image
+              ? `
+
+                <img
+                  src="${article.cover_image}"
+                  alt="${article.title}"
+                  class="article-cover-image"
+                >
+
+                <div
+                  class="image-placeholder"
+                  style="display:none;"
+                >
+                  ẢNH
+                </div>
+
+              `
+              : `
+
+                <div class="image-placeholder">
+                  ẢNH
+                </div>
+
+              `
+          }
+
+        </div>
+
+
+
+        <div class="article-body">
+
+
+          <div class="article-top">
+
+            <span
+              class="status status-${article.status}"
+            >
+              ${getStatusText(
+                article.status
+              )}
+            </span>
+
+
+            <span class="category">
+              ${category}
+            </span>
+
+          </div>
+
+
+
+          <h2 class="article-title">
+            ${article.title}
+          </h2>
+
+
+
+          <p class="article-description">
+
+            ${
+              article.short_description ||
+              ""
+            }
+
+          </p>
+
+
+
+          <div class="article-meta">
+
+            <span>
+              Tạo:
+              ${formatDate(
+                article.created_at
+              )}
+            </span>
+
+
+            <span>
+
+              ${
+                article.view_count ||
+                0
+              }
+
+              lượt xem
+
+            </span>
+
+          </div>
+
+
+
+          ${
+            article.status ===
+            "rejected"
+
+              ? `
+
+                <div class="rejection-box">
+
+                  <strong>
+                    Lý do từ chối
+                  </strong>
+
+
+                  <p>
+
+                    ${
+                      article.rejection_reason ||
+                      "Không có lý do."
+                    }
+
+                  </p>
+
+                </div>
+
+              `
+
+              : ""
+          }
+
+        </div>
+
+
+
+        <div class="article-actions">
+
+          ${actionHTML}
+
+        </div>
+
+      `;
+
+
+
+      /* =================================================
+         XỬ LÝ ẢNH LỖI
+      ================================================== */
+
+      const articleImage =
+        card.querySelector(
+          ".article-cover-image"
+        );
+
+
+      const placeholder =
+        card.querySelector(
+          ".image-placeholder"
+        );
+
+
+      if (articleImage) {
+
+        articleImage.addEventListener(
+          "error",
+          function () {
+
+            articleImage.style.display =
+              "none";
+
+
+            if (placeholder) {
+
+              placeholder.style.display =
+                "flex";
+
+            }
+
+          }
+        );
+
+      }
+
+
+      return card;
+
+    }
+
+
+
+    /* =====================================================
+       RENDER ARTICLES
+    ===================================================== */
+
+    function renderArticles() {
+
+      articleList.innerHTML = "";
+
+
+      let articles =
         MOCK_DATA.articles.filter(
           (article) =>
             Number(article.author_id) ===
@@ -1215,17 +1195,206 @@
         );
 
 
-      loadReporter();
 
-      loadCategoryFilter();
+      /* STATUS */
 
-      updateStats(
-        reporterArticles
+      if (
+        currentStatus !==
+        "all"
+      ) {
+
+        articles =
+          articles.filter(
+            (article) =>
+              article.status ===
+              currentStatus
+          );
+
+      }
+
+
+
+      /* CATEGORY */
+
+      if (
+        currentCategory !==
+        "all"
+      ) {
+
+        articles =
+          articles.filter(
+            (article) =>
+              String(
+                article.category_id
+              ) ===
+              String(
+                currentCategory
+              )
+          );
+
+      }
+
+
+
+      /* SORT */
+
+      articles.sort(
+        (a, b) => {
+
+          const dateA =
+            new Date(
+              String(
+                a.updated_at ||
+                a.created_at
+              ).replace(
+                " ",
+                "T"
+              )
+            );
+
+
+          const dateB =
+            new Date(
+              String(
+                b.updated_at ||
+                b.created_at
+              ).replace(
+                " ",
+                "T"
+              )
+            );
+
+
+          return dateB - dateA;
+
+        }
       );
 
-      renderArticles();
 
-    </script>
 
-  </body>
+      /* EMPTY */
+
+      if (
+        articles.length ===
+        0
+      ) {
+
+        emptyState.style.display =
+          "block";
+
+        return;
+
+      }
+
+
+      emptyState.style.display =
+        "none";
+
+
+
+      /* RENDER */
+
+      articles.forEach(
+        (article) => {
+
+          articleList.appendChild(
+            createArticleCard(
+              article
+            )
+          );
+
+        }
+      );
+
+    }
+
+
+
+    /* =====================================================
+       STATUS FILTER
+    ===================================================== */
+
+    document
+      .querySelectorAll(".filter-tab")
+      .forEach(
+        (button) => {
+
+          button.addEventListener(
+            "click",
+            function () {
+
+              document
+                .querySelectorAll(".filter-tab")
+                .forEach(
+                  (item) =>
+                    item.classList.remove(
+                      "active"
+                    )
+                );
+
+
+              this.classList.add(
+                "active"
+              );
+
+
+              currentStatus =
+                this.dataset.filter;
+
+
+              renderArticles();
+
+            }
+          );
+
+        }
+      );
+
+
+
+    /* =====================================================
+       CATEGORY FILTER
+    ===================================================== */
+
+    categoryFilter.addEventListener(
+      "change",
+      function () {
+
+        currentCategory =
+          this.value;
+
+
+        renderArticles();
+
+      }
+    );
+
+
+
+    /* =====================================================
+       INIT
+    ===================================================== */
+
+    const reporterArticles =
+      MOCK_DATA.articles.filter(
+        (article) =>
+          Number(article.author_id) ===
+          Number(CURRENT_REPORTER_ID)
+      );
+
+
+    loadReporter();
+
+    loadCategoryFilter();
+
+    updateStats(
+      reporterArticles
+    );
+
+    renderArticles();
+
+  </script>
+
+</body>
+
 </html>
