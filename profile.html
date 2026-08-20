@@ -411,10 +411,6 @@
         return role;
       }
 
-      // =====================================================
-      // CHUYỂN TAB PROFILE
-      // =====================================================
-
       function showProfile() {
         document.getElementById("profileInfo").style.display = "block";
 
@@ -427,10 +423,6 @@
           "Cập nhật thông tin cá nhân và bảo mật tài khoản.";
       }
 
-      // =====================================================
-      // CHUYỂN TAB PASSWORD
-      // =====================================================
-
       function showPassword() {
         document.getElementById("profileInfo").style.display = "none";
 
@@ -442,10 +434,6 @@
           "Cập nhật mật khẩu để bảo vệ tài khoản.";
       }
 
-      // =====================================================
-      // ACTIVE MENU
-      // =====================================================
-
       function setActiveMenu(element) {
         document.querySelectorAll(".history-menu-item").forEach((item) => {
           item.classList.remove("active");
@@ -453,10 +441,6 @@
 
         element.classList.add("active");
       }
-
-      // =====================================================
-      // CHỌN AVATAR MỚI
-      // =====================================================
 
       document
         .getElementById("avatar")
@@ -496,10 +480,6 @@
 
           reader.readAsDataURL(file);
         });
-
-      // =====================================================
-      // LƯU PROFILE
-      // =====================================================
 
       function saveProfile() {
         const username = document.getElementById("username").value.trim();
@@ -555,10 +535,6 @@
         message.innerText = "Cập nhật thông tin tài khoản thành công.";
       }
 
-      // =====================================================
-      // ĐỔI MẬT KHẨU
-      // =====================================================
-
       function changePassword() {
         const oldPassword = document.getElementById("oldPassword").value;
 
@@ -592,10 +568,6 @@
         message.innerText = "Đổi mật khẩu thành công.";
       }
 
-      // =====================================================
-      // NÚT LƯU CHUNG
-      // =====================================================
-
       function saveCurrent() {
         const password = document.getElementById("passwordInfo");
 
@@ -605,10 +577,6 @@
           saveProfile();
         }
       }
-
-      // =====================================================
-      // KHI QUAY LẠI TRANG
-      // =====================================================
 
       window.addEventListener("pageshow", function () {
         loadAvatar();
