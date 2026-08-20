@@ -1,8 +1,9 @@
 /* =========================================================
-   MY-ARTICLES.CSS — MẠCH TIN (chuẩn hóa theo style.css)
+   MY-ARTICLES.CSS — MẠCH TIN
    ========================================================= */
 
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,480;0,9..144,600;1,9..144,420&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
 
 :root {
   --ink: #131b2e;
@@ -24,11 +25,13 @@
   --radius: 2px;
 }
 
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
+
 
 html,
 body {
@@ -36,6 +39,7 @@ body {
   padding: 0;
   min-height: 100%;
 }
+
 
 body {
   background: var(--paper);
@@ -46,15 +50,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+
 a {
   color: inherit;
   text-decoration: none;
 }
+
+
 button,
 input,
 select {
   font-family: inherit;
 }
+
 
 a:focus-visible,
 button:focus-visible,
@@ -64,61 +72,81 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
+
 /* =========================================================
    PAGE
    ========================================================= */
+
 .reporter-page {
   width: 100%;
   min-height: 100vh;
+
   display: grid;
   grid-template-columns: 250px minmax(0, 1fr);
 }
 
+
 /* =========================================================
    SIDEBAR
    ========================================================= */
+
 .reporter-sidebar {
   width: 250px;
   min-height: 100vh;
+
   display: flex;
   flex-direction: column;
+
   background: var(--paper-alt);
   border-right: 1px solid var(--line);
 }
 
+
 /* =========================================================
    LOGO
    ========================================================= */
+
 .reporter-brand {
   width: 100%;
   height: 94px;
   padding: 0 24px;
+
   display: flex;
   align-items: center;
+
   border-bottom: 1px solid var(--line);
 }
+
 
 .brand-link {
   display: flex;
   align-items: center;
   gap: 10px;
+
   white-space: nowrap;
   line-height: 1;
 }
 
+
 .pulse-mark {
   display: block;
+
   width: 26px;
   height: 24px;
+
   flex: 0 0 26px;
+
   color: var(--crimson);
 }
+
 
 .brand-word {
   display: flex;
   align-items: baseline;
+
   white-space: nowrap;
 }
+
 
 .brand-mach {
   font-family: var(--f-display);
@@ -126,146 +154,239 @@ select:focus-visible {
   line-height: 1;
   font-weight: 600;
   letter-spacing: -0.01em;
+
   color: var(--ink);
 }
 
+
 .brand-tin {
   margin-left: 3px;
+
   font-family: var(--f-display);
   font-size: 23px;
   line-height: 1;
   font-weight: 480;
   font-style: italic;
   letter-spacing: -0.01em;
+
   color: var(--brass-dark);
 }
+
 
 /* =========================================================
    USER
    ========================================================= */
+
 .reporter-user {
   padding: 26px 20px 23px;
+
   text-align: center;
+
   border-bottom: 1px solid var(--line);
 }
+
+
+/*
+   AVATAR
+   Kích thước chuẩn giống file Soạn bài:
+   60px x 60px
+*/
 
 .reporter-avatar {
   width: 60px;
   height: 60px;
+
   margin: 0 auto 10px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  overflow: hidden;
+  flex-shrink: 0;
+
   border-radius: 50%;
-  background: var(--white);
   border: 1px solid var(--brass);
+
+  background: var(--white);
+
   color: var(--brass-dark);
+
   font-family: var(--f-display);
   font-size: 19px;
   font-weight: 600;
 }
 
+
+/*
+   Ảnh avatar lấy từ MOCK_DATA
+*/
+
+.reporter-avatar-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 50%;
+}
+
+
+/*
+   Chữ viết tắt khi không có avatar
+*/
+
+.reporter-avatar span {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 .reporter-name {
   margin: 0;
+
   font-size: 14.5px;
   font-weight: 600;
 }
 
+
 .reporter-role {
   margin-top: 4px;
+
   color: var(--muted);
+
   font-family: var(--f-mono);
   font-size: 11.5px;
   letter-spacing: 0.02em;
 }
 
+
 /* =========================================================
    MENU
    ========================================================= */
+
 .reporter-menu {
   display: flex;
   flex-direction: column;
+
   padding-top: 10px;
 }
+
 
 .reporter-menu-item {
   width: 100%;
   min-height: 48px;
   padding: 0 24px;
+
   display: flex;
   align-items: center;
+
   gap: 12px;
+
   color: var(--ink-soft);
+
   border-left: 3px solid transparent;
+
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
     color 0.15s ease;
 }
 
+
 .reporter-menu-item:hover {
   background: var(--paper);
   color: var(--ink);
 }
 
+
 .reporter-menu-item.active {
   background: var(--paper);
+
   border-left-color: var(--crimson);
+
   color: var(--ink);
+
   font-weight: 600;
 }
+
 
 .menu-icon {
   width: 18px;
   height: 18px;
+
   flex-shrink: 0;
+
   color: var(--muted);
 }
+
 
 .reporter-menu-item.active .menu-icon {
   color: var(--crimson);
 }
 
+
 .reporter-menu-item span {
   font-size: 13.5px;
 }
 
+
 /* =========================================================
    LOGOUT
    ========================================================= */
+
 .reporter-logout {
   margin-top: auto;
+
   padding: 12px 0 22px;
+
   border-top: 1px solid var(--line);
 }
+
 
 /* =========================================================
    MAIN
    ========================================================= */
+
 .reporter-main {
   min-width: 0;
   min-height: 100vh;
+
   padding: 42px 50px 70px;
 }
+
 
 .reporter-content {
   width: 100%;
   max-width: 1180px;
+
   margin: 0 auto;
 }
+
 
 /* =========================================================
    HEADER
    ========================================================= */
+
 .page-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+
   gap: 30px;
 }
 
+
 .page-header h1 {
   margin: 0;
+
   font-family: var(--f-display);
   font-size: 28px;
   line-height: 1.2;
@@ -273,468 +394,717 @@ select:focus-visible {
   letter-spacing: -0.01em;
 }
 
+
 .page-header p {
   margin: 8px 0 0;
+
   color: var(--muted);
+
   font-size: 14.5px;
 }
+
 
 .page-line {
   width: 100%;
   height: 2px;
+
   margin-top: 12px;
+
   background: var(--ink);
 }
 
+
 /* =========================================================
-   WRITE BUTTON (giữ class, không còn dùng trong HTML)
+   WRITE BUTTON
    ========================================================= */
+
 .write-button {
   display: inline-flex;
   align-items: center;
+
   gap: 8px;
+
   padding: 10px 18px;
+
   background: var(--crimson);
   border: 1px solid var(--crimson);
   border-radius: var(--radius);
+
   color: var(--white);
+
   font-size: 13px;
   font-weight: 600;
+
   white-space: nowrap;
+
   cursor: pointer;
 }
+
 
 .write-button:hover {
   background: #8d2e26;
   border-color: #8d2e26;
 }
 
+
 /* =========================================================
    STATISTICS
    ========================================================= */
+
 .article-stats {
   display: grid;
+
   grid-template-columns: repeat(5, 1fr);
+
   gap: 14px;
+
   margin-top: 28px;
 }
 
+
 .stat-card {
   min-height: 100px;
+
   padding: 18px;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   background: var(--white);
+
   border: 1px solid var(--line);
   border-radius: var(--radius);
 }
 
+
 .stat-number {
   font-family: var(--f-display);
+
   font-size: 26px;
   line-height: 1;
   font-weight: 600;
 }
 
+
 .stat-number.published {
   color: #55734e;
 }
+
+
 .stat-number.pending {
   color: var(--brass-dark);
 }
+
+
 .stat-number.draft {
   color: var(--muted);
 }
+
+
 .stat-number.rejected {
   color: var(--crimson);
 }
 
+
 .stat-label {
   margin-top: 8px;
+
   color: var(--muted);
+
   font-family: var(--f-mono);
   font-size: 11.5px;
   letter-spacing: 0.03em;
+
   text-transform: uppercase;
 }
+
 
 /* =========================================================
    TOOLBAR
    ========================================================= */
+
 .article-toolbar {
   margin-top: 28px;
   padding-bottom: 14px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 20px;
+
   border-bottom: 1px solid var(--line);
 }
 
+
 .filter-tabs {
   display: flex;
+
   flex-wrap: wrap;
+
   gap: 4px;
 }
 
+
 .filter-tab {
   padding: 8px 14px;
+
   background: transparent;
+
   border: none;
   border-radius: var(--radius);
+
   color: var(--muted);
+
   cursor: pointer;
+
   font-family: var(--f-mono);
   font-size: 12px;
   letter-spacing: 0.02em;
 }
+
 
 .filter-tab:hover {
   color: var(--ink);
 }
 
+
 .filter-tab.active {
   background: var(--ink);
+
   color: var(--paper);
+
   font-weight: 600;
 }
 
+
 #categoryFilter {
   min-width: 180px;
+
   padding: 9px 12px;
+
   background: var(--white);
+
   border: 1px solid var(--line);
   border-radius: var(--radius);
+
   color: var(--ink);
+
   outline: none;
+
   font-size: 13px;
 }
+
 
 #categoryFilter:focus {
   border-color: var(--brass);
 }
 
+
 /* =========================================================
    ARTICLE LIST
    ========================================================= */
+
 .article-list {
   margin-top: 4px;
 }
 
+
 .article-card {
   min-height: 160px;
+
   display: grid;
-  grid-template-columns: 170px minmax(0, 1fr) 120px;
+
+  grid-template-columns:
+    170px
+    minmax(0, 1fr)
+    120px;
+
   gap: 20px;
+
   padding: 20px 0;
+
   border-bottom: 1px solid var(--line);
 }
+
 
 /* =========================================================
    IMAGE
    ========================================================= */
+
 .article-image {
   width: 170px;
   height: 120px;
+
   overflow: hidden;
+
   background: var(--paper-alt);
+
   border: 1px solid var(--line);
 }
+
 
 .article-image img {
   width: 100%;
   height: 100%;
+
   display: block;
+
   object-fit: cover;
 }
+
 
 .image-placeholder {
   width: 100%;
   height: 100%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: repeating-linear-gradient(
     135deg,
     #e3ddcb 0 2px,
     #ece7da 2px 22px
   );
+
   color: var(--muted);
+
   font-family: var(--f-mono);
   font-size: 11px;
   letter-spacing: 0.05em;
+
   text-transform: uppercase;
   font-weight: 500;
 }
+
 
 /* =========================================================
    BODY
    ========================================================= */
+
 .article-body {
   min-width: 0;
 }
 
+
 .article-top {
   display: flex;
   align-items: center;
+
   gap: 10px;
+
   margin-bottom: 8px;
 }
+
 
 /* =========================================================
    STATUS
    ========================================================= */
+
 .status {
   display: inline-block;
+
   padding: 4px 9px;
+
   font-family: var(--f-mono);
   font-size: 10px;
   letter-spacing: 0.04em;
+
   text-transform: uppercase;
+
   font-weight: 500;
+
   border-radius: var(--radius);
 }
+
 
 .status-published {
   background: #e1eadc;
   color: #496342;
 }
+
+
 .status-pending {
   background: #eee4cd;
   color: var(--brass-dark);
 }
+
+
 .status-draft {
   background: var(--paper-alt);
   color: var(--muted);
 }
+
+
 .status-rejected {
   background: #f0dcd8;
   color: var(--crimson);
 }
 
+
 .category {
   color: var(--muted);
+
   font-family: var(--f-mono);
   font-size: 11.5px;
   letter-spacing: 0.02em;
 }
+
 
 /* =========================================================
    TITLE
    ========================================================= */
+
 .article-title {
   margin: 0 0 7px;
+
   font-family: var(--f-display);
+
   font-size: 18.5px;
   line-height: 1.28;
+
   font-weight: 600;
 }
 
+
 .article-description {
   margin: 0;
+
   max-width: 720px;
+
   color: var(--muted);
+
   font-size: 13.5px;
   line-height: 1.6;
 }
 
+
 /* =========================================================
    META
    ========================================================= */
+
 .article-meta {
   display: flex;
+
   flex-wrap: wrap;
+
   gap: 14px;
+
   margin-top: 10px;
+
   color: var(--muted);
+
   font-family: var(--f-mono);
+
   font-size: 11.5px;
   letter-spacing: 0.02em;
 }
 
+
 /* =========================================================
    REJECTION
    ========================================================= */
+
 .rejection-box {
   margin-top: 12px;
+
   padding: 10px 14px;
+
   background: #f8ebe8;
+
   border-left: 3px solid var(--crimson);
-  border-radius: 0 var(--radius) var(--radius) 0;
+
+  border-radius:
+    0
+    var(--radius)
+    var(--radius)
+    0;
 }
+
 
 .rejection-box strong {
   display: block;
+
   margin-bottom: 3px;
+
   color: var(--crimson);
+
   font-family: var(--f-mono);
+
   font-size: 11px;
   letter-spacing: 0.03em;
+
   text-transform: uppercase;
 }
 
+
 .rejection-box p {
   margin: 0;
+
   color: #73524d;
+
   font-size: 12.5px;
   line-height: 1.5;
 }
 
+
 /* =========================================================
    ACTION
    ========================================================= */
+
 .article-actions {
   display: flex;
+
   align-items: center;
   justify-content: flex-end;
 }
 
+
 .card-action {
   display: inline-flex;
   align-items: center;
+
   padding: 8px 14px;
+
   border: 1px solid var(--ink);
   border-radius: var(--radius);
+
   color: var(--ink);
+
   font-size: 12px;
   font-weight: 600;
+
   white-space: nowrap;
+
   cursor: pointer;
+
   background: transparent;
 }
+
 
 .card-action:hover {
   background: var(--ink);
   color: var(--paper);
 }
 
+
 .card-action.disabled {
   border-color: var(--line);
+
   color: var(--muted);
+
   cursor: default;
 }
+
 
 .card-action.disabled:hover {
   background: transparent;
   color: var(--muted);
 }
 
+
 /* =========================================================
    EMPTY
    ========================================================= */
+
 .empty-state {
   display: none;
+
   margin-top: 20px;
+
   padding: 45px 20px;
+
   background: var(--paper-alt);
+
   border: 1px solid var(--line);
+
   text-align: center;
+
   color: var(--muted);
+
   font-size: 14px;
 }
+
 
 /* =========================================================
    RESPONSIVE
    ========================================================= */
+
 @media (max-width: 1050px) {
+
   .reporter-page {
-    grid-template-columns: 230px minmax(0, 1fr);
+    grid-template-columns:
+      230px
+      minmax(0, 1fr);
   }
+
+
   .reporter-sidebar {
     width: 230px;
   }
+
+
   .reporter-main {
     padding: 38px 32px 60px;
   }
+
+
   .article-stats {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+      repeat(3, 1fr);
   }
+
+
   .article-card {
-    grid-template-columns: 145px minmax(0, 1fr) 100px;
+    grid-template-columns:
+      145px
+      minmax(0, 1fr)
+      100px;
   }
+
+
   .article-image {
     width: 145px;
     height: 105px;
   }
+
 }
 
+
 @media (max-width: 760px) {
+
   .reporter-page {
     display: block;
   }
+
+
   .reporter-sidebar {
     width: 100%;
     min-height: auto;
+
     border-right: none;
     border-bottom: 1px solid var(--line);
   }
+
+
   .reporter-brand {
     height: 78px;
   }
+
+
   .reporter-menu {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+
+    grid-template-columns:
+      repeat(2, 1fr);
   }
+
+
   .reporter-logout {
     margin-top: 0;
   }
+
+
   .reporter-main {
     padding: 30px 20px 50px;
   }
+
+
   .page-header {
     align-items: flex-start;
+
     flex-direction: column;
   }
+
+
   .article-stats {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
+
+
   .article-toolbar {
     align-items: flex-start;
+
     flex-direction: column;
   }
+
+
   #categoryFilter {
     width: 100%;
   }
+
+
   .article-card {
-    grid-template-columns: 100px minmax(0, 1fr);
+    grid-template-columns:
+      100px
+      minmax(0, 1fr);
+
     gap: 14px;
   }
+
+
   .article-image {
     width: 100px;
     height: 75px;
   }
+
+
   .article-actions {
     grid-column: 2;
+
     justify-content: flex-start;
   }
+
 }
 
+
 @media (max-width: 480px) {
+
   .reporter-menu {
     grid-template-columns: 1fr;
   }
+
+
   .reporter-main {
     padding-left: 16px;
     padding-right: 16px;
   }
+
+
   .article-stats {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+      1fr 1fr;
   }
+
+
   .article-title {
     font-size: 16.5px;
   }
+
+
   .article-description {
     font-size: 12.5px;
   }
+
+
   .article-card {
-    grid-template-columns: 85px minmax(0, 1fr);
+    grid-template-columns:
+      85px
+      minmax(0, 1fr);
   }
+
+
   .article-image {
     width: 85px;
     height: 65px;
   }
+
+
   .article-top {
     flex-wrap: wrap;
   }
+
 }
