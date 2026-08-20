@@ -9,11 +9,28 @@
 
     <title>Thống kê bài viết - Mạch Tin</title>
 
-    <link rel="stylesheet" href="/style.css/dashboard.css">
+    <!-- ===================================================
+         CSS
+         dashboard.html nằm trong thư mục reporter/
+         nên phải đi lên 1 cấp để vào assets/
+    =================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../assets/style.css/dashboard.css"
+    >
 
 </head>
+
+
 <body>
+
 <div class="reporter-page">
+
+
+    <!-- ===================================================
+         SIDEBAR
+    =================================================== -->
 
     <aside class="reporter-sidebar">
 
@@ -24,12 +41,17 @@
 
         <div class="reporter-brand">
 
-            <a href="index.html" class="brand-link">
+            <a
+                href="../public/index.html"
+                class="brand-link"
+            >
 
                 <svg
                     class="pulse-mark"
                     viewBox="0 0 40 32"
-                    fill="none">
+                    fill="none"
+                    aria-hidden="true"
+                >
 
                     <path
                         d="M2 16
@@ -41,7 +63,8 @@
                         stroke="currentColor"
                         stroke-width="2.7"
                         stroke-linecap="round"
-                        stroke-linejoin="round"/>
+                        stroke-linejoin="round"
+                    />
 
                 </svg>
 
@@ -75,25 +98,30 @@
                 <img
                     id="sidebarAvatar"
                     src=""
-                    alt="Avatar">
+                    alt="Avatar"
+                >
 
             </div>
 
 
             <p
                 class="reporter-name"
-                id="sidebarName">
-
+                id="sidebarName"
+            >
                 Đang tải...
-
             </p>
 
 
-            <div class="reporter-role">
+            <div
+                class="reporter-role"
+                id="sidebarRole"
+            >
                 Phóng viên
             </div>
 
         </div>
+
+
 
         <!-- ===================================================
              MENU
@@ -102,19 +130,26 @@
         <nav class="reporter-menu">
 
 
+            <!-- =================================================
+                 SOẠN BÀI
+            ================================================== -->
+
             <a
                 href="write-article.html"
-                class="reporter-menu-item">
+                class="reporter-menu-item"
+            >
 
                 <svg
                     class="menu-icon"
                     viewBox="0 0 24 24"
-                    fill="none">
+                    fill="none"
+                >
 
                     <path
                         d="M4 20h4l11-11a2.8 2.8 0 000-4l-.5-.5a2.8 2.8 0 00-4 0L3.5 15.5V20z"
                         stroke="currentColor"
-                        stroke-width="1.7"/>
+                        stroke-width="1.7"
+                    />
 
                 </svg>
 
@@ -124,25 +159,35 @@
 
             </a>
 
+
+
+            <!-- =================================================
+                 BÀI VIẾT CỦA TÔI
+            ================================================== -->
+
             <a
                 href="my-articles.html"
-                class="reporter-menu-item">
+                class="reporter-menu-item"
+            >
 
                 <svg
                     class="menu-icon"
                     viewBox="0 0 24 24"
-                    fill="none">
+                    fill="none"
+                >
 
                     <path
                         d="M5 5h14v14H5z"
                         stroke="currentColor"
-                        stroke-width="1.7"/>
+                        stroke-width="1.7"
+                    />
 
                     <path
                         d="M8 9h8M8 13h6"
                         stroke="currentColor"
                         stroke-width="1.7"
-                        stroke-linecap="round"/>
+                        stroke-linecap="round"
+                    />
 
                 </svg>
 
@@ -152,25 +197,35 @@
 
             </a>
 
+
+
+            <!-- =================================================
+                 ĐỀ TÀI CỦA TÔI
+            ================================================== -->
+
             <a
                 href="my-topics.html"
-                class="reporter-menu-item">
+                class="reporter-menu-item"
+            >
 
                 <svg
                     class="menu-icon"
                     viewBox="0 0 24 24"
-                    fill="none">
+                    fill="none"
+                >
 
                     <path
                         d="M5 4h14v16H5z"
                         stroke="currentColor"
-                        stroke-width="1.7"/>
+                        stroke-width="1.7"
+                    />
 
                     <path
                         d="M8 8h8M8 12h8M8 16h5"
                         stroke="currentColor"
                         stroke-width="1.7"
-                        stroke-linecap="round"/>
+                        stroke-linecap="round"
+                    />
 
                 </svg>
 
@@ -179,25 +234,36 @@
                 </span>
 
             </a>
+
+
+
+            <!-- =================================================
+                 THỐNG KÊ
+            ================================================== -->
+
             <a
                 href="dashboard.html"
-                class="reporter-menu-item active">
+                class="reporter-menu-item active"
+            >
 
                 <svg
                     class="menu-icon"
                     viewBox="0 0 24 24"
-                    fill="none">
+                    fill="none"
+                >
 
                     <path
                         d="M4 19V5M4 19h16"
                         stroke="currentColor"
-                        stroke-width="1.7"/>
+                        stroke-width="1.7"
+                    />
 
                     <path
                         d="M8 16v-5M12 16V8M16 16v-8"
                         stroke="currentColor"
                         stroke-width="1.7"
-                        stroke-linecap="round"/>
+                        stroke-linecap="round"
+                    />
 
                 </svg>
 
@@ -207,24 +273,34 @@
 
             </a>
 
+
+
+            <!-- =================================================
+                 VỀ TRANG CHỦ
+            ================================================== -->
+
             <a
-                href="public/index.html"
-                class="reporter-menu-item">
+                href="../public/index.html"
+                class="reporter-menu-item"
+            >
 
                 <svg
                     class="menu-icon"
                     viewBox="0 0 24 24"
-                    fill="none">
+                    fill="none"
+                >
 
                     <path
                         d="M3 12l9-8 9 8"
                         stroke="currentColor"
-                        stroke-width="1.7"/>
+                        stroke-width="1.7"
+                    />
 
                     <path
                         d="M5 10v10h14V10"
                         stroke="currentColor"
-                        stroke-width="1.7"/>
+                        stroke-width="1.7"
+                    />
 
                 </svg>
 
@@ -240,6 +316,8 @@
 
     </aside>
 
+
+
     <!-- ===================================================
          MAIN
     =================================================== -->
@@ -248,6 +326,7 @@
 
 
         <div class="reporter-content">
+
 
             <!-- ===================================================
                  HEADER
@@ -262,7 +341,8 @@
                     </h1>
 
                     <p>
-                        Theo dõi lượt xem, bình luận và lượt thích các bài viết đã đăng.
+                        Theo dõi lượt xem, bình luận và lượt thích
+                        các bài viết đã đăng.
                     </p>
 
                 </div>
@@ -270,17 +350,21 @@
             </header>
 
 
+
             <div class="page-line"></div>
+
+
+
             <!-- ===================================================
-                 STATISTICS TABLE
+                 STATISTICS
             =================================================== -->
 
             <section class="statistics-section">
 
 
-                <!-- ===================================================
+                <!-- =================================================
                      SECTION HEADER
-                =================================================== -->
+                ================================================== -->
 
                 <div class="section-heading">
 
@@ -288,100 +372,125 @@
                         Danh sách bài viết
                     </h2>
 
+
                     <div
                         id="articleCount"
-                        class="article-count-box">
-
+                        class="article-count-box"
+                    >
                         Đang tải...
-
                     </div>
 
                 </div>
-                <!-- ===================================================
+
+
+
+                <!-- =================================================
                      EMPTY STATE
-                =================================================== -->
+                ================================================== -->
 
                 <div
                     id="emptyState"
-                    class="empty-state hidden">
+                    class="empty-state hidden"
+                >
 
                     <svg
                         viewBox="0 0 24 24"
-                        fill="none">
+                        fill="none"
+                    >
 
                         <path
                             d="M6 4h12v16H6z"
                             stroke="currentColor"
-                            stroke-width="1.5"/>
+                            stroke-width="1.5"
+                        />
 
                         <path
                             d="M9 8h6M9 12h6M9 16h3"
                             stroke="currentColor"
                             stroke-width="1.5"
-                            stroke-linecap="round"/>
+                            stroke-linecap="round"
+                        />
 
                     </svg>
+
 
                     <h3>
                         Bạn chưa có bài viết nào được đăng
                     </h3>
 
+
                     <p>
-                        Các bài viết sau khi được duyệt và đăng sẽ xuất hiện tại đây.
+                        Các bài viết sau khi được duyệt và đăng
+                        sẽ xuất hiện tại đây.
                     </p>
 
                 </div>
 
-                <!-- ===================================================
-                     TABLE WRAPPER
-                =================================================== -->
+
+
+                <!-- =================================================
+                     TABLE
+                ================================================== -->
 
                 <div
                     id="tableWrapper"
-                    class="table-wrapper">
+                    class="table-wrapper"
+                >
 
                     <table class="article-table">
-                        <!-- ===================================================
+
+
+                        <!-- =================================================
                              TABLE HEADER
-                        =================================================== -->
+                        ================================================== -->
 
                         <thead>
 
                             <tr>
 
+
+                                <!-- TIÊU ĐỀ -->
+
                                 <th
                                     class="title-column"
-                                    data-sort="title">
+                                    data-sort="title"
+                                >
 
                                     <button
                                         class="sort-button"
-                                        type="button">
+                                        type="button"
+                                    >
 
                                         <span>
                                             Tiêu đề
                                         </span>
 
+
                                         <span
                                             class="sort-icon"
-                                            aria-hidden="true">
+                                            aria-hidden="true"
+                                        >
 
                                             <svg
                                                 viewBox="0 0 16 16"
-                                                fill="none">
+                                                fill="none"
+                                            >
 
                                                 <path
                                                     d="M5 6.5L8 3.5L11 6.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                                 <path
                                                     d="M5 9.5L8 12.5L11 9.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                             </svg>
 
@@ -390,40 +499,50 @@
                                     </button>
 
                                 </th>
+
+
+
                                 <!-- NGÀY ĐĂNG -->
 
                                 <th
-                                    data-sort="date">
+                                    data-sort="date"
+                                >
 
                                     <button
                                         class="sort-button"
-                                        type="button">
+                                        type="button"
+                                    >
 
                                         <span>
                                             Ngày đăng
                                         </span>
 
+
                                         <span
                                             class="sort-icon"
-                                            aria-hidden="true">
+                                            aria-hidden="true"
+                                        >
 
                                             <svg
                                                 viewBox="0 0 16 16"
-                                                fill="none">
+                                                fill="none"
+                                            >
 
                                                 <path
                                                     d="M5 6.5L8 3.5L11 6.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                                 <path
                                                     d="M5 9.5L8 12.5L11 9.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                             </svg>
 
@@ -433,40 +552,49 @@
 
                                 </th>
 
+
+
                                 <!-- LƯỢT XEM -->
 
                                 <th
-                                    data-sort="views">
+                                    data-sort="views"
+                                >
 
                                     <button
                                         class="sort-button"
-                                        type="button">
+                                        type="button"
+                                    >
 
                                         <span>
                                             Lượt xem
                                         </span>
 
+
                                         <span
                                             class="sort-icon"
-                                            aria-hidden="true">
+                                            aria-hidden="true"
+                                        >
 
                                             <svg
                                                 viewBox="0 0 16 16"
-                                                fill="none">
+                                                fill="none"
+                                            >
 
                                                 <path
                                                     d="M5 6.5L8 3.5L11 6.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                                 <path
                                                     d="M5 9.5L8 12.5L11 9.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                             </svg>
 
@@ -476,40 +604,49 @@
 
                                 </th>
 
+
+
                                 <!-- BÌNH LUẬN -->
 
                                 <th
-                                    data-sort="comments">
+                                    data-sort="comments"
+                                >
 
                                     <button
                                         class="sort-button"
-                                        type="button">
+                                        type="button"
+                                    >
 
                                         <span>
                                             Bình luận
                                         </span>
 
+
                                         <span
                                             class="sort-icon"
-                                            aria-hidden="true">
+                                            aria-hidden="true"
+                                        >
 
                                             <svg
                                                 viewBox="0 0 16 16"
-                                                fill="none">
+                                                fill="none"
+                                            >
 
                                                 <path
                                                     d="M5 6.5L8 3.5L11 6.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                                 <path
                                                     d="M5 9.5L8 12.5L11 9.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                             </svg>
 
@@ -519,40 +656,49 @@
 
                                 </th>
 
+
+
                                 <!-- LƯỢT THÍCH -->
 
                                 <th
-                                    data-sort="likes">
+                                    data-sort="likes"
+                                >
 
                                     <button
                                         class="sort-button"
-                                        type="button">
+                                        type="button"
+                                    >
 
                                         <span>
                                             Lượt thích
                                         </span>
 
+
                                         <span
                                             class="sort-icon"
-                                            aria-hidden="true">
+                                            aria-hidden="true"
+                                        >
 
                                             <svg
                                                 viewBox="0 0 16 16"
-                                                fill="none">
+                                                fill="none"
+                                            >
 
                                                 <path
                                                     d="M5 6.5L8 3.5L11 6.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                                 <path
                                                     d="M5 9.5L8 12.5L11 9.5"
                                                     stroke="currentColor"
                                                     stroke-width="1.4"
                                                     stroke-linecap="round"
-                                                    stroke-linejoin="round"/>
+                                                    stroke-linejoin="round"
+                                                />
 
                                             </svg>
 
@@ -567,16 +713,17 @@
 
                         </thead>
 
-                        <!-- ===================================================
+
+
+                        <!-- =================================================
                              TABLE BODY
-                        =================================================== -->
+                        ================================================== -->
 
                         <tbody id="articleTableBody">
                         </tbody>
 
 
                     </table>
-
 
                 </div>
 
@@ -591,117 +738,312 @@
 
 
 </div>
-<script src="mock-data.js"></script>
+
+
+
+<!-- ===================================================
+     MOCK DATA
+
+     dashboard.html nằm trong reporter/
+     mock-data.js nằm ở thư mục gốc
+     => phải dùng ../
+=================================================== -->
+
+<script src="../mock-data.js"></script>
+
+
 
 <script>
+
+
+/* =====================================================
+   LẤY USER HIỆN TẠI
+===================================================== */
 
 const storedUserId =
     localStorage.getItem("user_id");
 
 
-const currentReporter =
-    storedUserId
-        ? MOCK_DATA.users.find(
-            user =>
-                String(user.id) === String(storedUserId) &&
-                user.role === "reporter"
-        )
-        : MOCK_DATA.users.find(
-            user =>
-                user.role === "reporter" &&
-                user.status === "active"
-        );
+let currentReporter = null;
 
-// =====================================================
-// SIDEBAR USER
-// =====================================================
+
+if (
+    typeof MOCK_DATA !== "undefined" &&
+    Array.isArray(MOCK_DATA.users)
+) {
+
+    if (storedUserId) {
+
+        currentReporter =
+            MOCK_DATA.users.find(
+                user =>
+                    String(user.id) === String(storedUserId) &&
+                    user.role === "reporter"
+            );
+
+    }
+
+
+    if (!currentReporter) {
+
+        currentReporter =
+            MOCK_DATA.users.find(
+                user =>
+                    user.role === "reporter" &&
+                    user.status === "active"
+            );
+
+    }
+
+
+    if (!currentReporter) {
+
+        currentReporter =
+            MOCK_DATA.users.find(
+                user =>
+                    user.role === "reporter"
+            );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SIDEBAR USER
+===================================================== */
 
 if (currentReporter) {
 
-    document.getElementById("sidebarName").textContent =
-        currentReporter.full_name;
 
-    document.getElementById("sidebarAvatar").src =
-        currentReporter.avatar;
+    document.getElementById(
+        "sidebarName"
+    ).textContent =
+        currentReporter.full_name ||
+        currentReporter.username ||
+        "Phóng viên";
+
+
+    document.getElementById(
+        "sidebarRole"
+    ).textContent =
+        "Phóng viên";
+
+
+
+    /* =================================================
+       AVATAR
+    ================================================= */
+
+    const sidebarAvatar =
+        document.getElementById(
+            "sidebarAvatar"
+        );
+
+
+    const savedAvatar =
+        localStorage.getItem(
+            "userAvatar_" + currentReporter.id
+        );
+
+
+    const avatarURL =
+        savedAvatar ||
+        currentReporter.avatar ||
+        "";
+
+
+    if (avatarURL) {
+
+        sidebarAvatar.src =
+            avatarURL;
+
+    }
+
+
+    sidebarAvatar.onerror =
+        function () {
+
+            sidebarAvatar.onerror =
+                null;
+
+            if (
+                currentReporter.avatar &&
+                currentReporter.avatar !== avatarURL
+            ) {
+
+                sidebarAvatar.src =
+                    currentReporter.avatar;
+
+            }
+
+        };
 
 }
+
+
+
+/* =====================================================
+   DANH SÁCH BÀI VIẾT
+===================================================== */
+
 let statisticsArticles = [];
 
 
-if (currentReporter) {
+
+if (
+    currentReporter &&
+    typeof MOCK_DATA !== "undefined" &&
+    Array.isArray(MOCK_DATA.articles)
+) {
+
 
     statisticsArticles =
         MOCK_DATA.articles
-            .filter(article =>
-                article.author_id === currentReporter.id &&
-                article.status === "published"
+
+            .filter(
+                article =>
+                    Number(article.author_id) ===
+                    Number(currentReporter.id) &&
+
+                    article.status === "published"
             )
-            .map(article => {
 
 
-                const commentCount =
-                    MOCK_DATA.comments.filter(comment =>
-                        comment.article_id === article.id &&
-                        comment.is_deleted === false
-                    ).length;
+            .map(
+                article => {
+
+
+                    /* =====================================
+                       ĐẾM BÌNH LUẬN
+                    ===================================== */
+
+                    let commentCount = 0;
+
+
+                    if (
+                        Array.isArray(MOCK_DATA.comments)
+                    ) {
+
+                        commentCount =
+                            MOCK_DATA.comments.filter(
+                                comment =>
+                                    Number(comment.article_id) ===
+                                    Number(article.id) &&
+
+                                    comment.is_deleted !== true
+                            ).length;
+
+                    }
 
 
 
-                const likeCount =
-                    MOCK_DATA.favorites.filter(favorite =>
-                        favorite.article_id === article.id
-                    ).length;
+                    /* =====================================
+                       ĐẾM LƯỢT THÍCH
+                    ===================================== */
+
+                    let likeCount = 0;
+
+
+                    if (
+                        Array.isArray(MOCK_DATA.favorites)
+                    ) {
+
+                        likeCount =
+                            MOCK_DATA.favorites.filter(
+                                favorite =>
+                                    Number(favorite.article_id) ===
+                                    Number(article.id)
+                            ).length;
+
+                    }
 
 
 
-                return {
+                    return {
 
-                    ...article,
+                        ...article,
 
-                    commentCount: commentCount,
+                        commentCount:
+                            commentCount,
 
-                    likeCount: likeCount
+                        likeCount:
+                            likeCount
 
-                };
+                    };
 
-            });
+                }
+            );
 
 }
 
+
+
+/* =====================================================
+   SORT HIỆN TẠI
+===================================================== */
+
 let currentSort = {
+
     key: "date",
+
     direction: "desc"
+
 };
 
-function getSortValue(article, key) {
+
+
+/* =====================================================
+   LẤY GIÁ TRỊ SORT
+===================================================== */
+
+function getSortValue(
+    article,
+    key
+) {
+
 
     switch (key) {
 
+
         case "title":
 
-            return article.title.toLowerCase();
+            return String(
+                article.title || ""
+            ).toLowerCase();
 
 
         case "date":
 
             return new Date(
-                article.published_at
+                String(
+                    article.published_at ||
+                    article.created_at ||
+                    ""
+                ).replace(" ", "T")
             ).getTime();
 
 
         case "views":
 
-            return article.view_count;
+            return Number(
+                article.view_count || 0
+            );
 
 
         case "comments":
 
-            return article.commentCount;
+            return Number(
+                article.commentCount || 0
+            );
 
 
         case "likes":
 
-            return article.likeCount;
+            return Number(
+                article.likeCount || 0
+            );
 
 
         default:
@@ -712,10 +1054,18 @@ function getSortValue(article, key) {
 
 }
 
+
+
+/* =====================================================
+   SORT ARTICLES
+===================================================== */
+
 function sortArticles() {
+
 
     statisticsArticles.sort(
         (a, b) => {
+
 
             const valueA =
                 getSortValue(
@@ -732,7 +1082,14 @@ function sortArticles() {
 
 
 
-            if (typeof valueA === "string") {
+            /* =========================================
+               SORT CHUỖI
+            ========================================= */
+
+            if (
+                typeof valueA === "string"
+            ) {
+
 
                 return currentSort.direction === "asc"
 
@@ -750,6 +1107,10 @@ function sortArticles() {
 
 
 
+            /* =========================================
+               SORT SỐ
+            ========================================= */
+
             return currentSort.direction === "asc"
 
                 ? valueA - valueB
@@ -761,11 +1122,16 @@ function sortArticles() {
 
 }
 
-// =====================================================
-// FORMAT DATE
-// =====================================================
 
-function formatDate(dateString) {
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDate(
+    dateString
+) {
+
 
     if (!dateString) {
 
@@ -776,8 +1142,21 @@ function formatDate(dateString) {
 
     const date =
         new Date(
-            dateString.replace(" ", "T")
+            String(
+                dateString
+            ).replace(" ", "T")
         );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "—";
+
+    }
 
 
     return date.toLocaleDateString(
@@ -786,11 +1165,14 @@ function formatDate(dateString) {
 
 }
 
-// =====================================================
-// RENDER TABLE
-// =====================================================
+
+
+/* =====================================================
+   RENDER TABLE
+===================================================== */
 
 function renderTable() {
+
 
     const tbody =
         document.getElementById(
@@ -820,9 +1202,15 @@ function renderTable() {
     tbody.innerHTML = "";
 
 
+
+    /* =================================================
+       KHÔNG CÓ BÀI VIẾT
+    ================================================= */
+
     if (
         statisticsArticles.length === 0
     ) {
+
 
         tableWrapper.classList.add(
             "hidden"
@@ -842,6 +1230,12 @@ function renderTable() {
 
     }
 
+
+
+    /* =================================================
+       CÓ BÀI VIẾT
+    ================================================= */
+
     tableWrapper.classList.remove(
         "hidden"
     );
@@ -857,12 +1251,41 @@ function renderTable() {
 
 
 
+    /* =================================================
+       RENDER TỪNG BÀI
+    ================================================= */
+
     statisticsArticles.forEach(
         article => {
 
 
             const row =
-                document.createElement("tr");
+                document.createElement(
+                    "tr"
+                );
+
+
+            const title =
+                article.title ||
+                "Không có tiêu đề";
+
+
+            const views =
+                Number(
+                    article.view_count || 0
+                );
+
+
+            const comments =
+                Number(
+                    article.commentCount || 0
+                );
+
+
+            const likes =
+                Number(
+                    article.likeCount || 0
+                );
 
 
 
@@ -871,11 +1294,10 @@ function renderTable() {
                 <td class="article-title-cell">
 
                     <a
-                        href="article-detail.html?id=${article.id}"
-                        class="article-title">
-
-                        ${article.title}
-
+                        href="article-detail.html?id=${encodeURIComponent(article.id)}"
+                        class="article-title"
+                    >
+                        ${title}
                     </a>
 
                 </td>
@@ -883,133 +1305,185 @@ function renderTable() {
 
                 <td class="date-cell">
 
-                    ${formatDate(article.published_at)}
+                    ${formatDate(
+                        article.published_at ||
+                        article.created_at
+                    )}
 
                 </td>
 
 
                 <td class="number-cell">
 
-                    ${article.view_count.toLocaleString("vi-VN")}
+                    ${views.toLocaleString("vi-VN")}
 
                 </td>
 
 
                 <td class="number-cell">
 
-                    ${article.commentCount.toLocaleString("vi-VN")}
+                    ${comments.toLocaleString("vi-VN")}
 
                 </td>
 
 
                 <td class="number-cell">
 
-                    ${article.likeCount.toLocaleString("vi-VN")}
+                    ${likes.toLocaleString("vi-VN")}
 
                 </td>
 
             `;
 
 
-
-            tbody.appendChild(row);
+            tbody.appendChild(
+                row
+            );
 
         }
     );
 
 }
 
-// =====================================================
-// CLICK SORT HEADER
-// =====================================================
+
+
+/* =====================================================
+   CLICK SORT HEADER
+===================================================== */
 
 document
     .querySelectorAll(
         ".article-table th[data-sort]"
     )
-    .forEach(header => {
+    .forEach(
+        header => {
 
 
-        const button =
-            header.querySelector(
-                ".sort-button"
-            );
-
-
-
-        button.addEventListener(
-            "click",
-            () => {
-
-
-                const key =
-                    header.dataset.sort;
-
-
-
-                if (
-                    currentSort.key === key
-                ) {
-
-                    currentSort.direction =
-                        currentSort.direction === "asc"
-                            ? "desc"
-                            : "asc";
-
-                } else {
-
-                    currentSort.key = key;
-
-                    currentSort.direction =
-                        key === "title"
-                            ? "asc"
-                            : "desc";
-
-                }
-
-                document
-                    .querySelectorAll(
-                        ".article-table th"
-                    )
-                    .forEach(th => {
-
-                        th.classList.remove(
-                            "sorted"
-                        );
-
-
-                        th.removeAttribute(
-                            "data-direction"
-                        );
-
-                    });
-
-
-
-                header.classList.add(
-                    "sorted"
+            const button =
+                header.querySelector(
+                    ".sort-button"
                 );
 
 
-                header.setAttribute(
-                    "data-direction",
-                    currentSort.direction
-                );
+            if (!button) {
 
-
-
-                sortArticles();
-
-                renderTable();
+                return;
 
             }
-        );
 
-    });
 
-// =====================================================
-// INITIAL RENDER
-// =====================================================
+
+            button.addEventListener(
+                "click",
+                () => {
+
+
+                    const key =
+                        header.dataset.sort;
+
+
+
+                    /* =================================
+                       CLICK CÙNG CỘT
+                    ================================= */
+
+                    if (
+                        currentSort.key === key
+                    ) {
+
+
+                        currentSort.direction =
+                            currentSort.direction === "asc"
+
+                                ? "desc"
+
+                                : "asc";
+
+                    }
+
+
+                    /* =================================
+                       CLICK CỘT KHÁC
+                    ================================= */
+
+                    else {
+
+
+                        currentSort.key =
+                            key;
+
+
+                        currentSort.direction =
+                            key === "title"
+
+                                ? "asc"
+
+                                : "desc";
+
+                    }
+
+
+
+                    /* =================================
+                       RESET HEADER
+                    ================================= */
+
+                    document
+                        .querySelectorAll(
+                            ".article-table th"
+                        )
+                        .forEach(
+                            th => {
+
+                                th.classList.remove(
+                                    "sorted"
+                                );
+
+
+                                th.removeAttribute(
+                                    "data-direction"
+                                );
+
+                            }
+                        );
+
+
+
+                    /* =================================
+                       ACTIVE HEADER
+                    ================================= */
+
+                    header.classList.add(
+                        "sorted"
+                    );
+
+
+                    header.setAttribute(
+                        "data-direction",
+                        currentSort.direction
+                    );
+
+
+
+                    /* =================================
+                       SORT + RENDER
+                    ================================= */
+
+                    sortArticles();
+
+                    renderTable();
+
+                }
+            );
+
+        }
+    );
+
+
+
+/* =====================================================
+   INITIAL RENDER
+===================================================== */
 
 sortArticles();
 

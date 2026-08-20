@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soạn bài — Mạch Tin</title>
+    <link rel="stylesheet" href="style.css/write-article.css" />
+  </head>
+
+  <body>
+    <div class="reporter-page">
+
+      <!-- =====================================================
+           SIDEBAR
+      ====================================================== -->
+
+      <aside class="reporter-sidebar">
+        <!-- LOGO -->
+        <div class="reporter-brand">
+          <a href="index.html" class="brand-link">
+
+            <svg
+              class="pulse-mark"
+              viewBox="0 0 40 32"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
+                stroke="currentColor"
+                stroke-width="2.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span class="brand-word">
+              <span class="brand-mach">MẠCH</span>
+              <span class="brand-tin">TIN</span>
+            </span>
+
+          </a>
+        </div>
+
+        <!-- =================================================
+             USER
+        ================================================== -->
+
+        <div class="reporter-user">
+          <div
+            class="reporter-avatar"
+            id="userAvatar"
+          >
+            <span id="userInitials">TN</span>
+          </div>
+
+          <p
+            class="reporter-name"
+            id="userName"
+          >
+            Thanh Ngân
+          </p>
+
+          <div class="reporter-role">
+            Phóng viên
+          </div>
+
+        </div>
+
+        <!-- =================================================
+             MENU
+        ================================================== -->
+        <nav class="reporter-menu">
+
+          <!-- SOẠN BÀI -->
+          <a
+            href="write-article.html"
+            class="reporter-menu-item active"
+          >
+            <svg
+              class="menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M4 20h4L19 9l-4-4L4 16v4z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M13.5 6.5l4 4"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+            </svg>
+
+            <span>Soạn bài</span>
+          </a>
+          <!-- BÀI VIẾT CỦA TÔI -->
+          <a
+            href="my-articles.html"
+            class="reporter-menu-item"
+          >
+            <svg
+              class="menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M5 4h14v16H5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+
+              <path
+                d="M8 8h8M8 12h8M8 16h5"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span>Bài viết của tôi</span>
+          </a>
+          <!-- ĐỀ TÀI -->
+          <a
+            href="my-topics.html"
+            class="reporter-menu-item"
+          >
+            <svg
+              class="menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M8 4h9l3 3v13H8z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M11 10h6M11 14h6"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span>Đề tài của tôi</span>
+          </a>
+          <!-- THỐNG KÊ -->
+          <a
+            href="dashboard.html"
+            class="reporter-menu-item"
+          >
+            <svg
+              class="menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M4 19V10M10 19V5M16 19v-7M22 19H2"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span>Thống kê</span>
+          </a>
+
+          <!-- VỀ TRANG CHỦ -->
+          <a
+            href="index.html"
+            class="reporter-menu-item"
+          >
+            <svg
+              class="menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span>Về trang chủ</span>
+          </a>
+
+        </nav>
+
+      </aside>
+
+      <!-- =====================================================
+           MAIN
+      ====================================================== -->
+
+      <main class="reporter-main">
+
+        <div class="reporter-content">
+
+          <div class="page-header">
+
+            <div>
+
+              <h1>Soạn bài</h1>
+
+              <p>
+                Tạo bài viết mới và gửi đến biên tập viên để duyệt.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="page-line"></div>
+
+          <!-- =================================================
+               FORM
+          ================================================== -->
+
+          <form
+            id="articleForm"
+            class="article-form"
+          >
+            <!-- ==============================
+                 01 - THÔNG TIN BÀI VIẾT
+            =============================== -->
+
+            <section class="form-section">
+
+              <div class="section-title">
+                <span>01</span>
+                <h2>Thông tin bài viết</h2>
+              </div>
+
+
+              <div class="form-group">
+
+                <label for="articleTitle">
+                  Tiêu đề bài viết
+                  <b>*</b>
+                </label>
+
+                <input
+                  type="text"
+                  id="articleTitle"
+                  name="title"
+                  placeholder="Nhập tiêu đề bài viết..."
+                  required
+                />
+
+              </div>
+
+
+              <div class="form-row">
+
+                <div class="form-group">
+
+                  <label for="articleCategory">
+                    Chuyên mục
+                    <b>*</b>
+                  </label>
+
+                  <select
+                    id="articleCategory"
+                    required
+                  >
+                    <option value="">
+                      Chọn chuyên mục
+                    </option>
+                  </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                  <label for="articleTopic">
+                    Đề tài được giao
+                  </label>
+
+                  <select id="articleTopic">
+
+                    <option value="">
+                      Không thuộc đề tài được giao
+                    </option>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label for="articleDescription">
+                  Mô tả ngắn
+                  <b>*</b>
+                </label>
+
+                <textarea
+                  id="articleDescription"
+                  rows="4"
+                  placeholder="Tóm tắt nội dung chính của bài viết..."
+                  required
+                ></textarea>
+
+              </div>
+
+            </section>
+            <!-- ==============================
+                 02 - ẢNH BÌA
+            =============================== -->
+
+            <section class="form-section">
+
+              <div class="section-title">
+                <span>02</span>
+                <h2>Ảnh bìa bài viết</h2>
+              </div>
+
+
+              <div class="image-method">
+
+                <label class="radio-option">
+
+                  <input
+                    type="radio"
+                    name="imageMethod"
+                    value="upload"
+                    checked
+                  />
+
+                  <span>Tải ảnh lên</span>
+
+                </label>
+
+
+                <label class="radio-option">
+
+                  <input
+                    type="radio"
+                    name="imageMethod"
+                    value="url"
+                  />
+
+                  <span>Nhập URL ảnh</span>
+
+                </label>
+
+              </div>
+
+
+              <div
+                id="uploadBox"
+                class="image-input-box"
+              >
+
+                <input
+                  type="file"
+                  id="coverImage"
+                  accept="image/*"
+                />
+
+                <p>
+                  Chọn ảnh JPG, PNG hoặc WEBP.
+                </p>
+
+              </div>
+
+
+              <div
+                id="urlBox"
+                class="image-input-box hidden"
+              >
+
+                <input
+                  type="url"
+                  id="coverImageUrl"
+                  placeholder="https://example.com/image.jpg"
+                />
+
+              </div>
+
+
+              <div
+                id="imagePreview"
+                class="image-preview hidden"
+              >
+
+                <img
+                  id="previewImage"
+                  src=""
+                  alt="Xem trước ảnh"
+                />
+
+              </div>
+
+            </section>
+            <!-- ==============================
+                 03 - NỘI DUNG
+            =============================== -->
+
+            <section class="form-section">
+
+              <div class="section-title">
+                <span>03</span>
+                <h2>Nội dung</h2>
+              </div>
+
+
+              <div class="form-group">
+
+                <label for="articleContent">
+                  Nội dung bài viết
+                  <b>*</b>
+                </label>
+
+
+                <textarea
+                  id="articleContent"
+                  class="content-editor"
+                  placeholder="Nhập nội dung bài viết..."
+                  required
+                ></textarea>
+
+
+                <div class="character-count">
+
+                  <span id="contentCount">
+                    0
+                  </span>
+
+                  ký tự
+
+                </div>
+
+              </div>
+
+            </section>
+            <!-- ==============================
+                 04 - THẺ
+            =============================== -->
+
+            <section class="form-section">
+
+              <div class="section-title">
+                <span>04</span>
+                <h2>Thẻ bài viết</h2>
+              </div>
+
+
+              <div
+                id="tagList"
+                class="tag-list"
+              ></div>
+
+
+              <p class="form-note">
+                Chọn các thẻ phù hợp với nội dung bài viết.
+              </p>
+
+            </section>
+
+
+            <!-- BUTTON -->
+            <div class="form-actions">
+
+              <button
+                type="button"
+                class="draft-button"
+                id="saveDraft"
+              >
+                Lưu bản nháp
+              </button>
+
+
+              <button
+                type="submit"
+                class="submit-button"
+              >
+                Gửi biên tập viên
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </main>
+
+    </div>
+
+    <script src="mock-data.js"></script>
+
+    <script>
+
+      const CURRENT_REPORTER_ID = 5;
+
+
+      /* =====================================================
+         DOM
+      ===================================================== */
+
+      const categorySelect =
+        document.getElementById("articleCategory");
+
+      const topicSelect =
+        document.getElementById("articleTopic");
+
+      const tagList =
+        document.getElementById("tagList");
+
+      const content =
+        document.getElementById("articleContent");
+
+      const contentCount =
+        document.getElementById("contentCount");
+
+      const uploadBox =
+        document.getElementById("uploadBox");
+
+      const urlBox =
+        document.getElementById("urlBox");
+
+      const coverImage =
+        document.getElementById("coverImage");
+
+      const coverImageUrl =
+        document.getElementById("coverImageUrl");
+
+      const imagePreview =
+        document.getElementById("imagePreview");
+
+      const previewImage =
+        document.getElementById("previewImage");
+
+
+      /* =====================================================
+         INITIALS
+      ===================================================== */
+
+      function getInitials(name) {
+
+        if (!name) {
+          return "U";
+        }
+
+        const words =
+          name.trim().split(/\s+/);
+
+
+        if (words.length === 1) {
+
+          return words[0]
+            .substring(0, 2)
+            .toUpperCase();
+
+        }
+
+
+        return (
+          words[0].charAt(0) +
+          words[words.length - 1].charAt(0)
+        ).toUpperCase();
+
+      }
+
+
+      /* =====================================================
+         LOAD REPORTER + AVATAR
+      ===================================================== */
+
+      function loadReporter() {
+        const user =
+          MOCK_DATA.users.find(
+            (user) =>
+              Number(user.id) ===
+              Number(CURRENT_REPORTER_ID)
+          );
+
+
+        if (!user) {
+
+          console.warn(
+            "Không tìm thấy reporter có id:",
+            CURRENT_REPORTER_ID
+          );
+
+          return;
+
+        }
+
+        /* ================================
+           TÊN
+        ================================= */
+
+        document.getElementById(
+          "userName"
+        ).textContent =
+          user.full_name || "Người dùng";
+
+        /* ================================
+           AVATAR CONTAINER
+        ================================= */
+
+        const avatar =
+          document.getElementById(
+            "userAvatar"
+          );
+        avatar.innerHTML = "";
+
+        if (user.avatar) {
+
+          const img =
+            document.createElement("img");
+
+
+          img.src =
+            user.avatar;
+
+
+          img.alt =
+            user.full_name
+              ? `Avatar ${user.full_name}`
+              : "Avatar";
+
+          img.style.width =
+            "100%";
+
+          img.style.height =
+            "100%";
+
+          img.style.display =
+            "block";
+
+          img.style.objectFit =
+            "cover";
+
+          img.style.borderRadius =
+            "inherit";
+
+          img.onerror =
+            function () {
+
+              avatar.innerHTML = "";
+
+              avatar.classList.add(
+                "avatar-fallback"
+              );
+
+
+              const initials =
+                document.createElement("span");
+
+
+              initials.textContent =
+                getInitials(
+                  user.full_name
+                );
+
+
+              initials.id =
+                "userInitials";
+
+
+              avatar.appendChild(
+                initials
+              );
+
+            };
+
+          img.onload =
+            function () {
+
+              avatar.classList.remove(
+                "avatar-fallback"
+              );
+
+            };
+
+
+          avatar.appendChild(img);
+
+        }
+
+        else {
+
+          /* Không có avatar iện initials */
+          avatar.classList.add(
+            "avatar-fallback"
+          );
+
+          const initials =
+            document.createElement("span");
+
+
+          initials.id =
+            "userInitials";
+
+
+          initials.textContent =
+            getInitials(
+              user.full_name
+            );
+
+
+          avatar.appendChild(
+            initials
+          );
+
+        }
+
+      }
+
+      /* =====================================================
+         LOAD CATEGORY
+      ====================================================== */
+
+      function loadCategories() {
+
+        MOCK_DATA.categories.forEach(
+          (category) => {
+
+            const option =
+              document.createElement(
+                "option"
+              );
+
+
+            option.value =
+              category.id;
+
+
+            option.textContent =
+              category.name;
+
+
+            categorySelect.appendChild(
+              option
+            );
+
+          }
+        );
+
+      }
+
+      /* =====================================================
+         LOAD TOPICS
+      ====================================================== */
+
+      function loadTopics() {
+
+        const topics =
+          MOCK_DATA.topics.filter(
+            (topic) =>
+              Number(topic.reporter_id) ===
+              Number(CURRENT_REPORTER_ID)
+          );
+
+
+        topics.forEach(
+          (topic) => {
+
+            const option =
+              document.createElement(
+                "option"
+              );
+
+
+            option.value =
+              topic.id;
+
+
+            option.textContent =
+              topic.title;
+
+
+            topicSelect.appendChild(
+              option
+            );
+
+          }
+        );
+
+      }
+      /* =====================================================
+         LOAD TAGS
+      ====================================================== */
+
+      function loadTags() {
+
+        MOCK_DATA.tags.forEach(
+          (tag) => {
+
+            const label =
+              document.createElement(
+                "label"
+              );
+
+
+            label.className =
+              "tag-option";
+
+
+            label.innerHTML = `
+
+              <input
+                type="checkbox"
+                value="${tag.id}"
+              >
+
+              <span>
+                ${tag.name}
+              </span>
+
+            `;
+
+
+            tagList.appendChild(
+              label
+            );
+
+          }
+        );
+
+      }
+      /* =====================================================
+         IMAGE METHOD
+      ====================================================== */
+
+      document
+        .querySelectorAll(
+          'input[name="imageMethod"]'
+        )
+        .forEach(
+          (radio) => {
+
+            radio.addEventListener(
+              "change",
+              function () {
+
+                if (
+                  this.value ===
+                  "upload"
+                ) {
+
+                  uploadBox.classList.remove(
+                    "hidden"
+                  );
+
+                  urlBox.classList.add(
+                    "hidden"
+                  );
+
+                }
+
+                else {
+
+                  uploadBox.classList.add(
+                    "hidden"
+                  );
+
+                  urlBox.classList.remove(
+                    "hidden"
+                  );
+
+                }
+
+              }
+            );
+
+          }
+        );
+
+
+      /* =====================================================
+         UPLOAD IMAGE
+      ====================================================== */
+
+      coverImage.addEventListener(
+        "change",
+        function () {
+
+          const file =
+            this.files[0];
+
+
+          if (!file) {
+            return;
+          }
+
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            function (event) {
+
+              previewImage.src =
+                event.target.result;
+
+
+              imagePreview.classList.remove(
+                "hidden"
+              );
+
+            };
+
+
+          reader.readAsDataURL(file);
+
+        }
+      );
+      /* =====================================================
+         IMAGE URL
+      ====================================================== */
+
+      coverImageUrl.addEventListener(
+        "input",
+        function () {
+
+          const url =
+            this.value.trim();
+
+
+          if (!url) {
+
+            imagePreview.classList.add(
+              "hidden"
+            );
+
+            return;
+
+          }
+
+          previewImage.src =
+            url;
+
+
+          imagePreview.classList.remove(
+            "hidden"
+          );
+
+        }
+      );
+      /* =====================================================
+         CONTENT COUNT
+      ====================================================== */
+
+      content.addEventListener(
+        "input",
+        function () {
+
+          contentCount.textContent =
+            this.value.length;
+
+        }
+      );
+      /* =====================================================
+         SAVE DRAFT
+      ====================================================== */
+
+      document
+        .getElementById("saveDraft")
+        .addEventListener(
+          "click",
+          function () {
+
+            const title =
+              document
+                .getElementById(
+                  "articleTitle"
+                )
+                .value
+                .trim();
+
+
+            if (!title) {
+
+              alert(
+                "Vui lòng nhập tiêu đề bài viết."
+              );
+
+              return;
+
+            }
+
+
+            alert(
+              "Bản nháp đã được lưu thành công."
+            );
+
+          }
+        );
+      /* =====================================================
+         SUBMIT ARTICLE
+      ====================================================== */
+
+      document
+        .getElementById("articleForm")
+        .addEventListener(
+          "submit",
+          function (event) {
+
+            event.preventDefault();
+
+
+            const title =
+              document
+                .getElementById(
+                  "articleTitle"
+                )
+                .value
+                .trim();
+
+
+            const description =
+              document
+                .getElementById(
+                  "articleDescription"
+                )
+                .value
+                .trim();
+
+
+            const articleContent =
+              content.value.trim();
+
+
+            const category =
+              categorySelect.value;
+
+
+            if (
+              !title ||
+              !description ||
+              !articleContent ||
+              !category
+            ) {
+
+              alert(
+                "Vui lòng điền đầy đủ các trường bắt buộc."
+              );
+
+              return;
+
+            }
+
+
+            alert(
+              "Bài viết đã được gửi đến biên tập viên để duyệt."
+            );
+
+
+            this.reset();
+
+
+            imagePreview.classList.add(
+              "hidden"
+            );
+
+
+            contentCount.textContent =
+              "0";
+
+          }
+        );
+
+
+      /* =====================================================
+         INIT
+      ====================================================== */
+
+      document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+          loadReporter();
+
+          loadCategories();
+
+          loadTopics();
+
+          loadTags();
+
+        }
+      );
+
+    </script>
+
+  </body>
+</html>

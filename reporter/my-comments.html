@@ -1,23 +1,39 @@
+```html
 <!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
 
     <title>Bình luận của tôi — Mạch Tin</title>
 
-    <link rel="stylesheet" href="style.css/my-comments.css" />
+    <link
+      rel="stylesheet"
+      href="style.css/my-comments.css"
+    />
   </head>
 
   <body>
+
     <div class="comments-page">
+
       <!-- =====================================================
            SIDEBAR
       ====================================================== -->
+
       <aside class="comments-sidebar">
+
         <!-- LOGO -->
         <div class="comments-brand">
-          <a href="index.html" class="brand-link">
+
+          <a
+            href="index.html"
+            class="brand-link"
+          >
+
             <svg
               class="pulse-mark"
               viewBox="0 0 40 32"
@@ -37,25 +53,56 @@
               <span class="brand-mach">MẠCH</span>
               <span class="brand-tin">TIN</span>
             </span>
+
           </a>
+
         </div>
+
 
         <!-- USER -->
         <div class="comments-user">
-          <div class="comments-avatar" id="userAvatar">
-            <span id="userInitials">NU</span>
+
+          <div
+            class="comments-avatar"
+            id="userAvatar"
+          >
+            <span id="userInitials">U</span>
           </div>
 
-          <p class="comments-user-name" id="userName">Đang tải...</p>
+          <p
+            class="comments-user-name"
+            id="userName"
+          >
+            Người dùng
+          </p>
 
-          <div class="comments-user-role" id="userRole">Độc giả</div>
+          <div
+            class="comments-user-role"
+            id="userRole"
+          >
+            Độc giả
+          </div>
+
         </div>
 
-        <!-- MENU -->
+
+        <!-- =================================================
+             MENU
+        ================================================== -->
+
         <nav class="comments-menu">
+
           <!-- THÔNG TIN TÀI KHOẢN -->
-          <a href="profile.html" class="comments-menu-item">
-            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+          <a
+            href="profile.html"
+            class="comments-menu-item"
+          >
+
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <circle
                 cx="12"
                 cy="8"
@@ -72,12 +119,24 @@
               />
             </svg>
 
-            <span class="comments-menu-text"> Thông tin tài khoản </span>
+            <span class="comments-menu-text">
+              Thông tin tài khoản
+            </span>
+
           </a>
 
+
           <!-- ĐỔI MẬT KHẨU -->
-          <a href="profile.html" class="comments-menu-item">
-            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+          <a
+            href="profile.html"
+            class="comments-menu-item"
+          >
+
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <rect
                 x="5"
                 y="10"
@@ -95,14 +154,32 @@
                 stroke-linecap="round"
               />
 
-              <circle cx="12" cy="15" r="1" fill="currentColor" />
+              <circle
+                cx="12"
+                cy="15"
+                r="1"
+                fill="currentColor"
+              />
             </svg>
 
-            <span class="comments-menu-text"> Đổi mật khẩu </span>
+            <span class="comments-menu-text">
+              Đổi mật khẩu
+            </span>
+
           </a>
+
+
           <!-- BÀI VIẾT YÊU THÍCH -->
-          <a href="favorites.html" class="comments-menu-item">
-            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+          <a
+            href="favorites.html"
+            class="comments-menu-item"
+          >
+
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
                 stroke="currentColor"
@@ -111,12 +188,24 @@
               />
             </svg>
 
-            <span class="comments-menu-text"> Bài viết yêu thích </span>
+            <span class="comments-menu-text">
+              Bài viết yêu thích
+            </span>
+
           </a>
 
+
           <!-- LỊCH SỬ -->
-          <a href="history.html" class="comments-menu-item">
-            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+          <a
+            href="history.html"
+            class="comments-menu-item"
+          >
+
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
                 stroke="currentColor"
@@ -132,12 +221,24 @@
               />
             </svg>
 
-            <span class="comments-menu-text"> Lịch sử đọc </span>
+            <span class="comments-menu-text">
+              Lịch sử đọc
+            </span>
+
           </a>
 
+
           <!-- BÌNH LUẬN -->
-          <a href="my-comments.html" class="comments-menu-item active">
-            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+          <a
+            href="my-comments.html"
+            class="comments-menu-item active"
+          >
+
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 1120 11.5z"
                 stroke="currentColor"
@@ -145,19 +246,46 @@
                 stroke-linejoin="round"
               />
 
-              <circle cx="9" cy="11.5" r=".8" fill="currentColor" />
+              <circle
+                cx="9"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
 
-              <circle cx="12" cy="11.5" r=".8" fill="currentColor" />
+              <circle
+                cx="12"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
 
-              <circle cx="15" cy="11.5" r=".8" fill="currentColor" />
+              <circle
+                cx="15"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              />
             </svg>
 
-            <span class="comments-menu-text"> Bình luận của tôi </span>
+            <span class="comments-menu-text">
+              Bình luận của tôi
+            </span>
+
           </a>
 
+
           <!-- THÔNG BÁO -->
-          <a href="notifications.html" class="comments-menu-item">
-            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+          <a
+            href="notifications.html"
+            class="comments-menu-item"
+          >
+
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
                 stroke="currentColor"
@@ -174,14 +302,28 @@
               />
             </svg>
 
-            <span class="comments-menu-text"> Thông báo </span>
+            <span class="comments-menu-text">
+              Thông báo
+            </span>
+
           </a>
+
         </nav>
+
 
         <!-- ĐĂNG XUẤT -->
         <div class="comments-logout">
-          <a href="index.html" class="comments-menu-item">
-            <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
+
+          <a
+            href="index.html"
+            class="comments-menu-item"
+          >
+
+            <svg
+              class="comments-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <path
                 d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
                 stroke="currentColor"
@@ -198,41 +340,74 @@
               />
             </svg>
 
-            <span class="comments-menu-text"> Đăng xuất </span>
+            <span class="comments-menu-text">
+              Đăng xuất
+            </span>
+
           </a>
+
         </div>
+
       </aside>
+
 
       <!-- =====================================================
            MAIN
       ====================================================== -->
 
       <main class="comments-main">
+
         <div class="comments-main-inner">
-          <h1 class="comments-heading">Bình luận của tôi</h1>
 
-          <div class="comments-heading-line"></div>
+          <!-- HEADER -->
+          <div class="comments-header">
 
-          <p class="comments-description">
-            Danh sách bình luận bạn đã đăng. Bạn có thể sửa hoặc xóa bất kỳ lúc
-            nào (không giới hạn thời gian).
-          </p>
+            <h1 class="comments-heading">
+              Bình luận của tôi
+            </h1>
+
+            <div class="comments-heading-line"></div>
+
+            <p class="comments-description">
+              Danh sách bình luận bạn đã đăng. Bạn có thể sửa hoặc
+              xóa bất kỳ lúc nào (không giới hạn thời gian).
+            </p>
+
+          </div>
+
 
           <!-- ERROR -->
-          <div id="commentsError" class="comments-error">
+          <div
+            id="commentsError"
+            class="comments-error"
+            style="display: none;"
+          >
             Không thể tải dữ liệu bình luận.
           </div>
 
+
           <!-- EMPTY -->
-          <div id="commentsEmpty" class="comments-empty">
+          <div
+            id="commentsEmpty"
+            class="comments-empty"
+            style="display: none;"
+          >
             Bạn chưa có bình luận nào.
           </div>
 
-          <!-- LIST -->
-          <div id="commentsList" class="comments-list"></div>
+
+          <!-- COMMENT LIST -->
+          <div
+            id="commentsList"
+            class="comments-list"
+          ></div>
+
         </div>
+
       </main>
+
     </div>
+
 
     <!-- =====================================================
          MOCK DATA
@@ -240,115 +415,224 @@
 
     <script src="mock-data.js"></script>
 
+
     <script>
-      
 
-      const CURRENT_USER_ID = 1;
+      /* =====================================================
+         CURRENT USER
+      ===================================================== */
 
-      const commentsList = document.getElementById("commentsList");
+      const CURRENT_USER_ID =
+        Number(
+          localStorage.getItem("currentUserId")
+        ) || 1;
 
-      const commentsEmpty = document.getElementById("commentsEmpty");
 
-      const commentsError = document.getElementById("commentsError");
+      const commentsList =
+        document.getElementById(
+          "commentsList"
+        );
 
-      const userName = document.getElementById("userName");
+      const commentsEmpty =
+        document.getElementById(
+          "commentsEmpty"
+        );
 
-      const userRole = document.getElementById("userRole");
+      const commentsError =
+        document.getElementById(
+          "commentsError"
+        );
 
-      const userAvatar = document.getElementById("userAvatar");
+      const userName =
+        document.getElementById(
+          "userName"
+        );
 
-      const userInitials = document.getElementById("userInitials");
+      const userRole =
+        document.getElementById(
+          "userRole"
+        );
+
+      const userAvatar =
+        document.getElementById(
+          "userAvatar"
+        );
+
+      /* =====================================================
+         GET CURRENT USER
+      ===================================================== */
+
+      function getCurrentUser() {
+
+        if (
+          typeof MOCK_DATA === "undefined" ||
+          !Array.isArray(MOCK_DATA.users)
+        ) {
+          return null;
+        }
+
+        return MOCK_DATA.users.find(
+          user =>
+            Number(user.id) ===
+            Number(CURRENT_USER_ID)
+        );
+
+      }
+
+
+      /* =====================================================
+         INITIALS
+      ===================================================== */
 
       function getInitials(name) {
+
         if (!name) {
           return "U";
         }
 
-        const words = name.trim().split(/\s+/);
+        const words =
+          name.trim().split(/\s+/);
 
         if (words.length === 1) {
-          return words[0].substring(0, 2).toUpperCase();
+
+          return words[0]
+            .substring(0, 2)
+            .toUpperCase();
+
         }
 
         return (
-          words[0].charAt(0) + words[words.length - 1].charAt(0)
+          words[0].charAt(0) +
+          words[words.length - 1].charAt(0)
         ).toUpperCase();
+
       }
 
 
-      function getUserAvatar(user) {
-        if (!user) {
-          return "";
-        }
+      /* =====================================================
+         ROLE
+      ===================================================== */
 
-        const savedAvatar = localStorage.getItem("userAvatar_" + user.id);
+      function getRoleName(role) {
 
-        if (savedAvatar) {
-          return savedAvatar;
-        }
+        const roleMap = {
 
-        return user.avatar || "";
+          user: "Độc giả",
+
+          reporter: "Phóng viên",
+
+          editor: "Biên tập viên",
+
+          admin: "Quản trị viên"
+
+        };
+
+        return (
+          roleMap[role] ||
+          role ||
+          "Độc giả"
+        );
+
       }
 
-      // =====================================================
-      // LOAD USER SIDEBAR
-      // =====================================================
 
-      function loadUser(user) {
+      /* =====================================================
+         LOAD USER SIDEBAR
+      ===================================================== */
+
+      function loadUser() {
+
+        const user =
+          getCurrentUser();
+
         if (!user) {
           return;
         }
 
-        const name = user.full_name || user.username || "Người dùng";
+        const name =
+          user.full_name ||
+          user.username ||
+          "Người dùng";
 
-        // Tên
-        userName.textContent = name;
 
-        // Role
+        /* TÊN */
+
+        userName.textContent =
+          name;
+
+
+        /* ROLE */
+
         userRole.textContent =
-          user.role === "user" ? "Độc giả" : user.role || "Độc giả";
+          getRoleName(user.role);
 
-        // Initial
-        userInitials.textContent = getInitials(name);
 
-        // XÓA AVATAR CŨ NẾU CÓ
-        const oldImage = userAvatar.querySelector("img");
+        /* AVATAR */
 
-        if (oldImage) {
-          oldImage.remove();
-        }
+        userAvatar.innerHTML = "";
 
-        // HIỂN THỊ AVATAR
-        const avatar = getUserAvatar(user);
 
-        if (avatar) {
-          const img = document.createElement("img");
+        if (user.avatar) {
 
-          img.src = avatar;
+          const image =
+            document.createElement("img");
 
-          img.alt = "Ảnh đại diện " + name;
+          image.src =
+            user.avatar;
 
-          img.onload = function () {
-            userInitials.style.display = "none";
-          };
+          image.alt =
+            user.full_name ||
+            "Avatar";
 
-          img.onerror = function () {
-            img.remove();
+          image.className =
+            "comments-avatar-image";
 
-            userInitials.style.display = "block";
-          };
 
-          userAvatar.appendChild(img);
+          image.onerror =
+            function () {
+
+              userAvatar.innerHTML = "";
+
+              const fallback =
+                document.createElement("span");
+
+              fallback.textContent =
+                getInitials(name);
+
+              userAvatar.appendChild(
+                fallback
+              );
+
+            };
+
+
+          userAvatar.appendChild(
+            image
+          );
+
         } else {
-          userInitials.style.display = "block";
+
+          const initials =
+            document.createElement("span");
+
+          initials.textContent =
+            getInitials(name);
+
+          userAvatar.appendChild(
+            initials
+          );
+
         }
+
       }
 
-      // =====================================================
-      // LẤY ARTICLE
-      // =====================================================
+
+      /* =====================================================
+         GET ARTICLE
+      ===================================================== */
 
       function getArticle(articleId) {
+
         if (
           typeof MOCK_DATA === "undefined" ||
           !Array.isArray(MOCK_DATA.articles)
@@ -356,58 +640,102 @@
           return null;
         }
 
-        return (
-          MOCK_DATA.articles.find((article) => article.id === articleId) || null
-        );
+        return MOCK_DATA.articles.find(
+          article =>
+            Number(article.id) ===
+            Number(articleId)
+        ) || null;
+
       }
 
-      function formatCommentTime(dateString) {
+
+      /* =====================================================
+         FORMAT DATE
+      ===================================================== */
+
+      function formatCommentTime(
+        dateString
+      ) {
+
         if (!dateString) {
-          return "";
+          return "—";
         }
 
-        const value = String(dateString);
+        const value =
+          String(dateString);
 
-        const parts = value.split(" ");
+
+        const parts =
+          value.split(" ");
+
 
         if (parts.length !== 2) {
           return value;
         }
 
-        const dateParts = parts[0].split("-");
 
-        const time = parts[1].substring(0, 5);
+        const dateParts =
+          parts[0].split("-");
+
+
+        const time =
+          parts[1].substring(0, 5);
+
 
         if (dateParts.length !== 3) {
           return value;
         }
 
+
         return (
-          `${dateParts[2]}/` + `${dateParts[1]}/` + `${dateParts[0]} · ${time}`
+          `${dateParts[2]}/${dateParts[1]}/${dateParts[0]} · ${time}`
         );
+
       }
-      // =====================================================
-      // TẠO COMMENT
-      // =====================================================
+
+
+      /* =====================================================
+         CREATE COMMENT ITEM
+      ===================================================== */
 
       function createCommentItem(comment) {
-        const article = getArticle(comment.article_id);
+
+        const article =
+          getArticle(
+            comment.article_id
+          );
+
 
         if (!article) {
           return null;
         }
 
+
         const articleUrl =
           "article-detail.html?slug=" +
-          encodeURIComponent(article.slug || article.id);
+          encodeURIComponent(
+            article.slug ||
+            article.id
+          );
 
-        const item = document.createElement("article");
 
-        item.className = "comment-item";
+        const item =
+          document.createElement(
+            "article"
+          );
 
-        item.dataset.commentId = String(comment.id);
+
+        item.className =
+          "comment-item";
+
+
+        item.dataset.commentId =
+          String(comment.id);
+
 
         item.innerHTML = `
+
+          <!-- ARTICLE -->
 
           <a
             href="${articleUrl}"
@@ -418,6 +746,8 @@
           </a>
 
 
+          <!-- CONTENT -->
+
           <p
             class="comment-content"
             data-role="content"
@@ -425,6 +755,8 @@
             ${comment.content || ""}
           </p>
 
+
+          <!-- EDIT BOX -->
 
           <div
             class="comment-edit-box"
@@ -439,7 +771,7 @@
 
             <div
               class="comment-actions"
-              style="margin-top:10px;"
+              style="margin-top: 10px;"
             >
 
               <button
@@ -464,10 +796,14 @@
           </div>
 
 
+          <!-- META -->
+
           <div class="comment-meta-row">
 
             <span class="comment-time">
-              ${formatCommentTime(comment.created_at)}
+              ${formatCommentTime(
+                comment.created_at
+              )}
             </span>
 
 
@@ -500,212 +836,479 @@
         `;
 
 
-        const contentEl = item.querySelector('[data-role="content"]');
+        /* ===================================================
+           ELEMENTS
+        ================================================== */
 
-        const editBox = item.querySelector('[data-role="edit-box"]');
-
-        const textarea = item.querySelector('[data-role="textarea"]');
-
-        const actionsEl = item.querySelector('[data-role="actions"]');
-
-        const btnEdit = item.querySelector('[data-role="edit"]');
-
-        const btnDelete = item.querySelector('[data-role="delete"]');
-
-        const btnSave = item.querySelector('[data-role="save"]');
-
-        const btnCancel = item.querySelector('[data-role="cancel"]');
-
-        // ===================================================
-        // SỬA
-        // ===================================================
-
-        btnEdit.addEventListener("click", function () {
-          contentEl.classList.add("is-editing");
-
-          editBox.classList.add("is-open");
-
-          actionsEl.style.display = "none";
-
-          textarea.value = contentEl.textContent.trim();
-
-          textarea.focus();
-        });
-
-        // ===================================================
-        // HỦY
-        // ===================================================
-
-        btnCancel.addEventListener("click", function () {
-          contentEl.classList.remove("is-editing");
-
-          editBox.classList.remove("is-open");
-
-          actionsEl.style.display = "flex";
-
-          textarea.value = contentEl.textContent.trim();
-        });
-
-        // ===================================================
-        // LƯU COMMENT
-        // ===================================================
-
-        btnSave.addEventListener("click", function () {
-          const newContent = textarea.value.trim();
-
-          if (!newContent) {
-            alert("Nội dung bình luận không được để trống.");
-
-            return;
-          }
-
-          if (Array.isArray(MOCK_DATA.comments)) {
-            const c = MOCK_DATA.comments.find((x) => x.id === comment.id);
-
-            if (c) {
-              c.content = newContent;
-
-              c.updated_at = new Date()
-                .toISOString()
-                .slice(0, 19)
-                .replace("T", " ");
-            }
-          }
-
-          contentEl.textContent = newContent;
-
-          contentEl.classList.remove("is-editing");
-
-          editBox.classList.remove("is-open");
-
-          actionsEl.style.display = "flex";
-        });
-        // ===================================================
-        // XÓA COMMENT
-        // ===================================================
-
-        btnDelete.addEventListener("click", function () {
-          const ok = confirm(
-            "Bạn có chắc muốn xóa bình luận này? Thao tác không thể hoàn tác.",
+        const contentEl =
+          item.querySelector(
+            '[data-role="content"]'
           );
 
-          if (!ok) {
-            return;
-          }
+        const editBox =
+          item.querySelector(
+            '[data-role="edit-box"]'
+          );
 
-          if (Array.isArray(MOCK_DATA.comments)) {
-            const idx = MOCK_DATA.comments.findIndex(
-              (x) => x.id === comment.id,
+        const textarea =
+          item.querySelector(
+            '[data-role="textarea"]'
+          );
+
+        const actionsEl =
+          item.querySelector(
+            '[data-role="actions"]'
+          );
+
+        const btnEdit =
+          item.querySelector(
+            '[data-role="edit"]'
+          );
+
+        const btnDelete =
+          item.querySelector(
+            '[data-role="delete"]'
+          );
+
+        const btnSave =
+          item.querySelector(
+            '[data-role="save"]'
+          );
+
+        const btnCancel =
+          item.querySelector(
+            '[data-role="cancel"]'
+          );
+
+
+        /* ===================================================
+           SỬA
+        ================================================== */
+
+        btnEdit.addEventListener(
+          "click",
+          function () {
+
+            contentEl.classList.add(
+              "is-editing"
             );
 
-            if (idx !== -1) {
-              MOCK_DATA.comments.splice(idx, 1);
+            editBox.classList.add(
+              "is-open"
+            );
+
+            actionsEl.style.display =
+              "none";
+
+            textarea.value =
+              contentEl.textContent.trim();
+
+            textarea.focus();
+
+          }
+        );
+
+
+        /* ===================================================
+           HỦY
+        ================================================== */
+
+        btnCancel.addEventListener(
+          "click",
+          function () {
+
+            contentEl.classList.remove(
+              "is-editing"
+            );
+
+            editBox.classList.remove(
+              "is-open"
+            );
+
+            actionsEl.style.display =
+              "flex";
+
+            textarea.value =
+              contentEl.textContent.trim();
+
+          }
+        );
+
+
+        /* ===================================================
+           LƯU
+        ================================================== */
+
+        btnSave.addEventListener(
+          "click",
+          function () {
+
+            const newContent =
+              textarea.value.trim();
+
+
+            if (!newContent) {
+
+              alert(
+                "Nội dung bình luận không được để trống."
+              );
+
+              return;
+
             }
-          }
 
-          item.remove();
 
-          if (commentsList.children.length === 0) {
-            commentsEmpty.style.display = "block";
+            if (
+              Array.isArray(
+                MOCK_DATA.comments
+              )
+            ) {
+
+              const currentComment =
+                MOCK_DATA.comments.find(
+                  item =>
+                    Number(item.id) ===
+                    Number(comment.id)
+                );
+
+
+              if (currentComment) {
+
+                currentComment.content =
+                  newContent;
+
+                currentComment.updated_at =
+                  new Date()
+                    .toISOString()
+                    .slice(0, 19)
+                    .replace(
+                      "T",
+                      " "
+                    );
+
+              }
+
+            }
+
+
+            contentEl.textContent =
+              newContent;
+
+
+            contentEl.classList.remove(
+              "is-editing"
+            );
+
+
+            editBox.classList.remove(
+              "is-open"
+            );
+
+
+            actionsEl.style.display =
+              "flex";
+
           }
-        });
+        );
+
+
+        /* ===================================================
+           XÓA
+        ================================================== */
+
+        btnDelete.addEventListener(
+          "click",
+          function () {
+
+            const ok =
+              confirm(
+                "Bạn có chắc muốn xóa bình luận này? Thao tác không thể hoàn tác."
+              );
+
+
+            if (!ok) {
+              return;
+            }
+
+
+            if (
+              Array.isArray(
+                MOCK_DATA.comments
+              )
+            ) {
+
+              const index =
+                MOCK_DATA.comments.findIndex(
+                  item =>
+                    Number(item.id) ===
+                    Number(comment.id)
+                );
+
+
+              if (index !== -1) {
+
+                MOCK_DATA.comments.splice(
+                  index,
+                  1
+                );
+
+              }
+
+            }
+
+
+            item.remove();
+
+
+            if (
+              commentsList.children.length ===
+              0
+            ) {
+
+              commentsEmpty.style.display =
+                "block";
+
+            }
+
+          }
+        );
+
 
         return item;
+
       }
 
-      function loadMyComments() {
-        try {
-          if (typeof MOCK_DATA === "undefined") {
-            throw new Error("Không tìm thấy mock-data.js.");
-          }
 
-          // ===============================================
-          // LẤY USER
-          // ===============================================
+      /* =====================================================
+         RENDER COMMENTS
+      ===================================================== */
 
-          const currentUser = MOCK_DATA.users.find(
-            (user) => user.id === CURRENT_USER_ID,
-          );
+      function renderComments() {
 
-          if (currentUser) {
-            loadUser(currentUser);
-          }
+        commentsList.innerHTML =
+          "";
 
-          // ===============================================
-          // LẤY COMMENT CỦA USER
-          // ===============================================
 
-          const userComments = Array.isArray(MOCK_DATA.comments)
+        const userComments =
+          Array.isArray(
+            MOCK_DATA.comments
+          )
+
             ? MOCK_DATA.comments.filter(
-                (comment) =>
-                  comment.user_id === CURRENT_USER_ID &&
-                  comment.is_deleted !== true,
+                comment =>
+                  Number(comment.user_id) ===
+                    Number(CURRENT_USER_ID) &&
+                  comment.is_deleted !== true
               )
+
             : [];
 
-          // ===============================================
-          // SẮP XẾP MỚI NHẤT
-          // ===============================================
 
-          userComments.sort((a, b) => {
-            const dateA = new Date(
-              String(a.created_at || "").replace(" ", "T"),
-            );
+        /* SORT NEWEST */
 
-            const dateB = new Date(
-              String(b.created_at || "").replace(" ", "T"),
-            );
+        userComments.sort(
+          (a, b) => {
+
+            const dateA =
+              new Date(
+                String(
+                  a.created_at || ""
+                ).replace(
+                  " ",
+                  "T"
+                )
+              );
+
+
+            const dateB =
+              new Date(
+                String(
+                  b.created_at || ""
+                ).replace(
+                  " ",
+                  "T"
+                )
+              );
+
 
             return dateB - dateA;
-          });
-          // ===============================================
-          // KHÔNG CÓ COMMENT
-          // ===============================================
-          if (userComments.length === 0) {
-            commentsEmpty.style.display = "block";
 
-            return;
           }
-          // ===============================================
-          // HIỂN THỊ COMMENT
-          // ===============================================
+        );
 
-          userComments.forEach((comment) => {
-            const item = createCommentItem(comment);
+
+        /* EMPTY */
+
+        if (
+          userComments.length ===
+          0
+        ) {
+
+          commentsEmpty.style.display =
+            "block";
+
+          return;
+
+        }
+
+
+        commentsEmpty.style.display =
+          "none";
+
+
+        /* RENDER */
+
+        userComments.forEach(
+          comment => {
+
+            const item =
+              createCommentItem(
+                comment
+              );
+
 
             if (item) {
-              commentsList.appendChild(item);
+
+              commentsList.appendChild(
+                item
+              );
+
             }
-          });
-          // ===============================================
-          // SAU KHI LOAD
-          // ===============================================
 
-          if (commentsList.children.length === 0) {
-            commentsEmpty.style.display = "block";
           }
-        } catch (error) {
-          console.error("My comments error:", error);
+        );
 
-          commentsError.style.display = "block";
+
+        if (
+          commentsList.children.length ===
+          0
+        ) {
+
+          commentsEmpty.style.display =
+            "block";
+
         }
-      }
-      // =====================================================
-      // LOAD TRANG
-      // =====================================================
-      loadMyComments();
 
-      window.addEventListener("pageshow", function () {
-        if (typeof MOCK_DATA !== "undefined") {
-          const currentUser = MOCK_DATA.users.find(
-            (user) => user.id === CURRENT_USER_ID,
+      }
+
+
+      /* =====================================================
+         INIT
+      ===================================================== */
+
+      function init() {
+
+        try {
+
+          if (
+            typeof MOCK_DATA ===
+            "undefined"
+          ) {
+
+            throw new Error(
+              "Không tìm thấy mock-data.js."
+            );
+
+          }
+
+
+          loadUser();
+
+          renderComments();
+
+        } catch (error) {
+
+          console.error(
+            "My comments error:",
+            error
           );
 
-          if (currentUser) {
-            loadUser(currentUser);
-          }
+
+          commentsError.style.display =
+            "block";
+
         }
-      });
+
+      }
+
+
+      /* =====================================================
+         LOAD
+      ===================================================== */
+
+      init();
+
+
+      /* =====================================================
+         PAGE SHOW
+      ===================================================== */
+
+      window.addEventListener(
+        "pageshow",
+        function () {
+
+          loadUser();
+
+          renderComments();
+
+        }
+      );
+
     </script>
+
   </body>
 </html>
+```
+
+### Điểm mình đã đổi so với code bạn gửi
+
+Quan trọng nhất là đoạn này:
+
+```js
+const CURRENT_USER_ID =
+  Number(localStorage.getItem("currentUserId")) || 1;
+```
+
+Nó **giống cách file `my-articles.html` của bạn đang làm**, thay vì cố định:
+
+```js
+const CURRENT_USER_ID = 1;
+```
+
+Và phần user cũng đổi thành cách giống reporter:
+
+```js
+function getCurrentUser() {
+  return MOCK_DATA.users.find(
+    user =>
+      Number(user.id) ===
+      Number(CURRENT_USER_ID)
+  );
+}
+```
+
+Avatar cũng lấy trực tiếp:
+
+```js
+if (user.avatar) {
+    const image = document.createElement("img");
+    image.src = user.avatar;
+    image.className = "comments-avatar-image";
+    userAvatar.appendChild(image);
+}
+```
+
+Nên nếu `mock-data.js` của bạn có dạng:
+
+```js
+{
+  id: 1,
+  full_name: "...",
+  role: "user",
+  avatar: "..."
+}
+```
+
+thì `my-comments.html` sẽ tự lấy **đúng tên + role + avatar của user đang đăng nhập**, tương tự file `my-articles.html`.
+
+**Lưu ý:** CSS của bạn đang dùng class `.comments-avatar`, nên nếu CSS hiện tại chưa có `.comments-avatar-image` thì ảnh có thể chưa được giới hạn kích thước. Nếu bạn muốn **avatar của `my-comments` nhỏ và đúng y chang avatar trong file `my-articles`/`write-article` mà bạn gửi trước**, gửi mình `my-comments.css`, mình chỉnh **CSS hoàn chỉnh** cho đồng bộ luôn.

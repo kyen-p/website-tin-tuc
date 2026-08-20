@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Quản lý tài khoản - Mạch Tin</title>
+
+    <link rel="stylesheet" href="/style.css/profile.css" />
+  </head>
+
+  <body>
+    <div class="profile-page">
+
+      <!-- ===================================================
+           SIDEBAR
+      =================================================== -->
+
+      <aside class="history-sidebar">
+
+        <!-- LOGO -->
+        <div class="history-brand">
+          <a href="index.html" class="brand-link">
+
+            <svg
+              class="pulse-mark"
+              viewBox="0 0 40 32"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
+                stroke="currentColor"
+                stroke-width="2.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+
+            <span class="brand-word">
+              <span class="brand-mach">MẠCH</span>
+              <span class="brand-tin">TIN</span>
+            </span>
+
+          </a>
+        </div>
+        <!-- USER -->
+        <div class="history-user">
+
+          <div class="history-avatar">
+            <img
+              id="sidebarAvatar"
+              src=""
+              alt="Avatar"
+            />
+          </div>
+
+          <p
+            class="history-user-name"
+            id="sidebarName"
+          >
+            Đang tải...
+          </p>
+
+          <div
+            class="history-user-role"
+            id="sidebarRole"
+          >
+            Độc giả
+          </div>
+
+        </div>
+
+        <!-- =================================================
+             MENU
+        ================================================== -->
+
+        <nav class="history-menu">
+          <!-- THÔNG TIN TÀI KHOẢN -->
+          <a
+            href="profile.html"
+            id="profileMenu"
+            class="history-menu-item"
+          >
+
+            <svg
+              class="history-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                cx="12"
+                cy="8"
+                r="3.2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></circle>
+
+              <path
+                d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
+            </svg>
+
+            <span class="history-menu-text">
+              Thông tin tài khoản
+            </span>
+
+          </a>
+          <!-- ĐỔI MẬT KHẨU -->
+          <a
+            href="profile.html#password"
+            id="passwordMenu"
+            class="history-menu-item"
+          >
+
+            <svg
+              class="history-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <rect
+                x="5"
+                y="10"
+                width="14"
+                height="10"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></rect>
+
+              <path
+                d="M8 10V7a4 4 0 018 0v3"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
+
+              <circle
+                cx="12"
+                cy="15"
+                r="1"
+                fill="currentColor"
+              ></circle>
+            </svg>
+
+            <span class="history-menu-text">
+              Đổi mật khẩu
+            </span>
+
+          </a>
+
+          <!-- BÀI VIẾT YÊU THÍCH -->
+          <a
+            href="favorites.html"
+            class="history-menu-item"
+          >
+
+            <svg
+              class="history-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+
+            <span class="history-menu-text">
+              Bài viết yêu thích
+            </span>
+
+          </a>
+          <!-- LỊCH SỬ -->
+          <a
+            href="history.html"
+            class="history-menu-item"
+          >
+
+            <svg
+              class="history-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></path>
+
+              <path
+                d="M5 5.5v11M9 7h7M9 11h7"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
+            </svg>
+
+            <span class="history-menu-text">
+              Lịch sử đọc
+            </span>
+
+          </a>
+          <!-- BÌNH LUẬN -->
+          <a
+            href="my-comments.html"
+            class="history-menu-item"
+          >
+
+            <svg
+              class="history-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 0120 11.5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></path>
+
+              <circle
+                cx="9"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              ></circle>
+
+              <circle
+                cx="12"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              ></circle>
+
+              <circle
+                cx="15"
+                cy="11.5"
+                r=".8"
+                fill="currentColor"
+              ></circle>
+            </svg>
+
+            <span class="history-menu-text">
+              Bình luận của tôi
+            </span>
+
+          </a>
+          <!-- THÔNG BÁO -->
+          <a
+            href="notifications.html"
+            class="history-menu-item"
+          >
+
+            <svg
+              class="history-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></path>
+
+              <path
+                d="M10 21h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></path>
+            </svg>
+
+            <span class="history-menu-text">
+              Thông báo
+            </span>
+
+          </a>
+
+        </nav>
+
+        <!-- =================================================
+             LOGOUT
+        ================================================== -->
+
+        <div class="history-logout">
+
+          <a
+            href="public/index.html"
+            class="history-menu-item"
+          >
+
+            <svg
+              class="history-menu-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
+
+              <path
+                d="M14 8l4 4-4 4M18 12H9"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
+            </svg>
+
+            <span class="history-menu-text">
+              Đăng xuất
+            </span>
+
+          </a>
+
+        </div>
+
+      </aside>
+
+      <!-- ===================================================
+           MAIN
+      =================================================== -->
+
+      <main class="profile-main">
+
+        <div class="profile-main-inner">
+
+          <h1
+            class="profile-heading"
+            id="pageHeading"
+          >
+            Quản lý tài khoản
+          </h1>
+
+          <div class="profile-heading-line"></div>
+
+          <p
+            class="profile-description"
+            id="pageDescription"
+          >
+            Cập nhật thông tin cá nhân và bảo mật tài khoản.
+          </p>
+
+          <!-- =================================================
+               THÔNG TIN CÁ NHÂN
+          ================================================== -->
+
+          <section
+            class="profile-card"
+            id="profileInfo"
+          >
+
+            <h2>
+              Thông tin cá nhân
+            </h2>
+            <!-- AVATAR -->
+            <div class="profile-avatar-upload">
+
+              <img
+                id="avatarPreview"
+                src=""
+                alt="Avatar"
+              />
+
+              <input
+                type="file"
+                id="avatar"
+                accept="image/*"
+              />
+
+            </div>
+            <!-- FORM -->
+
+            <div class="profile-form">
+
+              <label>
+                Họ tên
+              </label>
+
+              <input
+                id="fullname"
+                type="text"
+              />
+              <label>
+                Username
+              </label>
+
+              <input
+                id="username"
+                type="text"
+              />
+
+              <label>
+                Email
+              </label>
+
+              <input
+                id="email"
+                type="email"
+              />
+              <label>
+                Số điện thoại
+              </label>
+
+              <input
+                id="phone"
+                type="text"
+              />
+              <label>
+                Ngày sinh
+              </label>
+
+              <input
+                id="birthday"
+                type="date"
+              />
+
+              <label>
+                Bio
+              </label>
+
+              <textarea id="bio"></textarea>
+
+            </div>
+
+          </section>
+          <!-- =================================================
+               ĐỔI MẬT KHẨU
+          ================================================== -->
+
+          <section
+            class="profile-card"
+            id="passwordInfo"
+            style="display: none;"
+          >
+
+            <h2>
+              Đổi mật khẩu
+            </h2>
+
+            <div class="profile-form">
+
+              <label>
+                Mật khẩu cũ
+              </label>
+
+              <input
+                id="oldPassword"
+                type="password"
+              />
+
+
+              <label>
+                Mật khẩu mới
+              </label>
+
+              <input
+                id="newPassword"
+                type="password"
+              />
+
+
+              <label>
+                Xác nhận mật khẩu mới
+              </label>
+
+              <input
+                id="confirmPassword"
+                type="password"
+              />
+
+            </div>
+
+          </section>
+          <!-- BUTTON -->
+          <button
+            class="profile-button"
+            id="saveButton"
+            type="button"
+          >
+            Lưu thay đổi
+          </button>
+
+          <p id="message"></p>
+
+        </div>
+
+      </main>
+
+    </div>
+
+    <script src="mock-data.js"></script>
+
+    <script>
+
+      const user = MOCK_DATA.users[0];
+
+
+      /* =====================================================
+         ROLE
+      ===================================================== */
+
+      function roleName(role) {
+
+        if (role === "user") {
+          return "Độc giả";
+        }
+
+        if (role === "reporter") {
+          return "Phóng viên";
+        }
+
+        if (role === "editor") {
+          return "Biên tập viên";
+        }
+
+        if (role === "admin") {
+          return "Quản trị viên";
+        }
+
+        return role || "Độc giả";
+      }
+
+
+      function getUserAvatar() {
+
+        const savedAvatar =
+          localStorage.getItem(
+            "userAvatar_" + user.id
+          );
+
+        if (
+          savedAvatar &&
+          savedAvatar.trim() !== ""
+        ) {
+          return savedAvatar;
+        }
+
+        return user.avatar || "";
+      }
+
+
+      function loadAvatar() {
+
+        const avatar = getUserAvatar();
+
+        const sidebarAvatar =
+          document.getElementById("sidebarAvatar");
+
+        const avatarPreview =
+          document.getElementById("avatarPreview");
+
+
+        if (avatar) {
+
+          sidebarAvatar.src = avatar;
+
+          avatarPreview.src = avatar;
+
+        }
+
+      }
+
+      /* =====================================================
+         LOAD USER
+      ===================================================== */
+
+      function loadUser() {
+
+        document.getElementById("sidebarName").textContent =
+          user.full_name || user.username || "Người dùng";
+
+
+        document.getElementById("sidebarRole").textContent =
+          roleName(user.role);
+
+
+        document.getElementById("fullname").value =
+          user.full_name || "";
+
+
+        document.getElementById("username").value =
+          user.username || "";
+
+
+        document.getElementById("email").value =
+          user.email || "";
+
+
+        document.getElementById("phone").value =
+          user.phone || "";
+
+
+        document.getElementById("birthday").value =
+          user.date_of_birth || "";
+
+
+        document.getElementById("bio").value =
+          user.bio || "";
+
+
+        loadAvatar();
+
+      }
+      /* =====================================================
+         HIỂN THỊ PROFILE
+      ===================================================== */
+
+      function showProfile() {
+
+        document.getElementById("profileInfo").style.display =
+          "block";
+
+        document.getElementById("passwordInfo").style.display =
+          "none";
+
+
+        document.getElementById("pageHeading").textContent =
+          "Quản lý tài khoản";
+
+
+        document.getElementById("pageDescription").textContent =
+          "Cập nhật thông tin cá nhân và bảo mật tài khoản.";
+
+
+        document
+          .querySelectorAll(".history-menu-item")
+          .forEach(function(item) {
+
+            item.classList.remove("active");
+
+          });
+
+
+        document
+          .getElementById("profileMenu")
+          .classList.add("active");
+
+      }
+
+      /* =====================================================
+         HIỂN THỊ PASSWORD
+      ===================================================== */
+
+      function showPassword() {
+
+        document.getElementById("profileInfo").style.display =
+          "none";
+
+        document.getElementById("passwordInfo").style.display =
+          "block";
+
+
+        document.getElementById("pageHeading").textContent =
+          "Đổi mật khẩu";
+
+
+        document.getElementById("pageDescription").textContent =
+          "Cập nhật mật khẩu để bảo vệ tài khoản.";
+
+
+        document
+          .querySelectorAll(".history-menu-item")
+          .forEach(function(item) {
+
+            item.classList.remove("active");
+
+          });
+
+        document
+          .getElementById("passwordMenu")
+          .classList.add("active");
+
+      }
+
+      /* =====================================================
+         AVATAR UPLOAD
+      ===================================================== */
+
+      document
+        .getElementById("avatar")
+        .addEventListener("change", function(event) {
+
+          const file = event.target.files[0];
+
+          if (!file) {
+            return;
+          }
+
+          if (!file.type.startsWith("image/")) {
+
+            document.getElementById("message").textContent =
+              "Vui lòng chọn file hình ảnh.";
+
+            return;
+          }
+
+          const reader = new FileReader();
+
+
+          reader.onload = function(e) {
+
+            const avatarURL = e.target.result;
+
+
+            document.getElementById("avatarPreview").src =
+              avatarURL;
+
+
+            document.getElementById("sidebarAvatar").src =
+              avatarURL;
+
+
+            localStorage.setItem(
+              "userAvatar_" + user.id,
+              avatarURL
+            );
+
+
+            document.getElementById("message").textContent =
+              "Đã cập nhật ảnh đại diện.";
+
+          };
+
+          reader.readAsDataURL(file);
+
+        });
+
+      /* =====================================================
+         SAVE PROFILE
+      ===================================================== */
+
+      function saveProfile() {
+
+        const message =
+          document.getElementById("message");
+
+
+        const username =
+          document
+            .getElementById("username")
+            .value
+            .trim();
+
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
+
+        /* CHECK USERNAME */
+
+        const usernameExists =
+          MOCK_DATA.users.some(function(u) {
+
+            return (
+              u.username === username &&
+              u.id !== user.id
+            );
+
+          });
+
+        if (usernameExists) {
+
+          message.textContent =
+            "Username đã được sử dụng.";
+
+          return;
+
+        }
+
+        /* CHECK EMAIL */
+
+        const emailRegex =
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+        if (!emailRegex.test(email)) {
+
+          message.textContent =
+            "Email không đúng định dạng.";
+
+          return;
+
+        }
+        /* UPDATE */
+
+        user.full_name =
+          document
+            .getElementById("fullname")
+            .value
+            .trim();
+
+
+        user.username =
+          username;
+
+
+        user.email =
+          email;
+
+
+        user.phone =
+          document
+            .getElementById("phone")
+            .value
+            .trim();
+
+
+        user.date_of_birth =
+          document
+            .getElementById("birthday")
+            .value;
+
+
+        user.bio =
+          document
+            .getElementById("bio")
+            .value
+            .trim();
+
+
+        /* UPDATE SIDEBAR */
+
+        document.getElementById("sidebarName").textContent =
+          user.full_name || user.username;
+
+
+        message.textContent =
+          "Cập nhật thông tin tài khoản thành công.";
+
+      }
+
+      /* =====================================================
+         CHANGE PASSWORD
+      ===================================================== */
+
+      function changePassword() {
+
+        const message =
+          document.getElementById("message");
+
+
+        const oldPassword =
+          document.getElementById("oldPassword").value;
+
+
+        const newPassword =
+          document.getElementById("newPassword").value;
+
+
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+
+        if (oldPassword !== user.password) {
+
+          message.textContent =
+            "Mật khẩu cũ không chính xác.";
+
+          return;
+
+        }
+
+
+        if (newPassword.length < 8) {
+
+          message.textContent =
+            "Mật khẩu phải có ít nhất 8 ký tự.";
+
+          return;
+
+        }
+
+
+        if (newPassword !== confirmPassword) {
+
+          message.textContent =
+            "Xác nhận mật khẩu không khớp.";
+
+          return;
+
+        }
+
+
+        user.password =
+          newPassword;
+
+
+        document.getElementById("oldPassword").value = "";
+
+        document.getElementById("newPassword").value = "";
+
+        document.getElementById("confirmPassword").value = "";
+
+
+        message.textContent =
+          "Đổi mật khẩu thành công.";
+
+      }
+
+      /* =====================================================
+         NÚT LƯU
+      ===================================================== */
+
+      document
+        .getElementById("saveButton")
+        .addEventListener("click", function() {
+
+          const passwordVisible =
+            document.getElementById("passwordInfo").style.display
+            === "block";
+
+
+          if (passwordVisible) {
+
+            changePassword();
+
+          } else {
+
+            saveProfile();
+
+          }
+
+        });
+
+
+      function loadTabFromHash() {
+
+        if (
+          window.location.hash === "#password"
+        ) {
+
+          showPassword();
+
+        } else {
+
+          showProfile();
+
+        }
+
+      }
+
+      window.addEventListener(
+        "hashchange",
+        function() {
+
+          loadTabFromHash();
+
+        }
+      );
+
+      loadUser();
+
+      loadTabFromHash();
+
+    </script>
+
+  </body>
+</html>
