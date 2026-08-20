@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mạch Tin — Cập nhật tin tức 24/7</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- ================= TICKER ================= -->
+<div class="ticker" role="marquee" aria-label="Tin nóng">
+  <div class="ticker__inner">
+    <span><span class="ticker__tag">NÓNG —</span>Quốc hội thông qua luật sửa đổi về thuế thu nhập cá nhân, áp dụng từ 2027</span>
+    <span><span class="ticker__tag">NÓNG —</span>Giá vàng miếng SJC vượt mốc 92 triệu đồng/lượng phiên sáng nay</span>
+    <span><span class="ticker__tag">THỂ THAO —</span>Đội tuyển Việt Nam giành vé vào bán kết sau loạt sút luân lưu nghẹt thở</span>
+    <span><span class="ticker__tag">NÓNG —</span>Áp thấp nhiệt đới có khả năng mạnh lên thành bão trong 48 giờ tới</span>
+    <span><span class="ticker__tag">NÓNG —</span>Quốc hội thông qua luật sửa đổi về thuế thu nhập cá nhân, áp dụng từ 2027</span>
+    <span><span class="ticker__tag">NÓNG —</span>Giá vàng miếng SJC vượt mốc 92 triệu đồng/lượng phiên sáng nay</span>
+    <span><span class="ticker__tag">THỂ THAO —</span>Đội tuyển Việt Nam giành vé vào bán kết sau loạt sút luân lưu nghẹt thở</span>
+    <span><span class="ticker__tag">NÓNG —</span>Áp thấp nhiệt đới có khả năng mạnh lên thành bão trong 48 giờ tới</span>
+  </div>
+</div>
+
+<!-- ================= HEADER (render bằng JS, xem assets/js/common.js) ================= -->
+<div id="site-header"></div>
+
+<!-- ================= MAIN ================= -->
+<main>
+  <div class="wrap">
+
+    <!-- ---- HERO / BANNER ---- -->
+    <section class="hero-grid" id="hero-mount" aria-label="Tin nổi bật"></section>
+
+    <!-- ---- MỚI CẬP NHẬT ---- -->
+    <section class="section--latest" id="latest-section" aria-label="Tin mới cập nhật" hidden>
+      <div class="section-head">
+        <h2>Mới cập nhật</h2>
+        <a href="category.html" class="see-all">XEM TẤT CẢ →</a>
+      </div>
+      <div class="grid-3" id="latest-mount"></div>
+    </section>
+
+    <!-- ---- NỘI DUNG CHÍNH + SIDEBAR ---- -->
+    <div class="layout-split">
+      <section aria-label="Theo dòng sự kiện">
+        <div class="section-head">
+          <h2>Theo dòng sự kiện</h2>
+          <a href="category.html" class="see-all">XEM TẤT CẢ →</a>
+        </div>
+        <div class="pulse-rail latest-list" id="stream-mount"></div>
+      </section>
+
+      <aside>
+        <div class="panel">
+          <h3>Đọc nhiều nhất</h3>
+          <div class="rank-list" id="rank-mount"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Chủ đề đang được quan tâm</h3>
+          <div class="tag-cloud" id="tag-mount"></div>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+</main>
+
+<!-- ================= FOOTER (render bằng JS) ================= -->
+<div id="site-footer"></div>
+
+<script src="../assets/js/mock-data.js"></script>
+<script src="../assets/js/common.js"></script>
+<script>
+(function () {
+
+  MT.initChrome({ active: 'index' });
+
+  // =====================================================
+  // LẤY CÁC BÀI VIẾT ĐÃ ĐƯỢC ĐĂNG
+  // =====================================================
+
+  var articles = MT.getPublishedArticles();
+
+
+  // =====================================================
+  // TẠO LINK TÁC GIẢ
+  // =====================================================
+
+  function authorLink(authorId) {
+
+    var author = MT.getUserById(authorId);
+
+    if (!author) {
+      return 'Ẩn danh';
+    }
+
+    return '<a href="author.html?id=' + author.id + '">' +
+      MT.escapeHtml(author.full_name) +
+      '</a>';
+  }
+
+
+  // =====================================================
+  // META BÀI VIẾT
+  // =====================================================
+
+  function cardMeta(a) {
+
+    return '<div class="meta">' +
+      authorLink(a.author_id) +
+      ' <span class="dot-sep">·</span> ' +
+      MT.formatDateTime(a.published_at) +
+      '</div>';
+  }
+
+
+  // =====================================================
+  // CHUYÊN MỤC
+  // =====================================================
+
+  function eyebrow(a, crimson) {
+
+    var cat = MT.getCategoryById(a.category_id);
+
+    return '<span class="eyebrow' +
+      (crimson ? ' is-crimson' : '') +
+      '">' +
+      (cat ? MT.escapeHtml(cat.name) : '') +
+      '</span>';
+  }
+
+
+  // =====================================================
+  // HERO - BÀI CHÍNH
+  // =====================================================
+
+  function heroMainCard(a) {
+
+    return '<article class="article-card">' +
+
+      '<a href="article-detail.html?id=' + a.id +
+      '" class="card-link">' +
+
+        '<div class="ph ph--16x9">' + MT.coverImgTag(a.cover_image, a.title) +
+          '<span class="ph__label">Ảnh minh họa</span>' +
+        '</div>' +
+
+        eyebrow(a, true) +
+
+        '<h1 class="headline-xl">' +
+          MT.escapeHtml(a.title) +
+        '</h1>' +
+
+        '<p class="dek">' +
+          MT.escapeHtml(a.short_description) +
+        '</p>' +
+
+      '</a>' +
+
+      cardMeta(a) +
+
+    '</article>';
+  }
+
+
+  // =====================================================
+  // HERO - BÀI PHỤ
+  // =====================================================
+
+  function heroSideCard(a) {
+
+    return '<article class="article-card">' +
+
+      '<a href="article-detail.html?id=' + a.id +
+      '" class="card-link">' +
+
+        '<div class="ph ph--16x9">' + MT.coverImgTag(a.cover_image, a.title) +
+          '<span class="ph__label">Ảnh minh họa</span>' +
+        '</div>' +
+
+        eyebrow(a, false) +
+
+        '<h2 class="headline-md">' +
+          MT.escapeHtml(a.title) +
+        '</h2>' +
+
+      '</a>' +
+
+      cardMeta(a) +
+
+    '</article>';
+  }
+
+
+  // =====================================================
+  // CARD - MỚI CẬP NHẬT
+  // =====================================================
+
+  function gridCard(a) {
+
+    return '<article class="article-card">' +
+
+      '<a href="article-detail.html?id=' + a.id +
+      '" class="card-link">' +
+
+        '<div class="ph ph--4x3">' + MT.coverImgTag(a.cover_image, a.title) +
+          '<span class="ph__label">Ảnh minh họa</span>' +
+        '</div>' +
+
+        eyebrow(a, false) +
+
+        '<h3 class="headline-md">' +
+          MT.escapeHtml(a.title) +
+        '</h3>' +
+
+      '</a>' +
+
+      cardMeta(a) +
+
+    '</article>';
+  }
+
+
+  // =====================================================
+  // THEO DÒNG SỰ KIỆN
+  // =====================================================
+
+  function streamRow(a, noBorder) {
+
+    var cat = MT.getCategoryById(a.category_id);
+
+    return '<div class="article-card--row' +
+      (noBorder ? ' no-border' : '') +
+      '">' +
+
+      '<div class="ph ph--4x3">' + MT.coverImgTag(a.cover_image, a.title) +
+        '<span class="ph__label">Ảnh</span>' +
+      '</div>' +
+
+      '<div>' +
+
+        '<span class="eyebrow">' +
+          (cat ? MT.escapeHtml(cat.name) : '') +
+        '</span>' +
+
+        '<h3 class="headline-md">' +
+
+          '<a href="article-detail.html?id=' +
+            a.id +
+          '">' +
+
+            MT.escapeHtml(a.title) +
+
+          '</a>' +
+
+        '</h3>' +
+
+        '<div class="meta">' +
+
+          MT.formatDateTime(a.published_at)
+            .split(', ')[0] +
+
+          ' <span class="dot-sep">·</span> ' +
+
+          authorLink(a.author_id) +
+
+        '</div>' +
+
+      '</div>' +
+
+    '</div>';
+  }
+
+
+  // =====================================================
+  // HERO
+  // =====================================================
+
+  if (articles.length === 0) {
+
+    document.getElementById('hero-mount').innerHTML =
+      '<div class="empty-state">' +
+      'Chưa có bài viết nào được đăng.' +
+      '</div>';
+
+  } else {
+
+    var main = articles[0];
+
+    var side = articles.slice(1, 4);
+
+    var html = heroMainCard(main);
+
+    if (side.length) {
+
+      html +=
+        '<div class="hero-grid__side">' +
+        side.map(heroSideCard).join('') +
+        '</div>';
+
+    }
+
+    document.getElementById('hero-mount').innerHTML = html;
+  }
+
+
+  // =====================================================
+  // MỚI CẬP NHẬT
+  // =====================================================
+
+  var latest = articles.slice(1, 7);
+
+  if (latest.length) {
+
+    document.getElementById('latest-section').hidden = false;
+
+    document.getElementById('latest-mount').innerHTML =
+      latest.map(gridCard).join('');
+  }
+
+
+  // =====================================================
+  // THEO DÒNG SỰ KIỆN
+  // =====================================================
+
+  var streamMount =
+    document.getElementById('stream-mount');
+
+  if (articles.length) {
+
+    streamMount.innerHTML =
+      articles.map(function (a, i) {
+
+        return streamRow(
+          a,
+          i === articles.length - 1
+        );
+
+      }).join('');
+
+  } else {
+
+    streamMount.innerHTML =
+      '<div class="empty-state">' +
+      'Chưa có bài viết nào.' +
+      '</div>';
+  }
+
+
+  // =====================================================
+  // ĐỌC NHIỀU NHẤT
+  // =====================================================
+
+  var ranked = articles
+    .slice()
+    .sort(function (a, b) {
+
+      return b.view_count - a.view_count;
+
+    })
+    .slice(0, 5);
+
+
+  document.getElementById('rank-mount').innerHTML =
+
+    ranked.map(function (a, i) {
+
+      return '<div class="rank-item' +
+        (i === ranked.length - 1
+          ? ' no-border'
+          : '') +
+        '">' +
+
+        '<div>' +
+
+          '<h4 class="headline-md rank-item__title">' +
+
+            '<a href="article-detail.html?id=' +
+              a.id +
+            '">' +
+
+              MT.escapeHtml(a.title) +
+
+            '</a>' +
+
+          '</h4>' +
+
+          '<div class="meta">' +
+            a.view_count.toLocaleString('vi-VN') +
+            ' lượt xem' +
+          '</div>' +
+
+        '</div>' +
+
+      '</div>';
+
+    }).join('') ||
+
+    '<div class="empty-state">' +
+    'Chưa có dữ liệu.' +
+    '</div>';
+
+
+  // =====================================================
+  // CHỦ ĐỀ ĐANG ĐƯỢC QUAN TÂM
+  // =====================================================
+
+  var usedTagIds = {};
+
+  articles.forEach(function (a) {
+
+    MT.getArticleTags(a.id).forEach(function (t) {
+
+      usedTagIds[t.id] = t;
+
+    });
+
+  });
+
+
+  var tags = Object.keys(usedTagIds)
+    .map(function (k) {
+
+      return usedTagIds[k];
+
+    });
+
+
+  document.getElementById('tag-mount').innerHTML =
+
+    tags.length
+
+      ? tags.map(function (t) {
+
+          return '<a href="search.html?tag=' +
+            t.slug +
+            '" class="tag-chip">' +
+
+            '#' +
+            MT.escapeHtml(t.name) +
+
+          '</a>';
+
+        }).join('')
+
+      : '<p class="hint-text">' +
+        'Chưa có chủ đề nổi bật.' +
+        '</p>';
+
+
+})();
+</script>
+</body>
+</html>
