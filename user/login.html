@@ -6,29 +6,22 @@
 
     <title>Đăng nhập — Mạch Tin</title>
 
-    <!-- CSS riêng trang đăng nhập -->
     <link rel="stylesheet" href="/assets/style.css/login.css" />
   </head>
 
   <body>
-
     <!-- =========================================
          LOGIN
     ========================================== -->
 
     <main>
-
       <div class="auth-page">
-
         <div class="auth-wrapper">
-
-
           <!-- =====================================
                LOGO MẠCH TIN
           ====================================== -->
 
           <a href="../index.html" class="auth-logo">
-
             <svg
               class="pulse-mark"
               width="26"
@@ -37,7 +30,6 @@
               fill="none"
               aria-hidden="true"
             >
-
               <path
                 d="M1 13H7L9.5 6L13.5 20L16 13H25"
                 stroke="currentColor"
@@ -45,76 +37,45 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
-
             </svg>
 
-
-            <span class="logo__word">
-              MẠCH&nbsp;<em>TIN</em>
-            </span>
-
+            <span class="logo__word"> MẠCH&nbsp;<em>TIN</em> </span>
           </a>
-
-
 
           <!-- =====================================
                FORM ĐĂNG NHẬP
           ====================================== -->
 
           <section class="auth-card">
+            <h1>Đăng nhập</h1>
 
-            <h1>
-              Đăng nhập
-            </h1>
-
-
-            <p class="dek">
-              Đăng nhập để sử dụng các tính năng cá nhân.
-            </p>
-
-
+            <p class="dek">Đăng nhập để sử dụng các tính năng cá nhân.</p>
 
             <!-- =================================
                  ERROR
             ================================== -->
 
-            <div
-              class="alert is-error"
-              id="login-error"
-            >
+            <div class="alert is-error" id="login-error">
               Sai thông tin đăng nhập.
             </div>
-
-
 
             <!-- =================================
                  FORGOT PASSWORD
             ================================== -->
 
-            <div
-              class="alert is-info"
-              id="forgot-msg"
-            >
+            <div class="alert is-info" id="forgot-msg">
               Tính năng đang phát triển, vui lòng liên hệ Admin.
             </div>
-
-
 
             <!-- =================================
                  LOGIN FORM
             ================================== -->
 
             <form id="login-form">
-
-
               <!-- EMAIL / USERNAME -->
 
               <div class="field">
-
-                <label for="login-id">
-                  Email hoặc username
-                </label>
-
+                <label for="login-id"> Email hoặc username </label>
 
                 <input
                   type="text"
@@ -123,19 +84,12 @@
                   autocomplete="username"
                   required
                 />
-
               </div>
-
-
 
               <!-- PASSWORD -->
 
               <div class="field">
-
-                <label for="password">
-                  Mật khẩu
-                </label>
-
+                <label for="password"> Mật khẩu </label>
 
                 <input
                   type="password"
@@ -144,123 +98,67 @@
                   autocomplete="current-password"
                   required
                 />
-
               </div>
-
-
 
               <!-- ===============================
                    GHI NHỚ / QUÊN MẬT KHẨU
               ================================= -->
 
               <div class="auth-links">
-
-
                 <!-- GHI NHỚ -->
 
                 <label class="remember-login">
+                  <input type="checkbox" id="remember" />
 
-                  <input
-                    type="checkbox"
-                    id="remember"
-                  />
-
-                  <span>
-                    Ghi nhớ đăng nhập
-                  </span>
-
+                  <span> Ghi nhớ đăng nhập </span>
                 </label>
-
-
 
                 <!-- QUÊN MẬT KHẨU -->
 
-                <a
-                  href="#"
-                  id="forgot-link"
-                >
-                  Quên mật khẩu?
-                </a>
-
-
+                <a href="#" id="forgot-link"> Quên mật khẩu? </a>
               </div>
-
-
 
               <!-- ===============================
                    BUTTON LOGIN
               ================================= -->
 
-              <button
-                type="submit"
-                class="btn btn-primary btn-block"
-              >
+              <button type="submit" class="btn btn-primary btn-block">
                 Đăng nhập
               </button>
-
-
             </form>
-
-
 
             <!-- =================================
                  REGISTER
             ================================== -->
 
             <p class="form-footer">
-
               Chưa có tài khoản?
 
-              <a href="register.html">
-                Đăng ký ngay
-              </a>
-
+              <a href="register.html"> Đăng ký ngay </a>
             </p>
-
-
           </section>
-
-
         </div>
-
       </div>
-
     </main>
-
-
 
     <!-- =========================================
          MOCK DATA
     ========================================== -->
 
-    <!--
-      Nếu mock-data.js nằm ở thư mục gốc
-      thì từ user/login.html phải dùng ../mock-data.js
-    -->
-
     <script src="/assets/mock-data.js"></script>
 
-
-
     <script>
-
       // =====================================================
       // ELEMENT
       // =====================================================
 
-      const loginForm =
-        document.getElementById("login-form");
+      const loginForm = document.getElementById("login-form");
 
-      const loginError =
-        document.getElementById("login-error");
+      const loginError = document.getElementById("login-error");
 
-      const forgotMsg =
-        document.getElementById("forgot-msg");
+      const forgotMsg = document.getElementById("forgot-msg");
 
-      const forgotLink =
-        document.getElementById("forgot-link");
-
-
+      const forgotLink = document.getElementById("forgot-link");
 
       // =====================================================
       // ẨN THÔNG BÁO BAN ĐẦU
@@ -270,282 +168,143 @@
 
       forgotMsg.style.display = "none";
 
-
-
       // =====================================================
       // QUÊN MẬT KHẨU
       // =====================================================
 
-      forgotLink.addEventListener(
-        "click",
-        function (e) {
+      forgotLink.addEventListener("click", function (e) {
+        e.preventDefault();
 
-          e.preventDefault();
+        loginError.style.display = "none";
 
-
-          loginError.style.display =
-            "none";
-
-
-          forgotMsg.style.display =
-            "block";
-
-        }
-      );
-
-
+        forgotMsg.style.display = "block";
+      });
 
       // =====================================================
       // ĐĂNG NHẬP
       // =====================================================
 
-      loginForm.addEventListener(
-        "submit",
-        function (e) {
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-          e.preventDefault();
+        // -----------------------------------------------
+        // LẤY DỮ LIỆU FORM
+        // -----------------------------------------------
 
+        const loginId = document
+          .getElementById("login-id")
+          .value.trim()
+          .toLowerCase();
 
+        const password = document.getElementById("password").value;
 
-          // -----------------------------------------------
-          // LẤY DỮ LIỆU FORM
-          // -----------------------------------------------
+        // -----------------------------------------------
+        // ẨN THÔNG BÁO CŨ
+        // -----------------------------------------------
 
-          const loginId =
-            document
-              .getElementById("login-id")
-              .value
-              .trim()
-              .toLowerCase();
+        loginError.style.display = "none";
 
+        forgotMsg.style.display = "none";
 
-          const password =
-            document
-              .getElementById("password")
-              .value;
+        // -----------------------------------------------
+        // KIỂM TRA MOCK_DATA
+        // -----------------------------------------------
 
+        if (
+          typeof MOCK_DATA === "undefined" ||
+          !Array.isArray(MOCK_DATA.users)
+        ) {
+          console.error("Không tìm thấy MOCK_DATA.users");
 
+          loginError.textContent = "Không thể tải dữ liệu người dùng.";
 
-          // -----------------------------------------------
-          // ẨN THÔNG BÁO CŨ
-          // -----------------------------------------------
+          loginError.style.display = "block";
 
-          loginError.style.display =
-            "none";
-
-
-          forgotMsg.style.display =
-            "none";
-
-
-
-          // -----------------------------------------------
-          // KIỂM TRA MOCK_DATA
-          // -----------------------------------------------
-
-          if (
-            typeof MOCK_DATA === "undefined" ||
-            !Array.isArray(MOCK_DATA.users)
-          ) {
-
-            console.error(
-              "Không tìm thấy MOCK_DATA.users"
-            );
-
-
-            loginError.textContent =
-              "Không thể tải dữ liệu người dùng.";
-
-
-            loginError.style.display =
-              "block";
-
-
-            return;
-
-          }
-
-
-
-          // -----------------------------------------------
-          // TÌM USER
-          // -----------------------------------------------
-
-          const user =
-            MOCK_DATA.users.find(
-              function (u) {
-
-                const username =
-                  String(
-                    u.username || ""
-                  )
-                    .trim()
-                    .toLowerCase();
-
-
-                const email =
-                  String(
-                    u.email || ""
-                  )
-                    .trim()
-                    .toLowerCase();
-
-
-                return (
-                  username === loginId ||
-                  email === loginId
-                );
-
-              }
-            );
-
-
-
-          // -----------------------------------------------
-          // KIỂM TRA LOGIN
-          // -----------------------------------------------
-
-          if (
-            user &&
-            user.password === password &&
-            user.status === "active"
-          ) {
-
-
-            // =============================================
-            // LƯU USER ĐANG ĐĂNG NHẬP
-            // =============================================
-
-            localStorage.setItem(
-              "currentUserId",
-              String(user.id)
-            );
-
-
-
-            // =============================================
-            // GHI NHỚ ĐĂNG NHẬP
-            // =============================================
-
-            const remember =
-              document.getElementById(
-                "remember"
-              ).checked;
-
-
-            if (remember) {
-
-              localStorage.setItem(
-                "rememberLogin",
-                "true"
-              );
-
-            }
-
-            else {
-
-              localStorage.removeItem(
-                "rememberLogin"
-              );
-
-            }
-
-
-
-            // =============================================
-            // CHUYỂN VỀ TRANG CHỦ
-            // =============================================
-
-            window.location.href =
-              "../index.html";
-
-
-          }
-
-          else {
-
-
-            // =============================================
-            // LOGIN SAI
-            // =============================================
-
-            loginError.textContent =
-              "Sai thông tin đăng nhập.";
-
-
-            loginError.style.display =
-              "block";
-
-          }
-
+          return;
         }
-      );
 
+        // -----------------------------------------------
+        // TÌM USER
+        // -----------------------------------------------
 
+        const user = MOCK_DATA.users.find(function (u) {
+          const username = String(u.username || "")
+            .trim()
+            .toLowerCase();
+
+          const email = String(u.email || "")
+            .trim()
+            .toLowerCase();
+
+          return username === loginId || email === loginId;
+        });
+
+        // -----------------------------------------------
+        // KIỂM TRA LOGIN
+        // -----------------------------------------------
+
+        if (user && user.password === password && user.status === "active") {
+          // =============================================
+          // LƯU USER ĐANG ĐĂNG NHẬP
+          // =============================================
+
+          localStorage.setItem("currentUserId", String(user.id));
+
+          // =============================================
+          // GHI NHỚ ĐĂNG NHẬP
+          // =============================================
+
+          const remember = document.getElementById("remember").checked;
+
+          if (remember) {
+            localStorage.setItem("rememberLogin", "true");
+          } else {
+            localStorage.removeItem("rememberLogin");
+          }
+
+          // =============================================
+          // CHUYỂN VỀ TRANG CHỦ
+          // =============================================
+
+          window.location.href = "../index.html";
+        } else {
+          // =============================================
+          // LOGIN SAI
+          // =============================================
+
+          loginError.textContent = "Sai thông tin đăng nhập.";
+
+          loginError.style.display = "block";
+        }
+      });
 
       // =====================================================
       // TỰ ĐIỀN TÀI KHOẢN NẾU ĐÃ GHI NHỚ
       // =====================================================
 
-      document.addEventListener(
-        "DOMContentLoaded",
-        function () {
+      document.addEventListener("DOMContentLoaded", function () {
+        const rememberLogin = localStorage.getItem("rememberLogin");
 
-          const rememberLogin =
-            localStorage.getItem(
-              "rememberLogin"
-            );
+        const currentUserId = localStorage.getItem("currentUserId");
 
+        if (
+          rememberLogin === "true" &&
+          currentUserId &&
+          typeof MOCK_DATA !== "undefined" &&
+          Array.isArray(MOCK_DATA.users)
+        ) {
+          const savedUser = MOCK_DATA.users.find(function (user) {
+            return String(user.id) === String(currentUserId);
+          });
 
-          const currentUserId =
-            localStorage.getItem(
-              "currentUserId"
-            );
+          if (savedUser) {
+            document.getElementById("login-id").value =
+              savedUser.username || savedUser.email || "";
 
-
-          if (
-            rememberLogin === "true" &&
-            currentUserId &&
-            typeof MOCK_DATA !== "undefined" &&
-            Array.isArray(MOCK_DATA.users)
-          ) {
-
-            const savedUser =
-              MOCK_DATA.users.find(
-                function (user) {
-
-                  return (
-                    String(user.id) ===
-                    String(currentUserId)
-                  );
-
-                }
-              );
-
-
-            if (savedUser) {
-
-              document.getElementById(
-                "login-id"
-              ).value =
-                savedUser.username ||
-                savedUser.email ||
-                "";
-
-
-
-              document.getElementById(
-                "remember"
-              ).checked = true;
-
-            }
-
+            document.getElementById("remember").checked = true;
           }
-
         }
-      );
-
+      });
     </script>
-
   </body>
 </html>

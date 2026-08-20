@@ -12,8 +12,6 @@
 
   <title>Bài viết yêu thích — Mạch Tin</title>
 
-  <!-- favorites.html nằm trong assets/user/
-       nên phải đi lên 1 cấp để tới style.css -->
   <link
     rel="stylesheet"
     href="/assets/style.css/favorites.css"
@@ -162,8 +160,6 @@
 
         </a>
 
-
-
         <!-- ĐỔI MẬT KHẨU -->
 
         <a
@@ -210,8 +206,6 @@
 
         </a>
 
-
-
         <!-- BÀI VIẾT YÊU THÍCH -->
 
         <a
@@ -240,8 +234,6 @@
           </span>
 
         </a>
-
-
 
         <!-- LỊCH SỬ -->
 
@@ -278,8 +270,6 @@
           </span>
 
         </a>
-
-
 
         <!-- BÌNH LUẬN -->
 
@@ -331,8 +321,6 @@
 
         </a>
 
-
-
         <!-- THÔNG BÁO -->
 
         <a
@@ -372,8 +360,6 @@
 
 
       </nav>
-
-
 
       <!-- =================================================
            LOGOUT
@@ -421,8 +407,6 @@
 
     </aside>
 
-
-
     <!-- ===================================================
          MAIN
     =================================================== -->
@@ -446,8 +430,6 @@
           (không cần xác nhận).
         </p>
 
-
-
         <!-- ERROR -->
 
         <div
@@ -457,8 +439,6 @@
           Không thể tải dữ liệu bài viết yêu thích.
         </div>
 
-
-
         <!-- EMPTY -->
 
         <div
@@ -467,8 +447,6 @@
         >
           Bạn chưa có bài viết yêu thích nào.
         </div>
-
-
 
         <!-- LIST -->
 
@@ -485,29 +463,16 @@
 
   </div>
 
-
-
   <!-- =====================================================
        MOCK DATA
   ====================================================== -->
-
-  <!-- favorites.html ở assets/user/
-       mock-data.js ở assets/
-       nên dùng ../mock-data.js -->
-
   <script src="/assets/mock-data.js"></script>
-
-
   <script>
 
     // =====================================================
     // CURRENT USER
     // =====================================================
-
     const CURRENT_USER_ID = 1;
-
-
-
     // =====================================================
     // ELEMENT
     // =====================================================
@@ -533,18 +498,14 @@
     const userInitials =
       document.getElementById("userInitials");
 
-
-
     // =====================================================
     // INITIALS
     // =====================================================
-
     function getInitials(name) {
 
       if (!name) {
         return "U";
       }
-
 
       const words =
         name
@@ -560,7 +521,6 @@
 
       }
 
-
       return (
         words[0].charAt(0) +
         words[words.length - 1].charAt(0)
@@ -568,12 +528,9 @@
 
     }
 
-
-
     // =====================================================
     // ROLE
     // =====================================================
-
     function getRoleName(role) {
 
       if (role === "user") {
@@ -596,28 +553,22 @@
 
     }
 
-
-
     // =====================================================
     // LOAD USER
     // =====================================================
-
     function loadUser(user) {
 
       if (!user) {
         return;
       }
 
-
       const name =
         user.full_name ||
         user.username ||
         "Người dùng";
 
-
       userName.textContent =
         name;
-
 
       userRole.textContent =
         getRoleName(user.role);
@@ -629,8 +580,6 @@
 
       userInitials.style.display =
         "block";
-
-
       // Xóa ảnh avatar cũ
 
       const oldImage =
@@ -641,21 +590,17 @@
         oldImage.remove();
       }
 
-
       // =================================================
       // LẤY AVATAR
       // =================================================
-
       const savedAvatar =
         localStorage.getItem(
           "userAvatar_" + user.id
         );
 
-
       const avatarURL =
         savedAvatar ||
         user.avatar;
-
 
       // Không có avatar
 
@@ -663,27 +608,21 @@
         return;
       }
 
-
       // =================================================
       // CREATE IMAGE
       // =================================================
-
       const img =
         document.createElement("img");
-
 
       img.src =
         avatarURL;
 
-
       img.alt =
         "Ảnh đại diện " + name;
-
 
       // =================================================
       // AVATAR LOAD SUCCESS
       // =================================================
-
       img.onload =
         function () {
 
@@ -692,11 +631,9 @@
 
         };
 
-
       // =================================================
       // AVATAR LOAD ERROR
       // =================================================
-
       img.onerror =
         function () {
 
@@ -707,17 +644,13 @@
 
         };
 
-
       userAvatar.appendChild(img);
 
     }
 
-
-
     // =====================================================
     // CATEGORY
     // =====================================================
-
     function getCategoryName(categoryId) {
 
       if (
@@ -729,7 +662,6 @@
 
       }
 
-
       const category =
         MOCK_DATA.categories.find(
           category =>
@@ -737,19 +669,15 @@
             Number(categoryId)
         );
 
-
       return category
         ? category.name
         : "Chưa phân loại";
 
     }
 
-
-
     // =====================================================
     // AUTHOR
     // =====================================================
-
     function getAuthorName(authorId) {
 
       if (
@@ -761,14 +689,12 @@
 
       }
 
-
       const author =
         MOCK_DATA.users.find(
           user =>
             Number(user.id) ===
             Number(authorId)
         );
-
 
       return author
         ? (
@@ -780,32 +706,25 @@
 
     }
 
-
-
     // =====================================================
     // FORMAT DATE
     // =====================================================
-
     function formatArticleDate(dateString) {
 
       if (!dateString) {
         return "";
       }
 
-
       const date =
         String(dateString)
           .substring(0, 10);
 
-
       const parts =
         date.split("-");
-
 
       if (parts.length !== 3) {
         return date;
       }
-
 
       return (
         parts[2] +
@@ -817,12 +736,9 @@
 
     }
 
-
-
     // =====================================================
     // CREATE FAVORITE ITEM
     // =====================================================
-
     function createFavoriteItem(fav) {
 
       const article =
@@ -832,23 +748,19 @@
             Number(fav.article_id)
         );
 
-
       if (!article) {
         return null;
       }
-
 
       const categoryName =
         getCategoryName(
           article.category_id
         );
 
-
       const authorName =
         getAuthorName(
           article.author_id
         );
-
 
       const articleUrl =
         "article-detail.html?slug=" +
@@ -857,26 +769,19 @@
           article.id
         );
 
-
       const item =
         document.createElement("article");
-
 
       item.className =
         "favorites-item";
 
-
       item.dataset.articleId =
         String(article.id);
-
-
 
       // =================================================
       // IMAGE
       // =================================================
-
       let imageHTML = "";
-
 
       if (article.cover_image) {
 
@@ -913,12 +818,9 @@
 
       }
 
-
-
       // =================================================
       // ITEM HTML
       // =================================================
-
       item.innerHTML = `
 
         <a
@@ -930,10 +832,7 @@
 
         </a>
 
-
-
         <div class="favorites-info">
-
 
           <h2 class="favorites-title">
 
@@ -947,8 +846,6 @@
             </a>
 
           </h2>
-
-
 
           <div class="favorites-meta">
 
@@ -978,8 +875,6 @@
 
         </div>
 
-
-
         <div class="favorites-action">
 
           <button
@@ -994,23 +889,18 @@
 
       `;
 
-
-
       // =================================================
       // IMAGE ERROR
       // =================================================
-
       const image =
         item.querySelector(
           ".favorites-image"
         );
 
-
       const placeholder =
         item.querySelector(
           ".favorites-image-placeholder"
         );
-
 
       if (
         image &&
@@ -1026,23 +916,18 @@
 
             placeholder.style.display =
               "flex";
-
           }
         );
 
       }
 
-
-
       // =================================================
       // REMOVE FAVORITE
       // =================================================
-
       const btn =
         item.querySelector(
           ".btn-unfavorite"
         );
-
 
       btn.addEventListener(
         "click",
@@ -1056,17 +941,13 @@
         }
       );
 
-
       return item;
 
     }
 
-
-
     // =====================================================
     // REMOVE FAVORITE
     // =====================================================
-
     function removeFavorite(
       articleId,
       itemEl
@@ -1087,7 +968,6 @@
                 Number(articleId)
           );
 
-
         if (index !== -1) {
 
           MOCK_DATA.favorites.splice(
@@ -1099,9 +979,7 @@
 
       }
 
-
       itemEl.remove();
-
 
       if (
         favoritesList.children.length === 0
@@ -1114,16 +992,12 @@
 
     }
 
-
-
     // =====================================================
     // LOAD FAVORITES
     // =====================================================
-
     function loadFavorites() {
 
       try {
-
 
         // =================================================
         // CHECK MOCK DATA
@@ -1140,19 +1014,15 @@
 
         }
 
-
-
         // =================================================
         // USER
         // =================================================
-
         const currentUser =
           MOCK_DATA.users.find(
             user =>
               Number(user.id) ===
               Number(CURRENT_USER_ID)
           );
-
 
         if (currentUser) {
 
@@ -1162,12 +1032,9 @@
 
         }
 
-
-
         // =================================================
         // FAVORITES
         // =================================================
-
         const userFavs =
           Array.isArray(
             MOCK_DATA.favorites
@@ -1178,15 +1045,11 @@
                   Number(favorite.user_id) ===
                   Number(CURRENT_USER_ID)
               )
-
             : [];
-
-
 
         // =================================================
         // SORT
         // =================================================
-
         userFavs.sort(
           (a, b) => {
 
@@ -1200,7 +1063,6 @@
                 )
               );
 
-
             const dateB =
               new Date(
                 String(
@@ -1211,18 +1073,13 @@
                 )
               );
 
-
             return dateB - dateA;
-
           }
         );
-
-
 
         // =================================================
         // EMPTY
         // =================================================
-
         if (
           userFavs.length === 0
         ) {
@@ -1237,52 +1094,37 @@
 
         }
 
-
         favoritesEmpty.style.display =
           "none";
-
-
 
         // =================================================
         // RENDER
         // =================================================
-
         userFavs.forEach(
           favorite => {
-
             const item =
               createFavoriteItem(
                 favorite
               );
-
 
             if (item) {
 
               favoritesList.appendChild(
                 item
               );
-
             }
-
           }
         );
-
-
 
         // =================================================
         // NO VALID ARTICLE
         // =================================================
-
         if (
           favoritesList.children.length === 0
         ) {
-
           favoritesEmpty.style.display =
             "block";
-
         }
-
-
       }
 
       catch (error) {
@@ -1292,37 +1134,26 @@
           error
         );
 
-
         favoritesError.style.display =
           "block";
-
       }
-
     }
-
-
 
     // =====================================================
     // START
     // =====================================================
-
     loadFavorites();
-
-
 
     // =====================================================
     // PAGE SHOW
     // =====================================================
-
     window.addEventListener(
       "pageshow",
       function () {
-
         if (
           typeof MOCK_DATA !==
           "undefined"
         ) {
-
           const currentUser =
             MOCK_DATA.users.find(
               user =>
@@ -1330,23 +1161,16 @@
                 Number(CURRENT_USER_ID)
             );
 
-
           if (currentUser) {
-
             loadUser(
               currentUser
             );
-
           }
-
         }
-
       }
     );
 
   </script>
-
-
 </body>
 
 </html>
