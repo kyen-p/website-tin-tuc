@@ -1,961 +1,1395 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
   <title>Thông báo - Mạch Tin</title>
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="/style.css/notifications.css">
+
 </head>
+
 
 <body>
 
-  <div class="notifications-page">
 
-    <!-- =====================================================
-         SIDEBAR
-         ===================================================== -->
-    <aside class="notifications-sidebar">
+<div class="notifications-page">
 
-      <!-- LOGO -->
-      <div class="notifications-brand">
-        <a href="dashboard.html" class="brand-link">
 
-          <svg class="pulse-mark"
-               viewBox="0 0 28 24"
-               fill="none"
-               xmlns="http://www.w3.org/2000/svg">
+  <!-- =====================================================
+       SIDEBAR
+  ===================================================== -->
+
+  <aside class="notifications-sidebar">
+
+
+    <!-- =================================================
+         LOGO
+    ================================================= -->
+
+    <div class="notifications-brand">
+
+      <a href="dashboard.html"
+         class="brand-link">
+
+        <svg
+          class="pulse-mark"
+          viewBox="0 0 40 32"
+          fill="none"
+          aria-hidden="true">
+
+          <path
+            d="M2 16
+               H10
+               L13.5 7
+               L19 25
+               L23 16
+               H38"
+            stroke="currentColor"
+            stroke-width="2.7"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+          </path>
+
+        </svg>
+
+
+        <span class="brand-word">
+
+          <span class="brand-mach">
+            MẠCH
+          </span>
+
+          <span class="brand-tin">
+            TIN
+          </span>
+
+        </span>
+
+      </a>
+
+    </div>
+
+
+    <!-- =================================================
+         USER
+    ================================================= -->
+
+    <div class="notifications-user">
+
+
+      <!-- AVATAR
+           Lấy giống profile.html
+      -->
+
+      <div class="notifications-avatar"
+           id="userAvatar">
+
+        <img
+          id="sidebarAvatar"
+          src=""
+          alt="Avatar">
+
+      </div>
+
+
+      <p
+        class="notifications-user-name"
+        id="userName">
+
+        Đang tải...
+
+      </p>
+
+
+      <div
+        class="notifications-user-role"
+        id="userRole">
+
+        Độc giả
+
+      </div>
+
+
+    </div>
+
+
+    <!-- =================================================
+         MENU
+    ================================================= -->
+
+    <nav class="notifications-menu">
+
+
+      <!-- THÔNG TIN TÀI KHOẢN -->
+
+      <a
+        href="profile.html"
+        class="notifications-menu-item">
+
+        <svg
+          class="notifications-menu-icon"
+          viewBox="0 0 24 24"
+          fill="none">
+
+          <circle
+            cx="12"
+            cy="8"
+            r="3.2"
+            stroke="currentColor"
+            stroke-width="1.7">
+          </circle>
+
+          <path
+            d="M5 20
+               C5.8 16.7
+               8.2 15
+               12 15
+               C15.8 15
+               18.2 16.7
+               19 20"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round">
+          </path>
+
+        </svg>
+
+
+        <span class="notifications-menu-text">
+          Thông tin tài khoản
+        </span>
+
+      </a>
+
+
+      <!-- ĐỔI MẬT KHẨU -->
+
+      <a
+        href="profile.html#password"
+        class="notifications-menu-item">
+
+        <svg
+          class="notifications-menu-icon"
+          viewBox="0 0 24 24"
+          fill="none">
+
+          <rect
+            x="5"
+            y="10"
+            width="14"
+            height="10"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="1.7">
+          </rect>
+
+          <path
+            d="M8 10V7
+               A4 4 0 0 1 16 7V10"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round">
+          </path>
+
+          <circle
+            cx="12"
+            cy="15"
+            r="1"
+            fill="currentColor">
+          </circle>
+
+        </svg>
+
+
+        <span class="notifications-menu-text">
+          Đổi mật khẩu
+        </span>
+
+      </a>
+
+
+      <!-- BÀI VIẾT YÊU THÍCH -->
+
+      <a
+        href="favorites.html"
+        class="notifications-menu-item">
+
+        <svg
+          class="notifications-menu-icon"
+          viewBox="0 0 24 24"
+          fill="none">
+
+          <path
+            d="M20.8 8.8
+               C20.8 13.8
+               12 18.8
+               12 18.8
+               C12 18.8
+               3.2 13.8
+               3.2 8.8
+               A4.8 4.8 0 0 1
+               12 6
+               A4.8 4.8 0 0 1
+               20.8 8.8Z"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linejoin="round">
+          </path>
+
+        </svg>
+
+
+        <span class="notifications-menu-text">
+          Bài viết yêu thích
+        </span>
+
+      </a>
+
+
+      <!-- LỊCH SỬ ĐỌC -->
+
+      <a
+        href="history.html"
+        class="notifications-menu-item">
+
+        <svg
+          class="notifications-menu-icon"
+          viewBox="0 0 24 24"
+          fill="none">
+
+          <path
+            d="M5 5.5
+               A2.5 2.5 0 0 1 7.5 3
+               H20
+               V19
+               H7.5
+               A2.5 2.5 0 0 1 5 16.5
+               V5.5Z"
+            stroke="currentColor"
+            stroke-width="1.7">
+          </path>
+
+          <path
+            d="M5 5.5V16.5
+               M9 7H16
+               M9 11H16"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round">
+          </path>
+
+        </svg>
+
+
+        <span class="notifications-menu-text">
+          Lịch sử đọc bài
+        </span>
+
+      </a>
+
+
+      <!-- BÌNH LUẬN CỦA TÔI -->
+
+      <a
+        href="my-comments.html"
+        class="notifications-menu-item">
+
+        <svg
+          class="notifications-menu-icon"
+          viewBox="0 0 24 24"
+          fill="none">
+
+          <path
+            d="M20 11.5
+               A7.5 7.5 0 0 1
+               12.5 19
+               H8
+               L4 21
+               V15.8
+               A7.5 7.5 0 0 1
+               20 11.5Z"
+            stroke="currentColor"
+            stroke-width="1.7">
+          </path>
+
+        </svg>
+
+
+        <span class="notifications-menu-text">
+          Bình luận của tôi
+        </span>
+
+      </a>
+
+
+      <!-- THÔNG BÁO -->
+
+      <a
+        href="notifications.html"
+        class="notifications-menu-item active">
+
+        <svg
+          class="notifications-menu-icon"
+          viewBox="0 0 24 24"
+          fill="none">
+
+          <path
+            d="M18 9
+               A6 6 0 0 0 6 9
+               C6 16 3 17 3 17
+               H21
+               C21 17 18 16 18 9Z"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linejoin="round">
+          </path>
+
+          <path
+            d="M10 21H14"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round">
+          </path>
+
+        </svg>
+
+
+        <span class="notifications-menu-text">
+          Thông báo
+        </span>
+
+      </a>
+
+
+    </nav>
+
+
+    <!-- =================================================
+         LOGOUT
+    ================================================= -->
+
+    <div class="notifications-logout">
+
+      <a
+        href="index.html"
+        class="notifications-menu-item">
+
+        <svg
+          class="notifications-menu-icon"
+          viewBox="0 0 24 24"
+          fill="none">
+
+          <path
+            d="M10 4H6
+               A2 2 0 0 0 4 6
+               V18
+               A2 2 0 0 0 6 20
+               H10"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round">
+          </path>
+
+          <path
+            d="M14 8L18 12L14 16
+               M18 12H9"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round">
+          </path>
+
+        </svg>
+
+
+        <span class="notifications-menu-text">
+          Đăng xuất
+        </span>
+
+      </a>
+
+    </div>
+
+
+  </aside>
+
+
+  <!-- =====================================================
+       MAIN
+  ===================================================== -->
+
+  <main class="notifications-main">
+
+    <div class="notifications-main-inner">
+
+
+      <h1 class="notifications-heading">
+        Thông báo
+      </h1>
+
+
+      <div class="notifications-heading-line">
+      </div>
+
+
+      <p class="notifications-description">
+        Xem các thông báo mới nhất từ hệ thống Mạch Tin.
+      </p>
+
+
+      <!-- ERROR -->
+
+      <div
+        id="notificationsError"
+        class="notifications-error">
+
+        Không thể tải thông báo.
+
+      </div>
+
+
+      <!-- LIST -->
+
+      <section
+        id="notificationsList"
+        class="notifications-list">
+      </section>
+
+
+      <!-- EMPTY -->
+
+      <div
+        id="notificationsEmpty"
+        class="notifications-empty">
+
+        <div class="notifications-empty-icon">
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none">
 
             <path
-              d="M1 13H6L9 5L13 19L17 9L20 13H27"
+              d="M18 9
+                 A6 6 0 0 0 6 9
+                 C6 16 3 17 3 17
+                 H21
+                 C21 17 18 16 18 9Z"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
+              stroke-width="1.5">
+            </path>
+
+            <path
+              d="M10 21H14"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round">
+            </path>
 
           </svg>
 
-          <span class="brand-word">
-            <span class="brand-mach">Mạch</span>
-            <span class="brand-tin">Tin</span>
-          </span>
-
-        </a>
-      </div>
-
-
-      <!-- USER -->
-      <div class="notifications-user">
-
-        <div class="notifications-avatar" id="userAvatar">
-          U
         </div>
 
-        <p class="notifications-user-name" id="userName">
-          Người dùng
-        </p>
-
-        <div class="notifications-user-role" id="userRole">
-          USER
+        <div>
+          Chưa có thông báo mới
         </div>
 
       </div>
 
 
-      <!-- MENU -->
-      <nav class="notifications-menu">
+    </div>
 
-        <!-- Thông tin tài khoản -->
-        <a href="profile.html" class="notifications-menu-item">
+  </main>
 
-          <svg class="notifications-menu-icon"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.8">
 
-            <circle cx="12" cy="8" r="3.5"></circle>
-            <path d="M5 20C5.8 16.5 8.2 14.5 12 14.5C15.8 14.5 18.2 16.5 19 20"></path>
+</div>
 
-          </svg>
 
-          <span class="notifications-menu-text">
-            Thông tin tài khoản
-          </span>
+<!-- =====================================================
+     MOCK DATA
+===================================================== -->
 
-        </a>
+<script src="mock-data.js"></script>
 
 
-        <!-- Đổi mật khẩu -->
-        <a href="profile.html#password" class="notifications-menu-item">
+<script>
 
-          <svg class="notifications-menu-icon"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.8">
+/* =====================================================
+   1. LẤY USER
+===================================================== */
 
-            <rect x="5" y="10" width="14" height="10" rx="1.5"></rect>
-            <path d="M8 10V7.5C8 5.6 9.8 4 12 4C14.2 4 16 5.6 16 7.5V10"></path>
+const user =
+    MOCK_DATA.users[0];
 
-          </svg>
 
-          <span class="notifications-menu-text">
-            Đổi mật khẩu
-          </span>
+/* =====================================================
+   2. ROLE
+===================================================== */
 
-        </a>
+function roleName(role) {
 
-
-        <!-- Bài viết yêu thích -->
-        <a href="favorites.html" class="notifications-menu-item">
-
-          <svg class="notifications-menu-icon"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.8">
-
-            <path d="M12 20.5L4.8 13.3C1.5 10 3.2 4.5 7.8 4.2C10 4 11.2 5.2 12 6.5C12.8 5.2 14 4 16.2 4.2C20.8 4.5 22.5 10 19.2 13.3L12 20.5Z"></path>
-
-          </svg>
-
-          <span class="notifications-menu-text">
-            Bài viết yêu thích
-          </span>
-
-        </a>
-
-
-        <!-- Lịch sử đọc -->
-        <a href="history.html" class="notifications-menu-item">
-
-          <svg class="notifications-menu-icon"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.8">
-
-            <circle cx="12" cy="12" r="8.5"></circle>
-            <path d="M12 7V12L15.5 14"></path>
-
-          </svg>
-
-          <span class="notifications-menu-text">
-            Lịch sử đọc
-          </span>
-
-        </a>
-
-
-        <!-- Bình luận của tôi -->
-        <a href="my-comments.html" class="notifications-menu-item">
-
-          <svg class="notifications-menu-icon"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.8">
-
-            <path d="M5 5.5H19V16H9L5 19V5.5Z"></path>
-            <path d="M8 9H16"></path>
-            <path d="M8 12H14"></path>
-
-          </svg>
-
-          <span class="notifications-menu-text">
-            Bình luận của tôi
-          </span>
-
-        </a>
-
-
-        <!-- THÔNG BÁO -->
-        <a href="notifications.html"
-           class="notifications-menu-item active">
-
-          <svg class="notifications-menu-icon"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.8">
-
-            <path d="M18 9C18 5.7 15.8 3.5 12 3.5C8.2 3.5 6 5.7 6 9V13L4 16H20L18 13V9Z"></path>
-            <path d="M10 19C10.5 20 11.2 20.5 12 20.5C12.8 20.5 13.5 20 14 19"></path>
-
-          </svg>
-
-          <span class="notifications-menu-text">
-            Thông báo
-          </span>
-
-        </a>
-
-      </nav>
-
-
-      <!-- LOGOUT -->
-      <div class="notifications-logout">
-
-        <a href="public/index.html"
-           class="notifications-menu-item">
-
-          <svg class="notifications-menu-icon"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.8">
-
-            <path d="M10 5H5V19H10"></path>
-            <path d="M14 8L18 12L14 16"></path>
-            <path d="M9 12H18"></path>
-
-          </svg>
-
-          <span class="notifications-menu-text">
-            Đăng xuất
-          </span>
-
-        </a>
-
-      </div>
-
-    </aside>
-
-
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
-    <main class="notifications-main">
-
-      <div class="notifications-main-inner">
-
-        <h1 class="notifications-heading">
-          Thông báo
-        </h1>
-
-        <div class="notifications-heading-line"></div>
-
-        <p class="notifications-description">
-          Xem các thông báo mới nhất từ hệ thống Mạch Tin.
-        </p>
-
-
-        <!-- ERROR -->
-        <div id="notificationsError"
-             class="notifications-error">
-          Không thể tải thông báo.
-        </div>
-
-
-        <!-- LIST -->
-        <section id="notificationsList"
-                 class="notifications-list">
-        </section>
-
-
-        <!-- EMPTY -->
-        <div id="notificationsEmpty"
-             class="notifications-empty">
-
-          <div class="notifications-empty-icon">
-
-            <svg viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.5">
-
-              <path d="M18 9C18 5.7 15.8 3.5 12 3.5C8.2 3.5 6 5.7 6 9V13L4 16H20L18 13V9Z"></path>
-              <path d="M10 19C10.5 20 11.2 20.5 12 20.5C12.8 20.5 13.5 20 14 19"></path>
-
-            </svg>
-
-          </div>
-
-          <div>
-            Chưa có thông báo mới
-          </div>
-
-        </div>
-
-      </div>
-
-    </main>
-
-  </div>
-
-
-  <!-- =====================================================
-       MOCK DATA
-       CHỈ ĐƯỜNG DẪN TỚI MOCK DATA
-       ===================================================== -->
-  <script src="mock-data.js"></script>
-
-
-  <!-- =====================================================
-       NOTIFICATION SCRIPT
-       ===================================================== -->
-  <script>
-
-    // -----------------------------------------------------
-    // LẤY USER HIỆN TẠI TỪ LOGIN
-    // -----------------------------------------------------
-
-    function getCurrentUserId() {
-
-      const possibleKeys = [
-        "currentUserId",
-        "userId",
-        "user_id",
-        "loggedInUserId",
-        "logged_user_id"
-      ];
-
-      for (const key of possibleKeys) {
-
-        const value = localStorage.getItem(key);
-
-        if (value !== null && value !== "") {
-
-          const id = Number(value);
-
-          if (!Number.isNaN(id)) {
-            return id;
-          }
-
-        }
-
-      }
-
-      return null;
+    if (role === "user") {
+        return "Độc giả";
     }
 
+    if (role === "reporter") {
+        return "Phóng viên";
+    }
 
-    // -----------------------------------------------------
-    // USER HIỆN TẠI
-    // -----------------------------------------------------
+    if (role === "editor") {
+        return "Biên tập viên";
+    }
 
-    const currentUserId = getCurrentUserId();
+    if (role === "admin") {
+        return "Quản trị viên";
+    }
 
-    const currentUser =
-      MOCK_DATA.users.find(
-        user => Number(user.id) === Number(currentUserId)
-      );
+    return role || "Độc giả";
+}
 
 
-    // -----------------------------------------------------
-    // HIỂN THỊ USER SIDEBAR
-    // -----------------------------------------------------
+/* =====================================================
+   3. INITIALS
+===================================================== */
 
-    function renderUser() {
+function getInitials(name) {
 
-      const userName =
+    if (!name) {
+        return "U";
+    }
+
+    const words =
+        name.trim().split(/\s+/);
+
+    if (words.length === 1) {
+
+        return words[0]
+            .charAt(0)
+            .toUpperCase();
+
+    }
+
+    return (
+        words[0].charAt(0) +
+        words[words.length - 1].charAt(0)
+    ).toUpperCase();
+
+}
+
+
+/* =====================================================
+   4. HIỂN THỊ USER SIDEBAR
+===================================================== */
+
+function renderUser() {
+
+    const userName =
         document.getElementById("userName");
 
-      const userRole =
+    const userRole =
         document.getElementById("userRole");
 
-      const userAvatar =
+    const userAvatar =
         document.getElementById("userAvatar");
 
 
-      if (!currentUser) {
+    if (!user) {
 
-        userName.textContent = "Người dùng";
-        userRole.textContent = "USER";
-        userAvatar.textContent = "U";
+        userName.innerText =
+            "Người dùng";
+
+        userRole.innerText =
+            "Độc giả";
+
+        userAvatar.innerHTML =
+            "<span>U</span>";
 
         return;
-      }
+    }
 
 
-      userName.textContent =
-        currentUser.full_name;
+    /* TÊN */
+
+    userName.innerText =
+        user.full_name || "Người dùng";
 
 
-      const roleNames = {
-        user: "Độc giả",
-        reporter: "Phóng viên",
-        editor: "Biên tập viên",
-        admin: "Quản trị viên"
-      };
+    /* ROLE */
+
+    userRole.innerText =
+        roleName(user.role);
 
 
-      userRole.textContent =
-        roleNames[currentUser.role] ||
-        currentUser.role;
+    /* =================================================
+       AVATAR
+       GIỐNG PROFILE.HTML
+    ================================================= */
+
+    userAvatar.innerHTML = "";
 
 
-      if (currentUser.avatar) {
-
-        const image =
-          document.createElement("img");
-
-        image.src =
-          currentUser.avatar;
-
-        image.alt =
-          currentUser.full_name;
+    const image =
+        document.createElement("img");
 
 
-        image.onerror = function () {
+    image.id =
+        "sidebarAvatar";
 
-          userAvatar.innerHTML = "";
 
-          userAvatar.textContent =
-            getInitials(currentUser.full_name);
+    image.alt =
+        "Avatar";
+
+
+    /*
+       Lấy trực tiếp từ MOCK_DATA
+       giống profile.html
+    */
+
+    image.src =
+        user.avatar || "";
+
+
+    /*
+       Nếu avatar không tồn tại
+       thì hiện chữ cái
+    */
+
+    image.onerror =
+        function () {
+
+            userAvatar.innerHTML = "";
+
+            userAvatar.classList.add(
+                "avatar-fallback"
+            );
+
+            userAvatar.innerText =
+                getInitials(
+                    user.full_name
+                );
 
         };
 
 
-        userAvatar.innerHTML = "";
+    /*
+       Nếu có avatar thì bỏ fallback
+    */
 
-        userAvatar.appendChild(image);
+    image.onload =
+        function () {
 
-      } else {
+            userAvatar.classList.remove(
+                "avatar-fallback"
+            );
 
-        userAvatar.textContent =
-          getInitials(currentUser.full_name);
+        };
 
-      }
 
+    userAvatar.appendChild(image);
+
+}
+
+
+/* =====================================================
+   5. FORMAT NGÀY
+===================================================== */
+
+function formatDate(dateString) {
+
+    if (!dateString) {
+        return "";
     }
 
-
-    // -----------------------------------------------------
-    // LẤY CHỮ CÁI ĐẦU
-    // -----------------------------------------------------
-
-    function getInitials(name) {
-
-      if (!name) {
-        return "U";
-      }
-
-      const words =
-        name.trim().split(/\s+/);
-
-
-      if (words.length === 1) {
-
-        return words[0]
-          .charAt(0)
-          .toUpperCase();
-
-      }
-
-
-      return (
-        words[0].charAt(0) +
-        words[words.length - 1].charAt(0)
-      ).toUpperCase();
-
-    }
-
-
-    // -----------------------------------------------------
-    // FORMAT NGÀY
-    // -----------------------------------------------------
-
-    function formatDate(dateString) {
-
-      const date =
+    const date =
         new Date(
-          dateString.replace(" ", "T")
+            dateString.replace(" ", "T")
         );
 
-
-      if (Number.isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
         return dateString;
-      }
+    }
 
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
 
-      const day =
-        String(date.getDate()).padStart(2, "0");
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
-      const month =
-        String(date.getMonth() + 1).padStart(2, "0");
-
-      const year =
+    const year =
         date.getFullYear();
 
-      const hours =
-        String(date.getHours()).padStart(2, "0");
+    const hours =
+        String(
+            date.getHours()
+        ).padStart(2, "0");
 
-      const minutes =
-        String(date.getMinutes()).padStart(2, "0");
+    const minutes =
+        String(
+            date.getMinutes()
+        ).padStart(2, "0");
+
+    return `${day}/${month}/${year} · ${hours}:${minutes}`;
+
+}
 
 
-      return `${day}/${month}/${year} · ${hours}:${minutes}`;
+/* =====================================================
+   6. LOẠI THÔNG BÁO
+===================================================== */
 
-    }
+function getNotificationType(type) {
 
-
-    // -----------------------------------------------------
-    // TÊN LOẠI THÔNG BÁO
-    // -----------------------------------------------------
-
-    function getNotificationType(type) {
-
-      const types = {
+    const types = {
 
         topic_assigned:
-          "ĐỀ TÀI",
+            "ĐỀ TÀI",
 
         article_rejected:
-          "BÀI VIẾT",
+            "BÀI VIẾT",
 
         article_approved:
-          "BÀI VIẾT",
+            "BÀI VIẾT",
 
         comment_locked:
-          "BÌNH LUẬN"
+            "BÌNH LUẬN"
 
-      };
+    };
+
+    return (
+        types[type] ||
+        "THÔNG BÁO"
+    );
+
+}
 
 
-      return types[type] ||
-        "THÔNG BÁO";
+/* =====================================================
+   7. LINK
+===================================================== */
 
+function resolveNotificationLink(link) {
+
+    if (!link) {
+        return "notifications.html";
     }
 
-
-    // -----------------------------------------------------
-    // CHUYỂN LINK TỪ MOCK DATA
-    // -----------------------------------------------------
-
-    function resolveNotificationLink(link) {
-
-      if (!link) {
-        return "notifications.html";
-      }
-
-
-      if (link.startsWith("/")) {
+    if (link.startsWith("/")) {
 
         const parts =
-          link.split("/").filter(Boolean);
-
+            link
+                .split("/")
+                .filter(Boolean);
 
         if (parts.length > 0) {
 
-          return parts[parts.length - 1];
+            return parts[
+                parts.length - 1
+            ];
 
         }
 
-      }
-
-
-      return link;
-
     }
 
+    return link;
 
-    // -----------------------------------------------------
-    // CLICK THÔNG BÁO
-    // -----------------------------------------------------
-
-    function handleNotificationClick(notification) {
-
-      notification.is_read = true;
+}
 
 
-      localStorage.setItem(
+/* =====================================================
+   8. CLICK NOTIFICATION
+===================================================== */
+
+function handleNotificationClick(
+    notification
+) {
+
+    notification.is_read = true;
+
+    localStorage.setItem(
         "mockNotifications",
-        JSON.stringify(MOCK_DATA.notifications)
-      );
+        JSON.stringify(
+            MOCK_DATA.notifications
+        )
+    );
 
-
-      const target =
+    const target =
         resolveNotificationLink(
-          notification.link
+            notification.link
         );
 
-
-      window.location.href =
+    window.location.href =
         target;
 
-    }
+}
 
 
-    // -----------------------------------------------------
-    // LOAD TRẠNG THÁI ĐÃ ĐỌC
-    // -----------------------------------------------------
+/* =====================================================
+   9. LOAD TRẠNG THÁI ĐỌC
+===================================================== */
 
-    function loadNotificationState() {
+function loadNotificationState() {
 
-      const saved =
+    const saved =
         localStorage.getItem(
-          "mockNotifications"
+            "mockNotifications"
         );
 
-
-      if (!saved) {
+    if (!saved) {
         return;
-      }
+    }
 
-
-      try {
+    try {
 
         const savedNotifications =
-          JSON.parse(saved);
+            JSON.parse(saved);
 
+        if (
+            !Array.isArray(
+                savedNotifications
+            )
+        ) {
 
-        if (!Array.isArray(savedNotifications)) {
-          return;
+            return;
+
         }
-
 
         savedNotifications.forEach(
-          savedNotification => {
+            savedNotification => {
 
-            const notification =
-              MOCK_DATA.notifications.find(
-                item =>
-                  Number(item.id) ===
-                  Number(savedNotification.id)
-              );
+                const notification =
+                    MOCK_DATA.notifications.find(
+                        item =>
+                            Number(item.id) ===
+                            Number(
+                                savedNotification.id
+                            )
+                    );
 
+                if (notification) {
 
-            if (notification) {
+                    notification.is_read =
+                        savedNotification.is_read;
 
-              notification.is_read =
-                savedNotification.is_read;
+                }
 
             }
-
-          }
         );
 
+    }
 
-      } catch (error) {
+    catch (error) {
 
         console.warn(
-          "Không thể đọc trạng thái thông báo:",
-          error
+            "Không thể đọc trạng thái thông báo:",
+            error
         );
 
-      }
+    }
+
+}
+
+
+/* =====================================================
+   10. RENDER NOTIFICATIONS
+===================================================== */
+
+function renderNotifications() {
+
+    const list =
+        document.getElementById(
+            "notificationsList"
+        );
+
+    const empty =
+        document.getElementById(
+            "notificationsEmpty"
+        );
+
+    const error =
+        document.getElementById(
+            "notificationsError"
+        );
+
+
+    list.innerHTML = "";
+
+    empty.style.display = "none";
+
+    error.style.display = "none";
+
+
+    if (!user) {
+
+        empty.style.display =
+            "block";
+
+        return;
 
     }
 
 
-    // -----------------------------------------------------
-    // RENDER NOTIFICATIONS
-    // -----------------------------------------------------
-
-    function renderNotifications() {
-
-      const list =
-        document.getElementById(
-          "notificationsList"
-        );
-
-      const empty =
-        document.getElementById(
-          "notificationsEmpty"
-        );
-
-      const error =
-        document.getElementById(
-          "notificationsError"
-        );
-
-
-      list.innerHTML = "";
-
-      error.style.display = "none";
-
-
-      // Không có user đăng nhập
-      if (!currentUser) {
-
-        empty.style.display = "block";
-
-        return;
-
-      }
-
-
-      // Chỉ lấy notification thuộc user hiện tại
-      const userNotifications =
+    const userNotifications =
         MOCK_DATA.notifications
-          .filter(
-            notification =>
-              Number(notification.user_id) ===
-              Number(currentUser.id)
-          )
-          .sort(
-            (a, b) =>
-              new Date(
-                b.created_at.replace(" ", "T")
-              ) -
-              new Date(
-                a.created_at.replace(" ", "T")
-              )
-          );
+
+            .filter(
+                notification =>
+                    Number(
+                        notification.user_id
+                    ) ===
+                    Number(
+                        user.id
+                    )
+            )
+
+            .sort(
+                (a, b) =>
+                    new Date(
+                        b.created_at
+                            .replace(" ", "T")
+                    ) -
+                    new Date(
+                        a.created_at
+                            .replace(" ", "T")
+                    )
+            );
 
 
-      // User không có notification
-      if (userNotifications.length === 0) {
+    if (
+        userNotifications.length === 0
+    ) {
 
-        empty.style.display = "block";
+        empty.style.display =
+            "block";
 
         return;
 
-      }
+    }
 
 
-      empty.style.display = "none";
-
-
-      userNotifications.forEach(
+    userNotifications.forEach(
         notification => {
 
-          const item =
-            document.createElement("button");
+
+            const item =
+                document.createElement(
+                    "button"
+                );
 
 
-          item.type = "button";
-
-          item.className =
-            "notifications-item";
+            item.type =
+                "button";
 
 
-          if (!notification.is_read) {
-
-            item.classList.add("unread");
-
-          }
+            item.className =
+                "notifications-item";
 
 
-          // ICON
-          const icon =
-            document.createElement("div");
+            if (!notification.is_read) {
 
-          icon.className =
-            "notifications-item-icon";
-
-          icon.innerHTML =
-            getNotificationIcon(
-              notification.type
-            );
-
-
-          // CONTENT
-          const content =
-            document.createElement("div");
-
-          content.className =
-            "notifications-item-content";
-
-
-          // TOP
-          const top =
-            document.createElement("div");
-
-          top.className =
-            "notifications-item-top";
-
-
-          const type =
-            document.createElement("span");
-
-          type.className =
-            "notifications-item-type";
-
-          type.textContent =
-            getNotificationType(
-              notification.type
-            );
-
-
-          const date =
-            document.createElement("time");
-
-          date.className =
-            "notifications-item-date";
-
-          date.textContent =
-            formatDate(
-              notification.created_at
-            );
-
-
-          top.appendChild(type);
-          top.appendChild(date);
-
-
-          // TITLE
-          const title =
-            document.createElement("h2");
-
-          title.className =
-            "notifications-item-title";
-
-          title.textContent =
-            notification.title;
-
-
-          // DESCRIPTION
-          const description =
-            document.createElement("p");
-
-          description.className =
-            "notifications-item-description";
-
-          description.textContent =
-            notification.content;
-
-
-          // STATUS
-          const status =
-            document.createElement("span");
-
-          status.className =
-            "notifications-item-status";
-
-          status.textContent =
-            notification.is_read
-              ? "Đã đọc"
-              : "Chưa đọc";
-
-
-          content.appendChild(top);
-          content.appendChild(title);
-          content.appendChild(description);
-          content.appendChild(status);
-
-
-          // ARROW
-          const arrow =
-            document.createElement("div");
-
-          arrow.className =
-            "notifications-item-arrow";
-
-          arrow.innerHTML = `
-            <svg viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
-              <path d="M9 5L16 12L9 19"></path>
-            </svg>
-          `;
-
-
-          item.appendChild(icon);
-          item.appendChild(content);
-          item.appendChild(arrow);
-
-
-          // CLICK
-          item.addEventListener(
-            "click",
-            function () {
-
-              handleNotificationClick(
-                notification
-              );
+                item.classList.add(
+                    "unread"
+                );
 
             }
-          );
 
 
-          list.appendChild(item);
+            /* ICON */
+
+            const icon =
+                document.createElement(
+                    "div"
+                );
+
+            icon.className =
+                "notifications-item-icon";
+
+            icon.innerHTML =
+                getNotificationIcon(
+                    notification.type
+                );
+
+
+            /* CONTENT */
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+            content.className =
+                "notifications-item-content";
+
+
+            /* TOP */
+
+            const top =
+                document.createElement(
+                    "div"
+                );
+
+            top.className =
+                "notifications-item-top";
+
+
+            const type =
+                document.createElement(
+                    "span"
+                );
+
+            type.className =
+                "notifications-item-type";
+
+            type.textContent =
+                getNotificationType(
+                    notification.type
+                );
+
+
+            const date =
+                document.createElement(
+                    "time"
+                );
+
+            date.className =
+                "notifications-item-date";
+
+            date.textContent =
+                formatDate(
+                    notification.created_at
+                );
+
+
+            top.appendChild(type);
+            top.appendChild(date);
+
+
+            /* TITLE */
+
+            const title =
+                document.createElement(
+                    "h2"
+                );
+
+            title.className =
+                "notifications-item-title";
+
+            title.textContent =
+                notification.title;
+
+
+            /* DESCRIPTION */
+
+            const description =
+                document.createElement(
+                    "p"
+                );
+
+            description.className =
+                "notifications-item-description";
+
+            description.textContent =
+                notification.content;
+
+
+            /* STATUS */
+
+            const status =
+                document.createElement(
+                    "span"
+                );
+
+            status.className =
+                "notifications-item-status";
+
+            status.textContent =
+                notification.is_read
+                    ? "Đã đọc"
+                    : "Chưa đọc";
+
+
+            content.appendChild(top);
+
+            content.appendChild(title);
+
+            content.appendChild(
+                description
+            );
+
+            content.appendChild(status);
+
+
+            /* ARROW */
+
+            const arrow =
+                document.createElement(
+                    "div"
+                );
+
+            arrow.className =
+                "notifications-item-arrow";
+
+
+            arrow.innerHTML = `
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none">
+
+                    <path
+                        d="M9 5L16 12L9 19"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round">
+                    </path>
+
+                </svg>
+
+            `;
+
+
+            /* APPEND */
+
+            item.appendChild(icon);
+
+            item.appendChild(content);
+
+            item.appendChild(arrow);
+
+
+            /* CLICK */
+
+            item.addEventListener(
+                "click",
+                function () {
+
+                    handleNotificationClick(
+                        notification
+                    );
+
+                }
+            );
+
+
+            list.appendChild(item);
 
         }
-      );
+    );
 
-    }
+}
 
 
-    // -----------------------------------------------------
-    // ICON
-    // -----------------------------------------------------
+/* =====================================================
+   11. ICON NOTIFICATION
+===================================================== */
 
-    function getNotificationIcon(type) {
+function getNotificationIcon(type) {
 
-      const icons = {
+    const icons = {
 
         topic_assigned: `
-          <svg viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.7">
-            <path d="M4 6H20"></path>
-            <path d="M4 12H16"></path>
-            <path d="M4 18H13"></path>
-            <circle cx="18" cy="16" r="3"></circle>
-            <path d="M18 14.5V16L19 17"></path>
-          </svg>
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none">
+
+                <path
+                    d="M4 6H20"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round">
+                </path>
+
+                <path
+                    d="M4 12H16"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round">
+                </path>
+
+                <path
+                    d="M4 18H13"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round">
+                </path>
+
+                <circle
+                    cx="18"
+                    cy="16"
+                    r="3"
+                    stroke="currentColor"
+                    stroke-width="1.7">
+                </circle>
+
+                <path
+                    d="M18 14.5V16L19 17"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round">
+                </path>
+
+            </svg>
+
         `,
+
 
         article_rejected: `
-          <svg viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.7">
-            <path d="M5 4H15L19 8V20H5V4Z"></path>
-            <path d="M14 4V9H19"></path>
-            <path d="M9 12L15 18"></path>
-            <path d="M15 12L9 18"></path>
-          </svg>
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none">
+
+                <path
+                    d="M5 4H15L19 8V20H5V4Z"
+                    stroke="currentColor"
+                    stroke-width="1.7">
+                </path>
+
+                <path
+                    d="M14 4V9H19"
+                    stroke="currentColor"
+                    stroke-width="1.7">
+                </path>
+
+                <path
+                    d="M9 12L15 18"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round">
+                </path>
+
+                <path
+                    d="M15 12L9 18"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round">
+                </path>
+
+            </svg>
+
         `,
+
 
         article_approved: `
-          <svg viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.7">
-            <path d="M5 4H15L19 8V20H5V4Z"></path>
-            <path d="M14 4V9H19"></path>
-            <path d="M8 14L11 17L16 11"></path>
-          </svg>
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none">
+
+                <path
+                    d="M5 4H15L19 8V20H5V4Z"
+                    stroke="currentColor"
+                    stroke-width="1.7">
+                </path>
+
+                <path
+                    d="M14 4V9H19"
+                    stroke="currentColor"
+                    stroke-width="1.7">
+                </path>
+
+                <path
+                    d="M8 14L11 17L16 11"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                </path>
+
+            </svg>
+
         `,
 
+
         comment_locked: `
-          <svg viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.7">
-            <rect x="5" y="10"
-                  width="14"
-                  height="10"
-                  rx="1.5"></rect>
-            <path d="M8 10V7.5C8 5.6 9.8 4 12 4C14.2 4 16 5.6 16 7.5V10"></path>
-          </svg>
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none">
+
+                <rect
+                    x="5"
+                    y="10"
+                    width="14"
+                    height="10"
+                    rx="1.5"
+                    stroke="currentColor"
+                    stroke-width="1.7">
+                </rect>
+
+                <path
+                    d="M8 10V7.5
+                       C8 5.6 9.8 4 12 4
+                       C14.2 4 16 5.6 16 7.5
+                       V10"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round">
+                </path>
+
+            </svg>
+
         `
 
-      };
+    };
 
 
-      return (
-        icons[type] ||
+    return (
+
+        icons[type]
+
+        ||
+
         `
-          <svg viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               stroke-width="1.7">
-            <path d="M18 9C18 5.7 15.8 3.5 12 3.5C8.2 3.5 6 5.7 6 9V13L4 16H20L18 13V9Z"></path>
-            <path d="M10 19C10.5 20 11.2 20.5 12 20.5C12.8 20.5 13.5 20 14 19"></path>
-          </svg>
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none">
+
+                <path
+                    d="M18 9
+                       A6 6 0 0 0 6 9
+                       C6 16 3 17 3 17
+                       H21
+                       C21 17 18 16 18 9Z"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linejoin="round">
+                </path>
+
+                <path
+                    d="M10 21H14"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round">
+                </path>
+
+            </svg>
+
         `
-      );
 
-    }
+    );
+
+}
 
 
-    // -----------------------------------------------------
-    // INIT
-    // -----------------------------------------------------
+/* =====================================================
+   12. INIT
+===================================================== */
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
         loadNotificationState();
 
@@ -963,10 +1397,11 @@
 
         renderNotifications();
 
-      }
-    );
+    }
+);
 
-  </script>
+</script>
+
 
 </body>
 </html>
