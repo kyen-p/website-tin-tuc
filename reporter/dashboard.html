@@ -1,1295 +1,683 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Thống kê bài viết - Mạch Tin</title>
 
-    <!-- ===================================================
-         CSS
-         dashboard.html nằm trong thư mục reporter/
-         nên phải đi lên 1 cấp để vào assets/
-    =================================================== -->
+    <link rel="stylesheet" href="../assets/style.css/dashboard.css" />
+  </head>
 
-    <link
-        rel="stylesheet"
-        href="../assets/style.css/dashboard.css"
-    >
-
-</head>
-
-
-<body>
-
-<div class="reporter-page">
-
-
-    <!-- ===================================================
+  <body>
+    <div class="reporter-page">
+      <!-- ===================================================
          SIDEBAR
     =================================================== -->
 
-    <aside class="reporter-sidebar">
-
-
+      <aside class="reporter-sidebar">
         <!-- ===================================================
              LOGO
         =================================================== -->
 
         <div class="reporter-brand">
-
-            <a
-                href="../public/index.html"
-                class="brand-link"
+          <a href="../public/index.html" class="brand-link">
+            <svg
+              class="pulse-mark"
+              viewBox="0 0 40 32"
+              fill="none"
+              aria-hidden="true"
             >
-
-                <svg
-                    class="pulse-mark"
-                    viewBox="0 0 40 32"
-                    fill="none"
-                    aria-hidden="true"
-                >
-
-                    <path
-                        d="M2 16
+              <path
+                d="M2 16
                         H10
                         L13.5 7
                         L19 25
                         L23 16
                         H38"
-                        stroke="currentColor"
-                        stroke-width="2.7"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
+                stroke="currentColor"
+                stroke-width="2.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
 
-                </svg>
+            <span class="brand-word">
+              <span class="brand-mach"> MẠCH </span>
 
-
-                <span class="brand-word">
-
-                    <span class="brand-mach">
-                        MẠCH
-                    </span>
-
-                    <span class="brand-tin">
-                        TIN
-                    </span>
-
-                </span>
-
-            </a>
-
+              <span class="brand-tin"> TIN </span>
+            </span>
+          </a>
         </div>
-
-
 
         <!-- ===================================================
              USER
         =================================================== -->
 
         <div class="reporter-user">
+          <div class="reporter-avatar">
+            <img id="sidebarAvatar" src="" alt="Avatar" />
+          </div>
 
-            <div class="reporter-avatar">
+          <p class="reporter-name" id="sidebarName">Đang tải...</p>
 
-                <img
-                    id="sidebarAvatar"
-                    src=""
-                    alt="Avatar"
-                >
-
-            </div>
-
-
-            <p
-                class="reporter-name"
-                id="sidebarName"
-            >
-                Đang tải...
-            </p>
-
-
-            <div
-                class="reporter-role"
-                id="sidebarRole"
-            >
-                Phóng viên
-            </div>
-
+          <div class="reporter-role" id="sidebarRole">Phóng viên</div>
         </div>
-
-
 
         <!-- ===================================================
              MENU
         =================================================== -->
 
         <nav class="reporter-menu">
-
-
-            <!-- =================================================
+          <!-- =================================================
                  SOẠN BÀI
             ================================================== -->
 
-            <a
-                href="write-article.html"
-                class="reporter-menu-item"
-            >
+          <a href="write-article.html" class="reporter-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 20h4l11-11a2.8 2.8 0 000-4l-.5-.5a2.8 2.8 0 00-4 0L3.5 15.5V20z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+            </svg>
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+            <span> Soạn bài </span>
+          </a>
 
-                    <path
-                        d="M4 20h4l11-11a2.8 2.8 0 000-4l-.5-.5a2.8 2.8 0 00-4 0L3.5 15.5V20z"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-
-                </svg>
-
-                <span>
-                    Soạn bài
-                </span>
-
-            </a>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  BÀI VIẾT CỦA TÔI
             ================================================== -->
 
-            <a
-                href="my-articles.html"
-                class="reporter-menu-item"
-            >
+          <a href="my-articles.html" class="reporter-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 5h14v14H5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M8 9h8M8 13h6"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
 
-                    <path
-                        d="M5 5h14v14H5z"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
+            <span> Bài viết của tôi </span>
+          </a>
 
-                    <path
-                        d="M8 9h8M8 13h6"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
-
-                </svg>
-
-                <span>
-                    Bài viết của tôi
-                </span>
-
-            </a>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  ĐỀ TÀI CỦA TÔI
             ================================================== -->
 
-            <a
-                href="my-topics.html"
-                class="reporter-menu-item"
-            >
+          <a href="my-topics.html" class="reporter-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 4h14v16H5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M8 8h8M8 12h8M8 16h5"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
 
-                    <path
-                        d="M5 4h14v16H5z"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
+            <span> Đề tài của tôi </span>
+          </a>
 
-                    <path
-                        d="M8 8h8M8 12h8M8 16h5"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
-
-                </svg>
-
-                <span>
-                    Đề tài của tôi
-                </span>
-
-            </a>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  THỐNG KÊ
             ================================================== -->
 
-            <a
-                href="dashboard.html"
-                class="reporter-menu-item active"
-            >
+          <a href="dashboard.html" class="reporter-menu-item active">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 19V5M4 19h16"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M8 16v-5M12 16V8M16 16v-8"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
 
-                    <path
-                        d="M4 19V5M4 19h16"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
+            <span> Thống kê </span>
+          </a>
 
-                    <path
-                        d="M8 16v-5M12 16V8M16 16v-8"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
-
-                </svg>
-
-                <span>
-                    Thống kê
-                </span>
-
-            </a>
-
-
-
-            <!-- =================================================
+          <!-- =================================================
                  VỀ TRANG CHỦ
             ================================================== -->
 
-            <a
-                href="/frontend/public/index.html"
-                class="reporter-menu-item"
-            >
+          <a href="/frontend/public/index.html" class="reporter-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 12l9-8 9 8"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
 
-                <svg
-                    class="menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                >
+              <path
+                d="M5 10v10h14V10"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+            </svg>
 
-                    <path
-                        d="M3 12l9-8 9 8"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-
-                    <path
-                        d="M5 10v10h14V10"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-
-                </svg>
-
-                <span>
-                    Về trang chủ
-                </span>
-
-            </a>
-
-
+            <span> Về trang chủ </span>
+          </a>
         </nav>
+      </aside>
 
-
-    </aside>
-
-
-
-    <!-- ===================================================
+      <!-- ===================================================
          MAIN
     =================================================== -->
 
-    <main class="reporter-main">
-
-
+      <main class="reporter-main">
         <div class="reporter-content">
-
-
-            <!-- ===================================================
+          <!-- ===================================================
                  HEADER
             =================================================== -->
 
-            <header class="page-header">
+          <header class="page-header">
+            <div>
+              <h1>Thống kê bài viết</h1>
 
-                <div>
+              <p>
+                Theo dõi lượt xem, bình luận và lượt thích các bài viết đã đăng.
+              </p>
+            </div>
+          </header>
 
-                    <h1>
-                        Thống kê bài viết
-                    </h1>
+          <div class="page-line"></div>
 
-                    <p>
-                        Theo dõi lượt xem, bình luận và lượt thích
-                        các bài viết đã đăng.
-                    </p>
-
-                </div>
-
-            </header>
-
-
-
-            <div class="page-line"></div>
-
-
-
-            <!-- ===================================================
+          <!-- ===================================================
                  STATISTICS
             =================================================== -->
 
-            <section class="statistics-section">
-
-
-                <!-- =================================================
+          <section class="statistics-section">
+            <!-- =================================================
                      SECTION HEADER
                 ================================================== -->
 
-                <div class="section-heading">
+            <div class="section-heading">
+              <h2>Danh sách bài viết</h2>
 
-                    <h2>
-                        Danh sách bài viết
-                    </h2>
+              <div id="articleCount" class="article-count-box">Đang tải...</div>
+            </div>
 
-
-                    <div
-                        id="articleCount"
-                        class="article-count-box"
-                    >
-                        Đang tải...
-                    </div>
-
-                </div>
-
-
-
-                <!-- =================================================
+            <!-- =================================================
                      EMPTY STATE
                 ================================================== -->
 
-                <div
-                    id="emptyState"
-                    class="empty-state hidden"
-                >
+            <div id="emptyState" class="empty-state hidden">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M6 4h12v16H6z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
 
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                    >
+                <path
+                  d="M9 8h6M9 12h6M9 16h3"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
 
-                        <path
-                            d="M6 4h12v16H6z"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                        />
+              <h3>Bạn chưa có bài viết nào được đăng</h3>
 
-                        <path
-                            d="M9 8h6M9 12h6M9 16h3"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                        />
+              <p>
+                Các bài viết sau khi được duyệt và đăng sẽ xuất hiện tại đây.
+              </p>
+            </div>
 
-                    </svg>
-
-
-                    <h3>
-                        Bạn chưa có bài viết nào được đăng
-                    </h3>
-
-
-                    <p>
-                        Các bài viết sau khi được duyệt và đăng
-                        sẽ xuất hiện tại đây.
-                    </p>
-
-                </div>
-
-
-
-                <!-- =================================================
+            <!-- =================================================
                      TABLE
                 ================================================== -->
 
-                <div
-                    id="tableWrapper"
-                    class="table-wrapper"
-                >
-
-                    <table class="article-table">
-
-
-                        <!-- =================================================
+            <div id="tableWrapper" class="table-wrapper">
+              <table class="article-table">
+                <!-- =================================================
                              TABLE HEADER
                         ================================================== -->
 
-                        <thead>
-
-                            <tr>
-
-
-                                <!-- TIÊU ĐỀ -->
-
-                                <th
-                                    class="title-column"
-                                    data-sort="title"
-                                >
-
-                                    <button
-                                        class="sort-button"
-                                        type="button"
-                                    >
-
-                                        <span>
-                                            Tiêu đề
-                                        </span>
-
-
-                                        <span
-                                            class="sort-icon"
-                                            aria-hidden="true"
-                                        >
-
-                                            <svg
-                                                viewBox="0 0 16 16"
-                                                fill="none"
-                                            >
-
-                                                <path
-                                                    d="M5 6.5L8 3.5L11 6.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                                <path
-                                                    d="M5 9.5L8 12.5L11 9.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                            </svg>
-
-                                        </span>
-
-                                    </button>
-
-                                </th>
-
-
-
-                                <!-- NGÀY ĐĂNG -->
-
-                                <th
-                                    data-sort="date"
-                                >
-
-                                    <button
-                                        class="sort-button"
-                                        type="button"
-                                    >
-
-                                        <span>
-                                            Ngày đăng
-                                        </span>
-
-
-                                        <span
-                                            class="sort-icon"
-                                            aria-hidden="true"
-                                        >
-
-                                            <svg
-                                                viewBox="0 0 16 16"
-                                                fill="none"
-                                            >
-
-                                                <path
-                                                    d="M5 6.5L8 3.5L11 6.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                                <path
-                                                    d="M5 9.5L8 12.5L11 9.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                            </svg>
-
-                                        </span>
-
-                                    </button>
-
-                                </th>
-
-
-
-                                <!-- LƯỢT XEM -->
-
-                                <th
-                                    data-sort="views"
-                                >
-
-                                    <button
-                                        class="sort-button"
-                                        type="button"
-                                    >
-
-                                        <span>
-                                            Lượt xem
-                                        </span>
-
-
-                                        <span
-                                            class="sort-icon"
-                                            aria-hidden="true"
-                                        >
-
-                                            <svg
-                                                viewBox="0 0 16 16"
-                                                fill="none"
-                                            >
-
-                                                <path
-                                                    d="M5 6.5L8 3.5L11 6.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                                <path
-                                                    d="M5 9.5L8 12.5L11 9.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                            </svg>
-
-                                        </span>
-
-                                    </button>
-
-                                </th>
-
-
-
-                                <!-- BÌNH LUẬN -->
-
-                                <th
-                                    data-sort="comments"
-                                >
-
-                                    <button
-                                        class="sort-button"
-                                        type="button"
-                                    >
-
-                                        <span>
-                                            Bình luận
-                                        </span>
-
-
-                                        <span
-                                            class="sort-icon"
-                                            aria-hidden="true"
-                                        >
-
-                                            <svg
-                                                viewBox="0 0 16 16"
-                                                fill="none"
-                                            >
-
-                                                <path
-                                                    d="M5 6.5L8 3.5L11 6.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                                <path
-                                                    d="M5 9.5L8 12.5L11 9.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                            </svg>
-
-                                        </span>
-
-                                    </button>
-
-                                </th>
-
-
-
-                                <!-- LƯỢT THÍCH -->
-
-                                <th
-                                    data-sort="likes"
-                                >
-
-                                    <button
-                                        class="sort-button"
-                                        type="button"
-                                    >
-
-                                        <span>
-                                            Lượt thích
-                                        </span>
-
-
-                                        <span
-                                            class="sort-icon"
-                                            aria-hidden="true"
-                                        >
-
-                                            <svg
-                                                viewBox="0 0 16 16"
-                                                fill="none"
-                                            >
-
-                                                <path
-                                                    d="M5 6.5L8 3.5L11 6.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                                <path
-                                                    d="M5 9.5L8 12.5L11 9.5"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.4"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                />
-
-                                            </svg>
-
-                                        </span>
-
-                                    </button>
-
-                                </th>
-
-
-                            </tr>
-
-                        </thead>
-
-
-
-                        <!-- =================================================
+                <thead>
+                  <tr>
+                    <!-- TIÊU ĐỀ -->
+
+                    <th class="title-column" data-sort="title">
+                      <button class="sort-button" type="button">
+                        <span> Tiêu đề </span>
+
+                        <span class="sort-icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none">
+                            <path
+                              d="M5 6.5L8 3.5L11 6.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+
+                            <path
+                              d="M5 9.5L8 12.5L11 9.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
+                    <!-- NGÀY ĐĂNG -->
+
+                    <th data-sort="date">
+                      <button class="sort-button" type="button">
+                        <span> Ngày đăng </span>
+
+                        <span class="sort-icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none">
+                            <path
+                              d="M5 6.5L8 3.5L11 6.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+
+                            <path
+                              d="M5 9.5L8 12.5L11 9.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
+                    <!-- LƯỢT XEM -->
+
+                    <th data-sort="views">
+                      <button class="sort-button" type="button">
+                        <span> Lượt xem </span>
+
+                        <span class="sort-icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none">
+                            <path
+                              d="M5 6.5L8 3.5L11 6.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+
+                            <path
+                              d="M5 9.5L8 12.5L11 9.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
+                    <!-- BÌNH LUẬN -->
+
+                    <th data-sort="comments">
+                      <button class="sort-button" type="button">
+                        <span> Bình luận </span>
+
+                        <span class="sort-icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none">
+                            <path
+                              d="M5 6.5L8 3.5L11 6.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+
+                            <path
+                              d="M5 9.5L8 12.5L11 9.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
+                    <!-- LƯỢT THÍCH -->
+
+                    <th data-sort="likes">
+                      <button class="sort-button" type="button">
+                        <span> Lượt thích </span>
+
+                        <span class="sort-icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none">
+                            <path
+                              d="M5 6.5L8 3.5L11 6.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+
+                            <path
+                              d="M5 9.5L8 12.5L11 9.5"
+                              stroke="currentColor"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+
+                <!-- =================================================
                              TABLE BODY
                         ================================================== -->
 
-                        <tbody id="articleTableBody">
-                        </tbody>
-
-
-                    </table>
-
-                </div>
-
-
-            </section>
-
-
+                <tbody id="articleTableBody"></tbody>
+              </table>
+            </div>
+          </section>
         </div>
+      </main>
+    </div>
 
+    <script src="../assets/mock-data.js"></script>
 
-    </main>
-
-
-</div>
-
-
-
-<!-- ===================================================
-     MOCK DATA
-
-     dashboard.html nằm trong reporter/
-     mock-data.js nằm ở thư mục gốc
-     => phải dùng ../
-=================================================== -->
-
-<script src="../assets/mock-data.js"></script>
-
-
-
-<script>
-
-
-/* =====================================================
+    <script>
+      /* =====================================================
    LẤY USER HIỆN TẠI
 ===================================================== */
 
-const storedUserId =
-    localStorage.getItem("user_id");
+      const storedUserId = localStorage.getItem("user_id");
 
+      let currentReporter = null;
 
-let currentReporter = null;
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.users)) {
+        if (storedUserId) {
+          currentReporter = MOCK_DATA.users.find(
+            (user) =>
+              String(user.id) === String(storedUserId) &&
+              user.role === "reporter",
+          );
+        }
 
+        if (!currentReporter) {
+          currentReporter = MOCK_DATA.users.find(
+            (user) => user.role === "reporter" && user.status === "active",
+          );
+        }
 
-if (
-    typeof MOCK_DATA !== "undefined" &&
-    Array.isArray(MOCK_DATA.users)
-) {
+        if (!currentReporter) {
+          currentReporter = MOCK_DATA.users.find(
+            (user) => user.role === "reporter",
+          );
+        }
+      }
 
-    if (storedUserId) {
-
-        currentReporter =
-            MOCK_DATA.users.find(
-                user =>
-                    String(user.id) === String(storedUserId) &&
-                    user.role === "reporter"
-            );
-
-    }
-
-
-    if (!currentReporter) {
-
-        currentReporter =
-            MOCK_DATA.users.find(
-                user =>
-                    user.role === "reporter" &&
-                    user.status === "active"
-            );
-
-    }
-
-
-    if (!currentReporter) {
-
-        currentReporter =
-            MOCK_DATA.users.find(
-                user =>
-                    user.role === "reporter"
-            );
-
-    }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    SIDEBAR USER
 ===================================================== */
 
-if (currentReporter) {
+      if (currentReporter) {
+        document.getElementById("sidebarName").textContent =
+          currentReporter.full_name || currentReporter.username || "Phóng viên";
 
+        document.getElementById("sidebarRole").textContent = "Phóng viên";
 
-    document.getElementById(
-        "sidebarName"
-    ).textContent =
-        currentReporter.full_name ||
-        currentReporter.username ||
-        "Phóng viên";
-
-
-    document.getElementById(
-        "sidebarRole"
-    ).textContent =
-        "Phóng viên";
-
-
-
-    /* =================================================
+        /* =================================================
        AVATAR
     ================================================= */
 
-    const sidebarAvatar =
-        document.getElementById(
-            "sidebarAvatar"
+        const sidebarAvatar = document.getElementById("sidebarAvatar");
+
+        const savedAvatar = localStorage.getItem(
+          "userAvatar_" + currentReporter.id,
         );
 
+        const avatarURL = savedAvatar || currentReporter.avatar || "";
 
-    const savedAvatar =
-        localStorage.getItem(
-            "userAvatar_" + currentReporter.id
-        );
+        if (avatarURL) {
+          sidebarAvatar.src = avatarURL;
+        }
 
+        sidebarAvatar.onerror = function () {
+          sidebarAvatar.onerror = null;
 
-    const avatarURL =
-        savedAvatar ||
-        currentReporter.avatar ||
-        "";
-
-
-    if (avatarURL) {
-
-        sidebarAvatar.src =
-            avatarURL;
-
-    }
-
-
-    sidebarAvatar.onerror =
-        function () {
-
-            sidebarAvatar.onerror =
-                null;
-
-            if (
-                currentReporter.avatar &&
-                currentReporter.avatar !== avatarURL
-            ) {
-
-                sidebarAvatar.src =
-                    currentReporter.avatar;
-
-            }
-
+          if (currentReporter.avatar && currentReporter.avatar !== avatarURL) {
+            sidebarAvatar.src = currentReporter.avatar;
+          }
         };
+      }
 
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    DANH SÁCH BÀI VIẾT
 ===================================================== */
 
-let statisticsArticles = [];
+      let statisticsArticles = [];
 
+      if (
+        currentReporter &&
+        typeof MOCK_DATA !== "undefined" &&
+        Array.isArray(MOCK_DATA.articles)
+      ) {
+        statisticsArticles = MOCK_DATA.articles
 
+          .filter(
+            (article) =>
+              Number(article.author_id) === Number(currentReporter.id) &&
+              article.status === "published",
+          )
 
-if (
-    currentReporter &&
-    typeof MOCK_DATA !== "undefined" &&
-    Array.isArray(MOCK_DATA.articles)
-) {
-
-
-    statisticsArticles =
-        MOCK_DATA.articles
-
-            .filter(
-                article =>
-                    Number(article.author_id) ===
-                    Number(currentReporter.id) &&
-
-                    article.status === "published"
-            )
-
-
-            .map(
-                article => {
-
-
-                    /* =====================================
+          .map((article) => {
+            /* =====================================
                        ĐẾM BÌNH LUẬN
                     ===================================== */
 
-                    let commentCount = 0;
+            let commentCount = 0;
 
+            if (Array.isArray(MOCK_DATA.comments)) {
+              commentCount = MOCK_DATA.comments.filter(
+                (comment) =>
+                  Number(comment.article_id) === Number(article.id) &&
+                  comment.is_deleted !== true,
+              ).length;
+            }
 
-                    if (
-                        Array.isArray(MOCK_DATA.comments)
-                    ) {
-
-                        commentCount =
-                            MOCK_DATA.comments.filter(
-                                comment =>
-                                    Number(comment.article_id) ===
-                                    Number(article.id) &&
-
-                                    comment.is_deleted !== true
-                            ).length;
-
-                    }
-
-
-
-                    /* =====================================
+            /* =====================================
                        ĐẾM LƯỢT THÍCH
                     ===================================== */
 
-                    let likeCount = 0;
+            let likeCount = 0;
 
+            if (Array.isArray(MOCK_DATA.favorites)) {
+              likeCount = MOCK_DATA.favorites.filter(
+                (favorite) =>
+                  Number(favorite.article_id) === Number(article.id),
+              ).length;
+            }
 
-                    if (
-                        Array.isArray(MOCK_DATA.favorites)
-                    ) {
+            return {
+              ...article,
 
-                        likeCount =
-                            MOCK_DATA.favorites.filter(
-                                favorite =>
-                                    Number(favorite.article_id) ===
-                                    Number(article.id)
-                            ).length;
+              commentCount: commentCount,
 
-                    }
+              likeCount: likeCount,
+            };
+          });
+      }
 
-
-
-                    return {
-
-                        ...article,
-
-                        commentCount:
-                            commentCount,
-
-                        likeCount:
-                            likeCount
-
-                    };
-
-                }
-            );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    SORT HIỆN TẠI
 ===================================================== */
 
-let currentSort = {
+      let currentSort = {
+        key: "date",
 
-    key: "date",
+        direction: "desc",
+      };
 
-    direction: "desc"
-
-};
-
-
-
-/* =====================================================
+      /* =====================================================
    LẤY GIÁ TRỊ SORT
 ===================================================== */
 
-function getSortValue(
-    article,
-    key
-) {
+      function getSortValue(article, key) {
+        switch (key) {
+          case "title":
+            return String(article.title || "").toLowerCase();
 
-
-    switch (key) {
-
-
-        case "title":
-
-            return String(
-                article.title || ""
-            ).toLowerCase();
-
-
-        case "date":
-
+          case "date":
             return new Date(
-                String(
-                    article.published_at ||
-                    article.created_at ||
-                    ""
-                ).replace(" ", "T")
+              String(article.published_at || article.created_at || "").replace(
+                " ",
+                "T",
+              ),
             ).getTime();
 
+          case "views":
+            return Number(article.view_count || 0);
 
-        case "views":
+          case "comments":
+            return Number(article.commentCount || 0);
 
-            return Number(
-                article.view_count || 0
-            );
+          case "likes":
+            return Number(article.likeCount || 0);
 
-
-        case "comments":
-
-            return Number(
-                article.commentCount || 0
-            );
-
-
-        case "likes":
-
-            return Number(
-                article.likeCount || 0
-            );
-
-
-        default:
-
+          default:
             return "";
+        }
+      }
 
-    }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    SORT ARTICLES
 ===================================================== */
 
-function sortArticles() {
+      function sortArticles() {
+        statisticsArticles.sort((a, b) => {
+          const valueA = getSortValue(a, currentSort.key);
 
+          const valueB = getSortValue(b, currentSort.key);
 
-    statisticsArticles.sort(
-        (a, b) => {
-
-
-            const valueA =
-                getSortValue(
-                    a,
-                    currentSort.key
-                );
-
-
-            const valueB =
-                getSortValue(
-                    b,
-                    currentSort.key
-                );
-
-
-
-            /* =========================================
+          /* =========================================
                SORT CHUỖI
             ========================================= */
 
-            if (
-                typeof valueA === "string"
-            ) {
+          if (typeof valueA === "string") {
+            return currentSort.direction === "asc"
+              ? valueA.localeCompare(valueB, "vi")
+              : valueB.localeCompare(valueA, "vi");
+          }
 
-
-                return currentSort.direction === "asc"
-
-                    ? valueA.localeCompare(
-                        valueB,
-                        "vi"
-                    )
-
-                    : valueB.localeCompare(
-                        valueA,
-                        "vi"
-                    );
-
-            }
-
-
-
-            /* =========================================
+          /* =========================================
                SORT SỐ
             ========================================= */
 
-            return currentSort.direction === "asc"
+          return currentSort.direction === "asc"
+            ? valueA - valueB
+            : valueB - valueA;
+        });
+      }
 
-                ? valueA - valueB
-
-                : valueB - valueA;
-
-        }
-    );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    FORMAT DATE
 ===================================================== */
 
-function formatDate(
-    dateString
-) {
+      function formatDate(dateString) {
+        if (!dateString) {
+          return "—";
+        }
 
+        const date = new Date(String(dateString).replace(" ", "T"));
 
-    if (!dateString) {
+        if (Number.isNaN(date.getTime())) {
+          return "—";
+        }
 
-        return "—";
+        return date.toLocaleDateString("vi-VN");
+      }
 
-    }
-
-
-    const date =
-        new Date(
-            String(
-                dateString
-            ).replace(" ", "T")
-        );
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-
-        return "—";
-
-    }
-
-
-    return date.toLocaleDateString(
-        "vi-VN"
-    );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    RENDER TABLE
 ===================================================== */
 
-function renderTable() {
+      function renderTable() {
+        const tbody = document.getElementById("articleTableBody");
 
+        const tableWrapper = document.getElementById("tableWrapper");
 
-    const tbody =
-        document.getElementById(
-            "articleTableBody"
-        );
+        const emptyState = document.getElementById("emptyState");
 
+        const articleCount = document.getElementById("articleCount");
 
-    const tableWrapper =
-        document.getElementById(
-            "tableWrapper"
-        );
+        tbody.innerHTML = "";
 
-
-    const emptyState =
-        document.getElementById(
-            "emptyState"
-        );
-
-
-    const articleCount =
-        document.getElementById(
-            "articleCount"
-        );
-
-
-
-    tbody.innerHTML = "";
-
-
-
-    /* =================================================
+        /* =================================================
        KHÔNG CÓ BÀI VIẾT
     ================================================= */
 
-    if (
-        statisticsArticles.length === 0
-    ) {
+        if (statisticsArticles.length === 0) {
+          tableWrapper.classList.add("hidden");
 
+          emptyState.classList.remove("hidden");
 
-        tableWrapper.classList.add(
-            "hidden"
-        );
+          articleCount.textContent = "0 bài viết";
 
+          return;
+        }
 
-        emptyState.classList.remove(
-            "hidden"
-        );
-
-
-        articleCount.textContent =
-            "0 bài viết";
-
-
-        return;
-
-    }
-
-
-
-    /* =================================================
+        /* =================================================
        CÓ BÀI VIẾT
     ================================================= */
 
-    tableWrapper.classList.remove(
-        "hidden"
-    );
+        tableWrapper.classList.remove("hidden");
 
+        emptyState.classList.add("hidden");
 
-    emptyState.classList.add(
-        "hidden"
-    );
+        articleCount.textContent = `${statisticsArticles.length} bài viết`;
 
-
-    articleCount.textContent =
-        `${statisticsArticles.length} bài viết`;
-
-
-
-    /* =================================================
+        /* =================================================
        RENDER TỪNG BÀI
     ================================================= */
 
-    statisticsArticles.forEach(
-        article => {
+        statisticsArticles.forEach((article) => {
+          const row = document.createElement("tr");
 
+          const title = article.title || "Không có tiêu đề";
 
-            const row =
-                document.createElement(
-                    "tr"
-                );
+          const views = Number(article.view_count || 0);
 
+          const comments = Number(article.commentCount || 0);
 
-            const title =
-                article.title ||
-                "Không có tiêu đề";
+          const likes = Number(article.likeCount || 0);
 
-
-            const views =
-                Number(
-                    article.view_count || 0
-                );
-
-
-            const comments =
-                Number(
-                    article.commentCount || 0
-                );
-
-
-            const likes =
-                Number(
-                    article.likeCount || 0
-                );
-
-
-
-            row.innerHTML = `
+          row.innerHTML = `
 
                 <td class="article-title-cell">
 
@@ -1305,10 +693,7 @@ function renderTable() {
 
                 <td class="date-cell">
 
-                    ${formatDate(
-                        article.published_at ||
-                        article.created_at
-                    )}
+                    ${formatDate(article.published_at || article.created_at)}
 
                 </td>
 
@@ -1335,164 +720,78 @@ function renderTable() {
 
             `;
 
+          tbody.appendChild(row);
+        });
+      }
 
-            tbody.appendChild(
-                row
-            );
-
-        }
-    );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    CLICK SORT HEADER
 ===================================================== */
 
-document
-    .querySelectorAll(
-        ".article-table th[data-sort]"
-    )
-    .forEach(
-        header => {
+      document
+        .querySelectorAll(".article-table th[data-sort]")
+        .forEach((header) => {
+          const button = header.querySelector(".sort-button");
 
+          if (!button) {
+            return;
+          }
 
-            const button =
-                header.querySelector(
-                    ".sort-button"
-                );
+          button.addEventListener("click", () => {
+            const key = header.dataset.sort;
 
-
-            if (!button) {
-
-                return;
-
-            }
-
-
-
-            button.addEventListener(
-                "click",
-                () => {
-
-
-                    const key =
-                        header.dataset.sort;
-
-
-
-                    /* =================================
+            /* =================================
                        CLICK CÙNG CỘT
                     ================================= */
 
-                    if (
-                        currentSort.key === key
-                    ) {
+            if (currentSort.key === key) {
+              currentSort.direction =
+                currentSort.direction === "asc" ? "desc" : "asc";
+            } else {
 
-
-                        currentSort.direction =
-                            currentSort.direction === "asc"
-
-                                ? "desc"
-
-                                : "asc";
-
-                    }
-
-
-                    /* =================================
+            /* =================================
                        CLICK CỘT KHÁC
                     ================================= */
+              currentSort.key = key;
 
-                    else {
+              currentSort.direction = key === "title" ? "asc" : "desc";
+            }
 
-
-                        currentSort.key =
-                            key;
-
-
-                        currentSort.direction =
-                            key === "title"
-
-                                ? "asc"
-
-                                : "desc";
-
-                    }
-
-
-
-                    /* =================================
+            /* =================================
                        RESET HEADER
                     ================================= */
 
-                    document
-                        .querySelectorAll(
-                            ".article-table th"
-                        )
-                        .forEach(
-                            th => {
+            document.querySelectorAll(".article-table th").forEach((th) => {
+              th.classList.remove("sorted");
 
-                                th.classList.remove(
-                                    "sorted"
-                                );
+              th.removeAttribute("data-direction");
+            });
 
-
-                                th.removeAttribute(
-                                    "data-direction"
-                                );
-
-                            }
-                        );
-
-
-
-                    /* =================================
+            /* =================================
                        ACTIVE HEADER
                     ================================= */
 
-                    header.classList.add(
-                        "sorted"
-                    );
+            header.classList.add("sorted");
 
+            header.setAttribute("data-direction", currentSort.direction);
 
-                    header.setAttribute(
-                        "data-direction",
-                        currentSort.direction
-                    );
-
-
-
-                    /* =================================
+            /* =================================
                        SORT + RENDER
                     ================================= */
 
-                    sortArticles();
+            sortArticles();
 
-                    renderTable();
+            renderTable();
+          });
+        });
 
-                }
-            );
-
-        }
-    );
-
-
-
-/* =====================================================
+      /* =====================================================
    INITIAL RENDER
 ===================================================== */
 
-sortArticles();
+      sortArticles();
 
-renderTable();
-
-
-</script>
-
-
-</body>
-
+      renderTable();
+    </script>
+  </body>
 </html>
