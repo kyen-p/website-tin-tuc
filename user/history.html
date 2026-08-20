@@ -1,1243 +1,656 @@
-```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="UTF-8">
+    <title>Lịch sử đọc - Mạch Tin</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+    <link rel="stylesheet" href="../assets/style.css/history.css" />
+  </head>
 
-  <title>Lịch sử đọc - Mạch Tin</title>
-
-
-  <!-- ===================================================
-       CSS
-       history.html nằm trong assets/user/
-       nên đi lên 1 cấp để vào assets/style.css/
-  =================================================== -->
-
-  <link
-    rel="stylesheet"
-    href="../assets/style.css/history.css"
-  >
-
-</head>
-
-
-<body>
-
-<div class="history-page">
-
-
-  <!-- ===================================================
+  <body>
+    <div class="history-page">
+      <!-- ===================================================
        SIDEBAR
   =================================================== -->
 
-  <aside class="history-sidebar">
-
-
-    <!-- =================================================
+      <aside class="history-sidebar">
+        <!-- =================================================
          LOGO
     ================================================== -->
 
-    <div class="history-brand">
+        <div class="history-brand">
+          <a href="/frontend/public/index.html" class="brand-link">
+            <svg
+              class="pulse-mark"
+              viewBox="0 0 40 32"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
+                stroke="currentColor"
+                stroke-width="2.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
 
-      <a
-        href="/frontend/public/index.html"
-        class="brand-link"
-      >
+            <span class="brand-word">
+              <span class="brand-mach"> MẠCH </span>
 
-        <svg
-          class="pulse-mark"
-          viewBox="0 0 40 32"
-          fill="none"
-          aria-hidden="true"
-        >
+              <span class="brand-tin"> TIN </span>
+            </span>
+          </a>
+        </div>
 
-          <path
-            d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
-            stroke="currentColor"
-            stroke-width="2.7"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-
-        </svg>
-
-
-        <span class="brand-word">
-
-          <span class="brand-mach">
-            MẠCH
-          </span>
-
-          <span class="brand-tin">
-            TIN
-          </span>
-
-        </span>
-
-      </a>
-
-    </div>
-
-
-
-    <!-- =================================================
+        <!-- =================================================
          USER
     ================================================== -->
 
-    <div class="history-user">
+        <div class="history-user">
+          <div class="history-avatar" id="userAvatar">
+            <span id="userInitials"> NU </span>
+          </div>
 
-      <div
-        class="history-avatar"
-        id="userAvatar"
-      >
+          <p class="history-user-name" id="userName">Đang tải...</p>
 
-        <span id="userInitials">
-          NU
-        </span>
+          <div class="history-user-role" id="userRole">Độc giả</div>
+        </div>
 
-      </div>
-
-
-      <p
-        class="history-user-name"
-        id="userName"
-      >
-        Đang tải...
-      </p>
-
-
-      <div
-        class="history-user-role"
-        id="userRole"
-      >
-        Độc giả
-      </div>
-
-    </div>
-
-
-
-    <!-- =================================================
+        <!-- =================================================
          MENU
     ================================================== -->
 
-    <nav class="history-menu">
-
-
-      <!-- THÔNG TIN TÀI KHOẢN -->
-
-      <a
-        href="profile.html"
-        class="history-menu-item"
-      >
-
-        <svg
-          class="history-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <circle
-            cx="12"
-            cy="8"
-            r="3.2"
-            stroke="currentColor"
-            stroke-width="1.7"
-          />
-
-          <path
-            d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-        </svg>
-
-
-        <span class="history-menu-text">
-          Thông tin tài khoản
-        </span>
-
-      </a>
-
-
-
-      <!-- ĐỔI MẬT KHẨU -->
-
-      <a
-        href="profile.html#password"
-        class="history-menu-item"
-      >
-
-        <svg
-          class="history-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <rect
-            x="5"
-            y="10"
-            width="14"
-            height="10"
-            rx="2"
-            stroke="currentColor"
-            stroke-width="1.7"
-          />
-
-          <path
-            d="M8 10V7a4 4 0 018 0v3"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-          <circle
-            cx="12"
-            cy="15"
-            r="1"
-            fill="currentColor"
-          />
-
-        </svg>
-
-
-        <span class="history-menu-text">
-          Đổi mật khẩu
-        </span>
-
-      </a>
-
-
-
-      <!-- BÀI VIẾT YÊU THÍCH -->
-
-      <a
-        href="favorites.html"
-        class="history-menu-item"
-      >
-
-        <svg
-          class="history-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <path
-            d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linejoin="round"
-          />
-
-        </svg>
-
-
-        <span class="history-menu-text">
-          Bài viết yêu thích
-        </span>
-
-      </a>
-
-
-
-      <!-- LỊCH SỬ -->
-
-      <a
-        href="history.html"
-        class="history-menu-item active"
-      >
-
-        <svg
-          class="history-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <path
-            d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linejoin="round"
-          />
-
-          <path
-            d="M5 5.5v11M9 7h7M9 11h7"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-        </svg>
-
-
-        <span class="history-menu-text">
-          Lịch sử đọc
-        </span>
-
-      </a>
-
-
-
-      <!-- BÌNH LUẬN -->
-
-      <a
-        href="my-comments.html"
-        class="history-menu-item"
-      >
-
-        <svg
-          class="history-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <path
-            d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 0120 11.5z"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linejoin="round"
-          />
-
-          <circle
-            cx="9"
-            cy="11.5"
-            r=".8"
-            fill="currentColor"
-          />
-
-          <circle
-            cx="12"
-            cy="11.5"
-            r=".8"
-            fill="currentColor"
-          />
-
-          <circle
-            cx="15"
-            cy="11.5"
-            r=".8"
-            fill="currentColor"
-          />
-
-        </svg>
-
-
-        <span class="history-menu-text">
-          Bình luận của tôi
-        </span>
-
-      </a>
-
-
-
-      <!-- THÔNG BÁO -->
-
-      <a
-        href="notifications.html"
-        class="history-menu-item"
-      >
-
-        <svg
-          class="history-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-
-          <path
-            d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-
-          <path
-            d="M10 21h4"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-        </svg>
-
-
-        <span class="history-menu-text">
-          Thông báo
-        </span>
-
-      </a>
-
-
-    </nav>
-
-
-
-    <!-- =================================================
+        <nav class="history-menu">
+          <!-- THÔNG TIN TÀI KHOẢN -->
+
+          <a href="profile.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="12"
+                cy="8"
+                r="3.2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+
+              <path
+                d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span class="history-menu-text"> Thông tin tài khoản </span>
+          </a>
+
+          <!-- ĐỔI MẬT KHẨU -->
+
+          <a href="profile.html#password" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="5"
+                y="10"
+                width="14"
+                height="10"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+
+              <path
+                d="M8 10V7a4 4 0 018 0v3"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+
+              <circle cx="12" cy="15" r="1" fill="currentColor" />
+            </svg>
+
+            <span class="history-menu-text"> Đổi mật khẩu </span>
+          </a>
+
+          <!-- BÀI VIẾT YÊU THÍCH -->
+
+          <a href="favorites.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span class="history-menu-text"> Bài viết yêu thích </span>
+          </a>
+
+          <!-- LỊCH SỬ -->
+
+          <a href="history.html" class="history-menu-item active">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M5 5.5v11M9 7h7M9 11h7"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span class="history-menu-text"> Lịch sử đọc </span>
+          </a>
+
+          <!-- BÌNH LUẬN -->
+
+          <a href="my-comments.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 0120 11.5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <circle cx="9" cy="11.5" r=".8" fill="currentColor" />
+
+              <circle cx="12" cy="11.5" r=".8" fill="currentColor" />
+
+              <circle cx="15" cy="11.5" r=".8" fill="currentColor" />
+            </svg>
+
+            <span class="history-menu-text"> Bình luận của tôi </span>
+          </a>
+
+          <!-- THÔNG BÁO -->
+
+          <a href="notifications.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="M10 21h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <span class="history-menu-text"> Thông báo </span>
+          </a>
+        </nav>
+
+        <!-- =================================================
          LOGOUT
     ================================================== -->
 
-    <div class="history-logout">
+        <div class="history-logout">
+          <a href="/frontend/public/index.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
 
-      <a
-        href="/frontend/public/index.html"
-        class="history-menu-item"
-      >
+              <path
+                d="M14 8l4 4-4 4M18 12H9"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
 
-        <svg
-          class="history-menu-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
+            <span class="history-menu-text"> Đăng xuất </span>
+          </a>
+        </div>
+      </aside>
 
-          <path
-            d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-
-          <path
-            d="M14 8l4 4-4 4M18 12H9"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-
-        </svg>
-
-
-        <span class="history-menu-text">
-          Đăng xuất
-        </span>
-
-      </a>
-
-    </div>
-
-
-  </aside>
-
-
-
-  <!-- ===================================================
+      <!-- ===================================================
        MAIN
   =================================================== -->
 
-  <main class="history-main">
+      <main class="history-main">
+        <div class="history-main-inner">
+          <h1 class="history-heading">Lịch sử đọc</h1>
 
-    <div class="history-main-inner">
+          <div class="history-heading-line"></div>
 
+          <p class="history-description">
+            Danh sách các bài viết bạn đã xem. Lịch sử được hệ thống tự động ghi
+            nhận.
+          </p>
 
-      <h1 class="history-heading">
-        Lịch sử đọc
-      </h1>
+          <!-- ERROR -->
 
+          <div id="historyError" class="history-error">
+            Không thể tải dữ liệu lịch sử đọc bài.
+          </div>
 
-      <div class="history-heading-line"></div>
+          <!-- EMPTY -->
 
+          <div id="historyEmpty" class="history-empty">
+            Bạn chưa đọc bài viết nào.
+          </div>
 
-      <p class="history-description">
-        Danh sách các bài viết bạn đã xem. Lịch sử được hệ thống tự động ghi nhận.
-      </p>
+          <!-- LIST -->
 
-
-
-      <!-- ERROR -->
-
-      <div
-        id="historyError"
-        class="history-error"
-      >
-        Không thể tải dữ liệu lịch sử đọc bài.
-      </div>
-
-
-
-      <!-- EMPTY -->
-
-      <div
-        id="historyEmpty"
-        class="history-empty"
-      >
-        Bạn chưa đọc bài viết nào.
-      </div>
-
-
-
-      <!-- LIST -->
-
-      <div
-        id="historyList"
-        class="history-list"
-      ></div>
-
-
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </main>
     </div>
 
-  </main>
+    <script src="../assets/mock-data.js"></script>
 
-
-</div>
-
-
-
-<!-- =====================================================
-     MOCK DATA
-     history.html nằm trong user/
-     mock-data.js nằm trong assets/
-     => ../assets/mock-data.js
-===================================================== -->
-
-<script src="../assets/mock-data.js"></script>
-
-
-<script>
-
-
-/* =====================================================
+    <script>
+      /* =====================================================
    LẤY USER HIỆN TẠI
 ===================================================== */
 
-const storedUserId =
-  localStorage.getItem("user_id");
+      const storedUserId = localStorage.getItem("user_id");
 
+      let currentUser = null;
 
-let currentUser = null;
-
-
-
-/* =====================================================
+      /* =====================================================
    KIỂM TRA MOCK DATA
 ===================================================== */
 
-if (
-  typeof MOCK_DATA !== "undefined" &&
-  Array.isArray(MOCK_DATA.users)
-) {
-
-
-  /* =================================================
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.users)) {
+        /* =================================================
      ƯU TIÊN USER_ID ĐANG ĐĂNG NHẬP
   ================================================= */
 
-  if (storedUserId) {
+        if (storedUserId) {
+          currentUser = MOCK_DATA.users.find(
+            (user) =>
+              String(user.id) === String(storedUserId) && user.role === "user",
+          );
+        }
 
-    currentUser =
-      MOCK_DATA.users.find(
-        user =>
-          String(user.id) ===
-          String(storedUserId) &&
-
-          user.role === "user"
-      );
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      NẾU KHÔNG CÓ -> LẤY USER ACTIVE
   ================================================= */
 
-  if (!currentUser) {
+        if (!currentUser) {
+          currentUser = MOCK_DATA.users.find(
+            (user) => user.role === "user" && user.status === "active",
+          );
+        }
 
-    currentUser =
-      MOCK_DATA.users.find(
-        user =>
-
-          user.role === "user" &&
-
-          user.status === "active"
-      );
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      NẾU KHÔNG CÓ ACTIVE -> LẤY USER BẤT KỲ
   ================================================= */
 
-  if (!currentUser) {
+        if (!currentUser) {
+          currentUser = MOCK_DATA.users.find((user) => user.role === "user");
+        }
+      }
 
-    currentUser =
-      MOCK_DATA.users.find(
-        user =>
-          user.role === "user"
-      );
-
-  }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    DATA
 ===================================================== */
 
-const users =
-  typeof MOCK_DATA !== "undefined" &&
-  Array.isArray(MOCK_DATA.users)
+      const users =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.users)
+          ? MOCK_DATA.users
+          : [];
 
-    ? MOCK_DATA.users
+      const articles =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.articles)
+          ? MOCK_DATA.articles
+          : [];
 
-    : [];
+      const readingHistory =
+        typeof MOCK_DATA !== "undefined" &&
+        Array.isArray(MOCK_DATA.reading_history)
+          ? MOCK_DATA.reading_history
+          : [];
 
+      const categories =
+        typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.categories)
+          ? MOCK_DATA.categories
+          : [];
 
-const articles =
-  typeof MOCK_DATA !== "undefined" &&
-  Array.isArray(MOCK_DATA.articles)
-
-    ? MOCK_DATA.articles
-
-    : [];
-
-
-const readingHistory =
-  typeof MOCK_DATA !== "undefined" &&
-  Array.isArray(MOCK_DATA.reading_history)
-
-    ? MOCK_DATA.reading_history
-
-    : [];
-
-
-const categories =
-  typeof MOCK_DATA !== "undefined" &&
-  Array.isArray(MOCK_DATA.categories)
-
-    ? MOCK_DATA.categories
-
-    : [];
-
-
-
-/* =====================================================
+      /* =====================================================
    ELEMENT
 ===================================================== */
 
-const historyList =
-  document.getElementById(
-    "historyList"
-  );
+      const historyList = document.getElementById("historyList");
 
+      const historyEmpty = document.getElementById("historyEmpty");
 
-const historyEmpty =
-  document.getElementById(
-    "historyEmpty"
-  );
+      const historyError = document.getElementById("historyError");
 
+      const userName = document.getElementById("userName");
 
-const historyError =
-  document.getElementById(
-    "historyError"
-  );
+      const userRole = document.getElementById("userRole");
 
+      const userAvatar = document.getElementById("userAvatar");
 
-const userName =
-  document.getElementById(
-    "userName"
-  );
+      const userInitials = document.getElementById("userInitials");
 
-
-const userRole =
-  document.getElementById(
-    "userRole"
-  );
-
-
-const userAvatar =
-  document.getElementById(
-    "userAvatar"
-  );
-
-
-const userInitials =
-  document.getElementById(
-    "userInitials"
-  );
-
-
-
-/* =====================================================
+      /* =====================================================
    INITIALS
 ===================================================== */
 
-function getInitials(name) {
+      function getInitials(name) {
+        if (!name) {
+          return "U";
+        }
 
-  if (!name) {
+        const words = name.trim().split(/\s+/);
 
-    return "U";
+        if (words.length === 1) {
+          return words[0].substring(0, 2).toUpperCase();
+        }
 
-  }
+        return (
+          words[0].charAt(0) + words[words.length - 1].charAt(0)
+        ).toUpperCase();
+      }
 
-
-  const words =
-    name
-      .trim()
-      .split(/\s+/);
-
-
-  if (words.length === 1) {
-
-    return words[0]
-      .substring(0, 2)
-      .toUpperCase();
-
-  }
-
-
-  return (
-
-    words[0].charAt(0) +
-
-    words[words.length - 1].charAt(0)
-
-  ).toUpperCase();
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    ROLE
 ===================================================== */
 
-function getRoleName(role) {
+      function getRoleName(role) {
+        if (role === "user") {
+          return "Độc giả";
+        }
 
-  if (role === "user") {
+        if (role === "reporter") {
+          return "Phóng viên";
+        }
 
-    return "Độc giả";
+        if (role === "editor") {
+          return "Biên tập viên";
+        }
 
-  }
+        if (role === "admin") {
+          return "Quản trị viên";
+        }
 
+        return role || "Độc giả";
+      }
 
-  if (role === "reporter") {
-
-    return "Phóng viên";
-
-  }
-
-
-  if (role === "editor") {
-
-    return "Biên tập viên";
-
-  }
-
-
-  if (role === "admin") {
-
-    return "Quản trị viên";
-
-  }
-
-
-  return role || "Độc giả";
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    ESCAPE HTML
 ===================================================== */
 
-function escapeHtml(value) {
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
 
-  return String(
-    value || ""
-  )
+          .replace(/</g, "&lt;")
 
-    .replace(
-      /&/g,
-      "&amp;"
-    )
+          .replace(/>/g, "&gt;")
 
-    .replace(
-      /</g,
-      "&lt;"
-    )
+          .replace(/"/g, "&quot;")
 
-    .replace(
-      />/g,
-      "&gt;"
-    )
+          .replace(/'/g, "&#039;");
+      }
 
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD USER SIDEBAR
-   AVATAR ƯU TIÊN LOCAL STORAGE -> MOCK_DATA
 ===================================================== */
 
-function loadUser(user) {
+      function loadUser(user) {
+        if (!user) {
+          userName.textContent = "Người dùng";
 
-  if (!user) {
+          userRole.textContent = "Độc giả";
 
-    userName.textContent =
-      "Người dùng";
+          userInitials.textContent = "U";
 
-    userRole.textContent =
-      "Độc giả";
+          userInitials.style.display = "block";
 
-    userInitials.textContent =
-      "U";
+          return;
+        }
 
-    userInitials.style.display =
-      "block";
-
-    return;
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      NAME
   ================================================= */
 
-  const name =
-    user.full_name ||
-    user.username ||
-    "Người dùng";
+        const name = user.full_name || user.username || "Người dùng";
 
+        userName.textContent = name;
 
-  userName.textContent =
-    name;
-
-
-
-  /* =================================================
+        /* =================================================
      ROLE
   ================================================= */
 
-  userRole.textContent =
-    getRoleName(user.role);
+        userRole.textContent = getRoleName(user.role);
 
-
-
-  /* =================================================
+        /* =================================================
      INITIALS
   ================================================= */
 
-  userInitials.textContent =
-    getInitials(name);
+        userInitials.textContent = getInitials(name);
 
-  userInitials.style.display =
-    "block";
+        userInitials.style.display = "block";
 
-
-
-  /* =================================================
+        /* =================================================
      XÓA AVATAR CŨ
   ================================================= */
 
-  const oldImage =
-    userAvatar.querySelector("img");
+        const oldImage = userAvatar.querySelector("img");
 
+        if (oldImage) {
+          oldImage.remove();
+        }
 
-  if (oldImage) {
-
-    oldImage.remove();
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      LẤY AVATAR
   ================================================= */
 
-  const savedAvatar =
-    localStorage.getItem(
-      "userAvatar_" + user.id
-    );
+        const savedAvatar = localStorage.getItem("userAvatar_" + user.id);
 
+        const avatarURL = savedAvatar || user.avatar || "";
 
-  const avatarURL =
-    savedAvatar ||
-    user.avatar ||
-    "";
-
-
-
-  /* =================================================
+        /* =================================================
      KHÔNG CÓ AVATAR
   ================================================= */
 
-  if (!avatarURL) {
+        if (!avatarURL) {
+          return;
+        }
 
-    return;
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      CREATE IMAGE
   ================================================= */
 
-  const img =
-    document.createElement("img");
+        const img = document.createElement("img");
 
+        img.src = avatarURL;
 
-  img.src =
-    avatarURL;
+        img.alt = "Ảnh đại diện " + name;
 
-
-  img.alt =
-    "Ảnh đại diện " + name;
-
-
-
-  /* =================================================
+        /* =================================================
      AVATAR LOAD SUCCESS
   ================================================= */
 
-  img.onload =
-    function () {
+        img.onload = function () {
+          userInitials.style.display = "none";
+        };
 
-      userInitials.style.display =
-        "none";
-
-    };
-
-
-
-  /* =================================================
+        /* =================================================
      AVATAR LOAD ERROR
   ================================================= */
 
-  img.onerror =
-    function () {
+        img.onerror = function () {
+          img.remove();
 
-      img.remove();
+          userInitials.style.display = "block";
+        };
 
-      userInitials.style.display =
-        "block";
+        userAvatar.appendChild(img);
+      }
 
-    };
-
-
-  userAvatar.appendChild(img);
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    CATEGORY
 ===================================================== */
 
-function getCategoryName(categoryId) {
+      function getCategoryName(categoryId) {
+        const category = categories.find(
+          (category) => String(category.id) === String(categoryId),
+        );
 
-  const category =
-    categories.find(
-      category =>
-        String(category.id) ===
-        String(categoryId)
-    );
+        return category ? category.name : "Chưa phân loại";
+      }
 
-
-  return category
-
-    ? category.name
-
-    : "Chưa phân loại";
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    AUTHOR
 ===================================================== */
 
-function getAuthorName(authorId) {
+      function getAuthorName(authorId) {
+        const author = users.find(
+          (user) => String(user.id) === String(authorId),
+        );
 
-  const author =
-    users.find(
-      user =>
-        String(user.id) ===
-        String(authorId)
-    );
+        return author
+          ? author.full_name || author.username || "Không rõ tác giả"
+          : "Không rõ tác giả";
+      }
 
-
-  return author
-
-    ? (
-        author.full_name ||
-        author.username ||
-        "Không rõ tác giả"
-      )
-
-    : "Không rõ tác giả";
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    FORMAT ARTICLE DATE
 ===================================================== */
 
-function formatArticleDate(dateString) {
+      function formatArticleDate(dateString) {
+        if (!dateString) {
+          return "";
+        }
 
-  if (!dateString) {
+        const date = String(dateString).substring(0, 10);
 
-    return "";
+        const parts = date.split("-");
 
-  }
+        if (parts.length !== 3) {
+          return date;
+        }
 
+        return parts[2] + "/" + parts[1] + "/" + parts[0];
+      }
 
-  const date =
-    String(dateString)
-      .substring(0, 10);
-
-
-  const parts =
-    date.split("-");
-
-
-  if (parts.length !== 3) {
-
-    return date;
-
-  }
-
-
-  return (
-
-    parts[2] +
-    "/" +
-    parts[1] +
-    "/" +
-    parts[0]
-
-  );
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    FORMAT VIEWED TIME
 ===================================================== */
 
-function formatViewedTime(dateString) {
+      function formatViewedTime(dateString) {
+        if (!dateString) {
+          return "";
+        }
 
-  if (!dateString) {
+        const value = String(dateString);
 
-    return "";
+        const parts = value.split(" ");
 
-  }
-
-
-  const value =
-    String(dateString);
-
-
-  const parts =
-    value.split(" ");
-
-
-
-  /* =================================================
+        /* =================================================
      DẠNG:
      2026-08-20 14:30:00
   ================================================= */
 
-  if (parts.length === 2) {
+        if (parts.length === 2) {
+          const dateParts = parts[0].split("-");
 
-    const dateParts =
-      parts[0].split("-");
+          const time = parts[1].substring(0, 5);
 
+          if (dateParts.length === 3) {
+            return (
+              dateParts[2] +
+              "/" +
+              dateParts[1] +
+              "/" +
+              dateParts[0] +
+              " · " +
+              time
+            );
+          }
+        }
 
-    const time =
-      parts[1].substring(0, 5);
-
-
-    if (
-      dateParts.length === 3
-    ) {
-
-      return (
-
-        dateParts[2] +
-        "/" +
-        dateParts[1] +
-        "/" +
-        dateParts[0] +
-        " · " +
-        time
-
-      );
-
-    }
-
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      DẠNG ISO:
      2026-08-20T14:30:00
   ================================================= */
 
-  const date =
-    new Date(dateString);
+        const date = new Date(dateString);
 
+        if (!isNaN(date.getTime())) {
+          const day = String(date.getDate()).padStart(2, "0");
 
-  if (
-    !isNaN(
-      date.getTime()
-    )
-  ) {
+          const month = String(date.getMonth() + 1).padStart(2, "0");
 
-    const day =
-      String(
-        date.getDate()
-      ).padStart(2, "0");
+          const year = date.getFullYear();
 
+          const hours = String(date.getHours()).padStart(2, "0");
 
-    const month =
-      String(
-        date.getMonth() + 1
-      ).padStart(2, "0");
+          const minutes = String(date.getMinutes()).padStart(2, "0");
 
+          return `${day}/${month}/${year}` + ` · ${hours}:${minutes}`;
+        }
 
-    const year =
-      date.getFullYear();
+        return value;
+      }
 
-
-    const hours =
-      String(
-        date.getHours()
-      ).padStart(2, "0");
-
-
-    const minutes =
-      String(
-        date.getMinutes()
-      ).padStart(2, "0");
-
-
-    return (
-
-      `${day}/${month}/${year}` +
-      ` · ${hours}:${minutes}`
-
-    );
-
-  }
-
-
-  return value;
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    CREATE HISTORY ITEM
 ===================================================== */
 
-function createHistoryItem(history) {
+      function createHistoryItem(history) {
+        const article = articles.find(
+          (item) => String(item.id) === String(history.article_id),
+        );
 
-  const article =
-    articles.find(
-      item =>
-        String(item.id) ===
-        String(history.article_id)
-    );
+        if (!article) {
+          return null;
+        }
 
+        const categoryName = getCategoryName(article.category_id);
 
-  if (!article) {
+        const authorName = getAuthorName(article.author_id);
 
-    return null;
+        const articleUrl =
+          "/frontend/public/article-detail.html?slug=" +
+          encodeURIComponent(article.slug || article.id);
 
-  }
+        const item = document.createElement("article");
 
+        item.className = "history-item";
 
+        item.dataset.articleId = String(article.id);
 
-  const categoryName =
-    getCategoryName(
-      article.category_id
-    );
-
-
-  const authorName =
-    getAuthorName(
-      article.author_id
-    );
-
-
-  const articleUrl =
-    "/frontend/public/article-detail.html?slug=" +
-    encodeURIComponent(
-      article.slug ||
-      article.id
-    );
-
-
-
-  const item =
-    document.createElement(
-      "article"
-    );
-
-
-  item.className =
-    "history-item";
-
-
-  item.dataset.articleId =
-    String(article.id);
-
-
-
-  /* =================================================
+        /* =================================================
      IMAGE
   ================================================= */
 
-  let imageHTML = "";
+        let imageHTML = "";
 
-
-  if (article.cover_image) {
-
-    imageHTML = `
+        if (article.cover_image) {
+          imageHTML = `
 
       <img
         class="history-image"
         src="${escapeHtml(article.cover_image)}"
-        alt="${escapeHtml(
-          article.title ||
-          "Ảnh bài viết"
-        )}"
+        alt="${escapeHtml(article.title || "Ảnh bài viết")}"
       >
 
       <div
@@ -1248,12 +661,8 @@ function createHistoryItem(history) {
       </div>
 
     `;
-
-  }
-
-  else {
-
-    imageHTML = `
+        } else {
+          imageHTML = `
 
       <div
         class="history-image-placeholder"
@@ -1262,16 +671,13 @@ function createHistoryItem(history) {
       </div>
 
     `;
+        }
 
-  }
-
-
-
-  /* =================================================
+        /* =================================================
      ITEM HTML
   ================================================= */
 
-  item.innerHTML = `
+        item.innerHTML = `
 
     <a
       href="${articleUrl}"
@@ -1291,10 +697,7 @@ function createHistoryItem(history) {
 
         <a href="${articleUrl}">
 
-          ${escapeHtml(
-            article.title ||
-            "Không có tiêu đề"
-          )}
+          ${escapeHtml(article.title || "Không có tiêu đề")}
 
         </a>
 
@@ -1318,10 +721,7 @@ function createHistoryItem(history) {
 
         <span>
           ${escapeHtml(
-            formatArticleDate(
-              article.published_at ||
-              article.created_at
-            )
+            formatArticleDate(article.published_at || article.created_at),
           )}
         </span>
 
@@ -1334,342 +734,161 @@ function createHistoryItem(history) {
 
     <div class="history-viewed">
 
-      ${escapeHtml(
-        formatViewedTime(
-          history.viewed_at
-        )
-      )}
+      ${escapeHtml(formatViewedTime(history.viewed_at))}
 
     </div>
 
   `;
 
-
-
-  /* =================================================
+        /* =================================================
      IMAGE ERROR
   ================================================= */
 
-  const image =
-    item.querySelector(
-      ".history-image"
-    );
+        const image = item.querySelector(".history-image");
 
+        const placeholder = item.querySelector(".history-image-placeholder");
 
-  const placeholder =
-    item.querySelector(
-      ".history-image-placeholder"
-    );
+        if (image && placeholder) {
+          image.addEventListener("error", function () {
+            image.style.display = "none";
 
+            placeholder.style.display = "flex";
+          });
+        }
 
-  if (
-    image &&
-    placeholder
-  ) {
-
-    image.addEventListener(
-      "error",
-      function () {
-
-        image.style.display =
-          "none";
-
-
-        placeholder.style.display =
-          "flex";
-
+        return item;
       }
-    );
 
-  }
-
-
-  return item;
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD HISTORY
 ===================================================== */
 
-function loadHistory() {
-
-  try {
-
-
-    /* =================================================
+      function loadHistory() {
+        try {
+          /* =================================================
        CHECK MOCK DATA
     ================================================= */
 
-    if (
-      typeof MOCK_DATA ===
-      "undefined"
-    ) {
+          if (typeof MOCK_DATA === "undefined") {
+            throw new Error("Không tìm thấy mock-data.js.");
+          }
 
-      throw new Error(
-        "Không tìm thấy mock-data.js."
-      );
-
-    }
-
-
-
-    /* =================================================
+          /* =================================================
        CHECK USER
     ================================================= */
 
-    if (!currentUser) {
+          if (!currentUser) {
+            historyEmpty.style.display = "block";
 
-      historyEmpty.style.display =
-        "block";
+            historyError.style.display = "none";
 
-      historyError.style.display =
-        "none";
+            return;
+          }
 
-      return;
-
-    }
-
-
-
-    /* =================================================
+          /* =================================================
        LOAD SIDEBAR USER
     ================================================= */
 
-    loadUser(
-      currentUser
-    );
+          loadUser(currentUser);
 
-
-
-    /* =================================================
+          /* =================================================
        HISTORY
     ================================================= */
 
-    const userHistory =
-      readingHistory.filter(
-        history =>
+          const userHistory = readingHistory.filter(
+            (history) => String(history.user_id) === String(currentUser.id),
+          );
 
-          String(
-            history.user_id
-          ) ===
-
-          String(
-            currentUser.id
-          )
-      );
-
-
-
-    /* =================================================
+          /* =================================================
        SORT
        MỚI NHẤT TRƯỚC
     ================================================= */
 
-    userHistory.sort(
-      (a, b) => {
+          userHistory.sort((a, b) => {
+            const dateA = new Date(String(a.viewed_at || "").replace(" ", "T"));
 
-        const dateA =
-          new Date(
-            String(
-              a.viewed_at ||
-              ""
-            ).replace(
-              " ",
-              "T"
-            )
-          );
+            const dateB = new Date(String(b.viewed_at || "").replace(" ", "T"));
 
+            return dateB - dateA;
+          });
 
-        const dateB =
-          new Date(
-            String(
-              b.viewed_at ||
-              ""
-            ).replace(
-              " ",
-              "T"
-            )
-          );
-
-
-        return dateB - dateA;
-
-      }
-    );
-
-
-
-    /* =================================================
+          /* =================================================
        EMPTY
     ================================================= */
 
-    if (
-      userHistory.length ===
-      0
-    ) {
+          if (userHistory.length === 0) {
+            historyEmpty.style.display = "block";
 
-      historyEmpty.style.display =
-        "block";
+            historyError.style.display = "none";
 
-      historyError.style.display =
-        "none";
+            return;
+          }
 
-      return;
+          historyEmpty.style.display = "none";
 
-    }
+          historyError.style.display = "none";
 
-
-    historyEmpty.style.display =
-      "none";
-
-
-    historyError.style.display =
-      "none";
-
-
-
-    /* =================================================
+          /* =================================================
        CLEAR LIST
     ================================================= */
 
-    historyList.innerHTML =
-      "";
+          historyList.innerHTML = "";
 
-
-
-    /* =================================================
+          /* =================================================
        RENDER
     ================================================= */
 
-    userHistory.forEach(
-      history => {
+          userHistory.forEach((history) => {
+            const item = createHistoryItem(history);
 
-        const item =
-          createHistoryItem(
-            history
-          );
+            if (item) {
+              historyList.appendChild(item);
+            }
+          });
 
-
-        if (item) {
-
-          historyList.appendChild(
-            item
-          );
-
-        }
-
-      }
-    );
-
-
-
-    /* =================================================
+          /* =================================================
        NO VALID ARTICLE
     ================================================= */
 
-    if (
-      historyList.children.length ===
-      0
-    ) {
+          if (historyList.children.length === 0) {
+            historyEmpty.style.display = "block";
+          }
+        } catch (error) {
+          console.error("History error:", error);
 
-      historyEmpty.style.display =
-        "block";
+          historyError.style.display = "block";
 
-    }
+          historyEmpty.style.display = "none";
+        }
+      }
 
-  }
-
-  catch (error) {
-
-    console.error(
-      "History error:",
-      error
-    );
-
-
-    historyError.style.display =
-      "block";
-
-
-    historyEmpty.style.display =
-      "none";
-
-  }
-
-}
-
-
-
-/* =====================================================
+      /* =====================================================
    LOAD PAGE
 ===================================================== */
 
-loadUser(
-  currentUser
-);
+      loadUser(currentUser);
 
+      loadHistory();
 
-loadHistory();
-
-
-
-/* =====================================================
+      /* =====================================================
    PAGE SHOW
 ===================================================== */
 
-window.addEventListener(
-  "pageshow",
-  function () {
+      window.addEventListener("pageshow", function () {
+        if (typeof MOCK_DATA !== "undefined" && currentUser) {
+          loadUser(currentUser);
+        }
+      });
 
-    if (
-      typeof MOCK_DATA !==
-      "undefined" &&
-      currentUser
-    ) {
-
-      loadUser(
-        currentUser
-      );
-
-    }
-
-  }
-);
-
-
-
-/* =====================================================
+      /* =====================================================
    AVATAR CHANGE
 ===================================================== */
 
-window.addEventListener(
-  "storage",
-  function (event) {
-
-    if (
-      currentUser &&
-      event.key ===
-      "userAvatar_" +
-      currentUser.id
-    ) {
-
-      loadUser(
-        currentUser
-      );
-
-    }
-
-  }
-);
-
-
-</script>
-
-
-</body>
-
+      window.addEventListener("storage", function (event) {
+        if (currentUser && event.key === "userAvatar_" + currentUser.id) {
+          loadUser(currentUser);
+        }
+      });
+    </script>
+  </body>
 </html>
-```
