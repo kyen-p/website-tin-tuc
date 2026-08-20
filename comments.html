@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Kiểm duyệt bình luận - Mạch Tin Editor</title>
+
+    <link
+        rel="stylesheet"
+        href="editor.css">
+</head>
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside
+    class="admin-sidebar is-open"
+    id="editorSidebar">
+
+    <div class="admin-sidebar__brand">
+
+        <div class="admin-sidebar__title">
+            MẠCH TIN
+        </div>
+
+        <div
+            style="
+                font-size:11px;
+                color:var(--admin-ink-soft);
+                margin-top:4px;
+            ">
+            Khu vực Editor
+        </div>
+
+    </div>
+
+
+    <nav class="admin-nav">
+
+        <a
+            href="dashboard.html"
+            class="admin-nav__link">
+
+            <span>Thống kê nội dung</span>
+
+        </a>
+
+
+        <a
+            href="pending-articles.html"
+            class="admin-nav__link">
+
+            <span>Bài chờ duyệt</span>
+
+        </a>
+
+
+        <a
+            href="published-articles.html"
+            class="admin-nav__link">
+
+            <span>Bài viết đã đăng</span>
+
+        </a>
+
+
+        <a
+            href="comments.html"
+            class="admin-nav__link is-active">
+
+            <span>Kiểm duyệt bình luận</span>
+
+        </a>
+
+
+        <a
+            href="categories-tags.html"
+            class="admin-nav__link">
+
+            <span>Danh mục &amp; tag</span>
+
+        </a>
+
+
+        <a
+            href="topics.html"
+            class="admin-nav__link">
+
+            <span>Phân công đề tài</span>
+
+        </a>
+
+    </nav>
+
+
+    <div class="admin-sidebar__foot">
+
+        <a
+            href="../public/index.html"
+            class="admin-nav__link">
+
+            <span>←</span>
+            <span>Về trang công khai</span>
+
+        </a>
+
+
+        <a
+            href="../public/index.html"
+            class="admin-nav__link admin-nav__link--logout">
+
+            <span>Đăng xuất</span>
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="admin-main">
+
+    <div class="admin-container">
+
+
+        <!-- TOPBAR -->
+
+        <header class="admin-topbar">
+
+            <div class="admin-topbar__left">
+
+                <button
+                    class="admin-menu-toggle"
+                    id="menuToggle"
+                    type="button"
+                    aria-label="Mở hoặc đóng menu">
+
+                    ☰
+
+                </button>
+
+
+                <div>
+
+                    <h1 class="admin-topbar__title">
+                        Kiểm duyệt bình luận
+                    </h1>
+
+                    <p class="admin-topbar__subtitle">
+                        Xử lý bình luận bị báo cáo và bình luận vi phạm
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- TÀI KHOẢN EDITOR -->
+
+            <div class="admin-topbar__account">
+
+                <div class="admin-avatar">
+                    ED
+                </div>
+
+
+                <div class="admin-account-info">
+
+                    <span class="admin-account-name">
+                        Editor
+                    </span>
+
+                    <span class="admin-account-role">
+                        Biên tập viên
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             TABS
+        ================================================== -->
+
+        <div
+            style="
+                display:flex;
+                gap:8px;
+                margin-bottom:18px;
+                flex-wrap:wrap;
+            ">
+
+            <button
+                type="button"
+                class="btn-chip btn-chip--primary"
+                id="reportedTab"
+                onclick="showTab('reported')">
+
+                Bị báo cáo
+
+            </button>
+
+
+            <button
+                type="button"
+                class="btn-chip"
+                id="allTab"
+                onclick="showTab('all')">
+
+                Tất cả bình luận
+
+            </button>
+
+
+            <button
+                type="button"
+                class="btn-chip"
+                id="blockedTab"
+                onclick="showTab('blocked')">
+
+                User bị khóa
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             REPORTED COMMENTS
+        ================================================== -->
+
+        <section
+            class="panel"
+            id="reportedPanel">
+
+            <div class="panel__head">
+
+                <h2 class="panel__title">
+                    Bình luận bị báo cáo
+                </h2>
+
+                <span
+                    class="badge badge--reported"
+                    id="reportedCount">
+
+                    0 báo cáo
+
+                </span>
+
+            </div>
+
+
+            <div id="reportedList"></div>
+
+        </section>
+
+
+        <!-- =================================================
+             ALL COMMENTS
+        ================================================== -->
+
+        <section
+            class="panel"
+            id="allPanel"
+            style="display:none;">
+
+            <div class="panel__head">
+
+                <h2 class="panel__title">
+                    Tất cả bình luận
+                </h2>
+
+            </div>
+
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Người bình luận
+                        </th>
+
+                        <th>
+                            Nội dung
+                        </th>
+
+                        <th>
+                            Bài viết
+                        </th>
+
+                        <th>
+                            Thời gian
+                        </th>
+
+                        <th>
+                            Thao tác
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="allCommentsTable"></tbody>
+
+            </table>
+
+        </section>
+
+
+        <!-- =================================================
+             BLOCKED USERS
+        ================================================== -->
+
+        <section
+            class="panel"
+            id="blockedPanel"
+            style="display:none;">
+
+            <div class="panel__head">
+
+                <h2 class="panel__title">
+                    User đang bị khóa quyền bình luận
+                </h2>
+
+            </div>
+
+
+            <div id="blockedList"></div>
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="mock-data.js"></script>
+
+<script>
+
+"use strict";
+
+
+/* =====================================================
+   KIỂM TRA DỮ LIỆU
+===================================================== */
+
+const data =
+    window.MACH_TIN_DATA || {};
+
+
+// Đảm bảo luôn có mảng dữ liệu
+
+data.comments =
+    Array.isArray(data.comments)
+        ? data.comments
+        : [];
+
+
+data.reports =
+    Array.isArray(data.reports)
+        ? data.reports
+        : [];
+
+
+data.users =
+    Array.isArray(data.users)
+        ? data.users
+        : [];
+
+
+/* =====================================================
+   CHUYỂN TAB
+===================================================== */
+
+function showTab(tab){
+
+    const reported =
+        document.getElementById(
+            "reportedPanel"
+        );
+
+    const all =
+        document.getElementById(
+            "allPanel"
+        );
+
+    const blocked =
+        document.getElementById(
+            "blockedPanel"
+        );
+
+
+    reported.style.display =
+        tab === "reported"
+            ? "block"
+            : "none";
+
+
+    all.style.display =
+        tab === "all"
+            ? "block"
+            : "none";
+
+
+    blocked.style.display =
+        tab === "blocked"
+            ? "block"
+            : "none";
+
+
+    document
+        .getElementById("reportedTab")
+        .classList.toggle(
+            "btn-chip--primary",
+            tab === "reported"
+        );
+
+
+    document
+        .getElementById("allTab")
+        .classList.toggle(
+            "btn-chip--primary",
+            tab === "all"
+        );
+
+
+    document
+        .getElementById("blockedTab")
+        .classList.toggle(
+            "btn-chip--primary",
+            tab === "blocked"
+        );
+
+
+    if(tab === "reported"){
+        renderReported();
+    }
+
+
+    if(tab === "all"){
+        renderAllComments();
+    }
+
+
+    if(tab === "blocked"){
+        renderBlockedUsers();
+    }
+
+}
+
+
+/* =====================================================
+   HIỂN THỊ BÌNH LUẬN BỊ BÁO CÁO
+===================================================== */
+
+function renderReported(){
+
+    const reports =
+        data.reports.filter(
+            report =>
+                report.status !== "processed"
+        );
+
+
+    document.getElementById(
+        "reportedCount"
+    ).textContent =
+        `${reports.length} báo cáo`;
+
+
+    const reportedList =
+        document.getElementById(
+            "reportedList"
+        );
+
+
+    if(!reports.length){
+
+        reportedList.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-state__icon">
+                    ✓
+                </div>
+
+                <div class="empty-state__title">
+                    Không có bình luận bị báo cáo
+                </div>
+
+                <p class="empty-state__text">
+                    Hiện tại không có báo cáo nào cần xử lý.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    reportedList.innerHTML =
+
+        reports.map(report => {
+
+            const comment =
+                data.comments.find(
+                    c =>
+                        Number(c.id) ===
+                        Number(report.commentId)
+                );
+
+
+            if(!comment){
+                return "";
+            }
+
+
+            const userName =
+                comment.user || "Người dùng";
+
+
+            const avatar =
+                userName
+                    .substring(0, 2)
+                    .toUpperCase();
+
+
+            return `
+
+                <div class="comment-item">
+
+                    <div class="comment-item__head">
+
+                        <div class="comment-user">
+
+                            <div class="comment-avatar">
+                                ${avatar}
+                            </div>
+
+
+                            <div>
+
+                                <div class="comment-user__name">
+                                    ${userName}
+                                </div>
+
+                                <div class="comment-user__time">
+                                    ${comment.time || ""}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="badge badge--reported">
+                            Bị báo cáo
+                        </span>
+
+                    </div>
+
+
+                    <div class="comment-content">
+                        ${comment.content || ""}
+                    </div>
+
+
+                    <div class="report-reason">
+
+                        <strong>
+                            Lý do:
+                        </strong>
+
+                        ${report.reason || "Không có lý do"}
+
+                        <br>
+
+                        <strong>
+                            Người báo cáo:
+                        </strong>
+
+                        ${report.reporter || "Ẩn danh"}
+
+                    </div>
+
+
+                    <div
+                        class="row-actions"
+                        style="
+                            margin-top:12px;
+                            margin-left:44px;
+                        ">
+
+                        <button
+                            type="button"
+                            class="btn-chip btn-chip--danger"
+                            onclick="deleteComment(${comment.id})">
+
+                            Xóa bình luận
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn-chip btn-chip--warning"
+                            onclick="blockUser('${escapeQuotes(userName)}')">
+
+                            Khóa user
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn-chip btn-chip--success"
+                            onclick="processReport(${report.id})">
+
+                            Đánh dấu đã xử lý
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =====================================================
+   HIỂN THỊ TẤT CẢ BÌNH LUẬN
+===================================================== */
+
+function renderAllComments(){
+
+    const table =
+        document.getElementById(
+            "allCommentsTable"
+        );
+
+
+    const comments =
+        data.comments.filter(
+            comment =>
+                !comment.deleted
+        );
+
+
+    if(!comments.length){
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    style="text-align:center;padding:30px;">
+
+                    Không có bình luận.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+    }
+
+
+    table.innerHTML =
+
+        comments.map(comment => {
+
+            return `
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+                            ${comment.user || "Người dùng"}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+                        ${comment.content || ""}
+                    </td>
+
+
+                    <td>
+                        ${comment.article || "Không rõ"}
+                    </td>
+
+
+                    <td>
+                        ${comment.time || ""}
+                    </td>
+
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="btn-chip btn-chip--danger"
+                            onclick="deleteComment(${comment.id})">
+
+                            Xóa
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =====================================================
+   HIỂN THỊ USER BỊ KHÓA
+===================================================== */
+
+function renderBlockedUsers(){
+
+    const users =
+        data.users.filter(
+            user =>
+                user.commentBlocked
+        );
+
+
+    const blockedList =
+        document.getElementById(
+            "blockedList"
+        );
+
+
+    if(!users.length){
+
+        blockedList.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-state__icon">
+                    ✓
+                </div>
+
+                <div class="empty-state__title">
+                    Không có user bị khóa
+                </div>
+
+                <p class="empty-state__text">
+                    Hiện tại không có tài khoản nào bị khóa quyền bình luận.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    blockedList.innerHTML =
+
+        users.map(user => {
+
+            return `
+
+                <div class="item-row">
+
+                    <div class="item-row__info">
+
+                        <div class="item-row__name">
+                            ${user.name || "Người dùng"}
+                        </div>
+
+                        <div class="item-row__meta">
+                            ${user.email || ""}
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="btn-chip btn-chip--success"
+                        onclick="unblockUser('${escapeQuotes(user.name)}')">
+
+                        Mở khóa
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =====================================================
+   TÌM USER
+===================================================== */
+
+function findUser(name){
+
+    return data.users.find(
+        user =>
+            user.name === name
+    );
+
+}
+
+
+/* =====================================================
+   XÓA BÌNH LUẬN
+===================================================== */
+
+function deleteComment(id){
+
+    const comment =
+        data.comments.find(
+            c =>
+                Number(c.id) ===
+                Number(id)
+        );
+
+
+    if(!comment){
+        return;
+    }
+
+
+    if(
+        !confirm(
+            "Bạn có chắc muốn xóa bình luận này?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    comment.deleted =
+        true;
+
+
+    alert(
+        "Đã xóa bình luận."
+    );
+
+
+    renderReported();
+
+    renderAllComments();
+
+}
+
+
+/* =====================================================
+   KHÓA USER
+===================================================== */
+
+function blockUser(name){
+
+    const user =
+        findUser(name);
+
+
+    if(!user){
+
+        alert(
+            "Không tìm thấy người dùng."
+        );
+
+        return;
+
+    }
+
+
+    if(user.commentBlocked){
+
+        alert(
+            "Người dùng này đã bị khóa quyền bình luận."
+        );
+
+        return;
+
+    }
+
+
+    user.commentBlocked =
+        true;
+
+
+    alert(
+        `Đã khóa quyền bình luận của ${name}.`
+    );
+
+
+    renderReported();
+
+}
+
+
+/* =====================================================
+   MỞ KHÓA USER
+===================================================== */
+
+function unblockUser(name){
+
+    const user =
+        findUser(name);
+
+
+    if(!user){
+
+        alert(
+            "Không tìm thấy người dùng."
+        );
+
+        return;
+
+    }
+
+
+    user.commentBlocked =
+        false;
+
+
+    alert(
+        `Đã mở khóa quyền bình luận cho ${name}.`
+    );
+
+
+    renderBlockedUsers();
+
+}
+
+
+/* =====================================================
+   XỬ LÝ BÁO CÁO
+===================================================== */
+
+function processReport(id){
+
+    const report =
+        data.reports.find(
+            r =>
+                Number(r.id) ===
+                Number(id)
+        );
+
+
+    if(!report){
+        return;
+    }
+
+
+    report.status =
+        "processed";
+
+
+    alert(
+        "Đã đánh dấu báo cáo đã xử lý."
+    );
+
+
+    renderReported();
+
+}
+
+
+/* =====================================================
+   ESCAPE KÝ TỰ CHO TÊN USER
+===================================================== */
+
+function escapeQuotes(value){
+
+    return String(value || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
+
+}
+
+
+/* =====================================================
+   MENU SIDEBAR
+===================================================== */
+
+const menuToggle =
+    document.getElementById(
+        "menuToggle"
+    );
+
+
+const editorSidebar =
+    document.getElementById(
+        "editorSidebar"
+    );
+
+
+if(menuToggle && editorSidebar){
+
+    menuToggle.addEventListener(
+        "click",
+        () => {
+
+            editorSidebar.classList.toggle(
+                "is-open"
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   KHỞI TẠO
+===================================================== */
+
+renderReported();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Danh mục & Tag - Mạch Tin Editor</title>
+
+    <link
+        rel="stylesheet"
+        href="editor.css">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside
+    class="admin-sidebar is-open"
+    id="editorSidebar">
+
+    <div class="admin-sidebar__brand">
+
+        <div class="admin-sidebar__title">
+            MẠCH TIN
+        </div>
+
+        <div style="
+            font-size:11px;
+            color:var(--admin-ink-soft);
+            margin-top:4px;
+        ">
+            Khu vực Editor
+        </div>
+
+    </div>
+
+
+    <nav class="admin-nav">
+
+        <a
+            href="dashboard.html"
+            class="admin-nav__link">
+
+            <span>Thống kê nội dung</span>
+
+        </a>
+
+
+        <a
+            href="pending-articles.html"
+            class="admin-nav__link">
+
+            <span>Bài chờ duyệt</span>
+
+        </a>
+
+
+        <a
+            href="published-articles.html"
+            class="admin-nav__link">
+
+            <span>Bài viết đã đăng</span>
+
+        </a>
+
+
+        <a
+            href="comments.html"
+            class="admin-nav__link">
+
+            <span>Kiểm duyệt bình luận</span>
+
+        </a>
+
+
+        <a
+            href="categories-tags.html"
+            class="admin-nav__link is-active">
+
+            <span>Danh mục & tag</span>
+
+        </a>
+
+
+        <a
+            href="topics.html"
+            class="admin-nav__link">
+
+            <span>Phân công đề tài</span>
+
+        </a>
+
+    </nav>
+
+
+    <div class="admin-sidebar__foot">
+
+        <a
+            href="../public/index.html"
+            class="admin-nav__link">
+
+            <span>←</span>
+            <span>Về trang công khai</span>
+
+        </a>
+
+
+        <a
+            href="../public/index.html"
+            class="admin-nav__link admin-nav__link--logout">
+
+            <span>Đăng xuất</span>
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+<!-- MAIN -->
+<main class="admin-main">
+
+<div class="admin-container">
+
+
+<!-- TOPBAR -->
+<header class="admin-topbar">
+
+    <div class="admin-topbar__left">
+
+        <button
+            class="admin-menu-toggle"
+            id="menuToggle">
+
+            ☰
+
+        </button>
+
+
+        <div>
+
+            <h1 class="admin-topbar__title">
+                Danh mục & tag
+            </h1>
+
+            <p class="admin-topbar__subtitle">
+                Quản lý chuyên mục và thẻ nội dung
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACCOUNT -->
+    <div class="admin-topbar__account">
+
+        <div class="admin-avatar">
+            ED
+        </div>
+
+
+        <div class="admin-account-info">
+
+            <span class="admin-account-name">
+                Editor
+            </span>
+
+            <span class="admin-account-role">
+                Biên tập viên
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- CATEGORY + TAG -->
+<div class="category-tag-grid">
+
+
+<!-- CATEGORY -->
+<section class="panel">
+
+    <div class="panel__head">
+
+        <h2 class="panel__title">
+            Danh mục
+        </h2>
+
+
+        <button
+            class="btn-chip btn-chip--primary"
+            onclick="openCategoryModal()">
+
+            + Thêm
+
+        </button>
+
+    </div>
+
+
+    <div
+        class="item-list"
+        id="categoryList">
+
+    </div>
+
+</section>
+
+
+
+<!-- TAG -->
+<section class="panel">
+
+    <div class="panel__head">
+
+        <h2 class="panel__title">
+            Tag
+        </h2>
+
+
+        <button
+            class="btn-chip btn-chip--primary"
+            onclick="openTagModal()">
+
+            + Thêm
+
+        </button>
+
+    </div>
+
+
+    <div
+        class="tag-list"
+        id="tagList">
+
+    </div>
+
+</section>
+
+
+</div>
+
+
+</div>
+
+</main>
+
+
+
+<!-- CATEGORY MODAL -->
+<div
+    class="modal-overlay"
+    id="categoryModal">
+
+    <div class="modal-box">
+
+
+        <div class="modal-box__head">
+
+            <h3
+                class="modal-box__title"
+                id="categoryModalTitle">
+
+                Thêm danh mục
+
+            </h3>
+
+
+            <button
+                class="modal-box__close"
+                onclick="closeCategoryModal()">
+
+                ✕
+
+            </button>
+
+        </div>
+
+
+
+        <div class="modal-box__body">
+
+            <div class="form-field">
+
+                <label>
+                    Tên danh mục *
+                </label>
+
+                <input
+                    id="categoryName"
+                    type="text">
+
+            </div>
+
+
+            <div class="form-field">
+
+                <label>
+                    Mô tả
+                </label>
+
+                <textarea
+                    id="categoryDescription"
+                    rows="4"></textarea>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="modal-box__foot">
+
+            <button
+                class="btn-chip"
+                onclick="closeCategoryModal()">
+
+                Hủy
+
+            </button>
+
+
+            <button
+                class="btn-chip btn-chip--primary"
+                onclick="saveCategory()">
+
+                Lưu
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- TAG MODAL -->
+<div
+    class="modal-overlay"
+    id="tagModal">
+
+    <div class="modal-box">
+
+
+        <div class="modal-box__head">
+
+            <h3
+                class="modal-box__title"
+                id="tagModalTitle">
+
+                Thêm tag
+
+            </h3>
+
+
+            <button
+                class="modal-box__close"
+                onclick="closeTagModal()">
+
+                ✕
+
+            </button>
+
+        </div>
+
+
+
+        <div class="modal-box__body">
+
+            <div class="form-field">
+
+                <label>
+                    Tên tag *
+                </label>
+
+                <input
+                    id="tagName"
+                    type="text"
+                    placeholder="Ví dụ: công nghệ">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="modal-box__foot">
+
+            <button
+                class="btn-chip"
+                onclick="closeTagModal()">
+
+                Hủy
+
+            </button>
+
+
+            <button
+                class="btn-chip btn-chip--primary"
+                onclick="saveTag()">
+
+                Lưu
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- DATA -->
+<script src="mock-data.js"></script>
+
+<script>
+
+const data =
+    window.MACH_TIN_DATA;
+
+let editingCategoryId = null;
+let editingTagName = null;
+
+
+
+/* =========================
+   CATEGORY
+========================= */
+
+function renderCategories(){
+
+    document.getElementById(
+        "categoryList"
+    ).innerHTML =
+
+        data.categories.map(category => {
+
+            const articleCount =
+                data.articles.filter(
+                    article =>
+                        article.category ===
+                        category.name
+                ).length;
+
+
+            return `
+
+                <div class="item-row">
+
+                    <div class="item-row__info">
+
+                        <div class="item-row__name">
+                            ${category.name}
+                        </div>
+
+                        <div class="item-row__meta">
+
+                            ${category.description || "Chưa có mô tả"}
+
+                            · ${articleCount} bài
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row-actions">
+
+                        <button
+                            class="btn-chip"
+                            onclick="editCategory(${category.id})">
+
+                            Sửa
+
+                        </button>
+
+
+                        <button
+                            class="btn-chip btn-chip--danger"
+                            onclick="deleteCategory(${category.id})">
+
+                            Xóa
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+
+/* =========================
+   TAG
+========================= */
+
+function renderTags(){
+
+    const tags = new Set();
+
+
+    data.articles.forEach(
+        article => {
+
+            (article.tags || [])
+                .forEach(
+                    tag =>
+                        tags.add(tag)
+                );
+
+        }
+    );
+
+
+    data.tags.forEach(
+        tag =>
+            tags.add(tag)
+    );
+
+
+    document.getElementById(
+        "tagList"
+    ).innerHTML =
+
+        [...tags].map(tag => {
+
+            const used =
+                data.articles.some(
+                    article =>
+                        (article.tags || [])
+                            .includes(tag)
+                );
+
+
+            return `
+
+                <span class="tag-item">
+
+                    #${tag}
+
+                    <small>
+                        ${used ? "đang dùng" : ""}
+                    </small>
+
+
+                    <button
+                        onclick="editTag('${tag}')">
+
+                        ✎
+
+                    </button>
+
+
+                    <button
+                        onclick="deleteTag('${tag}')">
+
+                        ×
+
+                    </button>
+
+                </span>
+
+            `;
+
+        }).join("");
+
+}
+
+
+
+/* =========================
+   CATEGORY MODAL
+========================= */
+
+function openCategoryModal(){
+
+    editingCategoryId =
+        null;
+
+
+    document.getElementById(
+        "categoryModalTitle"
+    ).textContent =
+        "Thêm danh mục";
+
+
+    document.getElementById(
+        "categoryName"
+    ).value = "";
+
+
+    document.getElementById(
+        "categoryDescription"
+    ).value = "";
+
+
+    document
+        .getElementById(
+            "categoryModal"
+        )
+        .classList.add("is-open");
+
+}
+
+
+
+function closeCategoryModal(){
+
+    document
+        .getElementById(
+            "categoryModal"
+        )
+        .classList.remove("is-open");
+
+}
+
+
+
+/* =========================
+   SAVE CATEGORY
+========================= */
+
+function saveCategory(){
+
+    const name =
+        document.getElementById(
+            "categoryName"
+        ).value.trim();
+
+
+    const description =
+        document.getElementById(
+            "categoryDescription"
+        ).value.trim();
+
+
+    if(!name){
+
+        alert(
+            "Vui lòng nhập tên danh mục."
+        );
+
+        return;
+
+    }
+
+
+
+    if(editingCategoryId){
+
+        const category =
+            data.categories.find(
+                item =>
+                    Number(item.id) ===
+                    Number(editingCategoryId)
+            );
+
+
+        if(category){
+
+            category.name =
+                name;
+
+            category.description =
+                description;
+
+        }
+
+    }else{
+
+        const exists =
+            data.categories.some(
+                category =>
+                    category.name
+                        .toLowerCase() ===
+                    name.toLowerCase()
+            );
+
+
+        if(exists){
+
+            alert(
+                "Danh mục đã tồn tại."
+            );
+
+            return;
+
+        }
+
+
+        data.categories.push({
+
+            id:
+                Date.now(),
+
+            name:
+                name,
+
+            description:
+                description
+
+        });
+
+    }
+
+
+    closeCategoryModal();
+
+    renderCategories();
+
+
+    alert(
+        "Đã cập nhật danh mục."
+    );
+
+}
+
+
+
+/* =========================
+   EDIT CATEGORY
+========================= */
+
+function editCategory(id){
+
+    const category =
+        data.categories.find(
+            item =>
+                Number(item.id) ===
+                Number(id)
+        );
+
+
+    if(!category) return;
+
+
+    editingCategoryId =
+        Number(id);
+
+
+    document.getElementById(
+        "categoryModalTitle"
+    ).textContent =
+        "Sửa danh mục";
+
+
+    document.getElementById(
+        "categoryName"
+    ).value =
+        category.name;
+
+
+    document.getElementById(
+        "categoryDescription"
+    ).value =
+        category.description || "";
+
+
+    document
+        .getElementById(
+            "categoryModal"
+        )
+        .classList.add("is-open");
+
+}
+
+
+
+/* =========================
+   DELETE CATEGORY
+========================= */
+
+function deleteCategory(id){
+
+    const category =
+        data.categories.find(
+            item =>
+                Number(item.id) ===
+                Number(id)
+        );
+
+
+    if(!category) return;
+
+
+    const used =
+        data.articles.some(
+            article =>
+                article.category ===
+                category.name
+        );
+
+
+    if(used){
+
+        alert(
+            "Không thể xóa danh mục vì còn bài viết thuộc danh mục này."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            `Xóa danh mục "${category.name}"?`
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const index =
+        data.categories.findIndex(
+            item =>
+                Number(item.id) ===
+                Number(id)
+        );
+
+
+    if(index !== -1){
+
+        data.categories.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    renderCategories();
+
+}
+
+
+
+/* =========================
+   TAG MODAL
+========================= */
+
+function openTagModal(){
+
+    editingTagName =
+        null;
+
+
+    document.getElementById(
+        "tagModalTitle"
+    ).textContent =
+        "Thêm tag";
+
+
+    document.getElementById(
+        "tagName"
+    ).value = "";
+
+
+    document
+        .getElementById(
+            "tagModal"
+        )
+        .classList.add("is-open");
+
+}
+
+
+
+function closeTagModal(){
+
+    document
+        .getElementById(
+            "tagModal"
+        )
+        .classList.remove("is-open");
+
+}
+
+
+
+/* =========================
+   SAVE TAG
+========================= */
+
+function saveTag(){
+
+    const name =
+        document.getElementById(
+            "tagName"
+        ).value
+            .trim()
+            .toLowerCase();
+
+
+    if(!name){
+
+        alert(
+            "Vui lòng nhập tên tag."
+        );
+
+        return;
+
+    }
+
+
+    /* SỬA TAG */
+
+    if(editingTagName){
+
+        const oldTag =
+            editingTagName;
+
+
+        const exists =
+            data.tags.some(
+                tag =>
+                    tag !== oldTag &&
+                    tag.toLowerCase() ===
+                    name.toLowerCase()
+            );
+
+
+        if(exists){
+
+            alert(
+                "Tag đã tồn tại."
+            );
+
+            return;
+
+        }
+
+
+        const tagIndex =
+            data.tags.indexOf(oldTag);
+
+
+        if(tagIndex !== -1){
+
+            data.tags[tagIndex] =
+                name;
+
+        }
+
+
+        data.articles.forEach(
+            article => {
+
+                if(!article.tags) return;
+
+
+                article.tags =
+                    article.tags.map(
+                        tag =>
+                            tag === oldTag
+                                ? name
+                                : tag
+                    );
+
+            }
+        );
+
+    }
+
+
+    /* THÊM TAG */
+
+    else{
+
+        if(
+            !data.tags.includes(name)
+        ){
+
+            data.tags.push(name);
+
+        }
+
+    }
+
+
+    closeTagModal();
+
+    renderTags();
+
+
+    alert(
+        "Đã cập nhật tag."
+    );
+
+}
+
+
+
+/* =========================
+   EDIT TAG
+========================= */
+
+function editTag(tag){
+
+    editingTagName =
+        tag;
+
+
+    document.getElementById(
+        "tagModalTitle"
+    ).textContent =
+        "Sửa tag";
+
+
+    document.getElementById(
+        "tagName"
+    ).value =
+        tag;
+
+
+    document
+        .getElementById(
+            "tagModal"
+        )
+        .classList.add("is-open");
+
+}
+
+
+
+/* =========================
+   DELETE TAG
+========================= */
+
+function deleteTag(tag){
+
+    const used =
+        data.articles.some(
+            article =>
+                (article.tags || [])
+                    .includes(tag)
+        );
+
+
+    if(used){
+
+        alert(
+            "Không thể xóa tag vì đang được sử dụng."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            `Xóa tag #${tag}?`
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const index =
+        data.tags.indexOf(tag);
+
+
+    if(index !== -1){
+
+        data.tags.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    renderTags();
+
+}
+
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+document
+    .getElementById("menuToggle")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(
+                    "editorSidebar"
+                )
+                .classList.toggle(
+                    "is-open"
+                );
+
+        }
+    );
+
+
+
+/* =========================
+   INIT
+========================= */
+
+renderCategories();
+
+renderTags();
+
+</script>
+
+</body>
+
+</html>

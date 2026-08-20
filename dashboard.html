@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Bài chờ duyệt - Mạch Tin Editor</title>
+
+    <link
+        rel="stylesheet"
+        href="editor.css"
+    >
+</head>
+
+<body>
+<aside
+    class="admin-sidebar is-open"
+    id="editorSidebar"
+>
+    <div class="admin-sidebar__brand">
+
+        <div class="admin-sidebar__title">
+            MẠCH TIN
+        </div>
+
+        <div
+            style="
+                font-size:11px;
+                color:var(--admin-ink-soft);
+                margin-top:4px;
+            "
+        >
+            Khu vực Editor
+        </div>
+
+    </div>
+
+    <nav class="admin-nav">
+
+        <a href="dashboard.html"
+           class="admin-nav__link is-active">
+            <span>Thống kê nội dung</span>
+        </a>
+        <a href="pending-articles.html"
+           class="admin-nav__link">
+            <span>Bài chờ duyệt</span>
+        </a>
+        <a href="published-articles.html"
+           class="admin-nav__link">
+            <span>Bài viết đã đăng</span>
+        </a>
+        <a href="comments.html"
+           class="admin-nav__link">
+            <span>Kiểm duyệt bình luận</span>
+        </a>
+        <a href="categories-tags.html"
+           class="admin-nav__link">
+            <span>Danh mục &amp; tag</span>
+        </a>
+        <a href="topics.html"
+           class="admin-nav__link">
+            <span>Phân công đề tài</span>
+        </a>
+    </nav>
+
+
+    <div class="admin-sidebar__foot">
+
+        <a href="../public/index.html"
+           class="admin-nav__link">
+            <span>←</span>
+            <span>Về trang công khai</span>
+        </a>
+
+        <a href="../public/index.html"
+           class="admin-nav__link admin-nav__link--logout">
+            <span>Đăng xuất</span>
+        </a>
+
+    </div>
+
+</aside>
+
+<main class="admin-main">
+
+    <div class="admin-container">
+
+        <header class="admin-topbar">
+
+            <div class="admin-topbar__left">
+
+                <button
+                    class="admin-menu-toggle"
+                    id="menuToggle"
+                    type="button"
+                    aria-label="Mở menu">
+                    ☰
+                </button>
+
+                <div>
+
+                    <h1 class="admin-topbar__title">
+                        Thống kê nội dung
+                    </h1>
+
+                    <p class="admin-topbar__subtitle">
+                        Tổng quan hoạt động nội dung của Mạch Tin
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="admin-topbar__account">
+
+                <div class="admin-avatar">
+                    ED
+                </div>
+
+                <div class="admin-account-info">
+
+                    <span class="admin-account-name">
+                        Editor
+                    </span>
+
+                    <span class="admin-account-role">
+                        Biên tập viên
+                    </span>
+
+                </div>
+
+            </div>
+        </header>
+        <div class="dashboard-range-picker">
+            <span>
+                Khoảng thời gian:
+            </span>
+            <select
+                id="rangeFilter"
+                onchange="changeRange()">
+                <option value="week">
+                    Tuần này
+                </option>
+                <option value="month">
+                    Tháng này
+                </option>
+
+                <option value="quarter">
+                    Quý này
+                </option>
+
+            </select>
+
+        </div>
+
+        <section class="stat-grid">
+
+            <div class="stat-card">
+
+                <span class="stat-card__label">
+                    Tổng bài viết
+                </span>
+                <span
+                    class="stat-card__value"
+                    id="totalArticles">
+                    0
+                </span>
+                <span class="stat-card__delta">
+                    Toàn hệ thống
+                </span>
+            </div>
+            <div class="stat-card stat-card--accent2">
+                <span class="stat-card__label">
+                    Bài đã đăng
+                </span>
+
+                <span
+                    class="stat-card__value"
+                    id="publishedCount">
+                    0
+                </span>
+
+                <span class="stat-card__delta">
+                    Đang hiển thị công khai
+                </span>
+            </div>
+            <div class="stat-card stat-card--accent3">
+
+                <span class="stat-card__label">
+                    Chờ duyệt
+                </span>
+                <span
+                    class="stat-card__value"
+                    id="pendingCount">
+                    0
+                </span>
+
+                <span class="stat-card__delta">
+                    Cần Editor xử lý
+                </span>
+            </div>
+            <div class="stat-card stat-card--accent4">
+
+                <span class="stat-card__label">
+                    Tổng lượt xem
+                </span>
+
+                <span
+                    class="stat-card__value"
+                    id="totalViews">
+                    0
+                </span>
+
+                <span class="stat-card__delta">
+                    Toàn hệ thống
+                </span>
+            </div>
+        </section>
+        <section class="chart-panel">
+
+            <div class="chart-panel__head">
+
+                <h2 class="chart-panel__title">
+                    Lượt xem theo thời gian
+                </h2>
+                <span
+                    class="chart-panel__value"
+                    id="chartPeriod">
+                    Tuần này
+            </div>
+            <div class="chart-container">
+
+                <svg
+                    id="viewsChart"
+                    width="100%"
+                    height="260"
+                    viewBox="0 0 900 260"
+                    preserveAspectRatio="none">
+
+                    <line
+                        x1="40"
+                        y1="220"
+                        x2="870"
+                        y2="220"
+                        stroke="#D8D3C8"
+                        stroke-width="1"/>
+
+                    <line
+                        x1="40"
+                        y1="160"
+                        x2="870"
+                        y2="160"
+                        stroke="#E4E0D8"
+                        stroke-width="1"/>
+                    <line
+                        x1="40"
+                        y1="100"
+                        x2="870"
+                        y2="100"
+                        stroke="#E4E0D8"
+                        stroke-width="1"/>
+                    <line
+                        x1="40"
+                        y1="40"
+                        x2="870"
+                        y2="40"
+                        stroke="#E4E0D8"
+                        stroke-width="1"/>
+                    <polyline
+                        id="chartLine"
+                        points=""
+                        fill="none"
+                        stroke="#8A6D3B"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+
+                    <g id="chartPoints"></g>
+
+                </svg>
+            </div>
+        </section>
+        <div class="panel-grid">
+            <section class="panel">
+
+                <div class="panel__head">
+
+                    <h2 class="panel__title">
+                        Bài viết theo chuyên mục
+                    </h2>
+
+                </div>
+
+                <div
+                    class="mini-bar-list"
+                    id="categoryStats">
+                </div>
+
+            </section>
+            <section class="panel">
+                <div class="panel__head">
+
+                    <h2 class="panel__title">
+                        Bài viết theo trạng thái
+                    </h2>
+
+                </div>
+                <div
+                    class="mini-bar-list"
+                    id="statusStats">
+                </div>
+            </section>
+        </div>
+        <div class="panel-grid">
+            <section class="panel">
+                <div class="panel__head">
+                    <h2 class="panel__title">
+                        Bài viết theo tác giả
+                    </h2>
+                </div>
+
+                <div
+                    class="mini-bar-list"
+                    id="authorStats">
+                </div>
+            </section>
+            <section class="panel">
+                <div class="panel__head">
+
+                    <h2 class="panel__title">
+                        Tag được sử dụng nhiều
+                    </h2>
+                </div>
+                <div
+                    class="mini-bar-list"
+                    id="tagStats">
+                </div>
+
+            </section>
+        </div>
+        <section class="panel-section">
+            <div class="panel">
+                <div class="panel__head">
+                    <h2 class="panel__title">
+                        Top 10 bài viết được xem nhiều nhất
+                    </h2>
+                    <a
+                        href="published-articles.html"
+                        class="panel__link">
+                        Xem tất cả
+                    </a>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">
+                                    #
+                                </th>
+                                <th>
+                                    Bài viết
+                                </th>
+
+                                <th>
+                                    Chuyên mục
+                                </th>
+
+                                <th>
+                                    Tác giả
+                                </th>
+
+                                <th style="text-align:right;">
+                                    Lượt xem
+                                </th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody id="topArticlesTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </section>
+
+        <section class="panel-section">
+
+            <div class="panel">
+
+                <div class="panel__head">
+
+                    <h2 class="panel__title">
+                        Hoạt động gần đây
+                    </h2>
+
+                </div>
+                <div
+                    class="activity-list"
+                    id="activityList">
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+</main>
+
+<script src="mock-data.js"></script>
+<script>
+
+const MACH_TIN_DATA = window.MACH_TIN_DATA || {};
+
+const editorArticles =
+    Array.isArray(MACH_TIN_DATA.articles)
+        ? MACH_TIN_DATA.articles
+        : [];
+
+function renderDashboard(){
+
+    const articles = editorArticles;
+    const published =
+        articles.filter(
+            item => item.status === "published"
+        );
+    const pending =
+        articles.filter(
+            item => item.status === "pending"
+        );
+    const totalViews =
+        articles.reduce(
+            (sum, item) =>
+                sum + Number(item.views || 0),
+            0
+        );
+    document.getElementById(
+        "totalArticles"
+    ).textContent = articles.length;
+    document.getElementById(
+        "publishedCount"
+    ).textContent = published.length;
+    document.getElementById(
+        "pendingCount"
+    ).textContent = pending.length;
+    document.getElementById(
+        "totalViews"
+    ).textContent =
+        totalViews.toLocaleString("vi-VN");
+    renderCategoryStats(articles);
+    renderStatusStats(articles);
+    renderAuthorStats(articles);
+    renderTagStats(articles);
+    renderTopArticles(published);
+    renderActivities();
+    drawChart();
+
+}
+
+function createBar(label, value, max){
+
+    const percent =
+        max === 0
+            ? 0
+            : Math.round(
+                value / max * 100
+            );
+    return `
+        <div class="mini-bar-row">
+
+            <div class="mini-bar-row__top">
+
+                <span class="mini-bar-row__label">
+                    ${label}
+                </span>
+
+                <span class="mini-bar-row__num">
+                    ${value}
+                </span>
+
+            </div>
+            <div class="mini-bar-track">
+
+                <div
+                    class="mini-bar-fill"
+                    style="width:${percent}%">
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+function renderCategoryStats(articles){
+
+    const map = {};
+    articles.forEach(article => {
+
+        const name =
+            article.category || "Khác";
+
+        map[name] =
+            (map[name] || 0) + 1;
+
+    });
+    const values =
+        Object.values(map);
+    const max =
+        Math.max(...values, 1);
+    document.getElementById(
+        "categoryStats"
+    ).innerHTML =
+        Object.entries(map)
+            .sort((a,b) => b[1] - a[1])
+            .map(([name,value]) =>
+                createBar(
+                    name,
+                    value,
+                    max
+                )
+            )
+            .join("");
+
+}
+function renderStatusStats(articles){
+
+    const labels = {
+        draft: "Nháp",
+        pending: "Chờ duyệt",
+        published: "Đã đăng",
+        rejected: "Từ chối"
+    };
+    const map = {};
+    articles.forEach(article => {
+
+        const status =
+            article.status || "draft";
+
+        map[status] =
+            (map[status] || 0) + 1;
+
+    });
+
+
+    const values =
+        Object.values(map);
+
+
+    const max =
+        Math.max(...values, 1);
+
+
+    document.getElementById(
+        "statusStats"
+    ).innerHTML =
+
+        Object.entries(map)
+
+            .map(([status,value]) =>
+                createBar(
+                    labels[status] || status,
+                    value,
+                    max
+                )
+            )
+
+            .join("");
+
+}
+
+function renderAuthorStats(articles){
+
+    const map = {};
+
+
+    articles.forEach(article => {
+
+        const author =
+            article.author || "Không rõ";
+
+        map[author] =
+            (map[author] || 0) + 1;
+
+    });
+
+
+    const max =
+        Math.max(
+            ...Object.values(map),
+            1
+        );
+
+
+    document.getElementById(
+        "authorStats"
+    ).innerHTML =
+
+        Object.entries(map)
+
+            .sort(
+                (a,b) => b[1] - a[1]
+            )
+
+            .slice(0,6)
+
+            .map(([name,value]) =>
+                createBar(
+                    name,
+                    value,
+                    max
+                )
+            )
+
+            .join("");
+
+}
+function renderTagStats(articles){
+
+    const map = {};
+    articles.forEach(article => {
+
+        const tags =
+            Array.isArray(article.tags)
+                ? article.tags
+                : [];
+
+
+        tags.forEach(tag => {
+
+            map[tag] =
+                (map[tag] || 0) + 1;
+
+        });
+
+    });
+    const max =
+        Math.max(
+            ...Object.values(map),
+            1
+        );
+    document.getElementById(
+        "tagStats"
+    ).innerHTML =
+
+        Object.entries(map)
+
+            .sort(
+                (a,b) => b[1] - a[1]
+            )
+
+            .slice(0,6)
+
+            .map(([name,value]) =>
+                createBar(
+                    "#" + name,
+                    value,
+                    max
+                )
+            )
+
+            .join("");
+
+}
+
+function renderTopArticles(articles){
+
+    const top =
+
+        [...articles]
+
+            .sort(
+                (a,b) =>
+                    Number(b.views || 0) -
+                    Number(a.views || 0)
+            )
+
+            .slice(0,10);
+    const table =
+        document.getElementById(
+            "topArticlesTable"
+        );
+
+
+    if(!top.length){
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="5"
+                    style="text-align:center;
+                           padding:30px;
+                           color:#6E6656;">
+                    Chưa có bài viết đã đăng.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+    table.innerHTML =
+
+        top.map((article,index) => {
+
+            return `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${index + 1}
+                        </strong>
+                    </td>
+
+
+                    <td>
+
+                        <a
+                            href="../public/article-detail.html?id=${article.id}"
+                            class="data-table__title"
+                            style="text-decoration:none;">
+
+                            ${article.title || "Không có tiêu đề"}
+
+                        </a>
+
+
+                        <div class="data-table__meta">
+
+                            ${article.date || ""}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        ${article.category || "Khác"}
+                    </td>
+
+
+                    <td>
+                        ${article.author || "Không rõ"}
+                    </td>
+
+
+                    <td class="data-table__num">
+
+                        ${Number(
+                            article.views || 0
+                        ).toLocaleString("vi-VN")}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+}
+
+function renderActivities(){
+    const activities =
+        Array.isArray(MACH_TIN_DATA.activities)
+            ? MACH_TIN_DATA.activities
+            : [];
+    const list =
+        document.getElementById(
+            "activityList"
+        );
+    if(!activities.length){
+        list.innerHTML = `
+            <div
+                class="activity-item no-border">
+
+                <span class="activity-dot"></span>
+
+                <div>
+
+                    <div class="activity-item__text">
+                        Chưa có hoạt động gần đây.
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+    }
+    list.innerHTML =
+
+        activities
+
+            .slice(0,6)
+
+            .map((item,index) => {
+
+                let dotClass = "";
+
+
+                if(item.type === "good"){
+
+                    dotClass =
+                        "activity-dot--good";
+
+                }
+
+
+                if(item.type === "warn"){
+
+                    dotClass =
+                        "activity-dot--warn";
+
+                }
+                return `
+
+                    <div
+                        class="activity-item
+                        ${index === Math.min(
+                            activities.length,
+                            6
+                        ) - 1
+                            ? "no-border"
+                            : ""}">
+
+                        <span
+                            class="activity-dot
+                            ${dotClass}">
+                        </span>
+
+
+                        <div>
+
+                            <div
+                                class="activity-item__text">
+
+                                ${item.text || "Hoạt động mới"}
+
+                            </div>
+
+
+                            <div
+                                class="activity-item__time">
+
+                                ${item.time || ""}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            })
+
+            .join("");
+
+}
+
+function drawChart(){
+
+    const values =
+        [42,58,51,73,68,91,84];
+    const max =
+        Math.max(...values);
+    const points =
+        values
+            .map((value,index) => {
+
+                const x =
+                    55 + index * 125;
+                const y =
+                    220 -
+                    (value / max) * 160;
+                return `${x},${y}`;
+
+            })
+
+            .join(" ");
+    document.getElementById(
+        "chartLine"
+    ).setAttribute(
+        "points",
+        points
+    );
+    document.getElementById(
+        "chartPoints"
+    ).innerHTML =
+
+        values
+
+            .map((value,index) => {
+
+                const x =
+                    55 + index * 125;
+
+
+                const y =
+                    220 -
+                    (value / max) * 160;
+
+
+                return `
+
+                    <circle
+                        cx="${x}"
+                        cy="${y}"
+                        r="4"
+                        fill="#8A6D3B">
+                    </circle>
+
+                `;
+
+            })
+
+            .join("");
+
+}
+
+function changeRange(){
+
+    const value =
+        document.getElementById(
+            "rangeFilter"
+        ).value;
+    const labels = {
+
+        week: "Tuần này",
+
+        month: "Tháng này",
+
+        quarter: "Quý này"
+
+    };
+    document.getElementById(
+        "chartPeriod"
+    ).textContent =
+        labels[value];
+    renderDashboard();
+
+}
+function logoutEditor(){
+
+    const confirmed =
+        confirm(
+            "Bạn có chắc muốn đăng xuất?"
+        );
+
+    if(confirmed){
+
+        window.location.href =
+            "../public/index.html";
+
+    }
+
+}
+const menuToggle =
+    document.getElementById(
+        "menuToggle"
+    );
+const editorSidebar =
+    document.getElementById(
+        "editorSidebar"
+    );
+if(menuToggle && editorSidebar){
+
+    menuToggle.addEventListener(
+        "click",
+        function(){
+
+            editorSidebar.classList.toggle(
+                "is-open"
+            );
+
+        }
+    );
+
+}
+renderDashboard();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Bài chờ duyệt - Mạch Tin Editor</title>
+
+    <link
+        rel="stylesheet"
+        href="editor.css"
+    >
+</head>
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside
+    class="admin-sidebar is-open"
+    id="editorSidebar"
+>
+
+    <div class="admin-sidebar__brand">
+
+        <div class="admin-sidebar__title">
+            MẠCH TIN
+        </div>
+
+        <div
+            style="
+                font-size:11px;
+                color:var(--admin-ink-soft);
+                margin-top:4px;       
+            "
+        >
+            Khu vực Editor
+        </div>
+
+    </div>
+
+
+    <nav class="admin-nav">
+
+        <a
+            href="dashboard.html"
+            class="admin-nav__link"
+        >
+            <span>Thống kê nội dung</span>
+        </a>
+
+
+        <a
+            href="pending-articles.html"
+            class="admin-nav__link is-active"
+        >
+            <span>Bài chờ duyệt</span>
+        </a>
+
+
+        <a
+            href="published-articles.html"
+            class="admin-nav__link"
+        >
+            <span>Bài viết đã đăng</span>
+        </a>
+
+
+        <a
+            href="comments.html"
+            class="admin-nav__link"
+        >
+            <span>Kiểm duyệt bình luận</span>
+        </a>
+
+
+        <a
+            href="categories-tags.html"
+            class="admin-nav__link"
+        >
+            <span>Danh mục &amp; tag</span>
+        </a>
+
+
+        <a
+            href="topics.html"
+            class="admin-nav__link"
+        >
+            <span>Phân công đề tài</span>
+        </a>
+
+    </nav>
+
+
+    <div class="admin-sidebar__foot">
+
+        <a
+            href="../public/index.html"
+            class="admin-nav__link"
+        >
+            <span>←</span>
+            <span>Về trang công khai</span>
+        </a>
+
+
+        <a
+            href="../public/index.html"
+            class="admin-nav__link admin-nav__link--logout"
+        >
+            <span>Đăng xuất</span>
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="admin-main">
+
+    <div class="admin-container">
+
+        <!-- TOPBAR -->
+
+        <header class="admin-topbar">
+
+            <div class="admin-topbar__left">
+
+                <button
+                    class="admin-menu-toggle"
+                    id="menuToggle"
+                    type="button"
+                    aria-label="Mở hoặc đóng menu"
+                >
+                    ☰
+                </button>
+
+
+                <div>
+
+                    <h1 class="admin-topbar__title">
+                        Bài chờ duyệt
+                    </h1>
+
+                    <p class="admin-topbar__subtitle">
+                        Kiểm tra và xử lý các bài viết đang chờ duyệt
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCOUNT -->
+
+            <div class="admin-topbar__account">
+
+                <div class="admin-avatar">
+                    ED
+                </div>
+
+                <div class="admin-account-info">
+
+                    <span class="admin-account-name">
+                        Editor
+                    </span>
+
+                    <span class="admin-account-role">
+                        Biên tập viên
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             TOOLBAR
+        ================================================= -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__search">
+
+                <span>⌕</span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Tìm theo tiêu đề bài viết..."
+                >
+
+            </div>
+
+
+            <select
+                class="toolbar__select"
+                id="authorFilter"
+            >
+                <option value="">
+                    Tất cả tác giả
+                </option>
+            </select>
+
+
+            <select
+                class="toolbar__select"
+                id="categoryFilter"
+            >
+                <option value="">
+                    Tất cả chuyên mục
+                </option>
+            </select>
+
+
+            <select
+                class="toolbar__select"
+                id="dateFilter"
+            >
+                <option value="">
+                    Tất cả thời gian
+                </option>
+
+                <option value="today">
+                    Hôm nay
+                </option>
+
+                <option value="week">
+                    7 ngày qua
+                </option>
+
+                <option value="month">
+                    30 ngày qua
+                </option>
+            </select>
+
+        </div>
+
+
+        <!-- =================================================
+             TABLE
+        ================================================= -->
+
+        <section class="panel">
+
+            <div class="panel__head">
+
+                <h2 class="panel__title">
+                    Danh sách bài chờ duyệt
+                </h2>
+
+                <span
+                    class="badge badge--pending"
+                    id="pendingBadge"
+                >
+                    0 bài
+                </span>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Bài viết
+                            </th>
+
+                            <th>
+                                Tác giả
+                            </th>
+
+                            <th>
+                                Chuyên mục
+                            </th>
+
+                            <th>
+                                Ngày gửi
+                            </th>
+
+                            <th>
+                                Trạng thái
+                            </th>
+
+                            <th>
+                                Thao tác
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="pendingTable"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- EMPTY -->
+
+            <div
+                class="empty-state"
+                id="emptyState"
+                style="display:none;"
+            >
+
+                <div class="empty-state__icon">
+                    ✓
+                </div>
+
+                <div class="empty-state__title">
+                    Không có bài viết chờ duyệt
+                </div>
+
+                <p class="empty-state__text">
+                    Tất cả bài viết hiện tại đã được xử lý.
+                </p>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     VIEW MODAL
+===================================================== -->
+
+<div
+    class="modal-overlay"
+    id="viewModal"
+>
+
+    <div
+        class="modal-box"
+        style="max-width:760px;"
+    >
+
+        <div class="modal-box__head">
+
+            <h3
+                class="modal-box__title"
+                id="viewTitle"
+            >
+                Xem bài viết
+            </h3>
+
+
+            <button
+                class="modal-box__close"
+                type="button"
+                onclick="closeModal('viewModal')"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+        <div class="modal-box__body">
+
+            <div
+                class="article-review"
+                style="padding:0;"
+            >
+
+                <div
+                    class="article-review__meta"
+                    id="viewMeta"
+                ></div>
+
+
+                <p
+                    class="article-review__sapo"
+                    id="viewSapo"
+                ></p>
+
+
+                <div
+                    class="article-review__content"
+                    id="viewContent"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-box__foot">
+
+            <button
+                class="btn-chip btn-chip--danger"
+                type="button"
+                onclick="openRejectFromView()"
+            >
+                Từ chối
+            </button>
+
+
+            <button
+                class="btn-chip btn-chip--primary"
+                type="button"
+                onclick="approveFromView()"
+            >
+                Duyệt &amp; đăng
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     REJECT MODAL
+===================================================== -->
+
+<div
+    class="modal-overlay"
+    id="rejectModal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-box__head">
+
+            <h3 class="modal-box__title">
+                Từ chối bài viết
+            </h3>
+
+
+            <button
+                class="modal-box__close"
+                type="button"
+                onclick="closeModal('rejectModal')"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+        <div class="modal-box__body">
+
+            <div class="modal-warning">
+
+                <div class="modal-warning__icon">
+                    !
+                </div>
+
+
+                <div>
+
+                    <p class="modal-warning__text">
+                        Bài viết sẽ chuyển sang trạng thái
+                        <strong>Từ chối</strong>.
+                    </p>
+
+                    <p class="modal-warning__text">
+                        Reporter sẽ nhận được lý do từ chối.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="form-field"
+                style="margin-top:16px;"
+            >
+
+                <label for="rejectReason">
+                    Lý do từ chối *
+                </label>
+
+
+                <textarea
+                    id="rejectReason"
+                    rows="4"
+                    placeholder="Nhập lý do từ chối bài viết..."
+                ></textarea>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-box__foot">
+
+            <button
+                class="btn-chip"
+                type="button"
+                onclick="closeModal('rejectModal')"
+            >
+                Hủy
+            </button>
+
+
+            <button
+                class="btn-chip btn-chip--danger"
+                type="button"
+                onclick="rejectArticle()"
+            >
+                Xác nhận từ chối
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MOCK DATA
+===================================================== -->
+
+<script src="mock-data.js"></script>
+
+
+<script>
+
+    /* =====================================================
+       KIỂM TRA DỮ LIỆU
+    ===================================================== */
+
+    const data = window.MACH_TIN_DATA;
+
+    let selectedArticleId = null;
+
+
+    if (!data || !Array.isArray(data.articles)) {
+
+        console.error(
+            "Không tìm thấy MACH_TIN_DATA. Hãy kiểm tra mock-data.js"
+        );
+
+    }
+
+
+    /* =====================================================
+       KHỞI TẠO BỘ LỌC
+    ===================================================== */
+
+    function initFilters() {
+
+        if (!data || !Array.isArray(data.articles)) {
+            return;
+        }
+
+
+        const pendingArticles =
+            data.articles.filter(
+                article => article.status === "pending"
+            );
+
+
+        const authors =
+            [
+                ...new Set(
+                    pendingArticles
+                        .map(article => article.author)
+                        .filter(Boolean)
+                )
+            ].sort();
+
+
+        const categories =
+            [
+                ...new Set(
+                    pendingArticles
+                        .map(article => article.category)
+                        .filter(Boolean)
+                )
+            ].sort();
+
+
+        const authorFilter =
+            document.getElementById("authorFilter");
+
+
+        const categoryFilter =
+            document.getElementById("categoryFilter");
+
+
+        authorFilter.innerHTML =
+            `
+                <option value="">
+                    Tất cả tác giả
+                </option>
+            ` +
+            authors
+                .map(
+                    author =>
+                        `
+                            <option value="${escapeHTML(author)}">
+                                ${escapeHTML(author)}
+                            </option>
+                        `
+                )
+                .join("");
+
+
+        categoryFilter.innerHTML =
+            `
+                <option value="">
+                    Tất cả chuyên mục
+                </option>
+            ` +
+            categories
+                .map(
+                    category =>
+                        `
+                            <option value="${escapeHTML(category)}">
+                                ${escapeHTML(category)}
+                            </option>
+                        `
+                )
+                .join("");
+
+    }
+
+
+    /* =====================================================
+       ESCAPE HTML
+       Tránh lỗi khi dữ liệu chứa ký tự đặc biệt
+    ===================================================== */
+
+    function escapeHTML(value) {
+
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* =====================================================
+       KIỂM TRA NGÀY
+    ===================================================== */
+
+    function isDateInRange(articleDate, filter) {
+
+        if (!filter || !articleDate) {
+            return true;
+        }
+
+
+        const date =
+            new Date(articleDate);
+
+
+        if (Number.isNaN(date.getTime())) {
+            return true;
+        }
+
+
+        const now = new Date();
+
+
+        const start =
+            new Date(now);
+
+
+        if (filter === "today") {
+
+            start.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+        }
+
+
+        if (filter === "week") {
+
+            start.setDate(
+                now.getDate() - 7
+            );
+
+        }
+
+
+        if (filter === "month") {
+
+            start.setDate(
+                now.getDate() - 30
+            );
+
+        }
+
+
+        return date >= start && date <= now;
+
+    }
+
+
+    /* =====================================================
+       HIỂN THỊ DANH SÁCH
+    ===================================================== */
+
+    function renderPending() {
+
+        if (!data || !Array.isArray(data.articles)) {
+            return;
+        }
+
+
+        const searchInput =
+            document.getElementById("searchInput");
+
+
+        const authorFilter =
+            document.getElementById("authorFilter");
+
+
+        const categoryFilter =
+            document.getElementById("categoryFilter");
+
+
+        const dateFilter =
+            document.getElementById("dateFilter");
+
+
+        const search =
+            searchInput.value
+                .toLowerCase()
+                .trim();
+
+
+        const author =
+            authorFilter.value;
+
+
+        const category =
+            categoryFilter.value;
+
+
+        const dateRange =
+            dateFilter.value;
+
+
+        let articles =
+            data.articles.filter(
+                article =>
+                    article.status === "pending"
+            );
+
+
+        /* TÌM KIẾM */
+
+        if (search) {
+
+            articles =
+                articles.filter(
+                    article =>
+                        String(
+                            article.title || ""
+                        )
+                            .toLowerCase()
+                            .includes(search)
+                );
+
+        }
+
+
+        /* TÁC GIẢ */
+
+        if (author) {
+
+            articles =
+                articles.filter(
+                    article =>
+                        article.author === author
+                );
+
+        }
+
+
+        /* CHUYÊN MỤC */
+
+        if (category) {
+
+            articles =
+                articles.filter(
+                    article =>
+                        article.category === category
+                );
+
+        }
+
+
+        /* THỜI GIAN */
+
+        if (dateRange) {
+
+            articles =
+                articles.filter(
+                    article =>
+                        isDateInRange(
+                            article.date,
+                            dateRange
+                        )
+                );
+
+        }
+
+
+        /* BADGE */
+
+        document.getElementById(
+            "pendingBadge"
+        ).textContent =
+            `${articles.length} bài`;
+
+
+        const table =
+            document.getElementById(
+                "pendingTable"
+            );
+
+
+        const empty =
+            document.getElementById(
+                "emptyState"
+            );
+
+
+        /* KHÔNG CÓ DỮ LIỆU */
+
+        if (!articles.length) {
+
+            table.innerHTML = "";
+
+            empty.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        empty.style.display =
+            "none";
+
+
+        /* RENDER TABLE */
+
+        table.innerHTML =
+            articles
+                .map(article => {
+
+                    const tags =
+                        Array.isArray(article.tags)
+                            ? article.tags
+                            : [];
+
+
+                    const image =
+                        article.image
+                            ? `
+                                <img
+                                    src="${escapeHTML(article.image)}"
+                                    alt=""
+                                    style="
+                                        width:100%;
+                                        height:100%;
+                                        object-fit:cover;
+                                        border-radius:7px;
+                                    "
+                                >
+                            `
+                            : "TIN";
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+
+                                <div class="article-cell">
+
+                                    <div class="article-thumb">
+                                        ${image}
+                                    </div>
+
+
+                                    <div class="article-info">
+
+                                        <div class="article-title">
+                                            ${escapeHTML(article.title)}
+                                        </div>
+
+
+                                        <div class="article-author">
+
+                                            ${tags
+                                                .map(
+                                                    tag =>
+                                                        "#" +
+                                                        escapeHTML(tag)
+                                                )
+                                                .join(" ")
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                ${escapeHTML(article.author || "Không rõ")}
+                            </td>
+
+
+                            <td>
+                                ${escapeHTML(article.category || "Khác")}
+                            </td>
+
+
+                            <td>
+                                ${escapeHTML(article.date || "")}
+                            </td>
+
+
+                            <td>
+
+                                <span class="badge badge--pending">
+                                    Chờ duyệt
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="row-actions">
+
+                                    <button
+                                        class="btn-chip"
+                                        type="button"
+                                        onclick="viewArticle(${Number(article.id)})"
+                                    >
+                                        Xem
+                                    </button>
+
+
+                                    <button
+                                        class="btn-chip btn-chip--success"
+                                        type="button"
+                                        onclick="approveArticle(${Number(article.id)})"
+                                    >
+                                        Duyệt &amp; đăng
+                                    </button>
+
+
+                                    <button
+                                        class="btn-chip btn-chip--danger"
+                                        type="button"
+                                        onclick="openReject(${Number(article.id)})"
+                                    >
+                                        Từ chối
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                })
+                .join("");
+
+    }
+
+
+    /* =====================================================
+       TÌM BÀI VIẾT
+    ===================================================== */
+
+    function findArticle(id) {
+
+        if (!data || !Array.isArray(data.articles)) {
+            return null;
+        }
+
+
+        return data.articles.find(
+            article =>
+                Number(article.id) === Number(id)
+        );
+
+    }
+
+
+    /* =====================================================
+       XEM BÀI VIẾT
+    ===================================================== */
+
+    function viewArticle(id) {
+
+        const article =
+            findArticle(id);
+
+
+        if (!article) {
+
+            alert(
+                "Không tìm thấy bài viết."
+            );
+
+            return;
+
+        }
+
+
+        selectedArticleId =
+            Number(id);
+
+
+        document.getElementById(
+            "viewTitle"
+        ).textContent =
+            article.title || "Xem bài viết";
+
+
+        document.getElementById(
+            "viewMeta"
+        ).innerHTML = `
+
+            <span>
+                Tác giả:
+                <strong>
+                    ${escapeHTML(article.author || "Không rõ")}
+                </strong>
+            </span>
+
+            <span>
+                ${escapeHTML(article.date || "")}
+            </span>
+
+            <span>
+                ${escapeHTML(article.category || "Khác")}
+            </span>
+
+            <span class="badge badge--pending">
+                Chờ duyệt
+            </span>
+
+        `;
+
+
+        document.getElementById(
+            "viewSapo"
+        ).textContent =
+            article.description || "";
+
+
+        document.getElementById(
+            "viewContent"
+        ).innerHTML =
+            article.content ||
+            `
+                <p>
+                    Nội dung bài viết đang được
+                    hiển thị trong bản demo.
+                </p>
+            `;
+
+
+        openModal("viewModal");
+
+    }
+
+
+    /* =====================================================
+       DUYỆT BÀI
+    ===================================================== */
+
+    function approveArticle(id) {
+
+        const article =
+            findArticle(id);
+
+
+        if (!article) {
+
+            alert(
+                "Không tìm thấy bài viết."
+            );
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                `Duyệt và đăng bài "${article.title}"?`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        article.status =
+            "published";
+
+
+        alert(
+            "Duyệt bài thành công."
+        );
+
+
+        closeModal("viewModal");
+
+
+        renderPending();
+
+    }
+
+
+    /* =====================================================
+       MỞ FORM TỪ CHỐI
+    ===================================================== */
+
+    function openReject(id) {
+
+        selectedArticleId =
+            Number(id);
+
+
+        document.getElementById(
+            "rejectReason"
+        ).value = "";
+
+
+        openModal("rejectModal");
+
+    }
+
+
+    function openRejectFromView() {
+
+        closeModal("viewModal");
+
+
+        if (selectedArticleId !== null) {
+
+            openReject(
+                selectedArticleId
+            );
+
+        }
+
+    }
+
+
+    function approveFromView() {
+
+        if (selectedArticleId !== null) {
+
+            approveArticle(
+                selectedArticleId
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       TỪ CHỐI BÀI
+    ===================================================== */
+
+    function rejectArticle() {
+
+        const reason =
+            document.getElementById(
+                "rejectReason"
+            ).value
+                .trim();
+
+
+        if (!reason) {
+
+            alert(
+                "Vui lòng nhập lý do từ chối."
+            );
+
+            return;
+
+        }
+
+
+        const article =
+            findArticle(
+                selectedArticleId
+            );
+
+
+        if (!article) {
+
+            alert(
+                "Không tìm thấy bài viết."
+            );
+
+            return;
+
+        }
+
+
+        article.status =
+            "rejected";
+
+
+        article.rejectReason =
+            reason;
+
+
+        closeModal(
+            "rejectModal"
+        );
+
+
+        alert(
+            "Đã từ chối bài viết và gửi lý do cho Reporter."
+        );
+
+
+        renderPending();
+
+    }
+
+
+    /* =====================================================
+       MODAL
+    ===================================================== */
+
+    function openModal(id) {
+
+        const modal =
+            document.getElementById(id);
+
+
+        if (modal) {
+
+            modal.classList.add(
+                "is-open"
+            );
+
+        }
+
+    }
+
+
+    function closeModal(id) {
+
+        const modal =
+            document.getElementById(id);
+
+
+        if (modal) {
+
+            modal.classList.remove(
+                "is-open"
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ĐÓNG MODAL KHI CLICK RA NGOÀI
+    ===================================================== */
+
+    document
+        .querySelectorAll(".modal-overlay")
+        .forEach(modal => {
+
+            modal.addEventListener(
+                "click",
+                function(event) {
+
+                    if (
+                        event.target === modal
+                    ) {
+
+                        modal.classList.remove(
+                            "is-open"
+                        );
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       MENU SIDEBAR
+    ===================================================== */
+
+    document
+        .getElementById("menuToggle")
+        .addEventListener(
+            "click",
+            function() {
+
+                document
+                    .getElementById(
+                        "editorSidebar"
+                    )
+                    .classList.toggle(
+                        "is-open"
+                    );
+
+            }
+        );
+
+
+    /* =====================================================
+       BỘ LỌC
+    ===================================================== */
+
+    document
+        .getElementById("searchInput")
+        .addEventListener(
+            "input",
+            renderPending
+        );
+
+
+    document
+        .getElementById("authorFilter")
+        .addEventListener(
+            "change",
+            renderPending
+        );
+
+
+    document
+        .getElementById("categoryFilter")
+        .addEventListener(
+            "change",
+            renderPending
+        );
+
+
+    document
+        .getElementById("dateFilter")
+        .addEventListener(
+            "change",
+            renderPending
+        );
+
+
+    /* =====================================================
+       ĐĂNG XUẤT
+    ===================================================== */
+
+    function logoutEditor() {
+
+        const confirmed =
+            confirm(
+                "Bạn có chắc muốn đăng xuất?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        window.location.href =
+            "../public/index.html";
+
+    }
+
+
+    /* =====================================================
+       ESC ĐỂ ĐÓNG MODAL
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Escape") {
+
+                closeModal("viewModal");
+
+                closeModal("rejectModal");
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       KHỞI CHẠY
+    ===================================================== */
+
+    initFilters();
+
+    renderPending();
+
+</script>
+
+</body>
+</html>

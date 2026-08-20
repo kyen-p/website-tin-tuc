@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân công đề tài - Mạch Tin Editor</title>
+    <link rel="stylesheet" href="editor.css">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="admin-sidebar is-open" id="editorSidebar">
+    <div class="admin-sidebar__brand">
+        <div class="admin-sidebar__title">MẠCH TIN</div>
+        <div style="font-size:11px;color:var(--admin-ink-soft);margin-top:4px">
+            Khu vực Editor
+        </div>
+    </div>
+
+    <nav class="admin-nav">
+        <a href="dashboard.html" class="admin-nav__link">Thống kê nội dung</a>
+        <a href="pending-articles.html" class="admin-nav__link">Bài chờ duyệt</a>
+        <a href="published-articles.html" class="admin-nav__link">Bài viết đã đăng</a>
+        <a href="comments.html" class="admin-nav__link">Kiểm duyệt bình luận</a>
+        <a href="categories-tags.html" class="admin-nav__link">Danh mục & tag</a>
+        <a href="topics.html" class="admin-nav__link is-active">Phân công đề tài</a>
+    </nav>
+
+    <div class="admin-sidebar__foot">
+        <a href="../public/index.html" class="admin-nav__link">← Về trang công khai</a>
+        <a href="../public/index.html" class="admin-nav__link admin-nav__link--logout">Đăng xuất</a>
+    </div>
+</aside>
+
+
+<!-- MAIN -->
+<main class="admin-main">
+<div class="admin-container">
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar">
+        <div class="admin-topbar__left">
+            <button class="admin-menu-toggle" id="menuToggle">☰</button>
+
+            <div>
+                <h1 class="admin-topbar__title">Phân công đề tài</h1>
+                <p class="admin-topbar__subtitle">
+                    Tạo đề tài và theo dõi tiến độ Reporter
+                </p>
+            </div>
+        </div>
+
+        <div class="admin-topbar__account">
+            <div class="admin-avatar">ED</div>
+            <div class="admin-account-info">
+                <span class="admin-account-name">Editor</span>
+                <span class="admin-account-role">Biên tập viên</span>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ACTION -->
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+        <div>
+            <h2 style="margin:0;font-size:18px">Quản lý đề tài</h2>
+            <p style="margin:5px 0 0;color:var(--admin-ink-soft);font-size:13px">
+                Theo dõi các đề tài đã phân công cho Reporter
+            </p>
+        </div>
+
+        <button class="btn-chip btn-chip--primary" onclick="openTopicModal()">
+            + Tạo đề tài
+        </button>
+    </div>
+
+
+    <!-- STATISTICS -->
+    <section class="stat-grid">
+        <div class="stat-card">
+            <span class="stat-card__label">Tổng đề tài</span>
+            <span class="stat-card__value" id="totalTopics">0</span>
+            <span class="stat-card__delta">Toàn bộ đề tài</span>
+        </div>
+
+        <div class="stat-card stat-card--accent4">
+            <span class="stat-card__label">Đã giao</span>
+            <span class="stat-card__value" id="assignedTopics">0</span>
+            <span class="stat-card__delta">Đang chờ Reporter</span>
+        </div>
+
+        <div class="stat-card stat-card--accent2">
+            <span class="stat-card__label">Đã nộp</span>
+            <span class="stat-card__value" id="submittedTopics">0</span>
+            <span class="stat-card__delta">Reporter đã hoàn thành</span>
+        </div>
+
+        <div class="stat-card stat-card--accent3">
+            <span class="stat-card__label">Quá hạn</span>
+            <span class="stat-card__value" id="overdueTopics">0</span>
+            <span class="stat-card__delta">Cần nhắc nhở</span>
+        </div>
+    </section>
+
+
+    <!-- LIST -->
+    <section class="panel">
+        <div class="panel__head" style="gap:12px;flex-wrap:wrap">
+            <h2 class="panel__title">Danh sách đề tài</h2>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <input
+                    id="topicSearch"
+                    type="text"
+                    placeholder="Tìm đề tài..."
+                    oninput="renderTopics()"
+                    style="min-width:220px;padding:9px 12px;border:1px solid var(--admin-line);border-radius:8px"
+                >
+
+                <select
+                    class="panel__filter"
+                    id="statusFilter"
+                    onchange="renderTopics()"
+                >
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="assigned">Đã giao</option>
+                    <option value="submitted">Đã nộp</option>
+                    <option value="overdue">Quá hạn</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="topicList"></div>
+    </section>
+
+</div>
+</main>
+
+
+<!-- CREATE MODAL -->
+<div class="modal-overlay" id="topicModal">
+    <div class="modal-box">
+
+        <div class="modal-box__head">
+            <h3 class="modal-box__title">Tạo đề tài mới</h3>
+            <button class="modal-box__close" onclick="closeTopicModal()">✕</button>
+        </div>
+
+        <div class="modal-box__body">
+
+            <div class="form-field">
+                <label>Tiêu đề *</label>
+                <input id="topicTitle" type="text" placeholder="Nhập tiêu đề đề tài">
+            </div>
+
+            <div class="form-field">
+                <label>Mô tả</label>
+                <textarea id="topicDescription" rows="4"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Chuyên mục *</label>
+                    <select id="topicCategory"></select>
+                </div>
+
+                <div class="form-field">
+                    <label>Tag</label>
+                    <input id="topicTags" type="text" placeholder="kinh tế, xã hội">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Deadline *</label>
+                    <input id="topicDeadline" type="date">
+                </div>
+
+                <div class="form-field">
+                    <label>Reporter *</label>
+                    <select id="topicReporter"></select>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal-box__foot">
+            <button class="btn-chip" onclick="closeTopicModal()">Hủy</button>
+            <button class="btn-chip btn-chip--primary" onclick="saveTopic()">
+                Gửi phân công
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-box">
+
+        <div class="modal-box__head">
+            <h3 class="modal-box__title">Chi tiết đề tài</h3>
+            <button class="modal-box__close" onclick="closeDetailModal()">✕</button>
+        </div>
+
+        <div class="modal-box__body" id="topicDetail"></div>
+
+        <div class="modal-box__foot">
+            <button class="btn-chip" onclick="closeDetailModal()">Đóng</button>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="mock-data.js"></script>
+
+<script>
+const data = window.MACH_TIN_DATA;
+
+
+/* UTILS */
+function esc(v){
+    return String(v ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function date(v){
+    if(!v) return "Chưa xác định";
+    const d = new Date(v + "T00:00:00");
+    return isNaN(d) ? v : d.toLocaleDateString("vi-VN");
+}
+
+function status(topic){
+    if(topic.status === "submitted") return "submitted";
+
+    if(
+        topic.deadline &&
+        new Date(topic.deadline + "T00:00:00") <
+        new Date(new Date().setHours(0,0,0,0))
+    ){
+        return "overdue";
+    }
+
+    return "assigned";
+}
+
+function statusText(s){
+    return s === "submitted"
+        ? "Đã nộp"
+        : s === "overdue"
+        ? "Quá hạn"
+        : "Đã giao";
+}
+
+function statusClass(s){
+    return s === "submitted"
+        ? "badge--submitted"
+        : s === "overdue"
+        ? "badge--overdue"
+        : "badge--assigned";
+}
+
+
+/* OPTIONS */
+function loadOptions(){
+
+    const categories = data.categories || [];
+    document.getElementById("topicCategory").innerHTML =
+        categories.length
+        ? categories.map(c =>
+            `<option value="${esc(c.name)}">${esc(c.name)}</option>`
+          ).join("")
+        : `<option value="">Chưa có chuyên mục</option>`;
+
+    const reporters = (data.users || [])
+        .filter(u => u.role === "reporter");
+
+    document.getElementById("topicReporter").innerHTML =
+        reporters.length
+        ? reporters.map(u =>
+            `<option value="${esc(u.name)}">${esc(u.name)}</option>`
+          ).join("")
+        : `<option value="">Chưa có Reporter</option>`;
+}
+
+
+/* STATISTICS */
+function renderStatistics(){
+
+    const topics = data.topics || [];
+
+    const count = s =>
+        topics.filter(t => status(t) === s).length;
+
+    document.getElementById("totalTopics").textContent = topics.length;
+    document.getElementById("assignedTopics").textContent = count("assigned");
+    document.getElementById("submittedTopics").textContent = count("submitted");
+    document.getElementById("overdueTopics").textContent = count("overdue");
+}
+
+
+/* RENDER */
+function renderTopics(){
+
+    const search = document
+        .getElementById("topicSearch")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const filter =
+        document.getElementById("statusFilter").value;
+
+    const topics = (data.topics || []).filter(t => {
+
+        const s = status(t);
+
+        const text = [
+            t.title,
+            t.description,
+            t.category,
+            t.reporter,
+            ...(t.tags || [])
+        ].join(" ").toLowerCase();
+
+        return (!filter || s === filter) &&
+               (!search || text.includes(search));
+    });
+
+    const list = document.getElementById("topicList");
+
+    if(!topics.length){
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state__icon">✓</div>
+                <div class="empty-state__title">
+                    Không tìm thấy đề tài
+                </div>
+            </div>
+        `;
+        renderStatistics();
+        return;
+    }
+
+    list.innerHTML = topics.map(renderTopic).join("");
+    renderStatistics();
+}
+
+
+/* TOPIC CARD */
+function renderTopic(t){
+
+    const s = status(t);
+
+    const tags = (t.tags || [])
+        .map(tag => `<span
+            style="display:inline-block;padding:3px 8px;background:#f5f5f5;border-radius:20px;margin:3px;font-size:12px">
+            #${esc(tag)}
+        </span>`)
+        .join("");
+
+    return `
+        <div class="topic-card">
+
+            <div class="topic-card__head">
+                <div>
+                    <h3 class="topic-card__title">
+                        ${esc(t.title)}
+                    </h3>
+
+                    <p class="topic-card__description">
+                        ${esc(t.description || "Chưa có mô tả.")}
+                    </p>
+                </div>
+
+                <span class="badge ${statusClass(s)}">
+                    ${statusText(s)}
+                </span>
+            </div>
+
+            <div class="topic-meta">
+                <span>Chuyên mục: <strong>${esc(t.category)}</strong></span>
+                <span>Reporter: <strong>${esc(t.reporter)}</strong></span>
+                <span>Deadline: <strong>${date(t.deadline)}</strong></span>
+            </div>
+
+            ${tags ? `<div style="margin-top:10px">${tags}</div>` : ""}
+
+            <div class="row-actions" style="margin-top:14px;justify-content:flex-end">
+
+                <button
+                    class="btn-chip"
+                    onclick="viewTopic(${t.id})">
+                    Xem chi tiết
+                </button>
+
+                ${
+                    s !== "submitted"
+                    ? `<button
+                        class="btn-chip btn-chip--danger"
+                        onclick="cancelTopic(${t.id})">
+                        Hủy phân công
+                    </button>`
+                    : ""
+                }
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* CREATE */
+function openTopicModal(){
+
+    document.getElementById("topicTitle").value = "";
+    document.getElementById("topicDescription").value = "";
+    document.getElementById("topicTags").value = "";
+    document.getElementById("topicDeadline").value = "";
+
+    document.getElementById("topicDeadline").min =
+        new Date().toISOString().split("T")[0];
+
+    document.getElementById("topicModal")
+        .classList.add("is-open");
+}
+
+function closeTopicModal(){
+    document.getElementById("topicModal")
+        .classList.remove("is-open");
+}
+
+
+/* SAVE */
+function saveTopic(){
+
+    const title = document.getElementById("topicTitle").value.trim();
+    const description = document.getElementById("topicDescription").value.trim();
+    const category = document.getElementById("topicCategory").value;
+    const deadline = document.getElementById("topicDeadline").value;
+    const reporter = document.getElementById("topicReporter").value;
+
+    const tags = [
+        ...new Set(
+            document.getElementById("topicTags").value
+                .split(",")
+                .map(x => x.trim().toLowerCase())
+                .filter(Boolean)
+        )
+    ];
+
+    if(!title || !category || !deadline || !reporter){
+        alert("Vui lòng nhập đầy đủ thông tin bắt buộc.");
+        return;
+    }
+
+    if(new Date(deadline + "T00:00:00") < new Date(new Date().setHours(0,0,0,0))){
+        alert("Deadline không được ở trong quá khứ.");
+        return;
+    }
+
+    const duplicate = (data.topics || []).some(t =>
+        t.title.trim().toLowerCase() === title.toLowerCase() &&
+        status(t) !== "submitted"
+    );
+
+    if(duplicate){
+        alert("Đề tài này đã tồn tại.");
+        return;
+    }
+
+    data.topics.push({
+        id: Date.now(),
+        title,
+        description,
+        category,
+        tags,
+        deadline,
+        reporter,
+        status: "assigned"
+    });
+
+    closeTopicModal();
+    renderTopics();
+
+    alert(`Đã giao đề tài cho ${reporter}.`);
+}
+
+
+/* DETAIL */
+function viewTopic(id){
+
+    const t = data.topics.find(x => Number(x.id) === Number(id));
+    if(!t) return;
+
+    const s = status(t);
+
+    document.getElementById("topicDetail").innerHTML = `
+        <h3 style="margin:0 0 12px;font-size:20px">
+            ${esc(t.title)}
+        </h3>
+
+        <p>
+            <span class="badge ${statusClass(s)}">
+                ${statusText(s)}
+            </span>
+        </p>
+
+        <div style="display:grid;gap:12px">
+            <div>
+                <strong>Mô tả:</strong>
+                <p>${esc(t.description || "Chưa có mô tả.")}</p>
+            </div>
+
+            <div>
+                <strong>Chuyên mục:</strong>
+                ${esc(t.category)}
+            </div>
+
+            <div>
+                <strong>Reporter:</strong>
+                ${esc(t.reporter)}
+            </div>
+
+            <div>
+                <strong>Deadline:</strong>
+                ${date(t.deadline)}
+            </div>
+
+            <div>
+                <strong>Tag:</strong>
+                ${(t.tags || []).map(x => "#" + esc(x)).join(" ") || "Không có tag"}
+            </div>
+        </div>
+    `;
+
+    document.getElementById("detailModal")
+        .classList.add("is-open");
+}
+
+function closeDetailModal(){
+    document.getElementById("detailModal")
+        .classList.remove("is-open");
+}
+/* CANCEL */
+function cancelTopic(id){
+
+    const index = data.topics.findIndex(
+        t => Number(t.id) === Number(id)
+    );
+
+    if(index === -1) return;
+
+    const topic = data.topics[index];
+
+    if(status(topic) === "submitted"){
+        alert("Không thể hủy đề tài đã được Reporter nộp.");
+        return;
+    }
+
+    if(!confirm(`Bạn có chắc muốn hủy đề tài "${topic.title}"?`)){
+        return;
+    }
+
+    data.topics.splice(index,1);
+    renderTopics();
+
+    alert("Đã hủy phân công đề tài.");
+}
+/* SIDEBAR */
+document.getElementById("menuToggle").onclick = () => {
+    document.getElementById("editorSidebar")
+        .classList.toggle("is-open");
+};
+/* CLOSE MODAL */
+document.getElementById("topicModal").onclick = e => {
+    if(e.target.id === "topicModal") closeTopicModal();
+};
+document.getElementById("detailModal").onclick = e => {
+    if(e.target.id === "detailModal") closeDetailModal();
+};
+
+loadOptions();
+renderTopics();
+
+</script>
+</body>
+</html>

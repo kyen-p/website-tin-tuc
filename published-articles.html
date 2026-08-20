@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài viết đã đăng - Mạch Tin Editor</title>
+    <link rel="stylesheet" href="editor.css">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="admin-sidebar is-open" id="editorSidebar">
+    <div class="admin-sidebar__brand">
+        <div class="admin-sidebar__title">MẠCH TIN</div>
+        <div style="font-size:11px;color:var(--admin-ink-soft);margin-top:4px;">
+            Khu vực Editor
+        </div>
+    </div>
+
+    <nav class="admin-nav">
+        <a href="dashboard.html" class="admin-nav__link">
+            <span>Thống kê nội dung</span>
+        </a>
+
+        <a href="pending-articles.html" class="admin-nav__link">
+            <span>Bài chờ duyệt</span>
+        </a>
+
+        <a href="published-articles.html" class="admin-nav__link is-active">
+            <span>Bài viết đã đăng</span>
+        </a>
+
+        <a href="comments.html" class="admin-nav__link">
+            <span>Kiểm duyệt bình luận</span>
+        </a>
+
+        <a href="categories-tags.html" class="admin-nav__link">
+            <span>Danh mục &amp; tag</span>
+        </a>
+
+        <a href="topics.html" class="admin-nav__link">
+            <span>Phân công đề tài</span>
+        </a>
+    </nav>
+
+    <div class="admin-sidebar__foot">
+        <a href="../public/index.html" class="admin-nav__link">
+            <span>←</span>
+            <span>Về trang công khai</span>
+        </a>
+
+        <a href="../public/index.html" class="admin-nav__link admin-nav__link--logout">
+            <span>Đăng xuất</span>
+        </a>
+    </div>
+</aside>
+
+
+<!-- MAIN -->
+<main class="admin-main">
+    <div class="admin-container">
+
+        <!-- TOPBAR -->
+        <header class="admin-topbar">
+            <div class="admin-topbar__left">
+                <button
+                    class="admin-menu-toggle"
+                    id="menuToggle"
+                    type="button"
+                    aria-label="Mở hoặc đóng menu">
+                    ☰
+                </button>
+
+                <div>
+                    <h1 class="admin-topbar__title">Bài viết đã đăng</h1>
+                    <p class="admin-topbar__subtitle">
+                        Quản lý các bài viết đang hiển thị công khai
+                    </p>
+                </div>
+            </div>
+
+            <div class="admin-topbar__account">
+                <div class="admin-avatar">ED</div>
+                <div class="admin-account-info">
+                    <span class="admin-account-name">Editor</span>
+                    <span class="admin-account-role">Biên tập viên</span>
+                </div>
+            </div>
+        </header>
+
+
+        <!-- TOOLBAR -->
+        <div class="toolbar">
+            <div class="toolbar__search">
+                <span>⌕</span>
+                <input
+                    id="searchInput"
+                    type="text"
+                    placeholder="Tìm bài viết..."
+                    oninput="renderArticles()">
+            </div>
+
+            <select
+                class="toolbar__select"
+                id="categoryFilter"
+                onchange="renderArticles()">
+                <option value="">Tất cả chuyên mục</option>
+            </select>
+        </div>
+
+
+        <!-- TABLE -->
+        <section class="panel">
+            <div class="panel__head">
+                <h2 class="panel__title">Bài viết đã đăng</h2>
+                <span class="badge badge--published" id="articleCount">0 bài</span>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Bài viết</th>
+                            <th>Chuyên mục</th>
+                            <th>Tác giả</th>
+                            <th>Ngày đăng</th>
+                            <th>Lượt xem</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articleTable"></tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <div class="empty-state__icon">✓</div>
+                <div class="empty-state__title">Không tìm thấy bài viết</div>
+                <p class="empty-state__text">
+                    Không có bài viết nào phù hợp với điều kiện tìm kiếm.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box" style="max-width:760px;">
+
+        <div class="modal-box__head">
+            <h3 class="modal-box__title">Sửa bài viết đã đăng</h3>
+
+            <button
+                class="modal-box__close"
+                type="button"
+                onclick="closeModal()">
+                ✕
+            </button>
+        </div>
+
+        <div class="modal-box__body">
+
+            <div class="form-field">
+                <label for="editTitle">Tiêu đề *</label>
+                <input id="editTitle" type="text">
+            </div>
+
+            <div class="form-field">
+                <label for="editDescription">Mô tả ngắn</label>
+                <textarea id="editDescription" rows="3"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="editCategory">Chuyên mục *</label>
+                    <select id="editCategory"></select>
+                </div>
+
+                <div class="form-field">
+                    <label for="editTags">Tag</label>
+                    <input
+                        id="editTags"
+                        type="text"
+                        placeholder="Nhập tag, cách nhau bằng dấu phẩy">
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="editContent">Nội dung</label>
+                <textarea id="editContent" rows="12"></textarea>
+            </div>
+
+        </div>
+
+        <div class="modal-box__foot">
+            <button class="btn-chip" type="button" onclick="closeModal()">
+                Hủy
+            </button>
+
+            <button
+                class="btn-chip btn-chip--primary"
+                type="button"
+                onclick="saveArticle()">
+                Lưu cập nhật
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- JAVASCRIPT -->
+<script src="mock-data.js"></script>
+
+<script>
+const data = window.MACH_TIN_DATA || { articles: [], categories: [] };
+let editingId = null;
+
+const $ = id => document.getElementById(id);
+
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function findArticle(id) {
+    return data.articles.find(a => Number(a.id) === Number(id));
+}
+
+
+/* KHỞI TẠO */
+function init() {
+    const categories = Array.isArray(data.categories) ? data.categories : [];
+
+    const getCategoryName = category =>
+        typeof category === "string" ? category : category.name || "";
+
+    $("categoryFilter").innerHTML =
+        `<option value="">Tất cả chuyên mục</option>` +
+        categories.map(category => {
+            const name = getCategoryName(category);
+            return `<option value="${escapeHTML(name)}">${escapeHTML(name)}</option>`;
+        }).join("");
+
+    $("editCategory").innerHTML = categories.map(category => {
+        const name = getCategoryName(category);
+        return `<option value="${escapeHTML(name)}">${escapeHTML(name)}</option>`;
+    }).join("");
+
+    renderArticles();
+}
+
+
+/* HIỂN THỊ DANH SÁCH */
+function renderArticles() {
+    const search = $("searchInput").value.toLowerCase().trim();
+    const category = $("categoryFilter").value;
+
+    let articles = Array.isArray(data.articles)
+        ? data.articles.filter(a => a.status === "published")
+        : [];
+
+    if (search) {
+        articles = articles.filter(a =>
+            String(a.title || "").toLowerCase().includes(search) ||
+            String(a.description || "").toLowerCase().includes(search)
+        );
+    }
+
+    if (category) {
+        articles = articles.filter(a => a.category === category);
+    }
+
+    $("articleCount").textContent = `${articles.length} bài`;
+
+    if (!articles.length) {
+        $("articleTable").innerHTML = "";
+        $("emptyState").style.display = "block";
+        return;
+    }
+
+    $("emptyState").style.display = "none";
+
+    $("articleTable").innerHTML = articles.map(article => {
+        const title = escapeHTML(article.title || "Chưa có tiêu đề");
+        const description = escapeHTML(article.description || "");
+        const category = escapeHTML(article.category || "Khác");
+        const author = escapeHTML(article.author || "Không rõ");
+        const date = escapeHTML(article.date || "");
+        const views = Number(article.views || 0).toLocaleString("vi-VN");
+
+        const image = article.image
+            ? `<img src="${escapeHTML(article.image)}" alt=""
+                style="width:100%;height:100%;object-fit:cover;border-radius:7px;">`
+            : "TIN";
+
+        return `
+            <tr>
+                <td>
+                    <div class="article-cell">
+                        <div class="article-thumb">${image}</div>
+                        <div class="article-info">
+                            <div class="article-title">${title}</div>
+                            <div class="article-author">${description}</div>
+                        </div>
+                    </div>
+                </td>
+
+                <td>${category}</td>
+                <td>${author}</td>
+                <td>${date}</td>
+                <td>${views}</td>
+
+                <td>
+                    <div class="row-actions">
+                        <a
+                            href="../public/article-detail.html?id=${encodeURIComponent(article.id)}"
+                            class="btn-chip"
+                            style="text-decoration:none;">
+                            Xem
+                        </a>
+
+                        <button
+                            type="button"
+                            class="btn-chip btn-chip--primary"
+                            onclick="openEdit(${Number(article.id)})">
+                            Sửa
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-chip btn-chip--danger"
+                            onclick="deleteArticle(${Number(article.id)})">
+                            Xóa
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+
+/* MỞ FORM SỬA */
+function openEdit(id) {
+    const article = findArticle(id);
+
+    if (!article) {
+        alert("Không tìm thấy bài viết.");
+        return;
+    }
+
+    editingId = Number(id);
+
+    $("editTitle").value = article.title || "";
+    $("editDescription").value = article.description || "";
+    $("editCategory").value = article.category || "";
+    $("editTags").value = Array.isArray(article.tags)
+        ? article.tags.join(", ")
+        : "";
+    $("editContent").value = article.content || "";
+
+    $("editModal").classList.add("is-open");
+}
+
+
+/* LƯU BÀI */
+function saveArticle() {
+    const article = findArticle(editingId);
+
+    if (!article) {
+        alert("Không tìm thấy bài viết.");
+        return;
+    }
+
+    const title = $("editTitle").value.trim();
+    const category = $("editCategory").value;
+
+    if (!title || !category) {
+        alert("Vui lòng nhập đầy đủ tiêu đề và chuyên mục.");
+        return;
+    }
+
+    article.title = title;
+    article.description = $("editDescription").value.trim();
+    article.category = category;
+
+    article.tags = $("editTags").value
+        .split(",")
+        .map(tag => tag.trim())
+        .filter(Boolean);
+
+    article.content = $("editContent").value.trim();
+
+    closeModal();
+    renderArticles();
+
+    alert("Cập nhật bài viết thành công.");
+}
+
+function deleteArticle(id) {
+    const article = findArticle(id);
+
+    if (!article) {
+        alert("Không tìm thấy bài viết.");
+        return;
+    }
+
+    const message = `Bạn có chắc muốn xóa vĩnh viễn bài viết này?
+
+Bài viết: ${article.title}
+
+Việc xóa sẽ ảnh hưởng đến:
+- Bình luận
+- Báo cáo
+- Yêu thích
+- Lịch sử đọc
+
+Hành động này không thể hoàn tác.`;
+
+    if (!confirm(message)) return;
+
+    const index = data.articles.findIndex(
+        item => Number(item.id) === Number(id)
+    );
+
+    if (index !== -1) {
+        data.articles.splice(index, 1);
+    }
+
+    renderArticles();
+    alert("Đã xóa vĩnh viễn bài viết.");
+}
+
+function closeModal() {
+    $("editModal").classList.remove("is-open");
+    editingId = null;
+}
+
+function logoutEditor() {
+    if (!confirm("Bạn có chắc muốn đăng xuất khỏi khu vực Editor?")) return;
+    window.location.href = "../public/index.html";
+}
+
+$("editModal").addEventListener("click", event => {
+    if (event.target === $("editModal")) closeModal();
+});
+
+$("menuToggle").addEventListener("click", () => {
+    $("editorSidebar").classList.toggle("is-open");
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeModal();
+});
+
+init();
+</script>
+</body>
+</html>
