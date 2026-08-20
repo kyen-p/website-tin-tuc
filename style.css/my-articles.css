@@ -185,13 +185,6 @@ select:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
-
-/*
-   AVATAR
-   Kích thước chuẩn giống file Soạn bài:
-   60px x 60px
-*/
-
 .reporter-avatar {
   width: 60px;
   height: 60px;
@@ -217,11 +210,6 @@ select:focus-visible {
   font-weight: 600;
 }
 
-
-/*
-   Ảnh avatar lấy từ MOCK_DATA
-*/
-
 .reporter-avatar-image {
   width: 100%;
   height: 100%;
@@ -233,11 +221,6 @@ select:focus-visible {
 
   border-radius: 50%;
 }
-
-
-/*
-   Chữ viết tắt khi không có avatar
-*/
 
 .reporter-avatar span {
   width: 100%;
@@ -628,11 +611,6 @@ select:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
-
-/* =========================================================
-   IMAGE
-   ========================================================= */
-
 .article-image {
   width: 170px;
   height: 120px;
@@ -848,8 +826,6 @@ select:focus-visible {
   font-size: 12.5px;
   line-height: 1.5;
 }
-
-
 /* =========================================================
    ACTION
    ========================================================= */
@@ -860,7 +836,6 @@ select:focus-visible {
   align-items: center;
   justify-content: flex-end;
 }
-
 
 .card-action {
   display: inline-flex;
@@ -882,8 +857,6 @@ select:focus-visible {
 
   background: transparent;
 }
-
-
 .card-action:hover {
   background: var(--ink);
   color: var(--paper);
@@ -903,8 +876,6 @@ select:focus-visible {
   background: transparent;
   color: var(--muted);
 }
-
-
 /* =========================================================
    EMPTY
    ========================================================= */
@@ -926,8 +897,6 @@ select:focus-visible {
 
   font-size: 14px;
 }
-
-
 /* =========================================================
    RESPONSIVE
    ========================================================= */
@@ -972,7 +941,6 @@ select:focus-visible {
 
 }
 
-
 @media (max-width: 760px) {
 
   .reporter-page {
@@ -987,8 +955,6 @@ select:focus-visible {
     border-right: none;
     border-bottom: 1px solid var(--line);
   }
-
-
   .reporter-brand {
     height: 78px;
   }
@@ -1017,7 +983,6 @@ select:focus-visible {
 
     flex-direction: column;
   }
-
 
   .article-stats {
     grid-template-columns:

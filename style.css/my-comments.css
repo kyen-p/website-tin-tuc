@@ -1,8 +1,3 @@
-/* =========================================================
-   MY-COMMENTS.CSS — MẠCH TIN
-   Đã sửa font chữ tiêu đề "Bình luận của tôi" giống favorites.css
-   ========================================================= */
-
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,480;0,9..144,600;1,9..144,420&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 :root {
@@ -323,9 +318,6 @@ select:focus-visible {
   margin: 0 auto;
 }
 
-/* =========================================================
-   HEADING — ĐÃ SỬA MẠNH (chống ghi đè từ style.css)
-   ========================================================= */
 h1.comments-heading,
 .comments-main h1.comments-heading,
 .comments-main-inner h1.comments-heading {
