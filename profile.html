@@ -1,987 +1,619 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Quản lý tài khoản - Mạch Tin</title>
 
-    <link rel="stylesheet" href="/style.css/profile.css">
-</head>
+    <link rel="stylesheet" href="/style.css/profile.css" />
+  </head>
 
-<body>
-
-<div class="profile-page">
-
-    <!-- ===================================================
+  <body>
+    <div class="profile-page">
+      <!-- ===================================================
          SIDEBAR
     =================================================== -->
 
-    <aside class="history-sidebar">
-
+      <aside class="history-sidebar">
         <!-- LOGO -->
         <div class="history-brand">
+          <a href="index.html" class="brand-link">
+            <svg
+              class="pulse-mark"
+              viewBox="0 0 40 32"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
+                stroke="currentColor"
+                stroke-width="2.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
 
-            <a href="index.html" class="brand-link">
+            <span class="brand-word">
+              <span class="brand-mach"> MẠCH </span>
 
-                <svg
-                    class="pulse-mark"
-                    viewBox="0 0 40 32"
-                    fill="none"
-                    aria-hidden="true">
-
-                    <path
-                        d="M2 16 H10 L13.5 7 L19 25 L23 16 H38"
-                        stroke="currentColor"
-                        stroke-width="2.7"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-                    </path>
-
-                </svg>
-
-                <span class="brand-word">
-
-                    <span class="brand-mach">
-                        MẠCH
-                    </span>
-
-                    <span class="brand-tin">
-                        TIN
-                    </span>
-
-                </span>
-
-            </a>
-
+              <span class="brand-tin"> TIN </span>
+            </span>
+          </a>
         </div>
-
 
         <!-- USER -->
         <div class="history-user">
+          <div class="history-avatar">
+            <img id="sidebarAvatar" src="" alt="Avatar" />
+          </div>
 
-            <div class="history-avatar">
+          <p class="history-user-name" id="sidebarName">Đang tải...</p>
 
-                <img
-                    id="sidebarAvatar"
-                    src=""
-                    alt="Avatar">
-
-            </div>
-
-            <p
-                class="history-user-name"
-                id="sidebarName">
-                Đang tải...
-            </p>
-
-            <div
-                class="history-user-role"
-                id="sidebarRole">
-                Độc giả
-            </div>
-
+          <div class="history-user-role" id="sidebarRole">Độc giả</div>
         </div>
-
 
         <!-- MENU -->
         <nav class="history-menu">
+          <a
+            href="#"
+            class="history-menu-item active"
+            onclick="
+              showProfile();
+              setActiveMenu(this);
+              return false;
+            "
+          >
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="12"
+                cy="8"
+                r="3.2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></circle>
 
-            <a
-                href="#"
-                class="history-menu-item active"
-                onclick="showProfile(); setActiveMenu(this); return false;">
+              <path
+                d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
+            </svg>
 
-                <svg
-                    class="history-menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none">
+            <span class="history-menu-text"> Thông tin tài khoản </span>
+          </a>
 
-                    <circle
-                        cx="12"
-                        cy="8"
-                        r="3.2"
-                        stroke="currentColor"
-                        stroke-width="1.7">
-                    </circle>
+          <a
+            href="#"
+            class="history-menu-item"
+            onclick="
+              showPassword();
+              setActiveMenu(this);
+              return false;
+            "
+          >
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="5"
+                y="10"
+                width="14"
+                height="10"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></rect>
 
-                    <path
-                        d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round">
-                    </path>
+              <path
+                d="M8 10V7a4 4 0 018 0v3"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
 
-                </svg>
+              <circle cx="12" cy="15" r="1" fill="currentColor"></circle>
+            </svg>
 
-                <span class="history-menu-text">
-                    Thông tin tài khoản
-                </span>
+            <span class="history-menu-text"> Đổi mật khẩu </span>
+          </a>
 
-            </a>
+          <a href="favorites.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
 
+            <span class="history-menu-text"> Bài viết yêu thích </span>
+          </a>
 
-            <a
-                href="#"
-                class="history-menu-item"
-                onclick="showPassword(); setActiveMenu(this); return false;">
+          <a href="history.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></path>
 
-                <svg
-                    class="history-menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none">
+              <path
+                d="M5 5.5v11M9 7h7M9 11h7"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
+            </svg>
 
-                    <rect
-                        x="5"
-                        y="10"
-                        width="14"
-                        height="10"
-                        rx="2"
-                        stroke="currentColor"
-                        stroke-width="1.7">
-                    </rect>
+            <span class="history-menu-text"> Lịch sử đọc </span>
+          </a>
 
-                    <path
-                        d="M8 10V7a4 4 0 018 0v3"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round">
-                    </path>
+          <a href="my-comments.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 0120 11.5z"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></path>
+            </svg>
 
-                    <circle
-                        cx="12"
-                        cy="15"
-                        r="1"
-                        fill="currentColor">
-                    </circle>
+            <span class="history-menu-text"> Bình luận của tôi </span>
+          </a>
 
-                </svg>
+          <a href="notifications.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></path>
 
-                <span class="history-menu-text">
-                    Đổi mật khẩu
-                </span>
+              <path
+                d="M10 21h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+              ></path>
+            </svg>
 
-            </a>
-
-
-            <a
-                href="favorites.html"
-                class="history-menu-item">
-
-                <svg
-                    class="history-menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none">
-
-                    <path
-                        d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linejoin="round">
-                    </path>
-
-                </svg>
-
-                <span class="history-menu-text">
-                    Bài viết yêu thích
-                </span>
-
-            </a>
-
-
-            <a
-                href="history.html"
-                class="history-menu-item">
-
-                <svg
-                    class="history-menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none">
-
-                    <path
-                        d="M5 5.5A2.5 2.5 0 017.5 3H20v16H7.5A2.5 2.5 0 015 16.5v-11z"
-                        stroke="currentColor"
-                        stroke-width="1.7">
-                    </path>
-
-                    <path
-                        d="M5 5.5v11M9 7h7M9 11h7"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round">
-                    </path>
-
-                </svg>
-
-                <span class="history-menu-text">
-                    Lịch sử đọc bài
-                </span>
-
-            </a>
-
-
-            <a
-                href="my-comments.html"
-                class="history-menu-item">
-
-                <svg
-                    class="history-menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none">
-
-                    <path
-                        d="M20 11.5a7.5 7.5 0 01-7.5 7.5H8l-4 2v-5.2A7.5 7.5 0 0120 11.5z"
-                        stroke="currentColor"
-                        stroke-width="1.7">
-                    </path>
-
-                </svg>
-
-                <span class="history-menu-text">
-                    Bình luận của tôi
-                </span>
-
-            </a>
-
-
-            <a
-                href="notifications.html"
-                class="history-menu-item">
-
-                <svg
-                    class="history-menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none">
-
-                    <path
-                        d="M18 9a6 6 0 00-12 0c0 7-3 8-3 8h18s-3-1-3-8"
-                        stroke="currentColor"
-                        stroke-width="1.7">
-                    </path>
-
-                    <path
-                        d="M10 21h4"
-                        stroke="currentColor"
-                        stroke-width="1.7">
-                    </path>
-
-                </svg>
-
-                <span class="history-menu-text">
-                    Thông báo
-                </span>
-
-            </a>
-
+            <span class="history-menu-text"> Thông báo </span>
+          </a>
         </nav>
-
 
         <!-- LOGOUT -->
         <div class="history-logout">
+          <a href="index.html" class="history-menu-item">
+            <svg class="history-menu-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
 
-            <a
-                href="index.html"
-                class="history-menu-item">
+              <path
+                d="M14 8l4 4-4 4M18 12H9"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              ></path>
+            </svg>
 
-                <svg
-                    class="history-menu-icon"
-                    viewBox="0 0 24 24"
-                    fill="none">
-
-                    <path
-                        d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round">
-                    </path>
-
-                    <path
-                        d="M14 8l4 4-4 4M18 12H9"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round">
-                    </path>
-
-                </svg>
-
-                <span class="history-menu-text">
-                    Đăng xuất
-                </span>
-
-            </a>
-
+            <span class="history-menu-text"> Đăng xuất </span>
+          </a>
         </div>
+      </aside>
 
-    </aside>
-
-
-    <!-- ===================================================
+      <!-- ===================================================
          MAIN PROFILE
     =================================================== -->
 
-    <main class="profile-main">
-
+      <main class="profile-main">
         <div class="profile-main-inner">
+          <h1 class="profile-heading">Quản lý tài khoản</h1>
 
-            <h1 class="profile-heading">
-                Quản lý tài khoản
-            </h1>
+          <div class="profile-heading-line"></div>
 
-            <div class="profile-heading-line"></div>
+          <p class="profile-description">
+            Cập nhật thông tin cá nhân và bảo mật tài khoản.
+          </p>
 
-            <p class="profile-description">
-                Cập nhật thông tin cá nhân và bảo mật tài khoản.
-            </p>
-
-
-            <!-- ===================================================
+          <!-- ===================================================
                  THÔNG TIN CÁ NHÂN
             =================================================== -->
 
-            <section
-                class="profile-card"
-                id="profileInfo">
+          <section class="profile-card" id="profileInfo">
+            <h2>Thông tin cá nhân</h2>
 
-                <h2>
-                    Thông tin cá nhân
-                </h2>
+            <!-- AVATAR -->
 
+            <div class="profile-avatar-upload">
+              <img id="avatarPreview" src="" alt="Avatar" />
 
-                <!-- AVATAR -->
+              <input type="file" id="avatar" accept="image/*" />
+            </div>
 
-                <div class="profile-avatar-upload">
+            <!-- FORM -->
 
-                    <img
-                        id="avatarPreview"
-                        src=""
-                        alt="Avatar">
+            <div class="profile-form">
+              <label> Họ tên </label>
 
-                    <input
-                        type="file"
-                        id="avatar"
-                        accept="image/*">
+              <input id="fullname" type="text" />
 
-                </div>
+              <label> Username </label>
 
+              <input id="username" type="text" />
 
-                <!-- FORM -->
+              <label> Email </label>
 
-                <div class="profile-form">
+              <input id="email" type="email" />
 
-                    <label>
-                        Họ tên
-                    </label>
+              <label> Số điện thoại </label>
 
-                    <input
-                        id="fullname"
-                        type="text">
+              <input id="phone" type="text" />
 
+              <label> Ngày sinh </label>
 
-                    <label>
-                        Username
-                    </label>
+              <input id="birthday" type="date" />
 
-                    <input
-                        id="username"
-                        type="text">
+              <label> Bio </label>
 
+              <textarea id="bio"></textarea>
+            </div>
+          </section>
 
-                    <label>
-                        Email
-                    </label>
-
-                    <input
-                        id="email"
-                        type="email">
-
-
-                    <label>
-                        Số điện thoại
-                    </label>
-
-                    <input
-                        id="phone"
-                        type="text">
-
-
-                    <label>
-                        Ngày sinh
-                    </label>
-
-                    <input
-                        id="birthday"
-                        type="date">
-
-
-                    <label>
-                        Bio
-                    </label>
-
-                    <textarea id="bio"></textarea>
-
-                </div>
-
-            </section>
-
-
-            <!-- ===================================================
+          <!-- ===================================================
                  ĐỔI MẬT KHẨU
             =================================================== -->
 
-            <section
-                class="profile-card"
-                id="passwordInfo"
-                style="display:none;">
+          <section class="profile-card" id="passwordInfo" style="display: none">
+            <h2>Đổi mật khẩu</h2>
 
-                <h2>
-                    Đổi mật khẩu
-                </h2>
+            <div class="profile-form">
+              <label> Mật khẩu cũ </label>
 
-                <div class="profile-form">
+              <input id="oldPassword" type="password" />
 
-                    <label>
-                        Mật khẩu cũ
-                    </label>
+              <label> Mật khẩu mới </label>
 
-                    <input
-                        id="oldPassword"
-                        type="password">
+              <input id="newPassword" type="password" />
 
+              <label> Xác nhận mật khẩu mới </label>
 
-                    <label>
-                        Mật khẩu mới
-                    </label>
+              <input id="confirmPassword" type="password" />
+            </div>
+          </section>
 
-                    <input
-                        id="newPassword"
-                        type="password">
+          <button class="profile-button" onclick="saveCurrent()">
+            Lưu thay đổi
+          </button>
 
-
-                    <label>
-                        Xác nhận mật khẩu mới
-                    </label>
-
-                    <input
-                        id="confirmPassword"
-                        type="password">
-
-                </div>
-
-            </section>
-
-
-            <button
-                class="profile-button"
-                onclick="saveCurrent()">
-
-                Lưu thay đổi
-
-            </button>
-
-
-            <p id="message"></p>
-
+          <p id="message"></p>
         </div>
+      </main>
+    </div>
 
-    </main>
-
-</div>
-
-
-<!-- ===================================================
+    <!-- ===================================================
      LOAD MOCK DATA
 =================================================== -->
 
-<script src="mock-data.js"></script>
+    <script src="mock-data.js"></script>
 
+    <script>
+      // =====================================================
+      // LẤY USER HIỆN TẠI
+      // =====================================================
 
-<script>
+      const user = MOCK_DATA.users[0];
 
-    // =====================================================
-    // LẤY USER HIỆN TẠI
-    // =====================================================
+      // =====================================================
+      // LẤY AVATAR
+      //
+      // Nếu đã đổi avatar:
+      //     lấy từ localStorage
+      //
+      // Nếu chưa đổi:
+      //     lấy avatar từ mock-data.js
+      // =====================================================
 
-    const user = MOCK_DATA.users[0];
-
-
-    // =====================================================
-    // LẤY AVATAR
-    //
-    // Nếu đã đổi avatar:
-    //     lấy từ localStorage
-    //
-    // Nếu chưa đổi:
-    //     lấy avatar từ mock-data.js
-    // =====================================================
-
-    function getUserAvatar() {
-
-        const savedAvatar =
-            localStorage.getItem("userAvatar_" + user.id);
+      function getUserAvatar() {
+        const savedAvatar = localStorage.getItem("userAvatar_" + user.id);
 
         // Nếu có avatar đã lưu
         if (savedAvatar && savedAvatar.trim() !== "") {
-            return savedAvatar;
+          return savedAvatar;
         }
 
         // Nếu chưa có thì lấy từ mock-data
         return user.avatar;
+      }
 
-    }
+      // =====================================================
+      // HIỂN THỊ AVATAR
+      // =====================================================
 
+      function loadAvatar() {
+        const avatar = getUserAvatar();
 
-    // =====================================================
-    // HIỂN THỊ AVATAR
-    // =====================================================
+        const sidebarAvatar = document.getElementById("sidebarAvatar");
 
-    function loadAvatar() {
-
-        const avatar =
-            getUserAvatar();
-
-        const sidebarAvatar =
-            document.getElementById("sidebarAvatar");
-
-        const avatarPreview =
-            document.getElementById("avatarPreview");
-
+        const avatarPreview = document.getElementById("avatarPreview");
 
         // Hiện avatar cho sidebar
         sidebarAvatar.src = avatar;
 
-
         // Hiện avatar cho phần Profile
         avatarPreview.src = avatar;
 
-
         // Nếu ảnh lưu trong localStorage bị lỗi
         avatarPreview.onerror = function () {
-
-            avatarPreview.onerror = null;
-            avatarPreview.src = user.avatar;
-
+          avatarPreview.onerror = null;
+          avatarPreview.src = user.avatar;
         };
-
 
         sidebarAvatar.onerror = function () {
-
-            sidebarAvatar.onerror = null;
-            sidebarAvatar.src = user.avatar;
-
+          sidebarAvatar.onerror = null;
+          sidebarAvatar.src = user.avatar;
         };
+      }
 
-    }
+      // =====================================================
+      // SIDEBAR USER
+      // =====================================================
 
+      document.getElementById("sidebarName").innerText = user.full_name;
 
-    // =====================================================
-    // SIDEBAR USER
-    // =====================================================
+      document.getElementById("sidebarRole").innerText = roleName(user.role);
 
-    document.getElementById("sidebarName").innerText =
-        user.full_name;
+      // =====================================================
+      // LOAD AVATAR NGAY KHI TRANG MỞ
+      // =====================================================
 
-    document.getElementById("sidebarRole").innerText =
-        roleName(user.role);
+      loadAvatar();
 
+      // =====================================================
+      // FORM PROFILE
+      // =====================================================
 
-    // =====================================================
-    // LOAD AVATAR NGAY KHI TRANG MỞ
-    // =====================================================
+      document.getElementById("fullname").value = user.full_name;
 
-    loadAvatar();
+      document.getElementById("username").value = user.username;
 
+      document.getElementById("email").value = user.email;
 
-    // =====================================================
-    // FORM PROFILE
-    // =====================================================
+      document.getElementById("phone").value = user.phone;
 
-    document.getElementById("fullname").value =
-        user.full_name;
+      document.getElementById("birthday").value = user.date_of_birth;
 
-    document.getElementById("username").value =
-        user.username;
+      document.getElementById("bio").value = user.bio;
 
-    document.getElementById("email").value =
-        user.email;
+      // =====================================================
+      // ROLE
+      // =====================================================
 
-    document.getElementById("phone").value =
-        user.phone;
-
-    document.getElementById("birthday").value =
-        user.date_of_birth;
-
-    document.getElementById("bio").value =
-        user.bio;
-
-
-    // =====================================================
-    // ROLE
-    // =====================================================
-
-    function roleName(role) {
-
+      function roleName(role) {
         if (role === "user") {
-            return "Độc giả";
+          return "Độc giả";
         }
 
         if (role === "reporter") {
-            return "Phóng viên";
+          return "Phóng viên";
         }
 
         if (role === "editor") {
-            return "Biên tập viên";
+          return "Biên tập viên";
         }
 
         if (role === "admin") {
-            return "Quản trị viên";
+          return "Quản trị viên";
         }
 
         return role;
+      }
 
-    }
+      // =====================================================
+      // CHUYỂN TAB PROFILE
+      // =====================================================
 
+      function showProfile() {
+        document.getElementById("profileInfo").style.display = "block";
 
-    // =====================================================
-    // CHUYỂN TAB PROFILE
-    // =====================================================
+        document.getElementById("passwordInfo").style.display = "none";
 
-    function showProfile() {
+        document.querySelector(".profile-heading").innerText =
+          "Quản lý tài khoản";
 
-        document.getElementById("profileInfo")
-            .style.display = "block";
+        document.querySelector(".profile-description").innerText =
+          "Cập nhật thông tin cá nhân và bảo mật tài khoản.";
+      }
 
-        document.getElementById("passwordInfo")
-            .style.display = "none";
+      // =====================================================
+      // CHUYỂN TAB PASSWORD
+      // =====================================================
 
-        document.querySelector(".profile-heading")
-            .innerText = "Quản lý tài khoản";
+      function showPassword() {
+        document.getElementById("profileInfo").style.display = "none";
 
-        document.querySelector(".profile-description")
-            .innerText =
-            "Cập nhật thông tin cá nhân và bảo mật tài khoản.";
+        document.getElementById("passwordInfo").style.display = "block";
 
-    }
+        document.querySelector(".profile-heading").innerText = "Đổi mật khẩu";
 
+        document.querySelector(".profile-description").innerText =
+          "Cập nhật mật khẩu để bảo vệ tài khoản.";
+      }
 
-    // =====================================================
-    // CHUYỂN TAB PASSWORD
-    // =====================================================
+      // =====================================================
+      // ACTIVE MENU
+      // =====================================================
 
-    function showPassword() {
-
-        document.getElementById("profileInfo")
-            .style.display = "none";
-
-        document.getElementById("passwordInfo")
-            .style.display = "block";
-
-        document.querySelector(".profile-heading")
-            .innerText = "Đổi mật khẩu";
-
-        document.querySelector(".profile-description")
-            .innerText =
-            "Cập nhật mật khẩu để bảo vệ tài khoản.";
-
-    }
-
-
-    // =====================================================
-    // ACTIVE MENU
-    // =====================================================
-
-    function setActiveMenu(element) {
-
-        document
-            .querySelectorAll(".history-menu-item")
-            .forEach(item => {
-
-                item.classList.remove("active");
-
-            });
-
-        element.classList.add("active");
-
-    }
-
-
-    // =====================================================
-    // CHỌN AVATAR MỚI
-    // =====================================================
-
-    document
-        .getElementById("avatar")
-        .addEventListener("change", function (e) {
-
-            const file =
-                e.target.files[0];
-
-            if (!file) {
-                return;
-            }
-
-
-            // Kiểm tra file
-            if (!file.type.startsWith("image/")) {
-
-                document.getElementById("message")
-                    .innerText =
-                    "Vui lòng chọn file hình ảnh.";
-
-                return;
-
-            }
-
-
-            // Đọc file
-            const reader =
-                new FileReader();
-
-
-            reader.onload = function (event) {
-
-                const avatarURL =
-                    event.target.result;
-
-
-                // PROFILE
-                document.getElementById("avatarPreview")
-                    .src = avatarURL;
-
-
-                // SIDEBAR
-                document.getElementById("sidebarAvatar")
-                    .src = avatarURL;
-
-
-                // LƯU AVATAR
-                localStorage.setItem(
-                    "userAvatar_" + user.id,
-                    avatarURL
-                );
-
-
-                document.getElementById("message")
-                    .innerText =
-                    "Đã cập nhật ảnh đại diện.";
-
-            };
-
-
-            reader.readAsDataURL(file);
-
+      function setActiveMenu(element) {
+        document.querySelectorAll(".history-menu-item").forEach((item) => {
+          item.classList.remove("active");
         });
 
+        element.classList.add("active");
+      }
 
-    // =====================================================
-    // LƯU PROFILE
-    // =====================================================
+      // =====================================================
+      // CHỌN AVATAR MỚI
+      // =====================================================
 
-    function saveProfile() {
+      document
+        .getElementById("avatar")
+        .addEventListener("change", function (e) {
+          const file = e.target.files[0];
 
-        const username =
-            document
-                .getElementById("username")
-                .value
-                .trim();
+          if (!file) {
+            return;
+          }
 
-        const email =
-            document
-                .getElementById("email")
-                .value
-                .trim();
+          // Kiểm tra file
+          if (!file.type.startsWith("image/")) {
+            document.getElementById("message").innerText =
+              "Vui lòng chọn file hình ảnh.";
 
-        const message =
-            document.getElementById("message");
+            return;
+          }
 
+          // Đọc file
+          const reader = new FileReader();
+
+          reader.onload = function (event) {
+            const avatarURL = event.target.result;
+
+            // PROFILE
+            document.getElementById("avatarPreview").src = avatarURL;
+
+            // SIDEBAR
+            document.getElementById("sidebarAvatar").src = avatarURL;
+
+            // LƯU AVATAR
+            localStorage.setItem("userAvatar_" + user.id, avatarURL);
+
+            document.getElementById("message").innerText =
+              "Đã cập nhật ảnh đại diện.";
+          };
+
+          reader.readAsDataURL(file);
+        });
+
+      // =====================================================
+      // LƯU PROFILE
+      // =====================================================
+
+      function saveProfile() {
+        const username = document.getElementById("username").value.trim();
+
+        const email = document.getElementById("email").value.trim();
+
+        const message = document.getElementById("message");
 
         // CHECK USERNAME
 
-        const exist =
-            MOCK_DATA.users.find(
-                u =>
-                    u.username === username &&
-                    u.id !== user.id
-            );
-
+        const exist = MOCK_DATA.users.find(
+          (u) => u.username === username && u.id !== user.id,
+        );
 
         if (exist) {
+          message.innerText = "Username đã được sử dụng.";
 
-            message.innerText =
-                "Username đã được sử dụng.";
-
-            return;
-
+          return;
         }
-
 
         // CHECK EMAIL
 
-        const regex =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!regex.test(email)) {
+          message.innerText = "Email không đúng định dạng.";
 
-            message.innerText =
-                "Email không đúng định dạng.";
-
-            return;
-
+          return;
         }
-
 
         // UPDATE DATA
 
-        user.full_name =
-            document
-                .getElementById("fullname")
-                .value;
+        user.full_name = document.getElementById("fullname").value;
 
-        user.username =
-            username;
+        user.username = username;
 
-        user.email =
-            email;
+        user.email = email;
 
-        user.phone =
-            document
-                .getElementById("phone")
-                .value;
+        user.phone = document.getElementById("phone").value;
 
-        user.date_of_birth =
-            document
-                .getElementById("birthday")
-                .value;
+        user.date_of_birth = document.getElementById("birthday").value;
 
-        user.bio =
-            document
-                .getElementById("bio")
-                .value;
-
+        user.bio = document.getElementById("bio").value;
 
         // UPDATE SIDEBAR NAME
 
-        document
-            .getElementById("sidebarName")
-            .innerText =
-            user.full_name;
-
+        document.getElementById("sidebarName").innerText = user.full_name;
 
         // LOAD LẠI AVATAR
 
         loadAvatar();
 
+        message.innerText = "Cập nhật thông tin tài khoản thành công.";
+      }
 
-        message.innerText =
-            "Cập nhật thông tin tài khoản thành công.";
+      // =====================================================
+      // ĐỔI MẬT KHẨU
+      // =====================================================
 
-    }
+      function changePassword() {
+        const oldPassword = document.getElementById("oldPassword").value;
 
-
-    // =====================================================
-    // ĐỔI MẬT KHẨU
-    // =====================================================
-
-    function changePassword() {
-
-        const oldPassword =
-            document
-                .getElementById("oldPassword")
-                .value;
-
-        const newPassword =
-            document
-                .getElementById("newPassword")
-                .value;
+        const newPassword = document.getElementById("newPassword").value;
 
         const confirmPassword =
-            document
-                .getElementById("confirmPassword")
-                .value;
+          document.getElementById("confirmPassword").value;
 
-        const message =
-            document.getElementById("message");
-
+        const message = document.getElementById("message");
 
         if (oldPassword !== user.password) {
+          message.innerText = "Mật khẩu cũ không chính xác.";
 
-            message.innerText =
-                "Mật khẩu cũ không chính xác.";
-
-            return;
-
+          return;
         }
-
 
         if (newPassword.length < 8) {
+          message.innerText = "Mật khẩu phải có ít nhất 8 ký tự.";
 
-            message.innerText =
-                "Mật khẩu phải có ít nhất 8 ký tự.";
-
-            return;
-
+          return;
         }
-
 
         if (newPassword !== confirmPassword) {
+          message.innerText = "Xác nhận mật khẩu không khớp.";
 
-            message.innerText =
-                "Xác nhận mật khẩu không khớp.";
-
-            return;
-
+          return;
         }
 
+        user.password = newPassword;
 
-        user.password =
-            newPassword;
+        message.innerText = "Đổi mật khẩu thành công.";
+      }
 
+      // =====================================================
+      // NÚT LƯU CHUNG
+      // =====================================================
 
-        message.innerText =
-            "Đổi mật khẩu thành công.";
-
-    }
-
-
-    // =====================================================
-    // NÚT LƯU CHUNG
-    // =====================================================
-
-    function saveCurrent() {
-
-        const password =
-            document.getElementById("passwordInfo");
-
+      function saveCurrent() {
+        const password = document.getElementById("passwordInfo");
 
         if (password.style.display === "block") {
-
-            changePassword();
-
+          changePassword();
         } else {
-
-            saveProfile();
-
+          saveProfile();
         }
+      }
 
-    }
+      // =====================================================
+      // KHI QUAY LẠI TRANG
+      // =====================================================
 
-
-    // =====================================================
-    // KHI QUAY LẠI TRANG
-    // =====================================================
-
-    window.addEventListener(
-        "pageshow",
-        function () {
-
-            loadAvatar();
-
-        }
-    );
-
-</script>
-
-</body>
+      window.addEventListener("pageshow", function () {
+        loadAvatar();
+      });
+    </script>
+  </body>
 </html>
 ```
