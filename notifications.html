@@ -15,22 +15,14 @@
 
 </head>
 
-
 <body>
 
-
 <div class="notifications-page">
-
-
   <!-- =====================================================
        SIDEBAR
   ===================================================== -->
-
   <aside class="notifications-sidebar">
-
-
     <!-- LOGO -->
-
     <div class="notifications-brand">
 
       <a href="dashboard.html"
@@ -73,8 +65,6 @@
       </a>
 
     </div>
-
-
     <!-- USER -->
 
     <div class="notifications-user">
@@ -108,15 +98,10 @@
       </div>
 
     </div>
-
-
     <!-- MENU -->
 
     <nav class="notifications-menu">
-
-
-      <!-- THÔNG TIN TÀI KHOẢN -->
-
+      
       <a
         href="profile.html"
         class="notifications-menu-item">
@@ -154,8 +139,6 @@
         </span>
 
       </a>
-
-
       <!-- ĐỔI MẬT KHẨU -->
 
       <a
@@ -199,10 +182,7 @@
         </span>
 
       </a>
-
-
       <!-- BÀI VIẾT YÊU THÍCH -->
-
       <a
         href="favorites.html"
         class="notifications-menu-item">
@@ -236,8 +216,6 @@
         </span>
 
       </a>
-
-
       <!-- LỊCH SỬ ĐỌC -->
 
       <a
@@ -277,8 +255,6 @@
         </span>
 
       </a>
-
-
       <!-- BÌNH LUẬN CỦA TÔI -->
 
       <a
@@ -310,10 +286,7 @@
         </span>
 
       </a>
-
-
       <!-- THÔNG BÁO -->
-
       <a
         href="notifications.html"
         class="notifications-menu-item active">
@@ -351,8 +324,6 @@
 
 
     </nav>
-
-
     <!-- LOGOUT -->
 
     <div class="notifications-logout">
@@ -398,7 +369,6 @@
 
   </aside>
 
-
   <!-- =====================================================
        MAIN
   ===================================================== -->
@@ -412,7 +382,6 @@
         Thông báo
       </h1>
 
-
       <div class="notifications-heading-line">
       </div>
 
@@ -421,9 +390,7 @@
         Xem các thông báo mới nhất từ hệ thống Mạch Tin.
       </p>
 
-
       <!-- ERROR -->
-
       <div
         id="notificationsError"
         class="notifications-error">
@@ -431,18 +398,13 @@
         Không thể tải thông báo.
 
       </div>
-
-
       <!-- LIST -->
 
       <section
         id="notificationsList"
         class="notifications-list">
       </section>
-
-
       <!-- EMPTY -->
-
       <div
         id="notificationsEmpty"
         class="notifications-empty">
@@ -488,13 +450,7 @@
 
 </div>
 
-
-<!-- =====================================================
-     MOCK DATA
-===================================================== -->
-
 <script src="mock-data.js"></script>
-
 
 <script>
 
@@ -508,7 +464,6 @@ const user =
     MOCK_DATA.users.find(
         u => Number(u.id) === CURRENT_USER_ID
     );
-
 
 /* =====================================================
    2. ROLE
@@ -534,7 +489,6 @@ function roleName(role) {
 
     return role || "Độc giả";
 }
-
 
 /* =====================================================
    3. INITIALS
@@ -567,9 +521,6 @@ function getInitials(name) {
 
 /* =====================================================
    4. LẤY AVATAR
-   ƯU TIÊN:
-   1. Avatar mới trong localStorage
-   2. Avatar trong mock-data.js
 ===================================================== */
 
 function getUserAvatar() {
@@ -590,7 +541,6 @@ function getUserAvatar() {
     return user.avatar || "";
 
 }
-
 
 /* =====================================================
    5. HIỂN THỊ USER SIDEBAR
@@ -626,39 +576,28 @@ function renderUser() {
 
     }
 
-
     /* TÊN */
 
     userName.innerText =
         user.full_name ||
         user.username ||
         "Người dùng";
-
-
     /* ROLE */
-
     userRole.innerText =
         roleName(user.role);
-
-
     /* AVATAR */
 
     const avatar =
         getUserAvatar();
-
-
     /*
        Xóa avatar cũ trước khi render
     */
-
     const oldImage =
         userAvatar.querySelector("img");
 
     if (oldImage) {
         oldImage.remove();
     }
-
-
     /*
        Nếu có avatar
     */
@@ -686,8 +625,6 @@ function renderUser() {
                     "none";
 
             };
-
-
         image.onerror =
             function () {
 
@@ -703,8 +640,6 @@ function renderUser() {
                     "block";
 
             };
-
-
         userAvatar.appendChild(image);
 
     }
@@ -723,8 +658,6 @@ function renderUser() {
     }
 
 }
-
-
 /* =====================================================
    6. FORMAT NGÀY
 ===================================================== */
@@ -740,13 +673,9 @@ function formatDate(dateString) {
             String(dateString)
                 .replace(" ", "T")
         );
-
-
     if (Number.isNaN(date.getTime())) {
         return dateString;
     }
-
-
     const day =
         String(
             date.getDate()
@@ -781,8 +710,6 @@ function formatDate(dateString) {
     );
 
 }
-
-
 /* =====================================================
    7. LOẠI THÔNG BÁO
 ===================================================== */
@@ -812,8 +739,6 @@ function getNotificationType(type) {
     );
 
 }
-
-
 /* =====================================================
    8. LINK
 ===================================================== */
@@ -823,8 +748,6 @@ function resolveNotificationLink(link) {
     if (!link) {
         return "notifications.html";
     }
-
-
     if (link.startsWith("/")) {
 
         const parts =
@@ -842,13 +765,9 @@ function resolveNotificationLink(link) {
         }
 
     }
-
-
     return link;
 
 }
-
-
 /* =====================================================
    9. CLICK NOTIFICATION
 ===================================================== */
@@ -867,8 +786,6 @@ function handleNotificationClick(
             MOCK_DATA.notifications
         )
     );
-
-
     const target =
         resolveNotificationLink(
             notification.link
@@ -879,8 +796,6 @@ function handleNotificationClick(
         target;
 
 }
-
-
 /* =====================================================
    10. LOAD TRẠNG THÁI ĐỌC
 ===================================================== */
@@ -896,8 +811,6 @@ function loadNotificationState() {
     if (!saved) {
         return;
     }
-
-
     try {
 
         const savedNotifications =
@@ -950,7 +863,6 @@ function loadNotificationState() {
     }
 
 }
-
 
 /* =====================================================
    11. RENDER NOTIFICATIONS
@@ -1075,10 +987,7 @@ function renderNotifications() {
                 );
 
             }
-
-
             /* ICON */
-
             const icon =
                 document.createElement(
                     "div"
@@ -1182,12 +1091,8 @@ function renderNotifications() {
 
             description.className =
                 "notifications-item-description";
-
-
             description.textContent =
                 notification.content;
-
-
             /* STATUS */
 
             const status =
@@ -1216,18 +1121,13 @@ function renderNotifications() {
 
             content.appendChild(status);
 
-
             /* ARROW */
-
             const arrow =
                 document.createElement(
                     "div"
                 );
-
-
             arrow.className =
                 "notifications-item-arrow";
-
 
             arrow.innerHTML = `
 
@@ -1246,8 +1146,6 @@ function renderNotifications() {
                 </svg>
 
             `;
-
-
             /* APPEND */
 
             item.appendChild(icon);
@@ -1255,8 +1153,6 @@ function renderNotifications() {
             item.appendChild(content);
 
             item.appendChild(arrow);
-
-
             /* CLICK */
 
             item.addEventListener(
@@ -1269,16 +1165,12 @@ function renderNotifications() {
 
                 }
             );
-
-
             list.appendChild(item);
 
         }
     );
 
 }
-
-
 /* =====================================================
    12. ICON NOTIFICATION
 ===================================================== */
@@ -1332,8 +1224,6 @@ function getNotificationIcon(type) {
             </svg>
 
         `,
-
-
         article_rejected: `
 
             <svg
@@ -1369,8 +1259,6 @@ function getNotificationIcon(type) {
             </svg>
 
         `,
-
-
         article_approved: `
 
             <svg
@@ -1382,7 +1270,6 @@ function getNotificationIcon(type) {
                     stroke="currentColor"
                     stroke-width="1.7">
                 </path>
-
                 <path
                     d="M14 4V9H19"
                     stroke="currentColor"
@@ -1400,8 +1287,6 @@ function getNotificationIcon(type) {
             </svg>
 
         `,
-
-
         comment_locked: `
 
             <svg
@@ -1473,18 +1358,12 @@ function getNotificationIcon(type) {
 
 }
 
-
 /* =====================================================
    13. INIT
 ===================================================== */
 
 function initNotificationsPage() {
 
-    /*
-       Quan trọng:
-       Mỗi lần trang được mở lại,
-       lấy avatar mới nhất từ localStorage.
-    */
 
     renderUser();
 
@@ -1495,18 +1374,10 @@ function initNotificationsPage() {
 }
 
 
-/* Chạy lần đầu */
-
 document.addEventListener(
     "DOMContentLoaded",
     initNotificationsPage
 );
-
-
-/*
-   Khi quay lại trang bằng nút Back/Forward
-   hoặc chuyển giữa các trang.
-*/
 
 window.addEventListener(
     "pageshow",
@@ -1518,8 +1389,5 @@ window.addEventListener(
 );
 
 </script>
-
-
 </body>
 </html>
-```

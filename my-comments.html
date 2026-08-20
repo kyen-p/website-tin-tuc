@@ -14,7 +14,6 @@
       <!-- =====================================================
            SIDEBAR
       ====================================================== -->
-
       <aside class="comments-sidebar">
         <!-- LOGO -->
         <div class="comments-brand">
@@ -101,7 +100,6 @@
 
             <span class="comments-menu-text"> Đổi mật khẩu </span>
           </a>
-
           <!-- BÀI VIẾT YÊU THÍCH -->
           <a href="favorites.html" class="comments-menu-item">
             <svg class="comments-menu-icon" viewBox="0 0 24 24" fill="none">
@@ -243,15 +241,9 @@
     <script src="mock-data.js"></script>
 
     <script>
-      // =====================================================
-      // USER HIỆN TẠI
-      // =====================================================
+      
 
       const CURRENT_USER_ID = 1;
-
-      // =====================================================
-      // DOM
-      // =====================================================
 
       const commentsList = document.getElementById("commentsList");
 
@@ -266,10 +258,6 @@
       const userAvatar = document.getElementById("userAvatar");
 
       const userInitials = document.getElementById("userInitials");
-
-      // =====================================================
-      // LẤY CHỮ CÁI ĐẦU TÊN
-      // =====================================================
 
       function getInitials(name) {
         if (!name) {
@@ -287,14 +275,6 @@
         ).toUpperCase();
       }
 
-      // =====================================================
-      // LẤY AVATAR
-      //
-      // ƯU TIÊN:
-      //
-      // 1. Avatar mới đã lưu trong localStorage
-      // 2. Avatar mặc định trong mock-data.js
-      // =====================================================
 
       function getUserAvatar(user) {
         if (!user) {
@@ -381,10 +361,6 @@
         );
       }
 
-      // =====================================================
-      // FORMAT THỜI GIAN COMMENT
-      // =====================================================
-
       function formatCommentTime(dateString) {
         if (!dateString) {
           return "";
@@ -410,7 +386,6 @@
           `${dateParts[2]}/` + `${dateParts[1]}/` + `${dateParts[0]} · ${time}`
         );
       }
-
       // =====================================================
       // TẠO COMMENT
       // =====================================================
@@ -524,9 +499,6 @@
 
         `;
 
-        // ===================================================
-        // DOM COMMENT
-        // ===================================================
 
         const contentEl = item.querySelector('[data-role="content"]');
 
@@ -608,7 +580,6 @@
 
           actionsEl.style.display = "flex";
         });
-
         // ===================================================
         // XÓA COMMENT
         // ===================================================
@@ -641,10 +612,6 @@
 
         return item;
       }
-
-      // =====================================================
-      // LOAD MY COMMENTS
-      // =====================================================
 
       function loadMyComments() {
         try {
@@ -691,17 +658,14 @@
 
             return dateB - dateA;
           });
-
           // ===============================================
           // KHÔNG CÓ COMMENT
           // ===============================================
-
           if (userComments.length === 0) {
             commentsEmpty.style.display = "block";
 
             return;
           }
-
           // ===============================================
           // HIỂN THỊ COMMENT
           // ===============================================
@@ -713,7 +677,6 @@
               commentsList.appendChild(item);
             }
           });
-
           // ===============================================
           // SAU KHI LOAD
           // ===============================================
@@ -727,19 +690,10 @@
           commentsError.style.display = "block";
         }
       }
-
       // =====================================================
       // LOAD TRANG
       // =====================================================
-
       loadMyComments();
-
-      // =====================================================
-      // KHI QUAY LẠI TRANG
-      //
-      // Đảm bảo avatar luôn lấy avatar mới nhất
-      // trong localStorage.
-      // =====================================================
 
       window.addEventListener("pageshow", function () {
         if (typeof MOCK_DATA !== "undefined") {

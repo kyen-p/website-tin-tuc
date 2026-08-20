@@ -12,23 +12,12 @@
     <link rel="stylesheet" href="/style.css/my-topics.css">
 
 </head>
-
-
 <body>
-
-
 <div class="profile-page">
-
-
-    <!-- ===================================================
-         SIDEBAR REPORTER
-    =================================================== -->
 
     <aside class="history-sidebar">
 
-
         <!-- LOGO -->
-
         <div class="history-brand">
 
             <a href="index.html" class="brand-link">
@@ -51,8 +40,6 @@
                         stroke-linejoin="round"/>
 
                 </svg>
-
-
                 <span class="brand-word">
 
                     <span class="brand-mach">
@@ -68,7 +55,6 @@
             </a>
 
         </div>
-
 
         <!-- USER -->
 
@@ -155,8 +141,6 @@
                 </span>
 
             </a>
-
-
             <a
                 href="my-topics.html"
                 class="history-menu-item active">
@@ -184,8 +168,6 @@
                 </span>
 
             </a>
-
-
             <a
                 href="dashboard.html"
                 class="history-menu-item">
@@ -213,8 +195,6 @@
                 </span>
 
             </a>
-
-
             <a
                 href="public/index.html"
                 class="history-menu-item">
@@ -248,7 +228,6 @@
 
     </aside>
 
-
     <!-- ===================================================
          MAIN CONTENT
     =================================================== -->
@@ -270,20 +249,9 @@
                 Danh sách các đề tài được Editor phân công và trạng thái thực hiện.
             </p>
 
-
-            <!-- ===============================
-                 TOPIC LIST
-            ================================ -->
-
             <section
                 class="topic-list"
                 id="topicList">
-
-                <!--
-                    Dữ liệu đề tài sẽ được
-                    lấy từ MOCK_DATA.topics
-                    và render bằng JavaScript.
-                -->
 
             </section>
 
@@ -296,34 +264,14 @@
 </div>
 
 
-<!-- ===================================================
-     LOAD MOCK DATA
-=================================================== -->
-
 <script src="mock-data.js"></script>
-
-
 <script>
-
-    // =================================================
-    // CURRENT REPORTER
-    // =================================================
-    // Demo đang dùng reporter có id = 5
-    // Đây là Thanh Ngân trong MOCK_DATA.users
-
     const CURRENT_REPORTER_ID = 5;
-
-
-    // =================================================
-    // LOAD DATA
-    // =================================================
-
     const users = MOCK_DATA.users;
     const topics = MOCK_DATA.topics;
     const categories = MOCK_DATA.categories;
     const tags = MOCK_DATA.tags;
     const topicTags = MOCK_DATA.topic_tags;
-
 
     // =================================================
     // FIND CURRENT USER
@@ -332,7 +280,6 @@
     const currentUser = users.find(
         user => user.id === CURRENT_REPORTER_ID
     );
-
 
     // =================================================
     // LOAD USER TO SIDEBAR
@@ -350,8 +297,6 @@
             currentUser.full_name;
 
     }
-
-
     // =================================================
     // GET CATEGORY NAME
     // =================================================
@@ -366,8 +311,6 @@
             ? category.name
             : "Chưa phân loại";
     }
-
-
     // =================================================
     // GET TAGS OF TOPIC
     // =================================================
@@ -390,8 +333,6 @@
             })
             .filter(Boolean);
     }
-
-
     // =================================================
     // FORMAT DEADLINE
     // =================================================
@@ -418,8 +359,6 @@
 
         return `${day}/${month}/${year}`;
     }
-
-
     // =================================================
     // STATUS
     // =================================================
@@ -453,8 +392,6 @@
 
         };
     }
-
-
     // =================================================
     // GET TOPIC BUTTON
     // =================================================
@@ -474,8 +411,6 @@
             `;
 
         }
-
-
         return `
             <a
                 href="write-article.html?topic_id=${topic.id}"
@@ -486,7 +421,6 @@
             </a>
         `;
     }
-
 
     // =================================================
     // RENDER TOPIC
@@ -576,8 +510,6 @@
 
         `;
     }
-
-
     // =================================================
     // FILTER TOPICS BY CURRENT REPORTER
     // =================================================
@@ -586,8 +518,6 @@
         topic =>
             topic.reporter_id === CURRENT_REPORTER_ID
     );
-
-
     // =================================================
     // RENDER TOPIC LIST
     // =================================================

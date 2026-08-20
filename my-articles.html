@@ -209,8 +209,6 @@
       </nav>
 
     </aside>
-
-
     <!-- =====================================================
          MAIN
     ====================================================== -->
@@ -233,8 +231,6 @@
         </div>
 
         <div class="page-line"></div>
-
-
         <!-- =================================================
              STATS
         ================================================== -->
@@ -253,8 +249,6 @@
               Tổng bài
             </span>
           </div>
-
-
           <div class="stat-card">
             <span
               class="stat-number published"
@@ -267,8 +261,6 @@
               Đã đăng
             </span>
           </div>
-
-
           <div class="stat-card">
             <span
               class="stat-number pending"
@@ -281,8 +273,6 @@
               Chờ duyệt
             </span>
           </div>
-
-
           <div class="stat-card">
             <span
               class="stat-number draft"
@@ -295,8 +285,6 @@
               Bản nháp
             </span>
           </div>
-
-
           <div class="stat-card">
             <span
               class="stat-number rejected"
@@ -311,8 +299,6 @@
           </div>
 
         </div>
-
-
         <!-- =================================================
              TOOLBAR
         ================================================== -->
@@ -358,7 +344,6 @@
 
           </div>
 
-
           <select id="categoryFilter">
             <option value="all">
               Tất cả chuyên mục
@@ -366,8 +351,6 @@
           </select>
 
         </div>
-
-
         <!-- =================================================
              ARTICLE LIST
         ================================================== -->
@@ -376,7 +359,6 @@
           id="articleList"
           class="article-list"
         ></div>
-
 
         <!-- EMPTY -->
         <div
@@ -392,37 +374,16 @@
     </main>
 
   </div>
-
-
-  <!-- =====================================================
-       MOCK DATA
-  ====================================================== -->
-
   <script src="mock-data.js"></script>
-
-
   <script>
-
     /* =====================================================
        CURRENT REPORTER
     ===================================================== */
 
-    /*
-      Nếu sau này nhóm có hệ thống đăng nhập,
-      có thể lấy ID từ localStorage.
-
-      Hiện tại nếu chưa có đăng nhập thì dùng reporter01
-      trong MOCK_DATA, tức user có id = 5.
-    */
-
     const CURRENT_REPORTER_ID =
       Number(localStorage.getItem("currentUserId")) || 5;
-
-
     let currentStatus = "all";
     let currentCategory = "all";
-
-
     const articleList =
       document.getElementById("articleList");
 
@@ -431,8 +392,6 @@
 
     const categoryFilter =
       document.getElementById("categoryFilter");
-
-
     /* =====================================================
        GET CURRENT REPORTER
     ===================================================== */
@@ -446,8 +405,6 @@
       );
 
     }
-
-
     /* =====================================================
        INITIALS
     ===================================================== */
@@ -474,11 +431,6 @@
 
     }
 
-
-    /* =====================================================
-       ROLE NAME
-    ===================================================== */
-
     function getRoleName(role) {
 
       const roleMap = {
@@ -491,12 +443,7 @@
       return roleMap[role] || role;
 
     }
-
-
-    /* =====================================================
-       LOAD REPORTER
-       LẤY TOÀN BỘ THÔNG TIN TỪ MOCK_DATA.users
-    ===================================================== */
+    /* ======================LOAD REPORTER======================= */
 
     function loadReporter() {
 
@@ -507,24 +454,15 @@
         return;
       }
 
-
-      /* TÊN */
-
       document.getElementById(
         "userName"
       ).textContent =
         user.full_name || "Người dùng";
 
-
-      /* VAI TRÒ */
-
       document.getElementById(
         "userRole"
       ).textContent =
         getRoleName(user.role);
-
-
-      /* AVATAR */
 
       const avatar =
         document.getElementById(
@@ -587,8 +525,6 @@
       }
 
     }
-
-
     /* =====================================================
        CATEGORY NAME
     ===================================================== */
@@ -607,8 +543,6 @@
         : "Chưa phân loại";
 
     }
-
-
     /* =====================================================
        CATEGORY FILTER
     ===================================================== */
@@ -635,8 +569,6 @@
       );
 
     }
-
-
     /* =====================================================
        STATUS TEXT
     ===================================================== */
@@ -661,8 +593,6 @@
       );
 
     }
-
-
     /* =====================================================
        FORMAT DATE
     ===================================================== */
@@ -685,8 +615,6 @@
       return `${date[2]}/${date[1]}/${date[0]}`;
 
     }
-
-
     /* =====================================================
        UPDATE STATS
     ===================================================== */
@@ -712,7 +640,6 @@
       ).textContent =
         count("published");
 
-
       document.getElementById(
         "pendingArticles"
       ).textContent =
@@ -731,21 +658,13 @@
         count("rejected");
 
     }
-
-
-    /* =====================================================
-       CREATE ARTICLE CARD
-       DỮ LIỆU LẤY TỪ MOCK_DATA.articles
-    ===================================================== */
-
+    /* =================CREATE ARTICLE CARD======================= */
     function createArticleCard(article) {
 
       const category =
         getCategoryName(
           article.category_id
         );
-
-
       const card =
         document.createElement("article");
 
@@ -754,10 +673,7 @@
 
 
       let actionHTML = "";
-
-
       /* PUBLISHED */
-
       if (
         article.status ===
         "published"
@@ -773,10 +689,7 @@
         `;
 
       }
-
-
       /* DRAFT */
-
       else if (
         article.status ===
         "draft"
@@ -792,8 +705,6 @@
         `;
 
       }
-
-
       /* REJECTED */
 
       else if (
@@ -811,10 +722,7 @@
         `;
 
       }
-
-
       /* PENDING */
-
       else if (
         article.status ===
         "pending"
@@ -829,11 +737,7 @@
         `;
 
       }
-
-
-      /* =================================================
-         ARTICLE CARD
-      ================================================== */
+      /* ==========================ARTICLE CARD ============================ */
 
       card.innerHTML = `
 
@@ -864,7 +768,6 @@
 
         </div>
 
-
         <div class="article-body">
 
           <div class="article-top">
@@ -880,8 +783,6 @@
             </span>
 
           </div>
-
-
           <h2 class="article-title">
             ${article.title}
           </h2>
@@ -890,7 +791,6 @@
           <p class="article-description">
             ${article.short_description || ""}
           </p>
-
 
           <div class="article-meta">
 
@@ -905,7 +805,6 @@
             </span>
 
           </div>
-
 
           ${
             article.status === "rejected"
@@ -936,12 +835,6 @@
         </div>
 
       `;
-
-
-      /* =================================================
-         XỬ LÝ ẢNH BỊ LỖI
-      ================================================== */
-
       const articleImage =
         card.querySelector(
           ".article-cover-image"
@@ -973,13 +866,9 @@
         );
 
       }
-
-
       return card;
 
     }
-
-
     /* =====================================================
        RENDER ARTICLES
     ===================================================== */
@@ -988,12 +877,6 @@
 
       articleList.innerHTML = "";
 
-
-      /*
-        Chỉ lấy bài viết của reporter
-        hiện tại từ MOCK_DATA.
-      */
-
       let articles =
         MOCK_DATA.articles.filter(
           article =>
@@ -1001,9 +884,7 @@
             Number(CURRENT_REPORTER_ID)
         );
 
-
       /* STATUS FILTER */
-
       if (
         currentStatus !==
         "all"
@@ -1017,10 +898,7 @@
           );
 
       }
-
-
       /* CATEGORY FILTER */
-
       if (
         currentCategory !==
         "all"
@@ -1034,8 +912,6 @@
           );
 
       }
-
-
       /* SORT */
 
       articles.sort(
@@ -1067,10 +943,7 @@
 
         }
       );
-
-
       /* EMPTY */
-
       if (
         articles.length ===
         0
@@ -1082,14 +955,9 @@
         return;
 
       }
-
-
       emptyState.style.display =
         "none";
-
-
       /* RENDER */
-
       articles.forEach(
         article => {
 
@@ -1101,11 +969,7 @@
       );
 
     }
-
-
-    /* =====================================================
-       STATUS FILTER
-    ===================================================== */
+    /* ======================STATUS FILTER ================================ */
 
     document
       .querySelectorAll(".filter-tab")
@@ -1129,8 +993,6 @@
               this.classList.add(
                 "active"
               );
-
-
               currentStatus =
                 this.dataset.filter;
 
@@ -1142,8 +1004,6 @@
 
         }
       );
-
-
     /* =====================================================
        CATEGORY FILTER
     ===================================================== */
@@ -1159,8 +1019,6 @@
 
       }
     );
-
-
     /* =====================================================
        INIT
     ===================================================== */
