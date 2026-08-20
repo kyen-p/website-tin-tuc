@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mạch Tin — Tác giả</title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<!--  TICKER -->
+<div class="ticker" role="marquee" aria-label="Tin nóng">
+    <div class="ticker__inner">
+        <span>
+            <span class="ticker__tag">NÓNG —</span>
+            Quốc hội thông qua luật sửa đổi về thuế thu nhập cá nhân
+        </span>
+        <span>
+            <span class="ticker__tag">NÓNG —</span>
+            Giá vàng miếng SJC vượt mốc 92 triệu đồng/lượng
+        </span>
+        <span>
+            <span class="ticker__tag">THỂ THAO —</span>
+            Đội tuyển Việt Nam giành vé vào bán kết
+        </span>
+        <span>
+            <span class="ticker__tag">NÓNG —</span>
+            Áp thấp nhiệt đới có khả năng mạnh lên thành bão
+        </span>
+    </div>
+</div>
+<!-- HEADER-->
+<header class="site-header">
+    <div class="header-utility">
+        <div class="wrap">
+            <span>Chủ Nhật, 09/08/2026</span>
+            <div class="header-utility__links">
+                <a href="../user/login.html">Đăng nhập</a>
+                <a href="../user/register.html">Tạo tài khoản</a>
+            </div>
+        </div>
+    </div>
+    <div class="header-main">
+        <div class="wrap">
+            <a href="index.html" class="logo">
+                <svg
+                    class="pulse-mark"
+                    width="26"
+                    height="26"
+                    viewBox="0 0 26 26"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M1 13H7L9.5 6L13.5 20L16 13H25"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+
+                <span class="logo__word">
+                    MẠCH&nbsp;<em>TIN</em>
+                </span>
+
+            </a>
+            <nav class="main-nav" aria-label="Điều hướng chính">
+
+                <a href="index.html">Trang chủ</a>
+                <a href="category.html?category=thoi-su">Thời sự</a>
+                <a href="category.html?category=cong-nghe">Công nghệ</a>
+                <a href="category.html?category=the-thao">Thể thao</a>
+                <a href="category.html?category=giai-tri">Giải trí</a>
+                <a href="category.html?category=doi-song">Đời sống</a>
+                <a href="category.html?category=giao-duc">Giáo dục</a>
+            </nav>
+            <div class="header-actions">
+                <a
+                    href="search.html"
+                    class="icon-btn"
+                    aria-label="Tìm kiếm"
+                >
+                    <svg
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+                        <circle
+                            cx="11"
+                            cy="11"
+                            r="7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+
+                        <path
+                            d="M21 21L16.65 16.65"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+                </a>
+                <a
+                    href="../user/login.html"
+                    class="btn btn-ghost btn-sm"
+                >
+                    Đăng nhập
+                </a>
+
+                <button
+                    class="nav-toggle"
+                    aria-label="Mở menu"
+                    aria-expanded="false"
+                >
+                    ☰
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="category-bar">
+        <div class="wrap">
+            <a href="category.html?category=thoi-su">Thời sự</a>
+            <a href="category.html?category=cong-nghe">Công nghệ</a>
+            <a href="category.html?category=the-thao">Thể thao</a>
+            <a href="category.html?category=giai-tri">Giải trí</a>
+            <a href="category.html?category=doi-song">Đời sống</a>
+            <a href="category.html?category=giao-duc">Giáo dục</a>
+
+        </div>
+
+    </div>
+
+</header>
+<!--  MAIN -->
+<main>
+    <div class="wrap">
+        <div id="author-page">
+
+            <div class="author-loading">
+                Đang tải thông tin tác giả...
+            </div>
+        </div>
+    </div>
+</main>
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="wrap footer-top footer-top--simple">
+        <div class="footer-brand">
+            <a href="index.html" class="logo">
+                <svg
+                    class="pulse-mark"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 26 26"
+                    fill="none"
+                >
+                    <path
+                        d="M1 13H7L9.5 6L13.5 20L16 13H25"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+                <span class="logo__word">
+                    MẠCH&nbsp;<em>TIN</em>
+                </span>
+            </a>
+            <p id="footer-desc">
+                Bắt mạch dòng chảy tin tức Việt Nam —
+                cập nhật liên tục, xác thực trước khi đăng
+            </p>
+            <div class="footer-social">
+                <a href="#" id="footer-fb" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
+                <a href="#" id="footer-yt" aria-label="YouTube" target="_blank" rel="noopener">YT</a>
+                <a href="#" id="footer-tt" aria-label="TikTok" target="_blank" rel="noopener">TT</a>
+            </div>
+        </div>
+        <div>
+            <h4>Về Mạch Tin</h4>
+            <ul>
+                <li class="footer-contact-item" id="footer-phone">028 1234 5678</li>
+                <li class="footer-contact-item" id="footer-email">lienhe@machtin.vn</li>
+                <li class="footer-contact-item" id="footer-address">02 Võ Oanh, phường Thạnh Mỹ Tây, TP. Hồ Chí Minh</li>
+            </ul>
+        </div>
+    </div>
+    <div class="wrap footer-bottom">
+        <span>© 2026 Mạch Tin · Điều khoản sử dụng · Chính sách bảo mật</span>
+    </div>
+</footer>
+<script src="../assets/js/mock-data.js"></script>
+<script>
+  (function () {
+    if (typeof MOCK_DATA === "undefined" || !MOCK_DATA.site) return;
+    var site = MOCK_DATA.site;
+    var byId = function (id) { return document.getElementById(id); };
+    if (byId("footer-desc") && site.short_description) byId("footer-desc").textContent = site.short_description;
+    if (byId("footer-phone") && site.contact_phone) byId("footer-phone").textContent = site.contact_phone;
+    if (byId("footer-email") && site.contact_email) byId("footer-email").textContent = site.contact_email;
+    if (byId("footer-address") && site.address) byId("footer-address").textContent = site.address;
+    if (site.social_links) {
+      if (byId("footer-fb")) byId("footer-fb").href = site.social_links.facebook || "#";
+      if (byId("footer-yt")) byId("footer-yt").href = site.social_links.youtube || "#";
+      if (byId("footer-tt")) byId("footer-tt").href = site.social_links.tiktok || "#";
+    }
+  })();
+</script>
+<script src="../assets/js/author.js"></script>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
