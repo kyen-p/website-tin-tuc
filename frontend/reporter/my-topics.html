@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đề tài của tôi - Phóng viên | Mạch Tin</title>
+
+  <!-- CSS Nền tảng & Layout Quản trị -->
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/admin-layout.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+
+  <div class="admin-workspace">
+    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <aside id="admin-sidebar"></aside>
+
+    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
+    <div class="admin-main">
+      <!-- Topbar tối giản: Tên & Avatar -->
+      <header id="admin-topbar"></header>
+
+      <!-- Nội dung chính -->
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <h1 class="admin-page-title">Đề tài của tôi</h1>
+          <p class="admin-page-subtitle">Danh sách các đề tài được Biên tập viên phân công và tiến độ thực hiện.</p>
+        </div>
+
+        <div id="workspace-content">
+          <!-- 1. Thanh bộ lọc & Tìm kiếm -->
+          <div id="topic-filter-mount"></div>
+
+          <!-- 2. Danh sách Đề tài -->
+          <div id="topic-list-mount"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal Chi tiết Đề tài Phân công -->
+  <div id="topic-detail-modal-container"></div>
+
+  <!-- Custom Styling cho Tabs & Đề tài -->
+  <style>
+    .admin-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      user-select: none;
+    }
+    .admin-tab-btn:hover {
+      background: rgba(19, 27, 46, 0.04);
+      color: var(--ink);
+    }
+    .admin-tab-btn.active {
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(19, 27, 46, 0.15);
+    }
+    .admin-tab-btn .tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-family: var(--f-mono);
+      font-weight: 700;
+      background: rgba(19, 27, 46, 0.08);
+      color: var(--ink);
+      transition: all 0.18s ease;
+    }
+    .admin-tab-btn.active .tab-badge {
+      background: rgba(255, 255, 255, 0.25) !important;
+      color: #fff !important;
+    }
+
+    .topic-card-item {
+      background: #FFFFFF;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 4px rgba(19, 27, 46, 0.03);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+      position: relative;
+    }
+    .topic-card-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(19, 27, 46, 0.06);
+      border-color: rgba(184, 147, 79, 0.35);
+    }
+
+    .topic-btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(19, 27, 46, 0.08);
+    }
+    .topic-btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(19, 27, 46, 0.15);
+    }
+  </style>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="../assets/js/mock-data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/admin-layout.js"></script>
+  <script src="../assets/js/reporter-topics.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initAdminLayout("reporter", "my-topics");
+    });
+  </script>
+</body>
+</html>

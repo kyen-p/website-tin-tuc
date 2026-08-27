@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài chờ duyệt - Biên tập | Mạch Tin</title>
+
+  <!-- CSS Nền tảng & Layout Quản trị -->
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/admin-layout.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+
+  <div class="admin-workspace">
+    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <aside id="admin-sidebar"></aside>
+
+    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
+    <div class="admin-main">
+      <!-- Topbar tối giản: Tên & Avatar -->
+      <header id="admin-topbar"></header>
+
+      <!-- Nội dung chính -->
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <h1 class="admin-page-title">Xử lý bài viết chờ duyệt</h1>
+          <p class="admin-page-subtitle">Kiểm duyệt nội dung bài viết phóng viên gửi lên, duyệt xuất bản hoặc yêu cầu sửa đổi.</p>
+        </div>
+
+        <div id="workspace-content">
+          <!-- Sẽ phát triển chi tiết ở các bước sau -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="../assets/js/mock-data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/admin-layout.js"></script>
+  <script src="../assets/js/editor-pending-articles.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initAdminLayout("editor", "pending-articles");
+    });
+  </script>
+</body>
+</html>

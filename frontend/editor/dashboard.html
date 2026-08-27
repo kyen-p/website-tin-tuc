@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thống kê nội dung - Ban Biên tập | Mạch Tin</title>
+
+  <!-- CSS Nền tảng & Layout Quản trị -->
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/admin-layout.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="admin-workspace">
+    <!-- 1. SIDEBAR CỐ ĐỊNH (Tự động render bởi admin-layout.js) -->
+    <aside id="admin-sidebar"></aside>
+
+    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
+    <div class="admin-main">
+      <!-- Topbar tối giản: Tên & Avatar -->
+      <header id="admin-topbar"></header>
+
+      <!-- Nội dung chính -->
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <h1 class="admin-page-title">Thống kê nội dung</h1>
+          <p class="admin-page-subtitle">Giám sát hiệu suất chuyên mục, năng suất phóng viên, xu hướng tag và bài viết nổi bật.</p>
+        </div>
+
+        <div id="workspace-content" style="display: flex; flex-direction: column; gap: 24px;">
+          
+          <!-- PHẦN 1: TƯƠNG QUAN CHUYÊN MỤC (BIỂU ĐỒ CỘT NHÓM FULL WIDTH) -->
+          <section class="admin-card" id="section-categories">
+            <div class="admin-card__header">
+              <div class="admin-card__title-group">
+                <h2 class="admin-card__title">Hiệu suất Chuyên mục (Lượt xem & Số bài viết)</h2>
+                <span class="admin-badge" style="background: rgba(184, 147, 79, 0.12); color: #8F7239; border: 1px solid rgba(184, 147, 79, 0.3); font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600;">Toàn tòa soạn</span>
+              </div>
+              <p style="font-size: 12.5px; color: var(--muted); margin: 0;">Biểu đồ cột nhóm so sánh trực quan tổng lượt xem và số lượng bài viết theo từng chuyên mục</p>
+            </div>
+            
+            <div style="padding: 20px 24px;">
+              <div style="background: #FCFAF6; padding: 18px 20px; border-radius: 8px; border: 1px solid var(--line-soft); display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.04em;">
+                    Tương quan Lưu lượng đọc vs Số bài viết xuất bản
+                  </div>
+                  <div style="font-size: 11.5px; color: var(--muted); font-family: var(--f-mono);">
+                    Dữ liệu tích lũy tất cả chuyên mục
+                  </div>
+                </div>
+                <div style="position: relative; height: 320px; width: 100%;">
+                  <canvas id="categoryChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- PHẦN 2 & PHẦN 3: NĂNG SUẤT PHÓNG VIÊN & XU HƯỚNG TAG (Grid 2 cột rộng rãi) -->
+          <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px; align-items: stretch;">
+            
+            <!-- Cột Trái: Bảng Năng suất Phóng viên (KPI Table, Không avatar, Hiển thị Tên + Username) -->
+            <section class="admin-card" id="section-reporters" style="display: flex; flex-direction: column; height: 100%;">
+              <div class="admin-card__header">
+                <div class="admin-card__title-group">
+                  <h2 class="admin-card__title">Năng suất Phóng viên</h2>
+                  <span class="admin-badge" style="background: rgba(46, 125, 50, 0.1); color: #2E7D32; border: 1px solid rgba(46, 125, 50, 0.25); font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600;">Ban Phóng viên</span>
+                </div>
+                <p style="font-size: 12px; color: var(--muted); margin: 0;">Theo dõi bài đã đăng, tổng view, bài chờ duyệt & đề tài đã làm</p>
+              </div>
+              <div style="flex: 1; overflow: hidden; padding: 0;">
+                <table class="admin-table" style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr>
+                      <th style="padding: 12px 16px; text-align: left;">Phóng viên</th>
+                      <th style="padding: 12px 14px; text-align: right; white-space: nowrap;">Đã đăng</th>
+                      <th style="padding: 12px 14px; text-align: right; white-space: nowrap;">Tổng view</th>
+                      <th style="padding: 12px 14px; text-align: center; white-space: nowrap;">Chờ duyệt</th>
+                      <th style="padding: 12px 16px; text-align: center; white-space: nowrap;">Đề tài đã làm</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reporter-table-body">
+                    <!-- Đổ dữ liệu từ JS -->
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Cột Phải: Biểu đồ Top 10 Tag toàn hệ thống -->
+            <section class="admin-card" id="section-tags" style="display: flex; flex-direction: column; height: 100%;">
+              <div class="admin-card__header">
+                <div class="admin-card__title-group">
+                  <h2 class="admin-card__title">Top 10 Thẻ Tag nổi bật</h2>
+                  <span class="admin-badge" style="background: rgba(184, 147, 79, 0.12); color: #8F7239; border: 1px solid rgba(184, 147, 79, 0.3); font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600;">Toàn hệ thống</span>
+                </div>
+                <p style="font-size: 12px; color: var(--muted); margin: 0;">Top 10 thẻ tag được gắn nhiều nhất trên toàn bộ bài viết</p>
+              </div>
+              <div style="padding: 16px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                <div style="position: relative; height: 280px; width: 100%;">
+                  <canvas id="topTagsChart"></canvas>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+        </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="../assets/js/mock-data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/admin-layout.js"></script>
+  <script src="../assets/js/editor-dashboard.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initAdminLayout("editor", "dashboard");
+    });
+  </script>
+</body>
+</html>
+
+
