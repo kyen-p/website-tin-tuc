@@ -76,8 +76,9 @@ function renderMyCommentsList(currentUser) {
           thumbnail: "../assets/img/defaults/newspaper-article.webp"
         };
 
-        const articleUrl = `../public/article-detail.html?id=${article.id}`;
-        const viewCommentUrl = `../public/article-detail.html?id=${article.id}&comment_id=${comment.id}#comment-${comment.id}`;
+        const articleSlug = article.slug || (typeof slugify === "function" ? slugify(article.title) : "") || article.id;
+        const articleUrl = `../public/article-detail.html?slug=${encodeURIComponent(articleSlug)}`;
+        const viewCommentUrl = `../public/article-detail.html?slug=${encodeURIComponent(articleSlug)}&comment_id=${comment.id}#comment-${comment.id}`;
         
         const rawCover = article.cover_image || article.thumbnail || "";
         const coverHtml = typeof renderCoverImage === "function"

@@ -515,16 +515,17 @@
 
       const coverImg = extractThumbnail(art, cat);
       const thumbHtml = renderTableCoverThumb(coverImg, art.title);
+      const detailUrl = typeof getArticleDetailUrl === "function" ? getArticleDetailUrl(art, "../public/") : `../public/article-detail.html?slug=${encodeURIComponent(art.slug || art.id)}`;
 
       return `
         <tr>
           <td>
             <div class="admin-article-cell">
-              <a href="../public/article-detail.html?id=${art.id}" target="_blank" title="Bấm để xem chi tiết bài viết" style="display: block; flex-shrink: 0; text-decoration: none;">
+              <a href="${detailUrl}" target="_blank" title="Bấm để xem chi tiết bài viết" style="display: block; flex-shrink: 0; text-decoration: none;">
                 ${thumbHtml}
               </a>
               <div class="admin-article-info">
-                <a href="../public/article-detail.html?id=${art.id}" target="_blank" class="admin-article-title-link" title="${escapeHtml(art.title)}">
+                <a href="${detailUrl}" target="_blank" class="admin-article-title-link" title="${escapeHtml(art.title)}">
                   ${escapeHtml(art.title)}
                 </a>
                 <div class="admin-article-sapo-text">${escapeHtml(art.short_description || "")}</div>

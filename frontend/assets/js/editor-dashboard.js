@@ -1,10 +1,8 @@
 /**
  * editor-dashboard.js - Controller xử lý tính toán & hiển thị số liệu thống kê cho Dashboard Biên tập viên (Editor)
- * Đáp ứng đầy đủ 4 phần:
- * 1. Tương quan Chuyên mục (Bảng số liệu + Biểu đồ Cột nhóm: Tổng lượt view vs Số bài viết)
- * 2. Bảng theo dõi năng suất Phóng viên (Đã đăng, Tổng view, Chờ duyệt, Đề tài đang thực hiện)
- * 3. Xu hướng Thẻ Tag (Biểu đồ 2: Top 10 Tags 7 ngày qua - Cột ngang)
- * 4. Bảng xếp hạng Top 10 Bài viết đã đăng trong 7 ngày qua
+ * 1. Tương quan Chuyên mục (Biểu đồ Cột nhóm: Tổng lượt view vs Số bài viết)
+ * 2. Bảng theo dõi năng suất Phóng viên (Đã đăng, Tổng view, Chờ duyệt)
+ * 3. Xu hướng Thẻ Tag (Biểu đồ Cột ngang: Top 10 Thẻ Tag)
  */
 
 (function () {
@@ -13,15 +11,6 @@
   // Biến lưu trữ biểu đồ để hủy (destroy) khi re-render
   let categoryChartInstance = null;
   let topTagsChartInstance = null;
-
-  // Trạng thái sắp xếp & tìm kiếm bảng theo dõi đề tài & hạn chót:
-  // sortBy: 'deadline'
-  // sortDirection: 'asc' hoặc 'desc'
-  let currentSortBy = "deadline";
-  let currentSortDirection = "asc";
-  let topicsDeadlineData = [];
-  let topicsSearchQuery = "";
-  let topicsStatusFilter = "all";
 
   /**
    * Khởi chạy khi trang sẵn sàng
@@ -41,9 +30,6 @@
     const catStats = calculateCategoryStats();
     renderReporterSection();
     const topTagsStats = renderTopTagsSection();
-    if (document.getElementById("topics-deadline-table")) {
-      renderTopicsDeadlineSection();
-    }
 
     // 2. Vẽ 2 biểu đồ trực quan (Chart.js)
     initCategoryChart(catStats);
@@ -58,17 +44,6 @@
       return getSystemTime();
     }
     return new Date("2026-08-14T23:59:59");
-  }
-
-  function isWithinLast7Days(dateString, refDate) {
-    if (!dateString) return false;
-    const itemDate = new Date(String(dateString).replace(" ", "T")).getTime();
-    if (isNaN(itemDate)) return false;
-    const targetRef = refDate || getLatestReferenceDate();
-    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-    const refTime = targetRef.getTime();
-    // Nằm trong khoảng [refTime - 7 ngày, refTime]
-    return itemDate >= (refTime - sevenDaysMs) && itemDate <= refTime;
   }
 
   /**
@@ -118,13 +93,12 @@
    * =========================================================================
    * PHẦN 2: BẢNG THEO DÕI NĂNG SUẤT PHÓNG VIÊN
    * Lọc toàn bộ user có role: 'reporter'
-   * Cột: Tên & Username Phóng viên (Bỏ Avatar), Bài đã đăng, Tổng view, Chờ duyệt, Đề tài đang thực hiện
+   * Cột: Tên & Username Phóng viên, Bài đã đăng, Tổng view, Chờ duyệt
    * =========================================================================
    */
   function renderReporterSection() {
     const users = fetchTable("users");
     const articles = fetchTable("articles");
-    const topics = fetchTable("topics");
 
     // Lọc toàn bộ phóng viên
     const reporters = users.filter((u) => u.role === "reporter");
@@ -141,12 +115,6 @@
         .filter((a) => a.status === "published")
         .reduce((sum, a) => sum + (Number(a.view_count || a.views) || 0), 0);
 
-      // Đề tài đã làm (trạng thái đã nộp: 'submitted')
-      const submittedTopicsCount = topics.filter(
-        (t) => (String(t.reporter_id) === String(rep.id) || String(t.assigned_to) === String(rep.id)) &&
-               t.status === "submitted"
-      ).length;
-
       return {
         id: rep.id,
         name: rep.full_name || rep.username,
@@ -155,14 +123,13 @@
         publishedCount,
         totalViews,
         pendingCount,
-        submittedTopicsCount,
       };
     });
 
     const tbody = document.getElementById("reporter-table-body");
     if (tbody) {
       if (reporterStats.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center" style="padding:20px; color:var(--muted);">Chưa có phóng viên nào trong ban.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center" style="padding:20px; color:var(--muted);">Chưa có phóng viên nào trong ban.</td></tr>`;
       } else {
         tbody.innerHTML = reporterStats
           .map(
@@ -182,17 +149,10 @@
             <td style="padding: 12px 14px; text-align: right; font-weight: 700; font-family: var(--f-mono); color: #8F7239; white-space: nowrap;">
               ${rep.totalViews.toLocaleString("vi-VN")}
             </td>
-            <td style="padding: 12px 14px; text-align: center; white-space: nowrap;">
+            <td style="padding: 12px 16px; text-align: center; white-space: nowrap;">
               ${
                 rep.pendingCount > 0
                   ? `<span class="admin-badge" style="background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; font-weight: 700; font-family: var(--f-mono); padding: 2px 8px; border-radius: 12px; font-size: 11.5px;">${rep.pendingCount} bài</span>`
-                  : `<span style="color: var(--muted); font-size: 12px; font-family: var(--f-mono);">0</span>`
-              }
-            </td>
-            <td style="padding: 12px 16px; text-align: center; white-space: nowrap;">
-              ${
-                rep.submittedTopicsCount > 0
-                  ? `<span class="admin-badge" style="background: rgba(184, 147, 79, 0.15); color: #8F7239; border: 1px solid rgba(184, 147, 79, 0.3); font-weight: 700; font-family: var(--f-mono); padding: 2px 8px; border-radius: 12px; font-size: 11.5px;">${rep.submittedTopicsCount} đề tài</span>`
                   : `<span style="color: var(--muted); font-size: 12px; font-family: var(--f-mono);">0</span>`
               }
             </td>
@@ -248,289 +208,6 @@
 
   function renderTopTagsSection() {
     return calculateTop10Tags();
-  }
-
-  /**
-   * =========================================================================
-   * PHẦN 4: ⏱️ THEO DÕI ĐỀ TÀI & HẠN CHÓT NỘP BÀI (DEADLINES)
-   * - Hiển thị danh sách đề tài được phân công, hạn chót và tiến độ thực hiện
-   * - Cảnh báo các đề tài sắp tới hạn (trong 24-48h) hoặc đã quá hạn
-   * - Hỗ trợ lọc trạng thái, tìm kiếm và liên kết nhanh đến bài nộp/thẩm định
-   * =========================================================================
-   */
-  function renderTopicsDeadlineSection() {
-    const topics = fetchTable("topics");
-    const categories = fetchTable("categories");
-    const users = fetchTable("users");
-    const articles = fetchTable("articles");
-    const topicTags = fetchTable("topic_tags");
-    const tags = fetchTable("tags");
-
-    const refDate = getLatestReferenceDate();
-    const nowMs = refDate.getTime();
-
-    topicsDeadlineData = topics.map((t) => {
-      const cat = categories.find((c) => String(c.id) === String(t.category_id));
-      const reporter = users.find((u) => String(u.id) === String(t.reporter_id));
-      
-      // Lấy danh sách tag của đề tài
-      const currentTopicTagIds = topicTags
-        .filter((tt) => String(tt.topic_id) === String(t.id))
-        .map((tt) => tt.tag_id);
-      const attachedTags = tags.filter((tag) => currentTopicTagIds.includes(tag.id));
-
-      // Lấy bài viết liên quan (nếu phóng viên đã nộp)
-      const relArticle = articles.find((a) => String(a.topic_id) === String(t.id));
-
-      // Tính hạn chót
-      const deadlineDate = new Date(String(t.deadline).replace(" ", "T"));
-      const deadlineMs = deadlineDate.getTime();
-      const diffMs = deadlineMs - nowMs;
-      const diffHours = Math.round(diffMs / (1000 * 60 * 60));
-      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
-      let actualStatus = t.status;
-      let statusLabel = "Đang thực hiện";
-      let statusBadgeClass = "admin-status-badge--pending";
-      let deadlineNote = "";
-
-      if (t.status === "submitted") {
-        actualStatus = "submitted";
-        statusLabel = "Đã nộp bài";
-        statusBadgeClass = "admin-status-badge--published";
-        deadlineNote = t.submitted_at ? `Đã nộp lúc: ${formatSimpleDate(t.submitted_at)}` : "Đang chờ thẩm định";
-      } else if (t.status === "overdue" || nowMs > deadlineMs) {
-        actualStatus = "overdue";
-        statusLabel = "Quá hạn";
-        statusBadgeClass = "admin-status-badge--rejected";
-        const overdueDays = Math.max(1, Math.abs(diffDays));
-        deadlineNote = `Trễ ${overdueDays} ngày`;
-      } else {
-        actualStatus = "assigned";
-        statusLabel = "Đang làm";
-        statusBadgeClass = "admin-status-badge--pending";
-        if (diffHours <= 0) {
-          deadlineNote = "Hết hạn hôm nay";
-        } else if (diffHours <= 24) {
-          deadlineNote = `Còn ${diffHours} giờ`;
-        } else {
-          deadlineNote = `Còn ${diffDays} ngày`;
-        }
-      }
-
-      return {
-        id: t.id,
-        title: t.title,
-        description: t.description || "",
-        categoryName: cat ? cat.name : "Thời sự",
-        reporterName: reporter ? reporter.full_name : "Phóng viên",
-        reporterAvatar: reporter ? reporter.avatar : "/assets/images/avatar-5.png",
-        tags: attachedTags,
-        deadline: t.deadline,
-        deadlineMs: isNaN(deadlineMs) ? 0 : deadlineMs,
-        submitted_at: t.submitted_at,
-        actualStatus: actualStatus,
-        statusLabel: statusLabel,
-        statusBadgeClass: statusBadgeClass,
-        deadlineNote: deadlineNote,
-        articleId: relArticle ? relArticle.id : null,
-        articleTitle: relArticle ? relArticle.title : "",
-      };
-    });
-
-    // Gắn sự kiện
-    attachTopicsDeadlineEvents();
-
-    // Sắp xếp và render
-    sortAndRenderTopicsDeadlineTable();
-  }
-
-  function formatSimpleDate(dateStr) {
-    if (!dateStr) return "--";
-    const cleanStr = String(dateStr).replace("T", " ");
-    const parts = cleanStr.substring(0, 16).split(" ");
-    if (parts.length >= 2) {
-      const d = parts[0].split("-");
-      const time = parts[1];
-      if (d.length === 3) {
-        return `${time} ${d[2]}/${d[1]}`;
-      }
-    }
-    return cleanStr;
-  }
-
-  function attachTopicsDeadlineEvents() {
-    const searchInput = document.getElementById("topics-deadline-search");
-    if (searchInput && !searchInput.dataset.hasListener) {
-      searchInput.dataset.hasListener = "true";
-      searchInput.addEventListener("input", (e) => {
-        topicsSearchQuery = (e.target.value || "").trim();
-        sortAndRenderTopicsDeadlineTable();
-      });
-    }
-
-    const statusFilter = document.getElementById("topics-status-filter");
-    if (statusFilter && !statusFilter.dataset.hasListener) {
-      statusFilter.dataset.hasListener = "true";
-      statusFilter.addEventListener("change", (e) => {
-        topicsStatusFilter = e.target.value || "all";
-        sortAndRenderTopicsDeadlineTable();
-      });
-    }
-
-    const thDeadline = document.getElementById("th-sort-deadline");
-    if (thDeadline && !thDeadline.dataset.hasListener) {
-      thDeadline.dataset.hasListener = "true";
-      thDeadline.addEventListener("click", () => {
-        currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
-        sortAndRenderTopicsDeadlineTable();
-      });
-    }
-  }
-
-  function updateTopicsSortHeaderIcon() {
-    const thDeadline = document.getElementById("th-sort-deadline");
-    const deadlineIcon = document.getElementById("sort-deadline-icon");
-
-    if (thDeadline && deadlineIcon) {
-      thDeadline.classList.add("is-sorted");
-      deadlineIcon.innerHTML = currentSortDirection === "asc" ? "▲" : "▼";
-    }
-  }
-
-  function sortAndRenderTopicsDeadlineTable() {
-    updateTopicsSortHeaderIcon();
-
-    // 1. Lọc theo trạng thái và từ khóa tìm kiếm
-    let filtered = topicsDeadlineData.filter((item) => {
-      if (topicsStatusFilter !== "all" && item.actualStatus !== topicsStatusFilter) {
-        return false;
-      }
-      if (!topicsSearchQuery) return true;
-      const q = topicsSearchQuery.toLowerCase();
-      const matchTag = item.tags.some((t) => t.name.toLowerCase().includes(q));
-      return (
-        item.title.toLowerCase().includes(q) ||
-        item.categoryName.toLowerCase().includes(q) ||
-        item.reporterName.toLowerCase().includes(q) ||
-        matchTag
-      );
-    });
-
-    // 2. Cập nhật huy hiệu số lượng
-    const countBadge = document.getElementById("topics-deadline-count-badge");
-    if (countBadge) {
-      countBadge.textContent = `${filtered.length} đề tài`;
-    }
-
-    // 3. Sắp xếp theo hạn chót (tăng dần: gần hạn/quá hạn lên đầu)
-    filtered.sort((a, b) => {
-      return currentSortDirection === "asc"
-        ? a.deadlineMs - b.deadlineMs
-        : b.deadlineMs - a.deadlineMs;
-    });
-
-    const tbody = document.getElementById("topics-deadline-body");
-    if (!tbody) return;
-
-    if (filtered.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px 20px; color: var(--muted); font-size: 13.5px; font-style: italic;">Không tìm thấy đề tài nào phù hợp.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = filtered
-      .map((item, index) => {
-        // Format ngày hạn chót DD/MM/YYYY HH:mm
-        let deadlineStr = "--";
-        if (item.deadline) {
-          const parts = String(item.deadline).split(" ");
-          if (parts.length >= 2) {
-            const datePart = parts[0].split("-");
-            if (datePart.length === 3) {
-              deadlineStr = `${datePart[2]}/${datePart[1]}/${datePart[0]} <span style="color: var(--muted); font-size: 11.5px;">(${parts[1].substring(0, 5)})</span>`;
-            }
-          }
-        }
-
-        // Tag gợi ý
-        const tagsHtml =
-          item.tags.length > 0
-            ? `<div style="display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px;">
-                ${item.tags
-                  .map(
-                    (t) =>
-                      `<span style="background: rgba(184, 147, 79, 0.12); color: #8F7239; font-size: 10.5px; padding: 1px 6px; border-radius: 4px; font-weight: 500;">#${escapeHTML(
-                        t.name
-                      )}</span>`
-                  )
-                  .join("")}
-              </div>`
-            : "";
-
-        // Nút hành động
-        let actionButtons = "";
-        if (item.actualStatus === "submitted" && item.articleId) {
-          actionButtons = `
-            <a href="pending-articles.html?id=${item.articleId}" class="admin-btn admin-btn--primary" style="font-size: 11.5px; padding: 4px 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; background: #1B2A4A; color: #FFF;" title="Thẩm định bài nộp">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-              <span>Thẩm định</span>
-            </a>
-          `;
-        } else {
-          actionButtons = `
-            <a href="topics.html?id=${item.id}" class="admin-btn admin-btn--default" style="font-size: 11.5px; padding: 4px 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Xem chi tiết đề tài">
-              <span>Chi tiết</span>
-            </a>
-          `;
-        }
-
-        return `
-        <tr>
-          <td class="admin-col-index">
-            ${index + 1}
-          </td>
-          <td style="vertical-align: middle;">
-            <a href="topics.html?id=${item.id}" style="font-weight: 600; color: var(--ink); text-decoration: none; font-size: 13.5px; line-height: 1.4; display: block;" title="Xem đề tài">
-              ${escapeHTML(item.title)}
-            </a>
-            ${tagsHtml}
-          </td>
-          <td class="admin-col-category">
-            <span class="admin-category-pill">
-              ${escapeHTML(item.categoryName)}
-            </span>
-          </td>
-          <td>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <img src="${item.reporterAvatar}" alt="" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line);">
-              <span style="font-weight: 500; font-size: 13px; color: var(--ink);">
-                ${escapeHTML(item.reporterName)}
-              </span>
-            </div>
-          </td>
-          <td class="admin-col-date">
-            <div style="font-weight: 600; font-size: 12.5px; color: var(--ink);">
-              ${deadlineStr}
-            </div>
-            <div style="font-size: 11px; margin-top: 2px; color: ${item.actualStatus === "overdue" ? "#DC2626" : item.actualStatus === "submitted" ? "#16A34A" : "#D97706"}; font-weight: 600;">
-              ${item.deadlineNote}
-            </div>
-          </td>
-          <td>
-            <span class="admin-status-badge ${item.statusBadgeClass}">
-              ${item.statusLabel}
-            </span>
-          </td>
-          <td style="text-align: right; white-space: nowrap;">
-            ${actionButtons}
-          </td>
-        </tr>
-      `;
-      })
-      .join("");
   }
 
   /**
@@ -678,7 +355,7 @@
               color: "#6C8EBF",
             },
             grid: {
-              drawOnChartArea: false, // Tránh chồng chéo lưới
+              drawOnChartArea: false,
             },
           },
         },
@@ -688,7 +365,7 @@
 
   /**
    * =========================================================================
-   * BIỂU ĐỒ 2: HORIZONTAL BAR CHART (CỘT NGANG) - TOP 10 THẺ TAG (7 NGÀY QUA)
+   * BIỂU ĐỒ 2: HORIZONTAL BAR CHART (CỘT NGANG) - TOP 10 THẺ TAG
    * Trục Y: Tên 10 thẻ tag
    * Độ dài thanh bar: Số lượng bài viết đã gắn tag đó
    * =========================================================================
@@ -704,7 +381,7 @@
     if (!topTagsStats || topTagsStats.length === 0) {
       const parent = canvas.parentElement;
       if (parent) {
-        parent.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 100%; min-height: 240px; color: var(--muted); font-size: 13px; font-style: italic; background: #FCFAF6; border-radius: 6px; border: 1px dashed var(--line-soft); text-align: center; padding: 20px;">Không có dữ liệu thẻ tag trong 7 ngày gần nhất.</div>`;
+        parent.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 100%; min-height: 240px; color: var(--muted); font-size: 13px; font-style: italic; background: #FCFAF6; border-radius: 6px; border: 1px dashed var(--line-soft); text-align: center; padding: 20px;">Không có dữ liệu thẻ tag.</div>`;
       }
       return;
     }
@@ -721,7 +398,7 @@
           {
             label: "Số bài viết gắn thẻ",
             data: counts,
-            backgroundColor: "rgba(110, 170, 143, 0.85)", // Sage Green Pastel đồng nhất
+            backgroundColor: "rgba(110, 170, 143, 0.85)",
             hoverBackgroundColor: "#5D967B",
             borderColor: "#6EAA8F",
             borderWidth: 1,
@@ -731,7 +408,7 @@
         ],
       },
       options: {
-        indexAxis: "y", // Cột ngang
+        indexAxis: "y",
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
@@ -793,9 +470,8 @@
       .replace(/'/g, "&#039;");
   }
 
-  // Export hàm logic để tái sử dụng nếu cần
   window.editorDashboardLogic = {
     getCategoryStats: calculateCategoryStats,
-    getTopTagsStats: calculateTop10Tags7Days,
+    getTopTagsStats: calculateTop10Tags,
   };
 })();

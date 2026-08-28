@@ -14,7 +14,7 @@
 const SESSION_KEY = "machtin_current_user_id";
 const DB_PREFIX = "machtin_tbl_";
 const DB_VERSION_KEY = "machtin_db_version";
-const CURRENT_DB_VERSION = "3.0.0"; // Chuẩn hóa 10 bảng (8 thực thể: site_settings, users, categories, tags, articles, comments, favorites, topics; 2 liên kết: article_tags, topic_tags)
+const CURRENT_DB_VERSION = "4.0.0"; // Chuẩn hóa 8 bảng (7 thực thể: site_settings, users, categories, tags, articles, comments, favorites; 1 liên kết: article_tags)
 
 /**
  * Lấy mốc thời gian hệ thống dùng chung (System Reference Time)
@@ -174,6 +174,59 @@ function checkAuth(allowedRoles) {
 
 // 3. FORMATTING & SECURITY UTILITIES
 // ==============================================================================
+
+/**
+ * Hàm chuyển đổi chuỗi tiếng Việt thành Slug chuẩn SEO & URL an toàn
+ * Ví dụ: "Thời sự & Chính trị: Giá vàng 28/08 tăng!" -> "thoi-su-chinh-tri-gia-vang-2808-tang"
+ */
+function slugify(text) {
+  if (text === null || text === undefined) return "";
+  let str = String(text).trim().toLowerCase();
+
+  // 1. Chuyển đổi các ký tự tiếng Việt có dấu sang không dấu
+  str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+  str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+  str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+  str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+  str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+  str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+  str = str.replace(/đ/g, "d");
+
+  // 2. Chuẩn hóa NFD để lọc sạch các dấu thanh phụ tổ hợp
+  str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  // 3. Loại bỏ ký tự đặc biệt, chỉ giữ lại chữ cái a-z, số 0-9 và khoảng trắng / gạch ngang
+  str = str.replace(/[^a-z0-9\s-]/g, "");
+
+  // 4. Thay thế khoảng trắng và nhiều dấu gạch ngang liên tiếp thành 1 dấu gạch ngang duy nhất
+  str = str.replace(/[\s_-]+/g, "-");
+
+  // 5. Cắt bỏ dấu gạch ngang thừa ở đầu và cuối chuỗi
+  str = str.replace(/^-+|-+$/g, "");
+
+  return str;
+}
+window.slugify = slugify;
+
+/**
+ * Trả về URL chi tiết bài viết chuẩn SEO sử dụng ?slug=...
+ */
+function getArticleDetailUrl(article, prefix = "") {
+  if (!article) return `${prefix}article-detail.html`;
+  const slug = article.slug || (typeof slugify === "function" ? slugify(article.title) : "") || article.id;
+  return `${prefix}article-detail.html?slug=${encodeURIComponent(slug)}`;
+}
+window.getArticleDetailUrl = getArticleDetailUrl;
+
+/**
+ * Trả về URL trang tác giả chuẩn SEO sử dụng ?username=... hoặc ?slug=...
+ */
+function getAuthorProfileUrl(userOrAuthor, prefix = "") {
+  if (!userOrAuthor) return `${prefix}author.html`;
+  const username = userOrAuthor.username || (typeof slugify === "function" ? slugify(userOrAuthor.full_name) : "") || userOrAuthor.id;
+  return `${prefix}author.html?username=${encodeURIComponent(username)}`;
+}
+window.getAuthorProfileUrl = getAuthorProfileUrl;
 
 /**
  * Chống tấn công XSS và lỗi ký tự đặc biệt
@@ -506,7 +559,7 @@ function initPublicHeader(activeCategorySlug = "") {
       .map((a) => `
         <span>
           <strong class="ticker__tag">NÓNG -</strong>
-          <a href="${publicPrefix}article-detail.html?id=${a.id}" class="ticker__link">${escapeHtml(a.title)}</a>
+          <a href="${getArticleDetailUrl(a, publicPrefix)}" class="ticker__link">${escapeHtml(a.title)}</a>
         </span>
       `)
       .join("");

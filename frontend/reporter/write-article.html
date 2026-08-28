@@ -34,63 +34,12 @@
         </div>
 
         <div id="workspace-content">
-          <!-- Banner Đề tài nếu có -->
-          <div id="topic-banner-mount"></div>
-
           <!-- Form layout 2 cột -->
           <form id="article-form" onsubmit="return false;">
             <div class="admin-form-layout">
               
               <!-- CỘT TRÁI: NỘI DUNG CHÍNH (Tiêu đề, Sapo, CKEditor) -->
               <div class="admin-form-main-col">
-
-                <!-- KHỐI YÊU CẦU & ĐỊNH HƯỚNG TỪ BIÊN TẬP VIÊN (Hiện khi nhận đề tài được giao) -->
-                <div id="topic-requirement-card" class="admin-form-card" style="display: none; background: #FFFDF9; border: 1.5px solid #F3DFC1; border-left: 5px solid var(--brass); margin-bottom: 20px; box-shadow: 0 2px 8px rgba(184, 147, 79, 0.08);">
-                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #F3DFC1;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                      <div style="width: 28px; height: 28px; border-radius: 6px; background: rgba(184, 147, 79, 0.15); display: flex; align-items: center; justify-content: center; color: var(--brass-dark);">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                        </svg>
-                      </div>
-                      <div>
-                        <div style="font-size: 13.5px; font-weight: 700; color: #78350F; text-transform: uppercase; letter-spacing: 0.3px;">
-                          Đề tài được phân công & Yêu cầu của Biên tập viên
-                        </div>
-                        <div id="topic-req-meta" style="font-size: 11.5px; color: #92400E; margin-top: 1px;"></div>
-                      </div>
-                    </div>
-                    <span id="topic-req-badge" style="font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 12px; background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A;">
-                      Đề tài được giao
-                    </span>
-                  </div>
-
-                  <!-- Tên đề tài gợi ý -->
-                  <div style="margin-bottom: 10px;">
-                    <div style="font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 2px;">
-                      Tên đề tài / Hướng đề xuất:
-                    </div>
-                    <div id="topic-req-title" style="font-size: 14.5px; font-weight: 700; color: #1E293B; font-family: var(--f-serif, serif);"></div>
-                  </div>
-
-                  <!-- Trường Yêu cầu & Định hướng của Biên tập viên (BẮT BUỘC BÁM SÁT) -->
-                  <div style="background: #FFFFFF; border: 1px solid #F3DFC1; border-radius: 6px; padding: 12px 14px; margin-top: 8px;">
-                    <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #B45309; text-transform: uppercase; letter-spacing: 0.2px; margin-bottom: 5px;">
-                      Yêu cầu cụ thể từ Biên tập viên:
-                    </div>
-                    <div id="topic-req-desc" style="font-size: 13.5px; color: #451A03; line-height: 1.6; white-space: pre-line;"></div>
-                  </div>
-                  
-                  <div style="font-size: 11.5px; color: #78350F; margin-top: 8px; display: flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="16" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    <span>Phóng viên có thể điều chỉnh lại tiêu đề bài viết cho hấp dẫn nhưng bắt buộc phải bám sát định hướng và yêu cầu trên.</span>
-                  </div>
-                </div>
 
                 <div class="admin-form-card">
                   <h3 class="admin-form-card__title">
@@ -135,23 +84,9 @@
 
                   <!-- Trình soạn thảo CKEditor 5 -->
                   <div class="admin-form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                      <label class="admin-form-label" style="margin: 0;">
-                        Nội dung chi tiết <span class="required-mark">*</span>
-                      </label>
-                      <!-- Nút chèn nhanh ảnh vào nội dung bài -->
-                      <div>
-                        <input type="file" id="content-image-upload" accept="image/*" style="display: none;" onchange="handleContentImageUpload(event)">
-                        <button type="button" class="admin-btn admin-btn--sm admin-btn--default" onclick="document.getElementById('content-image-upload').click()" style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
-                          </svg>
-                          <span>+ Chèn ảnh vào nội dung</span>
-                        </button>
-                      </div>
-                    </div>
+                    <label class="admin-form-label" style="margin-bottom: 8px;">
+                      Nội dung chi tiết <span class="required-mark">*</span>
+                    </label>
                     <div id="editor-container">
                       <textarea id="editor"></textarea>
                     </div>
@@ -319,7 +254,6 @@
     // Trạng thái Form
     let editorInstance = null;
     let currentArticleId = null;
-    let currentTopicId = null;
     let selectedTags = [];
     let currentCoverDataUrl = "";
     let systemTags = [];
@@ -339,14 +273,10 @@
       // 3. Kiểm tra URL Params
       const params = new URLSearchParams(window.location.search);
       const articleIdParam = params.get("id");
-      const topicIdParam = params.get("topic_id");
 
       if (articleIdParam) {
         currentArticleId = Number(articleIdParam);
         loadExistingArticle(currentArticleId);
-      } else if (topicIdParam) {
-        currentTopicId = Number(topicIdParam);
-        loadTopicInfo(currentTopicId);
       }
     });
 
@@ -432,18 +362,43 @@
           // Thêm ảnh vào nội dung
           const currentData = editorInstance.getData();
           editorInstance.setData(currentData + imageHtml);
-
-          // Nếu chưa có ảnh bìa, tự động gợi ý lấy ảnh này làm ảnh bìa
-          if (!currentCoverDataUrl) {
-            setCoverPreview(dataUrl);
-            showToast("Đã chèn ảnh vào bài và tự động đặt làm ảnh bìa!", "success");
-          } else {
-            showToast("Đã chèn hình ảnh vào nội dung bài viết!", "success");
-          }
+          showToast("Đã chèn hình ảnh vào nội dung bài viết!", "success");
         }
         e.target.value = "";
       };
       reader.readAsDataURL(file);
+    }
+
+    /**
+     * Adapter tải ảnh Base64 cho CKEditor 5 (không cần backend server, hỗ trợ paste/kéo thả/chọn file ảnh trực tiếp)
+     */
+    class CustomBase64UploadAdapter {
+      constructor(loader) {
+        this.loader = loader;
+      }
+
+      upload() {
+        return this.loader.file.then((file) => {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const dataUrl = reader.result;
+              resolve({ default: dataUrl });
+            };
+            reader.onerror = (error) => reject(error);
+            reader.onabort = () => reject();
+            reader.readAsDataURL(file);
+          });
+        });
+      }
+
+      abort() {}
+    }
+
+    function CustomUploadAdapterPlugin(editor) {
+      editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+        return new CustomBase64UploadAdapter(loader);
+      };
     }
 
     /**
@@ -452,13 +407,23 @@
     async function initCKEditor() {
       try {
         editorInstance = await ClassicEditor.create(document.querySelector("#editor"), {
+          extraPlugins: [CustomUploadAdapterPlugin],
           toolbar: [
             'heading', '|',
             'bold', 'italic', 'underline', 'link', '|',
             'bulletedList', 'numberedList', '|',
-            'blockQuote', 'insertTable', '|',
+            'imageUpload', 'insertTable', 'blockQuote', '|',
             'undo', 'redo'
           ],
+          image: {
+            toolbar: [
+              'imageTextAlternative',
+              'toggleImageCaption',
+              'imageStyle:inline',
+              'imageStyle:block',
+              'imageStyle:side'
+            ]
+          },
           placeholder: 'Bắt đầu viết nội dung bài báo tại đây...'
         });
       } catch (error) {
@@ -522,11 +487,6 @@
         removeCoverImage();
       }
 
-      if (art.topic_id) {
-        currentTopicId = art.topic_id;
-        loadTopicInfo(art.topic_id);
-      }
-
       // Đặt nội dung CKEditor
       if (editorInstance) {
         editorInstance.setData(art.content || "");
@@ -549,49 +509,6 @@
         });
       }
       renderSelectedTags();
-    }
-
-    /**
-     * Tải thông tin đề tài khi viết từ Phân công đề tài
-     */
-    function loadTopicInfo(topicId) {
-      const topics = getTable("topics") || [];
-      const users = getTable("users") || [];
-      const topic = topics.find(t => t.id === topicId);
-      if (!topic) return;
-
-      const editorUser = users.find(u => u.id === (topic.editor_id || topic.assigned_by)) || { full_name: "Biên tập viên", username: "editor" };
-
-      // 1. Hiển thị khối Yêu cầu của Biên tập viên trong form soạn thảo
-      const reqCard = document.getElementById("topic-requirement-card");
-      if (reqCard) {
-        reqCard.style.display = "block";
-        document.getElementById("topic-req-title").textContent = topic.title || "Đề tài tự do theo định hướng của BTV";
-        document.getElementById("topic-req-desc").textContent = topic.description || "Thực hiện theo tiêu chuẩn bài viết của tòa soạn.";
-        
-        const deadlineText = topic.deadline ? (typeof formatDate === 'function' ? formatDate(topic.deadline) : topic.deadline) : "Không giới hạn";
-        document.getElementById("topic-req-meta").textContent = `BTV giao: ${editorUser.full_name || editorUser.username} • Hạn nộp bài: ${deadlineText}`;
-      }
-
-      // 2. Tải sẵn tags gợi ý từ topic_tags nếu có
-      const topicTags = getTable("topic_tags") || [];
-      const systemAllTags = getTable("tags") || [];
-      const myTopicTagIds = topicTags.filter(tt => tt.topic_id === topicId).map(tt => tt.tag_id);
-      myTopicTagIds.forEach(tId => {
-        const found = systemAllTags.find(t => t.id === tId);
-        if (found && !selectedTags.includes(found.name) && selectedTags.length < 5) {
-          selectedTags.push(found.name);
-        }
-      });
-      renderSelectedTags();
-
-      // 3. Điền sẵn tiêu đề và chuyên mục nếu đang tạo bài mới
-      if (!currentArticleId) {
-        document.getElementById("article-title").value = topic.title || "";
-        if (topic.category_id) {
-          document.getElementById("article-category").value = topic.category_id;
-        }
-      }
     }
 
     /**
@@ -851,7 +768,6 @@
       let allArticles = getTable("articles") || [];
       let allTags = getTable("tags") || [];
       let allArticleTags = getTable("article_tags") || [];
-      let allTopics = getTable("topics") || [];
 
       const refNow = typeof getSystemTime === "function" ? getSystemTime() : new Date();
       const nowStr = refNow.toISOString().replace("T", " ").substring(0, 19);
@@ -897,9 +813,6 @@
           if (targetStatus === "pending") {
             allArticles[idx].rejection_reason = null; // Xóa lý do từ chối cũ
           }
-          if (currentTopicId) {
-            allArticles[idx].topic_id = currentTopicId;
-          }
         }
       } else {
         // TẠO MỚI BÀI VIẾT
@@ -918,7 +831,6 @@
           author_id: currentUser.id,
           author: currentUser.full_name || currentUser.username,
           category_id: Number(categoryId) || 1,
-          topic_id: currentTopicId ? Number(currentTopicId) : null,
           tags_text: [...selectedTags], // Lưu danh sách tên thẻ nguyên bản của PV
           is_notable_event: false,
           status: targetStatus,
@@ -944,24 +856,7 @@
       });
       saveTable("article_tags", allArticleTags);
 
-      // 3. Nếu đang viết theo Đề tài:
-      // - Nếu gửi duyệt (pending): Cập nhật đề tài sang 'submitted' (Đã nộp)
-      // - Nếu lưu nháp (draft) / thu hồi viết lại: Đề tài quay về 'assigned' (Đã giao / Đang làm)
-      if (currentTopicId) {
-        const topicIdx = allTopics.findIndex(t => Number(t.id) === Number(currentTopicId));
-        if (topicIdx !== -1) {
-          if (targetStatus === "pending") {
-            allTopics[topicIdx].status = "submitted";
-            allTopics[topicIdx].submitted_at = nowStr;
-          } else if (targetStatus === "draft") {
-            allTopics[topicIdx].status = "assigned";
-          }
-          allTopics[topicIdx].updated_at = nowStr;
-          saveTable("topics", allTopics);
-        }
-      }
-
-      // 4. Thông báo và điều hướng
+      // 3. Thông báo và điều hướng
       if (targetStatus === "pending") {
         showToast("Đã gửi bài viết lên Ban Biên tập để kiểm duyệt thành công!", "success");
       } else {

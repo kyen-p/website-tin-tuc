@@ -1,7 +1,7 @@
 function initArticleDetailPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const articleId = Number(urlParams.get("id")) || 0;
-  const articleSlug = urlParams.get("slug") || "";
+  const articleSlug = (urlParams.get("slug") || "").trim();
 
   const articles = getTable("articles");
   const categories = getTable("categories");
@@ -12,10 +12,17 @@ function initArticleDetailPage() {
   let favorites = getTable("favorites");
 
   let article = null;
-  if (articleId) {
-    article = articles.find((a) => a.id === articleId && a.status === "published");
-  } else if (articleSlug) {
+  if (articleSlug) {
     article = articles.find((a) => a.slug === articleSlug && a.status === "published");
+    if (!article) {
+      article = articles.find((a) => (a.slug || "").toLowerCase() === articleSlug.toLowerCase() && a.status === "published");
+    }
+    if (!article && typeof slugify === "function") {
+      article = articles.find((a) => slugify(a.title) === articleSlug && a.status === "published");
+    }
+  }
+  if (!article && articleId) {
+    article = articles.find((a) => a.id === articleId && a.status === "published");
   }
 
   const catSlug = article ? (categories.find((c) => c.id === article.category_id)?.slug || "") : "";
@@ -72,10 +79,12 @@ function initArticleDetailPage() {
   document.getElementById("article-title").textContent = article.title;
   document.getElementById("article-summary").textContent = article.summary || "";
 
+  const authorProfileUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(author) : `author.html?username=${encodeURIComponent(author.username || author.id)}`;
+
   document.getElementById("author-name-top").textContent = author.full_name;
-  document.getElementById("author-link-top").href = `author.html?id=${author.id}`;
+  document.getElementById("author-link-top").href = authorProfileUrl;
   if (document.getElementById("author-name-link")) {
-    document.getElementById("author-name-link").href = `author.html?id=${author.id}`;
+    document.getElementById("author-name-link").href = authorProfileUrl;
   }
   document.getElementById("article-time").textContent = formatDateTime(article.published_at || article.created_at);
   document.getElementById("article-views").textContent = `${formatNumber(article.views)} lượt đọc`;
@@ -87,16 +96,30 @@ function initArticleDetailPage() {
 
   const coverMount = document.getElementById("article-cover-mount");
   if (coverMount) {
-    coverMount.innerHTML = renderCoverImage(article.cover_image, article.title, "ph--wide");
+    // Ảnh bìa (Cover image / Thumbnail) phục vụ hiển thị ngoài danh sách bài viết (Trang chủ, Chuyên mục, Tìm kiếm).
+    // Trong trang chi tiết bài viết, toàn bộ nội dung & hình ảnh hiển thị theo đúng những gì tác giả soạn trong CKEditor.
+    // Đối với các bài viết văn bản thuần không có hình ảnh minh họa bên trong, chỉ hiển thị ảnh bìa nếu bài viết chưa từng chứa thẻ ảnh nào.
+    const hasImageInContent = article.content && /<img|<figure/i.test(article.content);
+    
+    if (article.cover_image && !hasImageInContent && !article.content?.includes("<img")) {
+      coverMount.innerHTML = renderCoverImage(article.cover_image, article.title, "ph--wide");
+      coverMount.style.display = "block";
+    } else {
+      coverMount.innerHTML = "";
+      coverMount.style.display = "none";
+    }
   }
 
   const contentContainer = document.getElementById("article-content-body");
   if (contentContainer) {
-    if (article.content) {
-      if (article.content.includes("<p>")) {
-        contentContainer.innerHTML = article.content;
+    if (article.content && article.content.trim()) {
+      const rawContent = article.content.trim();
+      // Nếu nội dung chứa bất kỳ thẻ HTML nào (CKEditor sinh ra <p>, <figure>, <img>, <h3>,...)
+      const hasHtmlTags = /<[a-z][\s\S]*>/i.test(rawContent);
+      if (hasHtmlTags) {
+        contentContainer.innerHTML = rawContent;
       } else {
-        contentContainer.innerHTML = article.content
+        contentContainer.innerHTML = rawContent
           .split(/\n\n+/)
           .filter(Boolean)
           .map((p) => `<p>${escapeHtml(p)}</p>`)
@@ -128,7 +151,7 @@ function initArticleDetailPage() {
 
   document.getElementById("author-name-bottom").textContent = author.full_name;
   document.getElementById("author-bio-bottom").textContent = author.bio || "Phóng viên chuyên trách tòa soạn Mạch Tin.";
-  document.getElementById("author-link-bottom").href = `author.html?id=${author.id}`;
+  document.getElementById("author-link-bottom").href = authorProfileUrl;
   const authorRoleBottom = document.getElementById("author-role-bottom");
   if (authorRoleBottom) {
     const roleLabels = { admin: "Quản trị viên", editor: "Biên tập viên", reporter: "Phóng viên", user: "Độc giả" };
@@ -136,7 +159,7 @@ function initArticleDetailPage() {
     authorRoleBottom.className = `badge badge--${author.role || 'user'}`;
   }
   if (document.getElementById("author-view-profile-link")) {
-    document.getElementById("author-view-profile-link").href = `author.html?id=${author.id}`;
+    document.getElementById("author-view-profile-link").href = authorProfileUrl;
   }
   const authorAvatarBottom = document.getElementById("author-avatar-bottom");
   if (authorAvatarBottom) {
@@ -189,7 +212,7 @@ function initArticleDetailPage() {
             type: "article_liked",
             title: "Lượt thích bài viết",
             message: `${currentUser.full_name || "Một độc giả"} đã thêm bài viết '${article.title}' vào danh sách yêu thích.`,
-            link: `../public/article-detail.html?id=${article.id}`
+            link: typeof getArticleDetailUrl === "function" ? getArticleDetailUrl(article, "../public/") : `../public/article-detail.html?slug=${encodeURIComponent(article.slug || article.id)}`
           });
         }
       }
@@ -254,16 +277,17 @@ function initArticleDetailPage() {
       .map((c) => {
         const commentUser = users.find((u) => u.id === c.user_id) || { full_name: "Độc giả", username: "guest" };
         const isMyComment = currentUser && currentUser.id === c.user_id;
+        const commentUserUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(commentUser) : `author.html?username=${encodeURIComponent(commentUser.username || commentUser.id)}`;
 
         return `
           <div class="comment-row" id="comment-${c.id}" data-comment-id="${c.id}">
-            <a href="author.html?id=${commentUser.id}" title="Xem hồ sơ ${escapeHtml(commentUser.full_name)}" style="text-decoration: none; display: inline-flex;">
+            <a href="${commentUserUrl}" title="Xem hồ sơ ${escapeHtml(commentUser.full_name)}" style="text-decoration: none; display: inline-flex;">
             ${renderUserAvatar(commentUser, "user-avatar")}
             </a>
             <div style="flex: 1; min-width: 0;">
               <div class="comment-meta-row" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <a href="author.html?id=${commentUser.id}" class="comment-author" style="text-decoration: none; color: inherit; font-weight: 600;">
+                  <a href="${commentUserUrl}" class="comment-author" style="text-decoration: none; color: inherit; font-weight: 600;">
                     ${escapeHtml(commentUser.full_name)}
                   </a>
                   <span class="meta">${timeAgo(c.created_at)}</span>
@@ -339,12 +363,13 @@ function initArticleDetailPage() {
 
       // Bắn thông báo cho tác giả bài viết (nếu không phải tự bình luận bài của mình)
       if (Number(article.author_id) !== Number(currentUser.id)) {
+        const articleSlugVal = article.slug || (typeof slugify === "function" ? slugify(article.title) : "") || article.id;
         createNotification({
           user_id: article.author_id,
           type: "article_commented",
           title: "Bình luận mới trên bài viết",
           message: `${currentUser.full_name || "Một độc giả"} đã bình luận về bài viết '${article.title}' của bạn.`,
-          link: `../public/article-detail.html?id=${article.id}&comment_id=${newComment.id}#comment-${newComment.id}`
+          link: `../public/article-detail.html?slug=${encodeURIComponent(articleSlugVal)}&comment_id=${newComment.id}#comment-${newComment.id}`
         });
       }
     });
@@ -359,7 +384,7 @@ function initArticleDetailPage() {
     if (relatedArticles.length > 0) {
       relatedMount.innerHTML = relatedArticles
         .map((a) => `
-          <a href="article-detail.html?id=${a.id}" class="related-item">
+          <a href="${getArticleDetailUrl(a)}" class="related-item">
             <div class="thumb--sm">
               ${renderCoverImage(a.cover_image, a.title, "ph--4x3")}
             </div>

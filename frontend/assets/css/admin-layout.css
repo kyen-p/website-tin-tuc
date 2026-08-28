@@ -1526,48 +1526,6 @@
   line-height: 1.5;
 }
 
-/* 15. TOPIC BANNER (Thông báo khi viết theo đề tài) */
-.admin-topic-banner {
-  background-color: #FEF9EE;
-  border: 1px solid #F6E0B5;
-  border-radius: 8px;
-  padding: 14px 18px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-
-.admin-topic-banner__icon {
-  color: var(--brass-dark);
-  margin-top: 2px;
-  flex-shrink: 0;
-}
-
-.admin-topic-banner__icon svg {
-  width: 22px;
-  height: 22px;
-}
-
-.admin-topic-banner__content {
-  flex: 1;
-  min-width: 0;
-}
-
-.admin-topic-banner__title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #78350F;
-  margin: 0 0 4px 0;
-}
-
-.admin-topic-banner__desc {
-  font-size: 13px;
-  color: #92400E;
-  margin: 0;
-  line-height: 1.4;
-}
-
 /* 16. DRAG & DROP FILE UPLOAD ZONE (Chỉ upload từ máy) */
 .admin-upload-zone {
   border: 2px dashed var(--line);

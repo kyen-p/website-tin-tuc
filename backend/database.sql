@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 28, 2026 lúc 04:10 AM
+-- Thời gian đã tạo: Th8 28, 2026 lúc 10:41 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -37,7 +37,6 @@ CREATE TABLE `articles` (
   `author_id` int(11) DEFAULT NULL,
   `approved_by` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
-  `topic_id` int(11) DEFAULT NULL,
   `is_notable_event` tinyint(1) DEFAULT 0,
   `status` enum('draft','pending','published','rejected') DEFAULT 'draft',
   `rejection_reason` text DEFAULT NULL,
@@ -133,37 +132,6 @@ CREATE TABLE `tags` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `topics`
---
-
-CREATE TABLE `topics` (
-  `id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
-  `category_id` int(11) DEFAULT NULL,
-  `reporter_id` int(11) DEFAULT NULL,
-  `editor_id` int(11) DEFAULT NULL,
-  `deadline` datetime DEFAULT NULL,
-  `status` enum('assigned','submitted','overdue') DEFAULT 'assigned',
-  `submitted_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Cấu trúc bảng cho bảng `topic_tags`
---
-
-CREATE TABLE `topic_tags` (
-  `topic_id` int(11) NOT NULL,
-  `tag_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Cấu trúc bảng cho bảng `users`
 --
 
@@ -172,7 +140,7 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `full_name` varchar(100) DEFAULT NULL,
+  `full_name` varchar(100) NOT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `bio` text DEFAULT NULL,
   `role` enum('user','reporter','editor','admin') DEFAULT 'user',
@@ -195,8 +163,7 @@ ALTER TABLE `articles`
   ADD UNIQUE KEY `slug` (`slug`),
   ADD KEY `author_id` (`author_id`),
   ADD KEY `approved_by` (`approved_by`),
-  ADD KEY `category_id` (`category_id`),
-  ADD KEY `topic_id` (`topic_id`);
+  ADD KEY `category_id` (`category_id`);
 
 --
 -- Chỉ mục cho bảng `article_tags`
@@ -241,22 +208,6 @@ ALTER TABLE `tags`
   ADD UNIQUE KEY `slug` (`slug`);
 
 --
--- Chỉ mục cho bảng `topics`
---
-ALTER TABLE `topics`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `category_id` (`category_id`),
-  ADD KEY `reporter_id` (`reporter_id`),
-  ADD KEY `editor_id` (`editor_id`);
-
---
--- Chỉ mục cho bảng `topic_tags`
---
-ALTER TABLE `topic_tags`
-  ADD PRIMARY KEY (`topic_id`,`tag_id`),
-  ADD KEY `tag_id` (`tag_id`);
-
---
 -- Chỉ mục cho bảng `users`
 --
 ALTER TABLE `users`
@@ -299,12 +250,6 @@ ALTER TABLE `tags`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `topics`
---
-ALTER TABLE `topics`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
@@ -320,8 +265,7 @@ ALTER TABLE `users`
 ALTER TABLE `articles`
   ADD CONSTRAINT `articles_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `articles_ibfk_2` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `articles_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
-  ADD CONSTRAINT `articles_ibfk_4` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`);
+  ADD CONSTRAINT `articles_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);
 
 --
 -- Các ràng buộc cho bảng `article_tags`
@@ -343,21 +287,6 @@ ALTER TABLE `comments`
 ALTER TABLE `favorites`
   ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE;
-
---
--- Các ràng buộc cho bảng `topics`
---
-ALTER TABLE `topics`
-  ADD CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
-  ADD CONSTRAINT `topics_ibfk_2` FOREIGN KEY (`reporter_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `topics_ibfk_3` FOREIGN KEY (`editor_id`) REFERENCES `users` (`id`);
-
---
--- Các ràng buộc cho bảng `topic_tags`
---
-ALTER TABLE `topic_tags`
-  ADD CONSTRAINT `topic_tags_ibfk_1` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `topic_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

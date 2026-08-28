@@ -372,12 +372,14 @@
       // Render từng hàng bài viết
       tbody.innerHTML = filtered.map((item, index) => {
         const formattedDate = typeof formatDate === "function" ? formatDate(item.published_at) : (item.published_at || "--");
+        const articleSlug = item.slug || (typeof slugify === "function" ? slugify(item.title) : "") || item.id;
+        const detailUrl = `../public/article-detail.html?slug=${encodeURIComponent(articleSlug)}`;
 
         return `
           <tr>
             <td class="admin-col-index">${index + 1}</td>
             <td class="admin-col-title">
-              <a href="../public/article-detail.html?id=${item.id}" target="_blank" class="admin-article-link" title="Xem bài viết trên giao diện độc giả">
+              <a href="${detailUrl}" target="_blank" class="admin-article-link" title="Xem bài viết trên giao diện độc giả">
                 ${escapeHtml(item.title)}
               </a>
             </td>

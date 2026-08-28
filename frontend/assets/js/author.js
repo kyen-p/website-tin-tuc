@@ -11,7 +11,7 @@
 
 function initAuthorPage() {
   const urlParams = new URLSearchParams(window.location.search);
-  const rawId = urlParams.get("id") || urlParams.get("author_id");
+  const rawKey = (urlParams.get("username") || urlParams.get("slug") || urlParams.get("id") || urlParams.get("author_id") || "").trim();
 
   // 1. Khởi tạo Header và Footer chung
   if (typeof initPublicHeader === "function") initPublicHeader("");
@@ -26,8 +26,18 @@ function initAuthorPage() {
     return Number(a.view_count || a.views || 0);
   }
 
-  // Tìm kiếm User (linh hoạt theo id số, chuỗi id hoặc username)
-  let user = users.find((u) => String(u.id) === String(rawId) || u.username === rawId);
+  // Tìm kiếm User (linh hoạt theo username, slug, tên tiếng Việt chuyển slug, hoặc ID)
+  let user = null;
+  if (rawKey) {
+    user = users.find(
+      (u) =>
+        (u.username && u.username.toLowerCase() === rawKey.toLowerCase()) ||
+        String(u.id) === String(rawKey) ||
+        (u.slug && u.slug.toLowerCase() === rawKey.toLowerCase()) ||
+        (typeof slugify === "function" && slugify(u.full_name || "") === rawKey.toLowerCase()) ||
+        (typeof slugify === "function" && slugify(u.username || "") === rawKey.toLowerCase())
+    );
+  }
 
   // Fallback an toàn nếu không truyền ID: lấy người đầu tiên
   if (!user && users.length > 0) {
@@ -180,7 +190,7 @@ function initAuthorPage() {
 
         return `
           <article class="article-card" style="padding-bottom: 20px;">
-            <a href="article-detail.html?id=${a.id}" class="card-link">
+            <a href="${getArticleDetailUrl(a)}" class="card-link">
               ${coverImg}
               <span class="eyebrow">${typeof escapeHtml === "function" ? escapeHtml(cat.name) : cat.name}</span>
               <h3 class="headline-md">${safeTitle}</h3>

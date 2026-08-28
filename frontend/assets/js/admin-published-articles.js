@@ -179,6 +179,14 @@
                 </div>
               </div>
 
+              <!-- Tùy chọn Sự kiện đáng chú ý -->
+              <div class="admin-form-group" style="background: #FFFDF9; border: 1.5px solid #F3DFC1; border-radius: 6px; padding: 10px 14px; margin-bottom: 16px;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; margin: 0; font-size: 13px; font-weight: 700; color: #8F7239;">
+                  <input type="checkbox" id="editIsNotable" style="width: 17px; height: 17px; accent-color: #B8934F; cursor: pointer;">
+                  <span>Đưa vào <strong>"Sự kiện đáng chú ý"</strong> trên Trang chủ</span>
+                </label>
+              </div>
+
               <div class="admin-form-group">
                 <label class="admin-form-label">Tóm tắt ngắn (Lead / Sapo)</label>
                 <textarea id="editDescription" class="admin-form-textarea" rows="2"></textarea>
@@ -420,7 +428,7 @@
       const coverImg = extractThumbnail(art, cat);
       const thumbHtml = renderTableCoverThumb(coverImg, art.title);
       const desc = art.short_description || art.sapo || art.summary || "";
-      const detailUrl = `../public/article-detail.html?id=${art.id}`;
+      const detailUrl = typeof getArticleDetailUrl === "function" ? getArticleDetailUrl(art, "../public/") : `../public/article-detail.html?slug=${encodeURIComponent(art.slug || art.id)}`;
 
       // Badge Trạng thái
       let statusBadge = "";
@@ -445,6 +453,13 @@
                 ${escapeHtml(art.title || "Chưa đặt tiêu đề")}
               </a>
               ${desc ? `<div class="admin-article-sapo-text" title="${escapeHtml(desc)}">${escapeHtml(desc)}</div>` : ""}
+              ${art.is_notable_event ? `
+                <div style="margin-top: 4px;">
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #8F7239; background: #FFFDF9; border: 1px solid #F3DFC1; padding: 2px 7px; border-radius: 4px;">
+                    Sự kiện đáng chú ý
+                  </span>
+                </div>
+              ` : ""}
             </div>
           </td>
           <td>
@@ -618,12 +633,14 @@
     const titleInput = document.getElementById("editTitle");
     const categorySelect = document.getElementById("editCategory");
     const statusSelect = document.getElementById("editStatus");
+    const isNotableCheckbox = document.getElementById("editIsNotable");
     const descInput = document.getElementById("editDescription");
     const contentInput = document.getElementById("editContent");
 
     if (titleInput) titleInput.value = article.title || "";
     if (categorySelect) categorySelect.value = article.category_id || allCategories[0]?.id || 1;
     if (statusSelect) statusSelect.value = article.status === "hidden" ? "hidden" : "published";
+    if (isNotableCheckbox) isNotableCheckbox.checked = Boolean(article.is_notable_event);
     if (descInput) descInput.value = article.short_description || article.sapo || article.summary || "";
     if (contentInput) contentInput.value = article.content || "";
 
@@ -651,6 +668,7 @@
     const title = (document.getElementById("editTitle")?.value || "").trim();
     const categoryId = Number(document.getElementById("editCategory")?.value) || 1;
     const status = document.getElementById("editStatus")?.value || "published";
+    const isNotable = Boolean(document.getElementById("editIsNotable")?.checked);
     const description = (document.getElementById("editDescription")?.value || "").trim();
     const content = (document.getElementById("editContent")?.value || "").trim();
 
@@ -667,6 +685,7 @@
     article.title = title;
     article.category_id = categoryId;
     article.status = status;
+    article.is_notable_event = isNotable;
     article.short_description = description;
     article.sapo = description;
     article.summary = description;

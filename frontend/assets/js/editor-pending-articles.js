@@ -1,12 +1,11 @@
 /**
  * editor-pending-articles.js - Quản lý & Thẩm định duyệt bài viết cho Biên tập viên
- * 1. 2 Tab phân loại chính: Bài tự do | Bài theo đề tài
- * 2. Bảng danh sách tinh gọn chuẩn Editorial: Ẩn lý do từ chối và huy hiệu đáng chú ý ở ngoài bảng
- * 3. Bộ lọc tinh gọn: Tìm kiếm từ khóa/tác giả + Lọc Trạng thái (Tất cả / Chờ duyệt / Bị từ chối / Đã xuất bản) + Lọc Chuyên mục
- * 4. Modal thẩm định toàn diện:
+ * 1. Bảng danh sách bài chờ duyệt tinh gọn chuẩn Editorial
+ * 2. Bộ lọc tinh gọn: Tìm kiếm tiêu đề/phóng viên + Lọc Chuyên mục
+ * 3. Modal thẩm định toàn diện (Read-only):
  *    - Đọc toàn bộ nội dung, sapo, chuyên mục, thẻ tag do phóng viên gắn
- *    - Xem định hướng đề tài hoặc lý do từ chối chi tiết
- *    - Thao tác: "Duyệt & Xuất bản ngay" HOẶC "Từ chối bài viết" (kèm lý do chuyển về phóng viên)
+ *    - Xem lý do từ chối chi tiết nếu bài đã từng bị trả về
+ *    - Thao tác: "Duyệt & Xuất bản ngay" HOẶC "Từ chối bài viết" (kèm lý do gửi lại phóng viên)
  */
 
 (function () {
@@ -15,12 +14,10 @@
   let allArticles = [];
   let allCategories = [];
   let allUsers = [];
-  let allTopics = [];
   let allTags = [];
   let allArticleTags = [];
   let currentUser = null;
 
-  let currentTab = "freelance"; // 'freelance' | 'topic'
   let currentCategoryFilter = "all";
   let currentSearchQuery = "";
 
@@ -79,7 +76,6 @@
     allArticles = fetchTable("articles");
     allCategories = fetchTable("categories");
     allUsers = fetchTable("users");
-    allTopics = fetchTable("topics");
     allTags = fetchTable("tags");
     allArticleTags = fetchTable("article_tags");
   }
@@ -106,23 +102,18 @@
   }
 
   /**
-   * Render khung sườn giao diện đồng nhất với phong cách trang của Phóng viên (reporter/my-articles.html)
+   * Render khung sườn giao diện
    */
   function renderLayout() {
     const container = document.getElementById("workspace-content");
     if (!container) return;
 
     container.innerHTML = `
-      <!-- 1. Tabs Lọc 2 Thẻ: Bài tự do | Bài theo đề tài -->
-      <div class="admin-tabs-nav" id="pending-tabs-mount">
-        <!-- Sẽ được đổ bởi renderHeaderStats -->
-      </div>
-
-      <!-- 2. Bảng Danh Sách Bài Viết Cần Xử Lý -->
+      <!-- Bảng Danh Sách Bài Viết Chờ Duyệt -->
       <div class="admin-card">
         <div class="admin-card__header">
           <div class="admin-card__title-group">
-            <h2 class="admin-card__title" id="tab-title-display">Bài viết tự do chờ duyệt</h2>
+            <h2 class="admin-card__title">Danh sách bài viết chờ duyệt</h2>
             <span class="admin-card__count-badge" id="list-count-badge">0 bài</span>
           </div>
           <div class="admin-card__toolbar">
@@ -169,7 +160,7 @@
         </div>
       </div>
 
-      <!-- MODAL TOÀN DIỆN: XEM NỘI DUNG & THẨM ĐỊNH DUYỆT BÀI (READ-ONLY: TÔN TRỌNG BẢN QUYỀN BÀI VIẾT CỦA PHÓNG VIÊN) -->
+      <!-- MODAL TOÀN DIỆN: XEM NỘI DUNG & THẨM ĐỊNH DUYỆT BÀI -->
       <div id="modal-review-article" style="display: none; position: fixed; inset: 0; z-index: 1050; background: rgba(19, 27, 46, 0.65); backdrop-filter: blur(3px); align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div class="admin-modal-container" style="max-width: 980px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; background: #FFF; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border: 1px solid var(--line-soft);">
           
@@ -189,13 +180,6 @@
               <!-- CỘT TRÁI: ĐỌC NỘI DUNG BÀI VIẾT NGUYÊN BẢN (READ-ONLY) -->
               <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0;">
                 
-                <!-- Banner Đề tài & Yêu cầu BTV nếu có -->
-                <div id="modal-topic-banner" style="display: none; background: #FFFDF9; border: 1.5px solid #F3DFC1; border-left: 4px solid var(--brass); border-radius: 6px; padding: 12px 14px;">
-                  <div style="font-size: 11px; font-weight: 700; color: #8F7239; text-transform: uppercase;">Bài viết thực hiện theo Đề tài được phân công:</div>
-                  <div id="modal-topic-title" style="font-size: 13.5px; font-weight: 700; color: var(--ink); margin-top: 2px;"></div>
-                  <div id="modal-topic-desc" style="font-size: 12.5px; color: #78350F; background: rgba(184, 147, 79, 0.08); padding: 6px 10px; border-radius: 4px; margin-top: 6px; line-height: 1.5;"></div>
-                </div>
-
                 <!-- Lý do từ chối nếu có -->
                 <div id="modal-rejection-banner" style="display: none; background: #FFEBEE; border-left: 3px solid #DC2626; border-radius: 4px; padding: 10px 14px;">
                   <div style="font-size: 11px; font-weight: 700; color: #C62828; text-transform: uppercase;">Lý do yêu cầu sửa đổi từ Ban Biên tập:</div>
@@ -260,8 +244,28 @@
                   <!-- Container các tag của bài viết -->
                   <div id="modal-selected-tags-mount" style="min-height: 42px; padding: 8px 10px; background: #FFF; border: 1px solid var(--line-soft); border-radius: 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;"></div>
                   <div style="font-size: 11px; color: var(--muted); margin-top: 5px;">
-                    💡 <em>Khi duyệt bài, nếu có tag mới do phóng viên gắn, hệ thống sẽ tự động khởi tạo vào danh mục thẻ của tòa soạn. Nếu tag không phù hợp, BTV từ chối bài và yêu cầu PV sửa.</em>
+                     <em>Khi duyệt bài, nếu có tag mới do phóng viên gắn, hệ thống sẽ tự động khởi tạo vào danh mục thẻ của tòa soạn. Nếu tag không phù hợp, BTV từ chối bài và yêu cầu PV sửa.</em>
                   </div>
+                </div>
+
+                <!-- TÙY CHỌN BAN BIÊN TẬP: ĐƯA VÀO SỰ KIỆN ĐÁNG CHÚ Ý -->
+                <div class="admin-form-group" style="background: #FFFDF9; border: 1.5px solid #F3DFC1; border-radius: 6px; padding: 12px; margin-top: 2px;">
+                  <label class="admin-form-label" style="font-weight: 700; font-size: 12px; color: #8F7239; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;"></span>Luồng sự kiện:
+                  </label>
+                  <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; user-select: none; margin: 0;">
+                    <input 
+                      type="checkbox" 
+                      id="modal-is-notable-checkbox" 
+                      style="width: 18px; height: 18px; margin-top: 2px; accent-color: #B8934F; cursor: pointer;"
+                    >
+                    <div>
+                      <span style="font-weight: 700; font-size: 13px; color: var(--ink);">Đưa vào "Sự kiện đáng chú ý"</span>
+                      <p style="font-size: 11.5px; color: var(--muted); margin: 2px 0 0; line-height: 1.45;">
+                        Khi duyệt xuất bản, bài viết sẽ được đưa vào cột dòng sự kiện nổi bật do Ban Biên tập tuyển chọn ở vị trí trung tâm Trang chủ.
+                      </p>
+                    </div>
+                  </label>
                 </div>
 
                 <!-- Ghi chú thẩm định biên tập viên -->
@@ -298,7 +302,7 @@
 
       <!-- MODAL XÁC NHẬN DUYỆT & XUẤT BẢN NGAY -->
       <div id="modal-confirm-publish" style="display: none; position: fixed; inset: 0; z-index: 1150; background: rgba(19, 27, 46, 0.7); backdrop-filter: blur(3px); align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-        <div class="admin-modal-container" style="max-width: 480px; width: 100%; background: #FFF; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.35); border: 1px solid var(--line-soft);">
+        <div class="admin-modal-container" style="max-width: 490px; width: 100%; background: #FFF; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.35); border: 1px solid var(--line-soft);">
           <div class="admin-modal-header" style="padding: 16px 20px; border-bottom: 1px solid var(--line-soft); background: #FAF8F5; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(27, 42, 74, 0.1); color: #1B2A4A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
@@ -314,6 +318,15 @@
             </p>
             <div id="confirm-publish-article-title" style="font-size: 13.5px; font-weight: 700; color: #1B2A4A; padding: 10px 12px; background: #FAF8F5; border: 1px solid var(--line-soft); border-radius: 6px; font-family: var(--f-serif, serif);">
             </div>
+
+            <!-- TÙY CHỌN SỰ KIỆN ĐÁNG CHÚ Ý TẠI POPUP XÁC NHẬN -->
+            <div style="margin-top: 14px; padding: 10px 12px; background: #FFFDF9; border: 1.5px solid #F3DFC1; border-radius: 6px;">
+              <label style="display: flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; font-size: 13px; font-weight: 700; color: #8F7239; margin: 0;">
+                <input type="checkbox" id="confirm-is-notable-checkbox" style="width: 17px; height: 17px; accent-color: #B8934F; cursor: pointer;">
+                <span>Đưa vào <strong>"Sự kiện đáng chú ý"</strong> trên Trang chủ</span>
+              </label>
+            </div>
+
             <p style="font-size: 12px; color: var(--muted); margin: 10px 0 0; line-height: 1.4;">
               * Độc giả sẽ có thể đọc bài viết này ngay lập tức trên trang công khai.
             </p>
@@ -353,44 +366,12 @@
     `;
   }
 
-  /**
-   * Lấy tiêu đề hiển thị theo Tab
-   */
-  function getTabTitle(tab) {
-    switch (tab) {
-      case "topic": return "Bài viết theo đề tài chờ duyệt";
-      case "freelance":
-      default: return "Bài viết tự do chờ duyệt";
-    }
-  }
-
-  /**
-   * Render Tabs lọc 2 Thẻ chính: Bài tự do | Bài theo đề tài (chỉ tính bài chờ duyệt)
-   */
   function renderHeaderStats() {
     loadData();
-
     const pendingArticles = allArticles.filter((a) => a.status === "pending");
-    const freelanceCount = pendingArticles.filter((a) => !a.topic_id).length;
-    const topicCount = pendingArticles.filter((a) => a.topic_id != null && a.topic_id !== "").length;
-
-    // Cập nhật tiêu đề card
-    const titleDisplay = document.getElementById("tab-title-display");
-    if (titleDisplay) {
-      titleDisplay.textContent = getTabTitle(currentTab);
-    }
-
-    // Render 2 Tabs: Bài tự do | Bài theo đề tài
-    const tabsMount = document.getElementById("pending-tabs-mount");
-    if (tabsMount) {
-      tabsMount.innerHTML = `
-        <button type="button" class="admin-tab-btn ${currentTab === "freelance" ? "is-active" : ""}" data-tab="freelance" onclick="window.setPendingArticleTab('freelance')">
-          Bài tự do <span class="tab-badge">${freelanceCount}</span>
-        </button>
-        <button type="button" class="admin-tab-btn ${currentTab === "topic" ? "is-active" : ""}" data-tab="topic" onclick="window.setPendingArticleTab('topic')">
-          Bài theo đề tài <span class="tab-badge">${topicCount}</span>
-        </button>
-      `;
+    const countBadge = document.getElementById("list-count-badge");
+    if (countBadge) {
+      countBadge.textContent = `${pendingArticles.length} bài`;
     }
   }
 
@@ -413,7 +394,7 @@
   }
 
   /**
-   * Render Danh sách bài viết dạng Bảng (Table) - Chỉ hiển thị đúng các bài status === 'pending'
+   * Render Danh sách bài viết dạng Bảng (Table) - Chỉ hiển thị các bài status === 'pending'
    */
   function renderArticlesList() {
     const tbody = document.getElementById("articles-tbody");
@@ -425,20 +406,12 @@
     // CHỈ LỌC CÁC BÀI VIẾT ĐANG CHỜ DUYỆT (pending)
     let filtered = allArticles.filter((a) => a.status === "pending");
 
-    // 1. Lọc theo 2 Tab chính: Bài tự do vs Bài theo đề tài
-    if (currentTab === "topic") {
-      filtered = filtered.filter((a) => a.topic_id != null && a.topic_id !== "");
-    } else {
-      // 'freelance'
-      filtered = filtered.filter((a) => !a.topic_id);
-    }
-
-    // 2. Lọc theo Chuyên mục
+    // 1. Lọc theo Chuyên mục
     if (currentCategoryFilter !== "all") {
       filtered = filtered.filter((a) => String(a.category_id) === String(currentCategoryFilter));
     }
 
-    // 3. Tìm kiếm từ khóa
+    // 2. Tìm kiếm từ khóa
     if (currentSearchQuery) {
       const q = currentSearchQuery.toLowerCase();
       filtered = filtered.filter((a) => {
@@ -464,9 +437,7 @@
 
     // Trạng thái rỗng
     if (filtered.length === 0) {
-      let emptyMsg = currentTab === "topic" 
-        ? "Hiện tại không có bài viết theo đề tài nào đang chờ duyệt" 
-        : "Hiện tại không có bài viết tự do nào đang chờ duyệt";
+      let emptyMsg = "Hiện tại không có bài viết nào đang chờ duyệt";
       if (currentSearchQuery) {
         emptyMsg = `Không tìm thấy bài viết chờ duyệt nào phù hợp với từ khóa "${escapeHtml(currentSearchQuery)}"`;
       } else if (currentCategoryFilter !== "all") {
@@ -499,7 +470,7 @@
   }
 
   /**
-   * Render 1 dòng trong bảng bài viết (Tinh gọn: Không hiển thị lý do từ chối hay huy hiệu đáng chú ý ở ngoài)
+   * Render 1 dòng trong bảng bài viết
    */
   function renderArticleRow(article) {
     const category = allCategories.find((c) => String(c.id) === String(article.category_id)) || {
@@ -510,26 +481,11 @@
       full_name: article.author || "Phóng viên",
       username: "reporter",
     };
-    const topic = article.topic_id ? allTopics.find((t) => String(t.id) === String(article.topic_id)) : null;
 
     const coverImg = extractThumbnail(article, category);
     const thumbHtml = renderTableCoverThumb(coverImg, article.title);
     const desc = article.short_description || article.sapo || "";
     const timeDisplay = typeof formatDate === "function" ? formatDate(article.updated_at || article.created_at) : (article.updated_at || article.created_at || "--");
-
-    // Hiển thị tên đề tài nhỏ gọn nếu bài viết theo đề tài
-    let topicTagHtml = "";
-    if (topic) {
-      topicTagHtml = `
-        <div style="font-size: 11px; font-weight: 600; color: #8F7239; margin-bottom: 3px; display: inline-flex; align-items: center; gap: 4px;">
-          <svg style="width: 12px; height: 12px; flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-          </svg>
-          <span>Đề tài: ${escapeHtml(topic.title)}</span>
-        </div>
-      `;
-    }
 
     // Status Badge
     let statusBadge = "";
@@ -548,41 +504,21 @@
     const authorUser = author.username ? `@${author.username}` : "";
 
     // Action button
-    let actionBtnHtml = "";
-    if (article.status === "pending") {
-      actionBtnHtml = `
-        <button 
-          type="button" 
-          class="btn-open-review-modal admin-btn admin-btn--primary" 
-          data-id="${article.id}"
-          onclick="window.openReviewModal('${article.id}')"
-          title="Thẩm định & Duyệt bài"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          Thẩm định
-        </button>
-      `;
-    } else {
-      actionBtnHtml = `
-        <button 
-          type="button" 
-          class="btn-open-review-modal admin-btn admin-btn--default" 
-          data-id="${article.id}"
-          onclick="window.openReviewModal('${article.id}')"
-          title="Xem chi tiết"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-          Chi tiết
-        </button>
-      `;
-    }
+    let actionBtnHtml = `
+      <button 
+        type="button" 
+        class="btn-open-review-modal admin-btn admin-btn--primary" 
+        data-id="${article.id}"
+        onclick="window.openReviewModal('${article.id}')"
+        title="Thẩm định & Duyệt bài"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        Thẩm định
+      </button>
+    `;
 
     return `
       <tr id="article-row-${article.id}" data-id="${article.id}">
@@ -590,11 +526,17 @@
           <div class="admin-article-cell">
             ${thumbHtml}
             <div class="admin-article-info">
-              ${topicTagHtml}
               <div class="admin-article-title-text" title="${escapeHtml(article.title)}">
                 ${escapeHtml(article.title || "Chưa đặt tiêu đề")}
               </div>
               ${desc ? `<div class="admin-article-sapo-text" title="${escapeHtml(desc)}">${escapeHtml(desc)}</div>` : ""}
+              ${article.is_notable_event ? `
+                <div style="margin-top: 5px;">
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #8F7239; background: #FFFDF9; border: 1px solid #F3DFC1; padding: 2px 7px; border-radius: 4px;">
+                    Sự kiện đáng chú ý
+                  </span>
+                </div>
+              ` : ""}
             </div>
           </div>
         </td>
@@ -640,7 +582,6 @@
       full_name: article.author || "Phóng viên",
       username: "reporter",
     };
-    const topic = article.topic_id ? allTopics.find((t) => String(t.id) === String(article.topic_id)) : null;
 
     // Điền dữ liệu vào Modal (Read-only view)
     const titleDisplay = document.getElementById("modal-article-title-display");
@@ -651,18 +592,10 @@
     
     document.getElementById("modal-article-content").innerHTML = article.content || "<p>Chưa có nội dung chi tiết.</p>";
 
-    // Banner Đề tài & Yêu cầu của BTV
-    const topicBanner = document.getElementById("modal-topic-banner");
-    const topicTitleEl = document.getElementById("modal-topic-title");
-    const topicDescEl = document.getElementById("modal-topic-desc");
-    if (topic) {
-      topicBanner.style.display = "block";
-      topicTitleEl.textContent = topic.title || "Đề tài theo định hướng BTV";
-      if (topicDescEl) {
-        topicDescEl.textContent = `Yêu cầu / Định hướng BTV: ${topic.description || "Thực hiện theo tiêu chuẩn bài viết của chuyên mục."}`;
-      }
-    } else {
-      topicBanner.style.display = "none";
+    // Thiết lập Checkbox Đưa vào Sự kiện đáng chú ý
+    const isNotableCheckbox = document.getElementById("modal-is-notable-checkbox");
+    if (isNotableCheckbox) {
+      isNotableCheckbox.checked = Boolean(article.is_notable_event);
     }
 
     // Banner Từ chối
@@ -685,7 +618,7 @@
       catDisplay.textContent = category.name || "Thời sự";
     }
 
-    // Nạp Tags của bài viết do phóng viên gán (bao gồm cả tag có trong article.tags_text hoặc article_tags)
+    // Nạp Tags của bài viết do phóng viên gán
     let assignedTagNames = [];
     if (article.tags_text && Array.isArray(article.tags_text) && article.tags_text.length > 0) {
       assignedTagNames = [...article.tags_text];
@@ -769,15 +702,20 @@
     const nowIso = refNow.toISOString().replace("T", " ").substring(0, 19);
 
     let articles = fetchTable("articles");
-    let topics = fetchTable("topics");
     let articleTags = fetchTable("article_tags");
     let tagsTable = fetchTable("tags");
+
+    // Lấy trạng thái Đưa vào Sự kiện đáng chú ý
+    const isNotableModal = document.getElementById("modal-is-notable-checkbox");
+    const isNotableConfirm = document.getElementById("confirm-is-notable-checkbox");
+    const isNotableChecked = Boolean(isNotableConfirm ? isNotableConfirm.checked : (isNotableModal ? isNotableModal.checked : false));
 
     // 1. Cập nhật trạng thái xuất bản cho bài viết
     const artIndex = articles.findIndex((a) => String(a.id) === String(reviewingArticle.id));
     if (artIndex !== -1) {
       articles[artIndex].status = "published";
       articles[artIndex].rejection_reason = null;
+      articles[artIndex].is_notable_event = isNotableChecked;
       articles[artIndex].approved_by = currentUser ? currentUser.id : 7;
       if (!articles[artIndex].published_at) {
         articles[artIndex].published_at = nowIso;
@@ -785,18 +723,7 @@
       articles[artIndex].updated_at = nowIso;
     }
 
-    // 2. Nếu có đề tài liên quan -> Tự động đánh dấu hoàn thành 'completed'
-    let topicTitle = "";
-    if (reviewingArticle.topic_id) {
-      const topicIndex = topics.findIndex((t) => String(t.id) === String(reviewingArticle.topic_id));
-      if (topicIndex !== -1) {
-        topicTitle = topics[topicIndex].title;
-        topics[topicIndex].status = "completed";
-        topics[topicIndex].updated_at = nowIso;
-      }
-    }
-
-    // 3. Xử lý lưu các Tags của bài viết vào bảng Tags hệ thống khi BTV Duyệt bài
+    // 2. Xử lý lưu các Tags của bài viết vào bảng Tags hệ thống khi BTV Duyệt bài
     const tagIdsForThisArticle = [];
     modalSelectedTags.forEach((tagName) => {
       let found = tagsTable.find((t) => t.name.toLowerCase() === tagName.toLowerCase());
@@ -821,12 +748,12 @@
 
     // Lưu toàn bộ dữ liệu vào LocalStorage
     saveTableData("articles", articles);
-    saveTableData("topics", topics);
     saveTableData("tags", tagsTable);
     saveTableData("article_tags", articleTags);
 
+    const notableMsg = isNotableChecked ? " (Đã đưa vào Sự kiện đáng chú ý)" : "";
     if (typeof showToast === "function") {
-      showToast(`Đã duyệt và xuất bản bài viết "${reviewingArticle.title}" thành công!`, "success");
+      showToast(`Đã duyệt và xuất bản bài viết "${reviewingArticle.title}" thành công${notableMsg}!`, "success");
     }
 
     closeReviewModal();
@@ -850,9 +777,8 @@
     const nowIso = refNow.toISOString().replace("T", " ").substring(0, 19);
 
     let articles = fetchTable("articles");
-    let topics = fetchTable("topics");
 
-    // 1. Cập nhật bài viết thành 'rejected'
+    // Cập nhật bài viết thành 'rejected'
     const artIndex = articles.findIndex((a) => String(a.id) === String(reviewingArticle.id));
     if (artIndex !== -1) {
       articles[artIndex].status = "rejected";
@@ -860,19 +786,7 @@
       articles[artIndex].updated_at = nowIso;
     }
 
-    // 2. Nếu có đề tài liên quan -> Mở lại trạng thái 'assigned' để PV tiếp tục làm
-    let topicTitle = "";
-    if (reviewingArticle.topic_id) {
-      const topicIndex = topics.findIndex((t) => String(t.id) === String(reviewingArticle.topic_id));
-      if (topicIndex !== -1) {
-        topicTitle = topics[topicIndex].title;
-        topics[topicIndex].status = "assigned";
-        topics[topicIndex].updated_at = nowIso;
-      }
-    }
-
     saveTableData("articles", articles);
-    saveTableData("topics", topics);
 
     document.getElementById("modal-reject-reason").style.display = "none";
     closeReviewModal();
@@ -906,17 +820,7 @@
       });
     }
 
-    // 2. Chuyển Tab trạng thái (Bài tự do / Bài theo đề tài)
-    document.addEventListener("click", (e) => {
-      const tabBtn = e.target.closest(".admin-tab-btn");
-      if (tabBtn && tabBtn.dataset.tab) {
-        currentTab = tabBtn.dataset.tab;
-        renderHeaderStats();
-        renderArticlesList();
-      }
-    });
-
-    // 3. Mở Modal thẩm định khi click vào nút "Thẩm định" hoặc "Chi tiết"
+    // 2. Mở Modal thẩm định khi click vào nút "Thẩm định" hoặc "Chi tiết"
     document.addEventListener("click", (e) => {
       const openBtn = e.target.closest(".btn-open-review-modal");
       if (openBtn && openBtn.dataset.id) {
@@ -924,7 +828,7 @@
       }
     });
 
-    // 4. Đóng Modal
+    // 3. Đóng Modal
     document.addEventListener("click", (e) => {
       const closeBtn = e.target.closest(".btn-close-review-modal");
       if (closeBtn) {
@@ -932,7 +836,7 @@
       }
     });
 
-    // 5. Nút Duyệt / Xuất bản (Mở popup xác nhận)
+    // 4. Nút Duyệt / Xuất bản (Mở popup xác nhận)
     const btnSave = document.getElementById("btn-save-publish");
     if (btnSave) {
       btnSave.addEventListener("click", () => {
@@ -941,6 +845,14 @@
         if (titleEl) {
           titleEl.textContent = reviewingArticle.title || "Bài viết không tiêu đề";
         }
+        
+        // Đồng bộ trạng thái checkbox từ modal xem bài sang popup xác nhận
+        const isNotableModal = document.getElementById("modal-is-notable-checkbox");
+        const isNotableConfirm = document.getElementById("confirm-is-notable-checkbox");
+        if (isNotableModal && isNotableConfirm) {
+          isNotableConfirm.checked = isNotableModal.checked;
+        }
+
         const confirmModal = document.getElementById("modal-confirm-publish");
         if (confirmModal) {
           confirmModal.style.display = "flex";
@@ -948,7 +860,28 @@
       });
     }
 
-    // 6. Hủy & Xác nhận Xuất bản trong Popup
+    // Đồng bộ ngược lại nếu người dùng tick chọn trong popup xác nhận
+    const isNotableConfirm = document.getElementById("confirm-is-notable-checkbox");
+    if (isNotableConfirm) {
+      isNotableConfirm.addEventListener("change", (e) => {
+        const isNotableModal = document.getElementById("modal-is-notable-checkbox");
+        if (isNotableModal) {
+          isNotableModal.checked = e.target.checked;
+        }
+      });
+    }
+
+    const isNotableModal = document.getElementById("modal-is-notable-checkbox");
+    if (isNotableModal) {
+      isNotableModal.addEventListener("change", (e) => {
+        const isNotableConfirm = document.getElementById("confirm-is-notable-checkbox");
+        if (isNotableConfirm) {
+          isNotableConfirm.checked = e.target.checked;
+        }
+      });
+    }
+
+    // 5. Hủy & Xác nhận Xuất bản trong Popup
     const btnCancelPublish = document.getElementById("btn-cancel-publish-prompt");
     if (btnCancelPublish) {
       btnCancelPublish.addEventListener("click", () => {
@@ -966,7 +899,7 @@
       });
     }
 
-    // 7. Nút Mở Popup Từ chối
+    // 6. Nút Mở Popup Từ chối
     const btnTriggerReject = document.getElementById("btn-trigger-reject");
     if (btnTriggerReject) {
       btnTriggerReject.addEventListener("click", () => {
@@ -975,7 +908,7 @@
       });
     }
 
-    // 8. Hủy & Xác nhận Từ chối
+    // 7. Hủy & Xác nhận Từ chối
     const btnCancelReject = document.getElementById("btn-cancel-reject-prompt");
     if (btnCancelReject) {
       btnCancelReject.addEventListener("click", () => {
@@ -988,12 +921,6 @@
       btnConfirmReject.addEventListener("click", handleConfirmReject);
     }
   }
-
-  window.setPendingArticleTab = function (tab) {
-    currentTab = tab;
-    renderHeaderStats();
-    renderArticlesList();
-  };
 
   window.openReviewModal = openReviewModal;
   window.closeReviewModal = closeReviewModal;

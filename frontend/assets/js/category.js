@@ -204,7 +204,7 @@ function initCategoryPage() {
       featuredMount.style.display = "block";
       featuredMount.innerHTML = `
         <article class="article-card category-feature">
-          <a href="article-detail.html?id=${featuredArticle.id}" class="card-link" style="display: block;">
+          <a href="${getArticleDetailUrl(featuredArticle)}" class="card-link" style="display: block;">
             <div class="hero-grid" style="padding:0; border:none;">
               ${renderCoverImage(featuredArticle.cover_image, featuredArticle.title, "ph--16x9")}
               <div>
@@ -212,7 +212,7 @@ function initCategoryPage() {
                 <h2 class="headline-lg" style="margin-top: 8px;">${escapeHtml(featuredArticle.title)}</h2>
                 <p class="dek">${escapeHtml(featuredArticle.short_description || featuredArticle.summary || "")}</p>
                 <div class="meta">
-                  <a href="author.html?id=${featAuthor.id}">${escapeHtml(featAuthor.full_name)}</a>
+                  <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(featAuthor) : 'author.html?username=' + encodeURIComponent(featAuthor.username || featAuthor.id)}">${escapeHtml(featAuthor.full_name)}</a>
                   <span class="dot-sep">·</span>
                   <span>${formatDate(featuredArticle.published_at || featuredArticle.created_at)}</span>
                   <span class="dot-sep">·</span>
@@ -237,14 +237,14 @@ function initCategoryPage() {
             const author = getAuthor(a.author_id);
             return `
               <article class="article-card" style="padding-bottom: 20px;">
-                <a href="article-detail.html?id=${a.id}" class="card-link" style="display: block;">
+                <a href="${getArticleDetailUrl(a)}" class="card-link" style="display: block;">
                   ${renderCoverImage(a.cover_image, a.title, "ph--4x3")}
                   <span class="eyebrow">${escapeHtml(cat.name)}</span>
                   <h3 class="headline-md" style="margin-top: 6px;">${escapeHtml(a.title)}</h3>
                 </a>
                 <p class="dek" style="font-size: 13.5px; margin: 4px 0 10px;">${escapeHtml(a.short_description || a.summary || "")}</p>
                 <div class="meta">
-                  <a href="author.html?id=${author.id}">${escapeHtml(author.full_name)}</a>
+                  <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author) : 'author.html?username=' + encodeURIComponent(author.username || author.id)}">${escapeHtml(author.full_name)}</a>
                   <span class="dot-sep">·</span>
                   <span>${formatDate(a.published_at || a.created_at)}</span>
                   <span class="dot-sep">·</span>
@@ -294,7 +294,7 @@ function initCategoryPage() {
             <div class="rank-item ${isLast}">
               <div>
                 <h4 class="rank-item__title">
-                  <a href="article-detail.html?id=${a.id}">${escapeHtml(a.title)}</a>
+                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
                 </h4>
                 <div class="meta">${formatNumber(getViews(a))} lượt đọc</div>
               </div>

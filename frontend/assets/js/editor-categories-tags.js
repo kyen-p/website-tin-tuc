@@ -10,7 +10,7 @@
  *    - Hiển thị danh sách toàn bộ tag trong hệ thống kèm số lượng bài viết gắn tag.
  *    - Thêm tag mới thủ công.
  *    - Sửa tên Tag / Gộp thông minh (Smart Merge): Khi đổi tên tag A sang B, nếu B đã có sẵn trong hệ thống thì tự động gộp các bài viết của A sang B và xóa tag A.
- *    - Xóa Tag (🗑️): Xóa vĩnh viễn tag khỏi hệ thống và tự động gỡ tag đó ra khỏi mọi bài viết & đề tài.
+ *    - Xóa Tag (🗑️): Xóa vĩnh viễn tag khỏi hệ thống và tự động gỡ tag đó ra khỏi mọi bài viết.
  *    - Dọn dẹp nhanh các tag rác (0 bài viết).
  */
 
@@ -21,8 +21,6 @@
   let allTags = [];
   let allArticles = [];
   let allArticleTags = [];
-  let allTopics = [];
-  let allTopicTags = [];
 
   let currentCategorySearch = "";
   let currentTagSearch = "";
@@ -66,8 +64,6 @@
     allTags = fetchTable("tags");
     allArticles = fetchTable("articles");
     allArticleTags = fetchTable("article_tags");
-    allTopics = fetchTable("topics");
-    allTopicTags = fetchTable("topic_tags");
   }
 
   /**
@@ -81,7 +77,10 @@
    * Tính số lượng bài viết cho 1 tag
    */
   function getTagArticleCount(tagId) {
-    return allArticleTags.filter((at) => String(at.tag_id) === String(tagId)).length;
+    const validArticleIds = new Set(allArticles.map((a) => String(a.id)));
+    return allArticleTags.filter(
+      (at) => String(at.tag_id) === String(tagId) && validArticleIds.has(String(at.article_id))
+    ).length;
   }
 
   /**
@@ -513,9 +512,7 @@
       return;
     }
 
-    if (!slugVal) {
-      slugVal = typeof slugify === "function" ? slugify(nameVal) : nameVal.toLowerCase().replace(/\s+/g, "-");
-    }
+    slugVal = slugify(slugVal || nameVal);
 
     const nowIso = new Date().toISOString().replace("T", " ").substring(0, 19);
 
@@ -613,13 +610,6 @@
           }
         });
 
-        // Chuyển cả bảng topic_tags
-        allTopicTags.forEach((tt) => {
-          if (String(tt.tag_id) === String(currentTag.id)) {
-            tt.tag_id = existingTargetTag.id;
-          }
-        });
-
         // Xóa các liên kết thừa (duplicate article_tags)
         const uniqueArticleTags = [];
         allArticleTags.forEach((item) => {
@@ -635,7 +625,6 @@
 
         saveTableData("tags", allTags);
         saveTableData("article_tags", allArticleTags);
-        saveTableData("topic_tags", allTopicTags);
 
         if (typeof showToast === "function") {
           showToast(`Đã tự động gộp thẻ "#${currentTag.name}" vào "#${existingTargetTag.name}" thành công!`, "success");
@@ -692,12 +681,8 @@
     // 2. Gỡ khỏi article_tags
     allArticleTags = allArticleTags.filter((at) => String(at.tag_id) !== String(tagId));
 
-    // 3. Gỡ khỏi topic_tags
-    allTopicTags = allTopicTags.filter((tt) => String(tt.tag_id) !== String(tagId));
-
     saveTableData("tags", allTags);
     saveTableData("article_tags", allArticleTags);
-    saveTableData("topic_tags", allTopicTags);
 
     if (typeof showToast === "function") {
       showToast(`Đã xóa vĩnh viễn thẻ "#${tagName}" khỏi hệ thống!`, "info");

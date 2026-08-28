@@ -6,7 +6,7 @@
  * 2. Tính điểm "Nóng" = Views / (Giờ trôi qua + 1) để chọn 5 bài Tiêu điểm Khối 1
  * 3. Render Khối bài viết nổi bật (Hero Grid: 2 bài đinh trái, 3 bài nhỏ phải, chuyên mục đỏ)
  * 4. Render Khối bài viết mới cập nhật (Latest Grid: lấy theo thời gian thực)
- * 5. Render Cột bài viết theo dòng sự kiện (Topic-based Event Stream: gom theo đề tài topic_id)
+ * 5. Render Cột bài viết theo dòng sự kiện nổi bật (Notable Event Stream: do BTV tuyển chọn)
  * 6. Render Bảng xếp hạng bài viết đọc nhiều nhất trong tuần (Top 5 tuần qua)
  * 7. Render Khối chủ đề thịnh hành (Tag Cloud)
  * ==============================================================================
@@ -22,7 +22,6 @@ function initHomePage() {
   const users = getTable("users");
   const tags = getTable("tags");
   const allArticles = getTable("articles");
-  const topics = getTable("topics");
 
   // Helper lấy chuyên mục theo ID
   function getCategory(categoryId) {
@@ -32,11 +31,6 @@ function initHomePage() {
   // Helper lấy tác giả theo ID
   function getAuthor(authorId) {
     return users.find((u) => u.id === authorId) || { full_name: "Ban Biên Tập", id: "" };
-  }
-
-  // Helper lấy đề tài theo ID
-  function getTopic(topicId) {
-    return topics.find((t) => t.id === topicId) || null;
   }
 
   // Lọc chỉ lấy bài viết đã đăng chính thức và có ngày xuất bản
@@ -53,9 +47,10 @@ function initHomePage() {
   // Helper render dòng meta chuẩn đồng bộ: Tác giả · Thời gian · Lượt đọc
   function renderCardMeta(a, author) {
     const viewsFormatted = formatNumber(getViews(a));
+    const authorUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(author) : `author.html?username=${encodeURIComponent(author.username || author.id)}`;
     return `
       <div class="meta">
-        <a href="author.html?id=${author.id}">${escapeHtml(author.full_name)}</a>
+        <a href="${authorUrl}">${escapeHtml(author.full_name)}</a>
         <span class="dot-sep">·</span>
         <span>${timeAgo(a.published_at)}</span>
         <span class="dot-sep">·</span>
@@ -95,7 +90,7 @@ function initHomePage() {
         <div class="hero-grid__main">
           <!-- Bài đinh số 1 (Lead Hero) -->
           <article class="article-card">
-            <a href="article-detail.html?id=${leadArticle.id}" class="card-link">
+            <a href="${getArticleDetailUrl(leadArticle)}" class="card-link">
               ${renderCoverImage(leadArticle.cover_image, leadArticle.title, "ph--16x9")}
               <span class="eyebrow is-crimson">${escapeHtml(leadCat.name)}</span>
               <h1 class="headline-xl">${escapeHtml(leadArticle.title)}</h1>
@@ -111,7 +106,7 @@ function initHomePage() {
         leftHtml += `
           <!-- Bài đinh số 2 (Đồng bộ cỡ chữ và cấu trúc y hệt bài đinh số 1) -->
           <article class="article-card">
-            <a href="article-detail.html?id=${subLeadArticle.id}" class="card-link">
+            <a href="${getArticleDetailUrl(subLeadArticle)}" class="card-link">
               ${renderCoverImage(subLeadArticle.cover_image, subLeadArticle.title, "ph--16x9")}
               <span class="eyebrow is-crimson">${escapeHtml(subCat.name)}</span>
               <h2 class="headline-xl">${escapeHtml(subLeadArticle.title)}</h2>
@@ -135,7 +130,7 @@ function initHomePage() {
                 const author = getAuthor(a.author_id);
                 return `
                   <article class="article-card">
-                    <a href="article-detail.html?id=${a.id}" class="card-link">
+                    <a href="${getArticleDetailUrl(a)}" class="card-link">
                       ${renderCoverImage(a.cover_image, a.title, "ph--16x9")}
                       <span class="eyebrow is-crimson">${escapeHtml(cat.name)}</span>
                       <h2 class="headline-md">${escapeHtml(a.title)}</h2>
@@ -185,7 +180,7 @@ function initHomePage() {
           const author = getAuthor(a.author_id);
           return `
             <article class="article-card">
-              <a href="article-detail.html?id=${a.id}" class="card-link">
+              <a href="${getArticleDetailUrl(a)}" class="card-link">
                 ${renderCoverImage(a.cover_image, a.title, "ph--4x3")}
                 <span class="eyebrow">${escapeHtml(cat.name)}</span>
                 <h3 class="headline-md">${escapeHtml(a.title)}</h3>
@@ -231,13 +226,13 @@ function initHomePage() {
 
           return `
             <article class="article-card--row ${isLast}">
-              <a href="article-detail.html?id=${a.id}" class="card-link" style="display: block;">
+              <a href="${getArticleDetailUrl(a)}" class="card-link" style="display: block;">
                 ${renderCoverImage(a.cover_image, a.title, "ph--4x3")}
               </a>
               <div>
                 <span class="eyebrow">${escapeHtml(cat.name)}</span>
                 <h3 class="headline-md">
-                  <a href="article-detail.html?id=${a.id}">${escapeHtml(a.title)}</a>
+                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
                 </h3>
                 <p class="dek--sm">${escapeHtml(a.short_description || a.summary || "")}</p>
                 ${renderCardMeta(a, author)}
@@ -283,7 +278,7 @@ function initHomePage() {
             <div class="rank-item ${isLast}">
               <div>
                 <h4 class="rank-item__title">
-                  <a href="article-detail.html?id=${a.id}">${escapeHtml(a.title)}</a>
+                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
                 </h4>
                 <div class="meta">${formatNumber(views)} lượt đọc</div>
               </div>

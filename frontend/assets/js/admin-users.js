@@ -10,7 +10,7 @@
  * 4. Thêm mới tài khoản nhân viên / độc giả với form chuẩn xác
  * 5. Phân quyền / Đổi vai trò linh hoạt kèm thông báo tự động
  * 6. Khóa / Mở khóa tài khoản (khóa đăng nhập) & Khóa / Mở khóa quyền bình luận độc lập
- * 7. Xem chi tiết hồ sơ & đóng góp (bài viết, đề tài, bình luận, tương tác)
+ * 7. Xem chi tiết hồ sơ & đóng góp (bài viết, bình luận, tương tác)
  * 8. Xóa tài khoản với modal xác nhận an toàn
  * ==============================================================================
  */
@@ -20,7 +20,6 @@
 
   let allUsers = [];
   let allArticles = [];
-  let allTopics = [];
   let allComments = [];
   let allCategories = [];
 
@@ -51,7 +50,6 @@
   function loadData() {
     allUsers = getTable("users") || [];
     allArticles = getTable("articles") || [];
-    allTopics = getTable("topics") || [];
     allComments = getTable("comments") || [];
     allCategories = getTable("categories") || [];
   }
@@ -341,7 +339,7 @@
       const isLocked = user.status === "locked";
       const isCommentLocked = user.comment_locked === true || user.is_comment_locked === true;
 
-      // Tính toán đóng góp (đếm tổng số bài đã xuất bản, bao gồm cả bài viết theo đề tài)
+      // Tính toán đóng góp (đếm tổng số bài đã xuất bản)
       let contributionHtml = "";
       if (user.role === "reporter") {
         const myPublishedArticlesCount = allArticles.filter(
@@ -354,15 +352,10 @@
           </div>
         `;
       } else if (user.role === "editor") {
-        // Đếm tất cả các bài viết đã duyệt xuất bản bởi BTV này (bao gồm bài viết tự do và bài viết theo đề tài)
+        // Đếm tất cả các bài viết đã duyệt xuất bản bởi BTV này
         const approvedCount = allArticles.filter(a => {
           if (a.status !== "published") return false;
-          if (String(a.approved_by) === String(user.id) || String(a.editor_id) === String(user.id)) return true;
-          if (a.topic_id) {
-            const topic = allTopics.find(t => String(t.id) === String(a.topic_id));
-            if (topic && String(topic.editor_id || topic.assigned_by) === String(user.id)) return true;
-          }
-          return false;
+          return String(a.approved_by) === String(user.id) || String(a.editor_id) === String(user.id);
         }).length;
 
         contributionHtml = `

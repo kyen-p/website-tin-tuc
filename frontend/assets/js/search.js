@@ -234,14 +234,14 @@ function initSearchPage() {
 
         return `
           <article class="search-article-card">
-            <a href="article-detail.html?id=${article.id}" class="search-article-card__thumb" aria-label="${escapeHtml(article.title)}">
+            <a href="${getArticleDetailUrl(article)}" class="search-article-card__thumb" aria-label="${escapeHtml(article.title)}">
               ${coverHtml}
             </a>
             <div class="search-article-card__body">
               <div>
                 <a href="category.html?slug=${cat.slug}" class="eyebrow">${escapeHtml(cat.name)}</a>
                 <h3 class="search-article-card__title">
-                  <a href="article-detail.html?id=${article.id}">
+                  <a href="${getArticleDetailUrl(article)}">
                     ${highlightedTitle}
                   </a>
                 </h3>
@@ -251,7 +251,7 @@ function initSearchPage() {
                 ${tagsHtml}
               </div>
               <div class="search-article-card__meta">
-                <a href="author.html?id=${author.id}">${escapeHtml(author.full_name)}</a>
+                <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author) : 'author.html?username=' + encodeURIComponent(author.username || author.id)}">${escapeHtml(author.full_name)}</a>
                 <span class="dot-sep">·</span>
                 <span>${safeDate}</span>
                 <span class="dot-sep">·</span>
@@ -369,7 +369,7 @@ function initSearchPage() {
         <div class="rank-item ${idx === topArticles.length - 1 ? 'no-border' : ''}">
           <div>
             <h4 class="rank-item__title">
-              <a href="article-detail.html?id=${a.id}">
+              <a href="${getArticleDetailUrl(a)}">
                 ${escapeHtml(a.title)}
               </a>
             </h4>

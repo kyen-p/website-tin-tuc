@@ -33,12 +33,6 @@ const WORKSPACE_MENUS = {
         title: "Soạn bài viết",
         url: "write-article.html",
         icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`
-      },
-      {
-        key: "my-topics",
-        title: "Đề tài của tôi",
-        url: "my-topics.html",
-        icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>`
       }
     ]
   },
@@ -65,12 +59,6 @@ const WORKSPACE_MENUS = {
         title: "Danh mục & Tag",
         url: "categories-tags.html",
         icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>`
-      },
-      {
-        key: "topics",
-        title: "Phân công đề tài",
-        url: "topics.html",
-        icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`
       }
     ]
   },
@@ -122,47 +110,7 @@ function getSidebarBadge(key, currentRole, currentUser) {
     if (typeof getTable !== "function") return null;
 
     if (currentRole === "reporter") {
-      // Phóng viên: 'Bài viết của tôi' không hiển thị số; 'Đề tài của tôi' chỉ đếm đề tài đã giao (assigned) hoặc quá hạn (overdue) chưa nộp/chưa hoàn thành
-      if (key === "my-topics") {
-        const topics = getTable("topics") || [];
-        const articles = getTable("articles") || [];
-        const currentUserId = currentUser ? currentUser.id : null;
-        if (!currentUserId) return null;
-
-        // Lọc các đề tài được phân công cho phóng viên này
-        const myTopics = topics.filter(
-          t => String(t.reporter_id) === String(currentUserId) || String(t.assigned_to) === String(currentUserId)
-        );
-
-        // Chỉ đếm các đề tài có trạng thái thực tế là 'assigned' (đã giao) hoặc 'overdue' (quá hạn)
-        const pendingTopics = myTopics.filter(topic => {
-          // Kiểm tra xem đề tài đã có bài viết liên kết chưa
-          const linkedArticle = articles.find(
-            a => String(a.topic_id) === String(topic.id) && String(a.author_id) === String(currentUserId)
-          );
-
-          if (linkedArticle) {
-            // Đã xuất bản hoặc đang chờ duyệt -> không đếm
-            if (linkedArticle.status === "published" || linkedArticle.status === "pending") {
-              return false;
-            }
-            // Bị từ chối -> cần viết lại -> đếm
-            if (linkedArticle.status === "rejected") {
-              return true;
-            }
-          }
-
-          if (topic.status === "submitted" || topic.status === "completed") {
-            return false;
-          }
-
-          // Trạng thái đã giao hoặc quá hạn
-          return topic.status === "assigned" || topic.status === "in_progress" || topic.status === "overdue" || !topic.status;
-        });
-
-        const count = pendingTopics.length;
-        return count > 0 ? { count, type: "highlight" } : null;
-      }
+      return null;
     } else if (currentRole === "editor") {
       // Biên tập: 'Bài chờ duyệt' đếm bài status = pending cần duyệt ngay
       if (key === "pending-articles") {
@@ -170,10 +118,8 @@ function getSidebarBadge(key, currentRole, currentUser) {
         const count = articles.filter(a => a.status === "pending").length;
         return count > 0 ? { count, type: "warning" } : null;
       }
-      // 'Phân công đề tài' không hiển thị badge để menu gọn gàng & đồng nhất
       return null;
     } else if (currentRole === "admin") {
-      // Quản trị viên: Không hiển thị badge vì đã tinh gọn bỏ báo cáo bình luận & thông báo
       return null;
     }
   } catch (e) {

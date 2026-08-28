@@ -89,20 +89,6 @@
   margin: 6px 0;
 }
 
-.topic-badge-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--brass-dark);
-  background: rgba(184, 137, 79, 0.12);
-  padding: 2px 8px;
-  border-radius: 2px;
-  margin-bottom: 6px;
-}
-
 .section--latest {
   padding: 32px 0 16px;
   border-bottom: 1px solid var(--line);
@@ -455,6 +441,86 @@
 
 .body-text p {
   margin: 0 0 18px;
+}
+
+.body-text figure,
+.body-text figure.image {
+  margin: 24px 0;
+  text-align: center;
+  width: 100%;
+}
+
+.body-text figure img,
+.body-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.body-text figcaption {
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.body-text h2,
+.body-text h3,
+.body-text h4 {
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-weight: 700;
+  margin: 28px 0 14px;
+  line-height: 1.35;
+}
+
+.body-text h2 { font-size: 22px; }
+.body-text h3 { font-size: 19px; }
+.body-text h4 { font-size: 17px; }
+
+.body-text blockquote {
+  border-left: 3px solid var(--brass);
+  margin: 24px 0;
+  padding: 8px 0 8px 20px;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink);
+  background: var(--paper-alt);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.body-text ul,
+.body-text ol {
+  margin: 0 0 18px 24px;
+  padding-left: 0;
+}
+
+.body-text li {
+  margin-bottom: 6px;
+}
+
+.body-text table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+}
+
+.body-text th,
+.body-text td {
+  border: 1px solid var(--line);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.body-text th {
+  background: var(--paper-alt);
+  font-weight: 600;
 }
 
 .pullquote {

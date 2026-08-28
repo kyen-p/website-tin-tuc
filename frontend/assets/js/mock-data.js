@@ -6,7 +6,7 @@
  * - Mỗi thuộc tính là 1 bảng (table)
  * - Mỗi phần tử là 1 bản ghi (record)
  * - Khóa chính: id (INT)
- * - Khóa ngoại: author_id, category_id, user_id, article_id, topic_id, tag_id,...
+ * - Khóa ngoại: author_id, category_id, user_id, article_id, tag_id,...
  * - Thời gian giả lập hiện tại của hệ thống: 13/08/2026 12:00:00
  * ==============================================================================
  */
@@ -231,7 +231,6 @@ const MOCK_DATA = {
       author_id: 6,
       approved_by: 7,
       category_id: 1,
-      topic_id: null,
       is_notable_event: true,
       status: "published",
       rejection_reason: null,
@@ -250,7 +249,6 @@ const MOCK_DATA = {
       author_id: 5,
       approved_by: 7,
       category_id: 3,
-      topic_id: null,
       is_notable_event: true,
       status: "published",
       rejection_reason: null,
@@ -269,7 +267,6 @@ const MOCK_DATA = {
       author_id: 5,
       approved_by: 7,
       category_id: 2,
-      topic_id: 3,
       is_notable_event: true,
       status: "published",
       rejection_reason: null,
@@ -288,7 +285,6 @@ const MOCK_DATA = {
       author_id: 6,
       approved_by: 7,
       category_id: 1,
-      topic_id: null,
       is_notable_event: false,
       status: "published",
       rejection_reason: null,
@@ -307,7 +303,6 @@ const MOCK_DATA = {
       author_id: 6,
       approved_by: 7,
       category_id: 5,
-      topic_id: null,
       is_notable_event: false,
       status: "published",
       rejection_reason: null,
@@ -326,7 +321,6 @@ const MOCK_DATA = {
       author_id: 6,
       approved_by: 7,
       category_id: 5,
-      topic_id: null,
       is_notable_event: false,
       status: "published",
       rejection_reason: null,
@@ -345,7 +339,6 @@ const MOCK_DATA = {
       author_id: 5,
       approved_by: 7,
       category_id: 6,
-      topic_id: null,
       is_notable_event: true,
       status: "published",
       rejection_reason: null,
@@ -364,7 +357,6 @@ const MOCK_DATA = {
       author_id: 6,
       approved_by: 7,
       category_id: 4,
-      topic_id: 4,
       is_notable_event: false,
       status: "published",
       rejection_reason: null,
@@ -383,7 +375,6 @@ const MOCK_DATA = {
       author_id: 5,
       approved_by: 7,
       category_id: 2,
-      topic_id: 2,
       is_notable_event: true,
       status: "published",
       rejection_reason: null,
@@ -402,7 +393,6 @@ const MOCK_DATA = {
       author_id: 6,
       approved_by: 7,
       category_id: 1,
-      topic_id: 1,
       is_notable_event: false,
       status: "published",
       rejection_reason: null,
@@ -421,7 +411,6 @@ const MOCK_DATA = {
       author_id: 5,
       approved_by: 7,
       category_id: 5,
-      topic_id: null,
       is_notable_event: false,
       status: "published",
       rejection_reason: null,
@@ -440,7 +429,6 @@ const MOCK_DATA = {
       author_id: 5,
       approved_by: 7,
       category_id: 2,
-      topic_id: null,
       is_notable_event: true,
       status: "published",
       rejection_reason: null,
@@ -460,7 +448,6 @@ const MOCK_DATA = {
       author_id: 5,
       approved_by: 7,
       category_id: 6,
-      topic_id: null,
       is_notable_event: true,
       status: "published",
       rejection_reason: null,
@@ -480,7 +467,6 @@ const MOCK_DATA = {
       cover_image: "/assets/images/bai-13.jpg",
       author_id: 5,
       category_id: 1,
-      topic_id: null,
       is_notable_event: false,
       status: "pending",
       rejection_reason: null,
@@ -498,7 +484,6 @@ const MOCK_DATA = {
       cover_image: "/assets/images/bai-14.jpg",
       author_id: 6,
       category_id: 4,
-      topic_id: null,
       is_notable_event: false,
       status: "draft",
       rejection_reason: null,
@@ -516,7 +501,6 @@ const MOCK_DATA = {
       cover_image: "/assets/images/bai-15.jpg",
       author_id: 6,
       category_id: 5,
-      topic_id: null,
       is_notable_event: false,
       status: "rejected",
       rejection_reason: "Thiếu số liệu khảo sát và hình ảnh thực địa. Vui lòng bổ sung trước khi gửi lại.",
@@ -642,75 +626,5 @@ const MOCK_DATA = {
     { user_id: 1, article_id: 9, created_at: "2026-08-11 15:00:00" },
     { user_id: 3, article_id: 2, created_at: "2026-08-13 09:00:00" },
     { user_id: 3, article_id: 12, created_at: "2026-08-08 10:30:00" }
-  ],
-
-  // ============================================================================
-  // 9. BẢNG PHÂN CÔNG ĐỀ TÀI (topics)
-  // Status: 'assigned' (đã giao), 'submitted' (đã nộp), 'overdue' (quá hạn)
-  // ============================================================================
-  topics: [
-    {
-      id: 1,
-      title: "Nhịp sống đô thị sáng sớm",
-      description: "Ghi nhận không khí, nhịp sinh hoạt và mưu sinh của người dân lúc sáng sớm.",
-      category_id: 1,
-      reporter_id: 6,
-      editor_id: 7,
-      deadline: "2026-08-20 23:59:00",
-      status: "assigned",
-      submitted_at: null,
-      created_at: "2026-08-10 08:00:00",
-      updated_at: "2026-08-10 08:00:00"
-    },
-    {
-      id: 2,
-      title: "Chuyển đổi số ở doanh nghiệp vừa và nhỏ (SME)",
-      description: "Bài phân tích sâu về cơ hội, giải pháp và thách thức chuyển đổi số trong khối SME.",
-      category_id: 2,
-      reporter_id: 5,
-      editor_id: 7,
-      deadline: "2026-08-15 23:59:00",
-      status: "submitted",
-      submitted_at: "2026-08-11 11:00:00",
-      created_at: "2026-08-08 08:00:00",
-      updated_at: "2026-08-11 11:00:00"
-    },
-    {
-      id: 3,
-      title: "Ứng dụng AI và Công nghệ trong Giáo dục đại học",
-      description: "Khảo sát thực tế các mô hình AI đang hỗ trợ sinh viên và giảng viên tại các trường đại học.",
-      category_id: 2,
-      reporter_id: 5,
-      editor_id: 7,
-      deadline: "2026-08-14 23:59:00",
-      status: "submitted",
-      submitted_at: "2026-08-12 14:00:00",
-      created_at: "2026-08-01 08:00:00",
-      updated_at: "2026-08-12 14:00:00"
-    },
-    {
-      id: 4,
-      title: "Điện ảnh Việt mùa lễ hội 2/9",
-      description: "Tổng hợp danh sách các phim Việt ra rạp và nhận định từ các chuyên gia phê bình điện ảnh.",
-      category_id: 4,
-      reporter_id: 6,
-      editor_id: 7,
-      deadline: "2026-08-10 23:59:00",
-      status: "overdue",
-      submitted_at: null,
-      created_at: "2026-08-01 08:00:00",
-      updated_at: "2026-08-11 00:00:00"
-    }
-  ],
-
-  // ============================================================================
-  // 10. BẢNG LIÊN KẾT ĐỀ TÀI - THẺ (topic_tags - N:N)
-  // ============================================================================
-  topic_tags: [
-    { topic_id: 1, tag_id: 8 }, // Đề tài 1: Đô thị
-    { topic_id: 2, tag_id: 4 }, // Đề tài 2: Chuyển đổi số
-    { topic_id: 3, tag_id: 1 }, // Đề tài 3: AI
-    { topic_id: 3, tag_id: 5 }, // Đề tài 3: Giáo dục
-    { topic_id: 4, tag_id: 7 }  // Đề tài 4: Phim Việt
   ]
 };

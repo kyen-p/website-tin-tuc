@@ -239,7 +239,7 @@
               </div>
             </td>
             <td>
-              <a href="../public/article-detail.html?id=${article.id}" target="_blank" class="admin-table__link" style="font-size: 13px; font-weight: 500; color: var(--brass-dark); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${escapeHtml(article.title)}">
+              <a href="${typeof getArticleDetailUrl === 'function' ? getArticleDetailUrl(article, '../public/') : '../public/article-detail.html?slug=' + encodeURIComponent(article.slug || article.id)}" target="_blank" class="admin-table__link" style="font-size: 13px; font-weight: 500; color: var(--brass-dark); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${escapeHtml(article.title)}">
                 ${escapeHtml(article.title)} ↗
               </a>
             </td>

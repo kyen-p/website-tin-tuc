@@ -71,7 +71,7 @@ function renderFavoritesList(currentUser) {
       ${favoriteArticles.map((article) => {
         const cat = allCategories.find((c) => String(c.id) === String(article.category_id)) || { name: "Tin tức", slug: "tin-tuc" };
         const author = allUsers.find((u) => String(u.id) === String(article.author_id)) || { full_name: article.author_name || "Ban Biên Tập" };
-        const detailUrl = `../public/article-detail.html?id=${article.id}`;
+        const detailUrl = typeof getArticleDetailUrl === "function" ? getArticleDetailUrl(article, "../public/") : `../public/article-detail.html?slug=${encodeURIComponent(article.slug || article.id)}`;
         
         // Thời gian & lượt đọc theo đúng chuẩn định dạng hệ thống
         const safeDate = typeof formatDate === "function" ? formatDate(article.published_at || article.created_at) : (article.published_at || "");
@@ -129,7 +129,7 @@ function renderFavoritesList(currentUser) {
 
               <!-- Meta: Tác giả · Thời gian · Lượt đọc -->
               <div class="search-article-card__meta">
-                <a href="../public/author.html?id=${article.author_id}" onclick="event.stopPropagation();">${typeof escapeHtml === "function" ? escapeHtml(author.full_name) : author.full_name}</a>
+                <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author, '../public/') : '../public/author.html?username=' + encodeURIComponent(author.username || author.id)}" onclick="event.stopPropagation();">${typeof escapeHtml === "function" ? escapeHtml(author.full_name) : author.full_name}</a>
                 <span class="dot-sep">·</span>
                 <span>${safeDate}</span>
                 <span class="dot-sep">·</span>

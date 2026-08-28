@@ -99,7 +99,7 @@ function initProfilePage() {
     }
     if (bioInput) bioInput.value = user.bio || "";
     if (btnViewPublicProfile) {
-      btnViewPublicProfile.href = `../public/author.html?id=${user.id}`;
+      btnViewPublicProfile.href = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(user, "../public/") : `../public/author.html?username=${encodeURIComponent(user.username || user.id)}`;
     }
   }
 
