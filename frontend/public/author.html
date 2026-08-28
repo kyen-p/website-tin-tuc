@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tác giả - Mạch Tin</title>
+  
+  <!-- CSS Nền tảng & Layout Công khai -->
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/public-layout.css">
+  <link rel="stylesheet" href="../assets/css/public.css">
+</head>
+<body>
+
+  <!-- 1. HEADER & TICKER CÔNG KHAI (Tự động render bởi common.js) -->
+  <div id="site-header"></div>
+
+  <!-- 2. NỘI DUNG TRANG TÁC GIẢ -->
+  <main>
+    <div class="wrap">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Đường dẫn">
+        <a href="index.html">Trang chủ</a>
+        <span>/</span>
+        <span>Trang cá nhân</span>
+        <span>/</span>
+        <span id="breadcrumb-author" style="color: var(--muted);"></span>
+      </nav>
+
+      <!-- Trường hợp Không tìm thấy tác giả -->
+      <div id="author-not-found" class="panel" style="display: none; text-align: center; padding: 60px 20px;">
+        <h1 class="headline-lg" style="color: var(--crimson); margin-bottom: 12px;">Không tìm thấy thông tin tác giả</h1>
+        <p class="dek" id="author-not-found-desc" style="color: var(--muted); margin-bottom: 24px;">Tác giả có thể không tồn tại hoặc đã ngừng hoạt động.</p>
+        <a href="index.html" class="btn btn-primary">Về Trang chủ</a>
+      </div>
+
+      <!-- Bố cục Hồ sơ tác giả -->
+      <div id="author-container">
+        <!-- Card thông tin Tác giả -->
+        <div class="author-hero-card">
+          <div class="author-hero-layout">
+            <div id="author-avatar-mount"></div>
+            <div class="author-hero-main">
+              <div class="author-hero-title-row">
+                <h1 class="author-hero-name" id="author-name"></h1>
+                <span class="badge badge--reporter" id="author-role-badge">Phóng viên</span>
+                <div id="author-email-wrap" style="margin-left: 4px;">
+                  <a href="#" id="author-email-link" class="author-contact-btn" title="Gửi thư liên hệ">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                      <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span id="author-email"></span>
+                  </a>
+                </div>
+              </div>
+              <p id="author-bio" style="margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink-soft);"></p>
+              
+              <!-- Thống kê bài viết & lượt đọc -->
+              <div class="author-stats-grid">
+                <div class="author-stat-item">
+                  <span class="stat-label">Bài viết đã đăng</span>
+                  <span class="stat-value" id="author-stat-articles" style="color: var(--crimson);">0</span>
+                </div>
+                <div class="author-stat-item">
+                  <span class="stat-label">Tổng lượt đọc</span>
+                  <span class="stat-value" id="author-stat-views" style="color: var(--ink);">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tiêu đề danh sách bài viết + Bộ lọc chuyên mục -->
+        <div class="section-head" style="margin-bottom: 20px;">
+          <h2>Tất cả bài viết</h2>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="author-cat-filter" class="meta" style="font-weight: 500;">Chuyên mục:</label>
+            <select id="author-cat-filter" class="form-control" style="width: auto; padding: 4px 8px; font-size: 13px;">
+              <option value="">Tất cả chuyên mục</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Lưới bài viết của tác giả -->
+        <div class="grid-3" id="author-articles-mount"></div>
+
+        <!-- Thông báo rỗng -->
+        <div id="author-articles-empty" class="panel" style="display: none; text-align: center; padding: 40px 20px;">
+          <p class="headline-md" style="color: var(--muted); margin-bottom: 8px;">Tác giả chưa có bài viết nào trong chuyên mục này.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 3. FOOTER CÔNG KHAI (Tự động render bởi common.js) -->
+  <div id="site-footer"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../assets/js/mock-data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/author.js"></script>
+</body>
+</html>

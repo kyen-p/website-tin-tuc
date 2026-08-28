@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mạch Tin - Bắt mạch dòng chảy tin tức 24/7</title>
+  
+  <!-- CSS Nền tảng & Layout Công khai -->
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/public-layout.css">
+  <link rel="stylesheet" href="../assets/css/public.css">
+  
+  <!-- Toastify JS CSS (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+
+  <!-- 1. HEADER & TICKER CÔNG KHAI (Tự động render bởi common.js) -->
+  <div id="site-header"></div>
+
+  <!-- 2. NỘI DUNG CHÍNH TRANG CHỦ -->
+  <main>
+    <div class="wrap">
+      <!-- A. Khối bài viết nổi bật (1 bài to + 3 bài nhỏ) -->
+      <section class="hero-grid" id="hero-mount" aria-label="Tin tức nổi bật"></section>
+
+      <!-- B. Khối bài viết mới cập nhật -->
+      <section class="section--latest" id="latest-section" aria-label="Tin mới cập nhật" style="display: none;">
+        <div class="section-head">
+          <h2>Mới cập nhật</h2>
+          <a href="category.html?filter=latest" class="see-all">XEM TẤT CẢ →</a>
+        </div>
+        <div class="grid-3" id="latest-mount"></div>
+      </section>
+
+      <!-- C. Khối Sự kiện đáng chú ý & Đọc nhiều nhất (Layout Split) -->
+      <div class="layout-split">
+        <!-- Cột trái: Sự kiện đáng chú ý (Biên tập viên tuyển chọn) -->
+        <section aria-label="Sự kiện đáng chú ý">
+          <div class="section-head">
+            <h2>Sự kiện đáng chú ý</h2>
+            <a href="category.html?filter=notable" class="see-all">XEM TẤT CẢ →</a>
+          </div>
+          <div class="notable-events-list" id="stream-mount"></div>
+        </section>
+
+        <!-- Cột phải: Đọc nhiều nhất & Tag nổi bật -->
+        <aside>
+          <!-- Bảng xếp hạng đọc nhiều -->
+          <div class="panel">
+            <h3>Đọc nhiều nhất</h3>
+            <div class="rank-list" id="rank-mount"></div>
+          </div>
+
+          <!-- Tag Cloud -->
+          <div class="panel">
+            <h3>Tag nổi bật</h3>
+            <div class="tag-cloud" id="tag-mount"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- 4. FOOTER CÔNG KHAI (Tự động render bởi common.js) -->
+  <div id="site-footer"></div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="../assets/js/mock-data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/home.js"></script>
+</body>
+</html>

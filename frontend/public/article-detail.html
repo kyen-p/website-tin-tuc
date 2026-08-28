@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết bài viết - Mạch Tin</title>
+  
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/public-layout.css">
+  <link rel="stylesheet" href="../assets/css/public.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <main>
+    <div class="wrap">
+      <nav class="breadcrumb" aria-label="Đường dẫn">
+        <a href="index.html">Trang chủ</a>
+        <span>/</span>
+        <a href="category.html" id="breadcrumb-category">Chuyên mục</a>
+        <span>/</span>
+        <span id="breadcrumb-title" style="color: var(--muted); max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span>
+      </nav>
+
+      <div id="article-not-found" class="panel" style="display: none; text-align: center; padding: 60px 20px;">
+        <h1 class="headline-lg" style="color: var(--crimson); margin-bottom: 12px;">Không tìm thấy bài viết</h1>
+        <p class="dek" style="color: var(--muted); margin-bottom: 24px;">Bài viết có thể đã bị gỡ bỏ hoặc đường dẫn không hợp lệ.</p>
+        <a href="index.html" class="btn btn-primary">Về Trang chủ</a>
+      </div>
+
+      <div id="article-detail-container">
+        <div class="layout-split layout-split--article">
+          <article>
+            <header class="article-header">
+              <span class="eyebrow is-crimson">
+                <svg width="12" height="12" viewBox="0 0 26 26" fill="none" style="margin-right: 4px;">
+                  <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span id="article-category-badge"></span>
+              </span>
+              <h1 class="headline-xl article-title" id="article-title" style="margin: 12px 0 14px;"></h1>
+              <p class="dek" id="article-summary" style="font-size: 17px; line-height: 1.6; margin-bottom: 18px; color: var(--ink); font-weight: 500;"></p>
+
+              <div class="byline-row">
+                <div class="byline-info">
+                  <a href="#" id="author-link-top" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; flex-shrink: 0;">
+                    <div id="author-avatar-top"></div>
+                  </a>
+                  <div>
+                    <a href="#" id="author-name-link" class="byline-name" style="color: inherit; text-decoration: none;">
+                      <strong id="author-name-top"></strong>
+                    </a>
+                    <div class="meta" style="margin-top: 2px;">
+                      <span id="article-time"></span>
+                      <span class="dot-sep">·</span>
+                      <span id="article-views"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="share-actions">
+                  <button type="button" class="favorite-btn" id="btn-favorite" title="Lưu bài viết yêu thích" aria-label="Yêu thích">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+                      <path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"/>
+                    </svg>
+                  </button>
+                  <button type="button" class="favorite-btn" id="btn-share" title="Sao chép liên kết" aria-label="Chia sẻ">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"></path>
+                      <polyline points="16 6 12 2 8 6"></polyline>
+                      <line x1="12" y1="2" x2="12" y2="15"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </header>
+
+            <div id="article-cover-mount" style="margin-bottom: 24px;"></div>
+
+            <div class="body-text" id="article-content-body"></div>
+
+            <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line);">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span class="meta" style="font-weight: 600; text-transform: uppercase;">Từ khóa:</span>
+                <div class="tag-cloud" id="article-tags-mount"></div>
+              </div>
+            </div>
+
+            <div class="author-box">
+              <div id="author-avatar-bottom"></div>
+              <div class="author-box__content">
+                <div class="author-box__eyebrow">TÁC GIẢ BÀI VIẾT</div>
+                <div class="author-box__head">
+                  <div class="author-name">
+                    <a href="#" id="author-link-bottom"><span id="author-name-bottom"></span></a>
+                    <span class="badge badge--reporter" id="author-role-bottom">Phóng viên</span>
+                  </div>
+                  <a href="#" id="author-view-profile-link" class="author-more-link">Xem trang tác giả →</a>
+                </div>
+                <p class="author-bio" id="author-bio-bottom"></p>
+              </div>
+            </div>
+
+            <section class="comments-section" id="comments-section">
+              <div class="section-head" style="margin-bottom: 20px;">
+                <h2>Bình luận <span class="meta" style="font-size: 15px;">(<span id="comment-count-mount">0</span>)</span></h2>
+              </div>
+
+              <div id="comment-form-mount" style="margin-bottom: 28px; display: none;">
+                <div class="field" style="margin-bottom: 12px;">
+                  <label for="comment-input" class="meta" style="font-weight: 600; margin-bottom: 6px; display: block;">Ý kiến của bạn:</label>
+                  <textarea id="comment-input" class="form-control" rows="3" placeholder="Chia sẻ suy nghĩ của bạn về bài viết này..."></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                  <button type="button" class="btn btn-primary btn-sm" id="btn-submit-comment">Gửi bình luận</button>
+                </div>
+              </div>
+
+              <div id="comment-login-prompt" class="login-prompt" style="margin-bottom: 28px;">
+                <p style="margin-bottom: 12px; font-size: 14px;">Bạn cần đăng nhập để tham gia thảo luận cùng cộng đồng độc giả.</p>
+                <a href="../user/login.html" class="btn btn-primary btn-sm">Đăng nhập ngay</a>
+              </div>
+
+              <div id="comment-list-mount" class="comment-list"></div>
+            </section>
+          </article>
+
+          <aside class="sticky-sidebar">
+            <div class="panel">
+              <h3>Bài viết liên quan</h3>
+              <div class="related-list" id="related-articles-mount"></div>
+            </div>
+
+            <div class="panel" style="margin-top: 24px;">
+              <h3>Tag nổi bật</h3>
+              <div class="tag-cloud" id="article-sidebar-tags"></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal xác nhận xóa bình luận trên trang chi tiết -->
+  <div id="deleteDetailCommentModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="deleteDetailCommentModalTitle" onclick="if(event.target === this) closeDeleteDetailCommentModal()">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-box__head">
+        <h3 id="deleteDetailCommentModalTitle" class="modal-box__title">Xác nhận xóa bình luận</h3>
+        <button type="button" class="modal-box__close" onclick="closeDeleteDetailCommentModal()" aria-label="Đóng">✕</button>
+      </div>
+      <div class="modal-box__body">
+        <p style="font-size: 14px; color: var(--muted); margin: 0; line-height: 1.6; font-family: var(--f-sans);">
+          Bạn có chắc chắn muốn xóa bình luận này không? Hành động này không thể hoàn tác.
+        </p>
+      </div>
+      <div class="modal-box__foot">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeDeleteDetailCommentModal()">Hủy bỏ</button>
+        <button type="button" class="btn btn-danger btn-sm" id="btn-confirm-delete-detail-comment" onclick="confirmDeleteDetailComment()">Xóa vĩnh viễn</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="../assets/js/mock-data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/article-detail.js"></script>
+</body>
+</html>
