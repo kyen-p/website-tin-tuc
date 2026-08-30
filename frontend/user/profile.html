@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thông tin tài khoản - Mạch Tin</title>
+
+  <!-- CSS Nền tảng & Layout Công khai -->
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/public-layout.css">
+  <link rel="stylesheet" href="../assets/css/public.css">
+
+  <!-- Toastify JS CSS (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+
+  <!-- 1. HEADER & TICKER CÔNG KHAI -->
+  <div id="site-header"></div>
+
+  <!-- 2. NỘI DUNG CHÍNH TRANG HỒ SƠ CÁ NHÂN (1 KHỐI DUY NHẤT) -->
+  <main>
+    <div class="wrap">
+      
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Đường dẫn trang" style="margin: 16px 0 20px;">
+        <a href="../public/index.html">Trang chủ</a>
+        <span>/</span>
+        <span>Thông tin tài khoản</span>
+      </nav>
+
+      <!-- Khung trung tâm 1 khối duy nhất -->
+      <div class="user-single-container">
+
+        <!-- Khối chức năng duy nhất: Cập nhật thông tin tài khoản -->
+        <section class="user-single-card" aria-label="Thông tin tài khoản">
+          <div class="user-card-header">
+            <div>
+              <h1 class="user-card-title">Thông tin tài khoản</h1>
+              <p class="user-card-subtitle">Quản lý và cập nhật thông tin cá nhân, ảnh đại diện và tiểu sử của bạn.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span id="userRoleBadge" class="user-role-badge">Độc giả</span>
+              <a id="btnViewPublicProfile" href="../public/author.html" class="btn btn-outline" style="font-size: 13px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; text-decoration: none;">
+                <span>Xem trang cá nhân</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <form id="profileForm" class="user-profile-form">
+            
+            <!-- Khu vực Thay đổi Avatar (Xem trước, Tải lên & Xóa ảnh) -->
+            <div class="avatar-upload-section" style="display: flex; align-items: center; gap: 24px; margin-bottom: 24px;">
+              <div class="avatar-preview-box" id="avatarPreviewContainer">
+                <!-- Chứa thẻ img hoặc chữ cái đầu (được render tự động bởi JS) -->
+              </div>
+              <div class="avatar-upload-info" style="flex: 1;">
+                <label class="form-label" style="margin-bottom: 4px; font-weight: 600; display: block;">Ảnh đại diện</label>
+                <p class="meta" style="font-size: 12.5px; color: var(--muted); margin: 0 0 12px;">Hỗ trợ định dạng JPG, PNG hoặc WebP (dung lượng tối đa 2MB).</p>
+                
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                  <!-- Nút tải ảnh lên từ máy tính -->
+                  <label for="avatarFileInput" class="btn btn-secondary" style="font-size: 13px; padding: 7px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Tải ảnh lên
+                  </label>
+                  <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+                  
+                  <!-- Nút xóa ảnh đại diện về mặc định -->
+                  <button type="button" id="btnRemoveAvatar" class="btn btn-outline" style="font-size: 13px; padding: 7px 14px; color: #A6362C; border-color: #fca5a5; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Xóa ảnh
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+
+            <!-- Trường Họ và tên -->
+            <div class="form-group" style="margin-bottom: 18px;">
+              <label for="fullNameInput" class="form-label" style="font-weight: 600;">Họ và tên hiển thị <span class="text-crimson">*</span></label>
+              <input type="text" id="fullNameInput" class="form-input" required placeholder="Nhập họ và tên hiển thị...">
+            </div>
+
+            <!-- Trường Tên đăng nhập (Username) & Email (Hiển thị 2 cột) -->
+            <div class="form-row-2" style="margin-bottom: 18px;">
+              <div class="form-group">
+                <label for="usernameInput" class="form-label" style="font-weight: 600;">Tên đăng nhập (Username) <span class="text-crimson">*</span></label>
+                <input type="text" id="usernameInput" class="form-input" required placeholder="vd: thanhangn" autocomplete="username">
+              </div>
+
+              <div class="form-group">
+                <label for="emailInput" class="form-label" style="font-weight: 600;">Địa chỉ Email <span class="text-crimson">*</span></label>
+                <input type="email" id="emailInput" class="form-input" required placeholder="name@example.com" autocomplete="email">
+              </div>
+            </div>
+
+            <!-- Trường Tiểu sử / Giới thiệu ngắn (Bio) -->
+            <div class="form-group" style="margin-bottom: 24px;">
+              <label for="bioInput" class="form-label" style="font-weight: 600;">Tiểu sử cá nhân</label>
+              <textarea id="bioInput" class="form-textarea" rows="3" placeholder="Viết một vài dòng giới thiệu ngắn về sở thích, chuyên môn của bạn..."></textarea>
+            </div>
+
+            <!-- Nút Lưu thay đổi -->
+            <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line-soft);">
+              <button type="button" id="btnResetForm" class="btn btn-secondary" style="padding: 10px 20px;">Hủy thay đổi</button>
+              <button type="submit" id="btnSubmitProfile" class="btn btn-primary" style="padding: 10px 28px; font-weight: 600;">Lưu cập nhật</button>
+            </div>
+
+          </form>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 3. FOOTER CÔNG KHAI -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="../assets/js/mock-data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/profile.js"></script>
+</body>
+</html>
