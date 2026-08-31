@@ -4,7 +4,7 @@
  * ==============================================================================
  */
 
-function initSearchPage() {
+async function initSearchPage() {
   // 1. Khởi tạo Header và Footer dùng chung
   if (typeof initPublicHeader === "function") initPublicHeader("search");
   if (typeof initPublicFooter === "function") initPublicFooter();
@@ -16,16 +16,28 @@ function initSearchPage() {
   let selectedCategory = urlParams.get("cat") || "all";
   let selectedSort = urlParams.get("sort") || "newest";
 
-  // 3. Lấy dữ liệu an toàn từ Database Helper (localStorage / MOCK_DATA)
-  const articles = (typeof getTable === "function" ? getTable("articles") : []) || [];
-  const categories = (typeof getTable === "function" ? getTable("categories") : []) || [];
+  // 3. Lấy dữ liệu bài viết & chuyên mục từ backend (PHP + MySQL).
+  //    Chưa có API riêng cho "tags"/"article_tags" (ngoài phạm vi 4 API Cặp 1 được giao)
+  //    nên tag cloud/lọc theo tag tạm thời vẫn lấy từ getTable() như trước.
   const tags = (typeof getTable === "function" ? getTable("tags") : []) || [];
   const articleTags = (typeof getTable === "function" ? getTable("article_tags") : []) || [];
-  const users = (typeof getTable === "function" ? getTable("users") : []) || [];
 
-  // Helper lấy tác giả
-  function getAuthor(authorId) {
-    return users.find((u) => u.id === authorId) || { full_name: "Ban Biên Tập", id: 1 };
+  let articles = [];
+  let categories = [];
+  try {
+    const [articlesRes, categoriesRes] = await Promise.all([
+      fetch(resolveApiUrl("public/articles.php")).then((r) => r.json()),
+      fetch(resolveApiUrl("public/categories.php")).then((r) => r.json()),
+    ]);
+    articles = articlesRes && articlesRes.success && Array.isArray(articlesRes.data) ? articlesRes.data : [];
+    categories = categoriesRes && categoriesRes.success && Array.isArray(categoriesRes.data) ? categoriesRes.data : [];
+  } catch (error) {
+    console.error("Lỗi khi tải dữ liệu tìm kiếm từ backend", error);
+  }
+
+  // Helper lấy tác giả (đã được API nhúng sẵn trong article.author)
+  function getAuthor(article) {
+    return (article && article.author) || { full_name: "Ban Biên Tập", id: 1 };
   }
 
   // DOM Elements
@@ -209,7 +221,7 @@ function initSearchPage() {
     searchResultsList.innerHTML = list
       .map((article) => {
         const cat = categories.find((c) => c.id === article.category_id) || { name: "Tin tức", slug: "tin-tuc" };
-        const author = getAuthor(article.author_id);
+        const author = getAuthor(article);
         const safeDate = typeof formatDate === "function" ? formatDate(article.published_at || article.created_at) : article.published_at || "";
         const safeViews = (Number(article.views || article.view_count) || 0).toLocaleString("vi-VN");
 

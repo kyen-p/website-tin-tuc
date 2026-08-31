@@ -10,7 +10,7 @@
  * ==============================================================================
  */
 
-function initCategoryPage() {
+async function initCategoryPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const categorySlug = urlParams.get("slug") || "";
   const filterType = urlParams.get("filter") || ""; // 'latest' hoặc 'notable'
@@ -25,12 +25,24 @@ function initCategoryPage() {
     initPublicFooter();
   }
 
-  // 2. Lấy dữ liệu an toàn từ Database Helper
-  const categories = (typeof getTable === "function" ? getTable("categories") : []) || [];
-  const users = (typeof getTable === "function" ? getTable("users") : []) || [];
+  // 2. Lấy dữ liệu từ backend (PHP + MySQL) cho bài viết & chuyên mục.
+  //    Chưa có API riêng cho "tags"/"article_tags" (ngoài phạm vi 4 API Cặp 1 được giao)
+  //    nên tag cloud/lọc theo tag tạm thời vẫn lấy từ getTable() như trước.
   const tags = (typeof getTable === "function" ? getTable("tags") : []) || [];
   const articleTags = (typeof getTable === "function" ? getTable("article_tags") : []) || [];
-  const allArticles = (typeof getTable === "function" ? getTable("articles") : []) || [];
+
+  let allArticles = [];
+  let categories = [];
+  try {
+    const [articlesRes, categoriesRes] = await Promise.all([
+      fetch(resolveApiUrl("public/articles.php")).then((r) => r.json()),
+      fetch(resolveApiUrl("public/categories.php")).then((r) => r.json()),
+    ]);
+    allArticles = articlesRes && articlesRes.success && Array.isArray(articlesRes.data) ? articlesRes.data : [];
+    categories = categoriesRes && categoriesRes.success && Array.isArray(categoriesRes.data) ? categoriesRes.data : [];
+  } catch (error) {
+    console.error("Lỗi khi tải dữ liệu chuyên mục từ backend", error);
+  }
 
   // Tìm chuyên mục hiện tại
   const currentCategory = categorySlug ? categories.find((c) => c.slug === categorySlug) || null : null;
@@ -40,8 +52,8 @@ function initCategoryPage() {
     return categories.find((c) => c.id === catId) || { name: "Tin tức", slug: "" };
   }
 
-  function getAuthor(authorId) {
-    return users.find((u) => u.id === authorId) || { full_name: "Ban Biên Tập", id: "" };
+  function getAuthor(article) {
+    return (article && article.author) || { full_name: "Ban Biên Tập", id: "" };
   }
 
   function getViews(article) {
@@ -198,7 +210,7 @@ function initCategoryPage() {
     // Bài tiêu điểm (bài đầu tiên)
     const featuredArticle = filtered[0];
     const featCat = getCategory(featuredArticle.category_id);
-    const featAuthor = getAuthor(featuredArticle.author_id);
+    const featAuthor = getAuthor(featuredArticle);
 
     if (featuredMount) {
       featuredMount.style.display = "block";
@@ -234,7 +246,7 @@ function initCategoryPage() {
         gridMount.innerHTML = remainingArticles
           .map((a) => {
             const cat = getCategory(a.category_id);
-            const author = getAuthor(a.author_id);
+            const author = getAuthor(a);
             return `
               <article class="article-card" style="padding-bottom: 20px;">
                 <a href="${getArticleDetailUrl(a)}" class="card-link" style="display: block;">
