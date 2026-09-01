@@ -6,19 +6,23 @@
 
 function initChangePasswordPage() {
   // 1. Kiểm tra đăng nhập (Bảo vệ tuyến đường)
-  const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+  const currentUser =
+    typeof getCurrentUser === "function" ? getCurrentUser() : null;
   if (!currentUser) {
     if (typeof showToast === "function") {
       showToast("Vui lòng đăng nhập để đổi mật khẩu", "warning");
     }
     setTimeout(() => {
-      window.location.href = "../public/login.html?redirect=" + encodeURIComponent(window.location.href);
+      window.location.href =
+        "../public/login.html?redirect=" +
+        encodeURIComponent(window.location.href);
     }, 400);
     return;
   }
 
   // 2. Khởi tạo Header và Footer chung
-  if (typeof initPublicHeader === "function") initPublicHeader("change-password");
+  if (typeof initPublicHeader === "function")
+    initPublicHeader("change-password");
   if (typeof initPublicFooter === "function") initPublicFooter();
 
   // DOM Elements
@@ -65,9 +69,11 @@ function initChangePasswordPage() {
     btnResetPasswordForm.addEventListener("click", () => {
       if (changePasswordForm) changePasswordForm.reset();
       // Reset type về password
-      [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach((inp) => {
-        if (inp) inp.type = "password";
-      });
+      [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach(
+        (inp) => {
+          if (inp) inp.type = "password";
+        },
+      );
       toggleButtons.forEach((btn) => {
         btn.innerHTML = eyeOpenSvg;
       });
@@ -79,9 +85,13 @@ function initChangePasswordPage() {
     changePasswordForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const currentPassVal = currentPasswordInput ? currentPasswordInput.value.trim() : "";
+      const currentPassVal = currentPasswordInput
+        ? currentPasswordInput.value.trim()
+        : "";
       const newPassVal = newPasswordInput ? newPasswordInput.value.trim() : "";
-      const confirmPassVal = confirmPasswordInput ? confirmPasswordInput.value.trim() : "";
+      const confirmPassVal = confirmPasswordInput
+        ? confirmPasswordInput.value.trim()
+        : "";
 
       // Kiểm tra rỗng
       if (!currentPassVal || !newPassVal || !confirmPassVal) {
@@ -97,7 +107,11 @@ function initChangePasswordPage() {
       const userRecord = userIndex !== -1 ? users[userIndex] : currentUser;
 
       // Kiểm tra mật khẩu hiện tại
-      const storedPassword = userRecord.password || (typeof MOCK_USERS !== "undefined" && MOCK_USERS.find((u) => u.id === currentUser.id)?.password) || "password123";
+      const storedPassword =
+        userRecord.password ||
+        (typeof MOCK_USERS !== "undefined" &&
+          MOCK_USERS.find((u) => u.id === currentUser.id)?.password) ||
+        "password123";
       if (currentPassVal !== storedPassword) {
         if (typeof showToast === "function") {
           showToast("Mật khẩu hiện tại không chính xác", "error");
@@ -121,7 +135,10 @@ function initChangePasswordPage() {
       // Kiểm tra mật khẩu mới không trùng mật khẩu cũ
       if (newPassVal === currentPassVal) {
         if (typeof showToast === "function") {
-          showToast("Mật khẩu mới không được trùng với mật khẩu hiện tại", "warning");
+          showToast(
+            "Mật khẩu mới không được trùng với mật khẩu hiện tại",
+            "warning",
+          );
         }
         if (newPasswordInput) newPasswordInput.focus();
         return;
@@ -146,17 +163,23 @@ function initChangePasswordPage() {
       }
 
       // Cập nhật phiên đăng nhập hiện tại
-      const sessionUser = typeof getCurrentUser === "function" ? getCurrentUser() : currentUser;
+      const sessionUser =
+        typeof getCurrentUser === "function" ? getCurrentUser() : currentUser;
       if (sessionUser) {
         sessionUser.password = newPassVal;
-        localStorage.setItem("mach_tin_current_user", JSON.stringify(sessionUser));
+        localStorage.setItem(
+          "mach_tin_current_user",
+          JSON.stringify(sessionUser),
+        );
       }
 
       // Xử lý sau khi đổi thành công: Cách 1 (Giữ phiên)
       changePasswordForm.reset();
-      [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach((inp) => {
-        if (inp) inp.type = "password";
-      });
+      [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach(
+        (inp) => {
+          if (inp) inp.type = "password";
+        },
+      );
       toggleButtons.forEach((btn) => {
         btn.innerHTML = eyeOpenSvg;
       });
