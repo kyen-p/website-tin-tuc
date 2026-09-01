@@ -4,45 +4,51 @@ require_once '../config/database.php';
 require_once '../helpers/response.php';
 require_once '../helpers/auth.php';
 
-// Yêu cầu người dùng phải đăng nhập
 requireLogin();
 
-// Chỉ cho phép phương thức POST
+// Chỉ cho phép POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 }
 
-// Kiểm tra có gửi file ảnh lên hay không
+// Kiểm tra có gửi file hay không
 if (!isset($_FILES['image'])) {
     jsonResponse(false, null, "Vui lòng chọn ảnh");
 }
 
 $file = $_FILES['image'];
 
-// Kiểm tra lỗi trong quá trình upload
+// Kiểm tra lỗi upload
 if ($file['error'] !== UPLOAD_ERR_OK) {
     jsonResponse(false, null, "Upload ảnh thất bại");
 }
 
-// Lấy loại ảnh: avatar hoặc article
+// Lấy loại ảnh
 $type = isset($_POST['type']) ? trim($_POST['type']) : '';
 
-// Chỉ chấp nhận 2 loại ảnh
-if (!in_array($type, ['avatar', 'article'])) {
+// Chỉ chấp nhận avatar hoặc article
+if (!in_array($type, ['avatar', 'article'], true)) {
     jsonResponse(false, null, "Loại ảnh không hợp lệ");
 }
 
-// Kiểm tra file có phải là ảnh thật hay không
+// Kiểm tra dung lượng tối đa 5MB
+$maxFileSize = 5 * 1024 * 1024;
+
+if ($file['size'] > $maxFileSize) {
+    jsonResponse(false, null, "Ảnh không được vượt quá 5MB");
+}
+
+// Kiểm tra file có phải ảnh thật không
 $imageInfo = getimagesize($file['tmp_name']);
 
 if ($imageInfo === false) {
     jsonResponse(false, null, "File được chọn không phải là ảnh");
 }
 
-// Chỉ chấp nhận các định dạng ảnh được phép
+// Chỉ chấp nhận các định dạng ảnh
 $allowedMimeTypes = [
     'image/jpeg' => 'jpg',
-    'image/png'  => 'png',
+    'image/png' => 'png',
     'image/webp' => 'webp'
 ];
 
@@ -56,50 +62,45 @@ if (!isset($allowedMimeTypes[$mimeType])) {
     );
 }
 
-// Lấy phần mở rộng dựa trên MIME thật của ảnh
+// Lấy extension từ MIME type thật
 $extension = $allowedMimeTypes[$mimeType];
-
-// Giới hạn dung lượng ảnh tối đa 5MB
-$maxFileSize = 5 * 1024 * 1024;
-
-if ($file['size'] > $maxFileSize) {
-    jsonResponse(false, null, "Ảnh không được vượt quá 5MB");
-}
 
 // Chọn thư mục lưu ảnh
 if ($type === 'avatar') {
     $uploadDir = __DIR__ . '/../uploads/avatars/';
-    $urlPath = '../backend/uploads/avatars/';
 } else {
     $uploadDir = __DIR__ . '/../uploads/articles/';
-    $urlPath = '../backend/uploads/articles/';
 }
 
-// Kiểm tra thư mục lưu ảnh có tồn tại không
+// Kiểm tra thư mục tồn tại
 if (!is_dir($uploadDir)) {
     jsonResponse(false, null, "Thư mục lưu ảnh không tồn tại");
 }
 
-// Kiểm tra thư mục có quyền ghi hay không
+// Kiểm tra quyền ghi
 if (!is_writable($uploadDir)) {
     jsonResponse(false, null, "Thư mục lưu ảnh không có quyền ghi");
 }
 
-// Tạo tên file riêng để tránh trùng tên
+// Tạo tên file riêng
 $fileName = $type . '_' . uniqid() . '_' . time() . '.' . $extension;
 
-// Đường dẫn thật trên server
+// Đường dẫn vật lý của file
 $targetPath = $uploadDir . $fileName;
 
-// Di chuyển file từ thư mục tạm của PHP vào thư mục uploads
+// Lưu ảnh
 if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
     jsonResponse(false, null, "Không thể lưu ảnh");
 }
 
-// URL/đường dẫn ảnh trả về cho frontend
-$imageUrl = $urlPath . $fileName;
+// Đường dẫn ảnh lưu trong database
+if ($type === 'avatar') {
+    $imageUrl = 'backend/uploads/avatars/' . $fileName;
+} else {
+    $imageUrl = 'backend/uploads/articles/' . $fileName;
+}
 
-// Trả kết quả thành công
+// Trả kết quả
 jsonResponse(
     true,
     [
