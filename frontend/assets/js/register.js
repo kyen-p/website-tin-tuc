@@ -66,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmPassword = confirmPasswordInput.value;
 
     let isValid = true;
-    const users = getTable("users") || [];
 
     // 1. Họ và tên
     if (!fullName) {
@@ -77,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
       isValid = false;
     }
 
-    // 2. Username
+    // 2. Username (kiểm tra định dạng phía client; trùng username sẽ do backend xác nhận)
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     if (!username) {
       setError(usernameField, usernameError, "Vui lòng nhập username.");
@@ -88,17 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (!usernameRegex.test(username)) {
       setError(usernameField, usernameError, "Username chỉ chứa chữ cái, số và dấu gạch dưới.");
       isValid = false;
-    } else {
-      const existsUsername = users.some(
-        (u) => u.username && u.username.toLowerCase() === username.toLowerCase()
-      );
-      if (existsUsername) {
-        setError(usernameField, usernameError, "Tên đăng nhập này đã có người sử dụng.");
-        isValid = false;
-      }
     }
 
-    // 3. Email
+    // 3. Email (kiểm tra định dạng phía client; trùng email sẽ do backend xác nhận)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
       setError(emailField, emailError, "Vui lòng nhập email.");
@@ -106,14 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (!emailRegex.test(email)) {
       setError(emailField, emailError, "Địa chỉ email không đúng định dạng.");
       isValid = false;
-    } else {
-      const existsEmail = users.some(
-        (u) => u.email && u.email.toLowerCase() === email.toLowerCase()
-      );
-      if (existsEmail) {
-        setError(emailField, emailError, "Email này đã được đăng ký tài khoản.");
-        isValid = false;
-      }
     }
 
     // 4. Mật khẩu
@@ -139,30 +122,47 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Tạo bản ghi mới
-    const newUser = {
-      id: Date.now(),
-      username: username.toLowerCase(),
-      full_name: fullName,
-      email: email.toLowerCase(),
-      password: password,
-      role: "user",
-      status: "active",
-      comment_locked: false,
-      avatar: "",
-      bio: "",
-      created_at: new Date().toISOString().replace("T", " ").substring(0, 19),
-    };
+    const submitBtn = document.getElementById("registerSubmitBtn");
+    if (submitBtn) submitBtn.disabled = true;
 
-    users.push(newUser);
-    saveTable("users", users);
+    fetch(resolveApiUrl("auth/register.php"), {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        username: username,
+        email: email,
+        password: password,
+        full_name: fullName,
+      }).toString(),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (submitBtn) submitBtn.disabled = false;
 
-    showToast("Đăng ký tài khoản thành công! Đang chuyển đến trang đăng nhập...", "success");
+        if (!result.success) {
+          const msg = result.message || "";
+          // Cố gắng gán lỗi đúng ô dựa trên nội dung message trả về từ backend
+          if (msg.toLowerCase().includes("tên đăng nhập") || msg.toLowerCase().includes("username")) {
+            setError(usernameField, usernameError, msg);
+          } else if (msg.toLowerCase().includes("email")) {
+            setError(emailField, emailError, msg);
+          }
+          showToast(msg || "Đăng ký thất bại. Vui lòng thử lại.", "error");
+          return;
+        }
 
-    // Chuyển sang login.html để trống form
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 900);
+        showToast("Đăng ký tài khoản thành công! Đang chuyển đến trang đăng nhập...", "success");
+
+        // Chuyển sang login.html để trống form
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 900);
+      })
+      .catch((error) => {
+        if (submitBtn) submitBtn.disabled = false;
+        console.error("Lỗi khi gọi API đăng ký", error);
+        showToast("Không thể kết nối máy chủ. Vui lòng thử lại sau.", "error");
+      });
   });
 });
 

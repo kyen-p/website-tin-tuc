@@ -49,6 +49,18 @@ function getSystemTime() {
 // ==============================================================================
 
 /**
+ * GHI CHÚ PHẠM VI CẶP 1 (deviation có chủ đích so với tài liệu):
+ * Tài liệu yêu cầu bỏ hẳn getTable()/saveTable()/setTable() khỏi common.js.
+ * Trong phạm vi phiên làm việc này, các mảng dữ liệu KHÔNG thuộc Auth/Public
+ * (tags, article_tags, comments, favorites, site_settings) và toàn bộ khu vực
+ * User/Reporter/Editor/Admin (Cặp 2, Cặp 3) vẫn CHƯA có API backend tương ứng
+ * và vẫn hoàn toàn phụ thuộc 3 hàm này. Xóa hẳn ngay bây giờ sẽ làm sập toàn bộ
+ * các khu vực đó. Vì vậy 3 hàm được GIỮ LẠI, chỉ riêng luồng Auth (getCurrentUser)
+ * đã ngừng dùng chúng và chuyển hẳn sang gọi backend PHP + MySQL như yêu cầu.
+ * Khi Cặp 2/Cặp 3 hoàn thành các API còn lại, có thể xóa hẳn 3 hàm này.
+ */
+
+/**
  * Lấy dữ liệu của một bảng (Nạp từ localStorage hoặc khởi tạo từ MOCK_DATA)
  */
 function getTable(tableName) {
@@ -105,51 +117,108 @@ function resetDatabase() {
 }
 
 // ==============================================================================
-// 2. AUTH & SESSION HELPER
+// 2. AUTH & SESSION HELPER (CẶP 1 — đã chuyển sang PHP Session + MySQL)
 // ==============================================================================
 
 /**
- * Lấy người dùng hiện tại đang đăng nhập (hoặc null nếu là Guest)
+ * Chuẩn hóa đường dẫn gọi API backend PHP dựa trên thư mục hiện tại của trang.
+ * Toàn bộ trang frontend nằm ở độ sâu frontend/{public|user|admin|reporter|editor}/*.html
+ * nên đường dẫn tới backend/api/ luôn là "../../backend/api/" từ các trang đó.
+ */
+function resolveApiUrl(apiPath) {
+  const cleanPath = String(apiPath).replace(/^\/+/, "");
+  const currentPath = window.location.pathname;
+  const isSubfolder =
+    /\/(public|admin|reporter|editor|user)\//.test(currentPath) ||
+    window.location.href.includes("/public/") ||
+    window.location.href.includes("/admin/") ||
+    window.location.href.includes("/user/") ||
+    window.location.href.includes("/reporter/") ||
+    window.location.href.includes("/editor/");
+  const prefix = isSubfolder ? "../../backend/api/" : "backend/api/";
+  return prefix + cleanPath;
+}
+window.resolveApiUrl = resolveApiUrl;
+
+// Cache trong bộ nhớ (chỉ tồn tại trong 1 lần tải trang) để tránh gọi lại me.php
+// nhiều lần khi nhiều đoạn code trên cùng 1 trang đều gọi getCurrentUser().
+let __machtinCurrentUserCache = undefined;
+
+/**
+ * Lấy người dùng hiện tại đang đăng nhập (hoặc null nếu là Guest).
+ * Nguồn dữ liệu duy nhất: PHP Session, thông qua backend/api/auth/me.php.
+ *
+ * LƯU Ý: hàm này được giữ NGUYÊN chữ ký đồng bộ (không phải Promise) vì rất nhiều
+ * trang/màn hình trong toàn bộ dự án (kể cả các trang ngoài phạm vi Cặp 1) đang gọi
+ * getCurrentUser() và dùng kết quả ngay lập tức, không await. Để không phải sửa
+ * hàng loạt file ngoài phạm vi Cặp 1, hàm dùng XMLHttpRequest đồng bộ gọi me.php.
  */
 function getCurrentUser() {
-  const userId = localStorage.getItem(SESSION_KEY);
-  if (!userId) return null;
-
-  const users = getTable("users");
-  const user = users.find((u) => String(u.id) === String(userId));
-  if (!user || user.status === "locked") return null;
-  return user;
+  if (__machtinCurrentUserCache !== undefined) {
+    return __machtinCurrentUserCache;
+  }
+  try {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", resolveApiUrl("auth/me.php"), false); // false = đồng bộ
+    xhr.send(null);
+    if (xhr.status >= 200 && xhr.status < 300) {
+      const res = JSON.parse(xhr.responseText);
+      __machtinCurrentUserCache = res && res.success && res.data ? res.data : null;
+    } else {
+      __machtinCurrentUserCache = null;
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin người dùng hiện tại từ backend", error);
+    __machtinCurrentUserCache = null;
+  }
+  return __machtinCurrentUserCache;
 }
+window.getCurrentUser = getCurrentUser;
 
 /**
- * Lưu phiên đăng nhập
+ * Theo yêu cầu Cặp 1: phiên đăng nhập giờ hoàn toàn do PHP Session quản lý
+ * (xem auth/login.php), KHÔNG còn cơ chế lưu user vào localStorage để giả lập
+ * đăng nhập ở phía frontend nữa.
+ *
+ * Hàm này được GIỮ LẠI dưới dạng no-op (thay vì xóa hẳn) chỉ vì một số màn hình
+ * thuộc phạm vi Cặp 2/Cặp 3 (vd: admin-layout.js, profile.js) hiện vẫn gọi trực
+ * tiếp setCurrentUser(...) ngoài luồng auth thật — xóa hẳn sẽ làm crash các trang
+ * đó. Cặp 1 không tự ý sửa các file đó nên giữ hàm rỗng để đảm bảo tương thích.
  */
 function setCurrentUser(user) {
-  if (user && user.id) {
-    localStorage.setItem(SESSION_KEY, String(user.id));
-  }
+  // Không làm gì cả — session thật nằm ở PHP, không còn ở localStorage.
 }
+window.setCurrentUser = setCurrentUser;
 
 /**
- * Đăng xuất tài khoản
+ * Đăng xuất tài khoản: gọi API hủy PHP Session, sau đó mới điều hướng.
  */
 function logout(redirectUrl) {
-  localStorage.removeItem(SESSION_KEY);
-  showToast("Đăng xuất thành công!", "success");
-  setTimeout(() => {
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-      return;
-    }
-    const currentPath = window.location.pathname;
-    if (currentPath.includes("/user/") || currentPath.includes("/admin/") || currentPath.includes("/reporter/") || currentPath.includes("/editor/")) {
-      window.location.href = "../public/index.html";
-    } else if (currentPath.includes("/public/")) {
-      window.location.href = "index.html";
-    } else {
-      window.location.href = "public/index.html";
-    }
-  }, 500);
+  fetch(resolveApiUrl("auth/logout.php"), { method: "POST" })
+    .catch((error) => {
+      console.error("Lỗi khi gọi API đăng xuất", error);
+    })
+    .then(() => {
+      // Buộc lần gọi getCurrentUser() kế tiếp (ở trang sau khi điều hướng) phải
+      // hỏi lại backend thay vì dùng cache của phiên cũ.
+      __machtinCurrentUserCache = undefined;
+
+      showToast("Đăng xuất thành công!", "success");
+      setTimeout(() => {
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+          return;
+        }
+        const currentPath = window.location.pathname;
+        if (currentPath.includes("/user/") || currentPath.includes("/admin/") || currentPath.includes("/reporter/") || currentPath.includes("/editor/")) {
+          window.location.href = "../public/index.html";
+        } else if (currentPath.includes("/public/")) {
+          window.location.href = "index.html";
+        } else {
+          window.location.href = "public/index.html";
+        }
+      }, 500);
+    });
 }
 
 /**

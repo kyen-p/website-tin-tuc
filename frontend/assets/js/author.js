@@ -9,7 +9,7 @@
  * ==============================================================================
  */
 
-function initAuthorPage() {
+async function initAuthorPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const rawKey = (urlParams.get("username") || urlParams.get("slug") || urlParams.get("id") || urlParams.get("author_id") || "").trim();
 
@@ -17,38 +17,36 @@ function initAuthorPage() {
   if (typeof initPublicHeader === "function") initPublicHeader("");
   if (typeof initPublicFooter === "function") initPublicFooter();
 
-  // 2. Lấy dữ liệu
-  const users = getTable("users") || [];
-  const articles = getTable("articles") || [];
-  const categories = getTable("categories") || [];
-
   function getViews(a) {
     return Number(a.view_count || a.views || 0);
-  }
-
-  // Tìm kiếm User (linh hoạt theo username, slug, tên tiếng Việt chuyển slug, hoặc ID)
-  let user = null;
-  if (rawKey) {
-    user = users.find(
-      (u) =>
-        (u.username && u.username.toLowerCase() === rawKey.toLowerCase()) ||
-        String(u.id) === String(rawKey) ||
-        (u.slug && u.slug.toLowerCase() === rawKey.toLowerCase()) ||
-        (typeof slugify === "function" && slugify(u.full_name || "") === rawKey.toLowerCase()) ||
-        (typeof slugify === "function" && slugify(u.username || "") === rawKey.toLowerCase())
-    );
-  }
-
-  // Fallback an toàn nếu không truyền ID: lấy người đầu tiên
-  if (!user && users.length > 0) {
-    user = users.find((u) => u.role === "reporter") || users[0];
   }
 
   const container = document.getElementById("author-container");
   const notFound = document.getElementById("author-not-found");
 
-  // Nếu thực sự không có user nào trong database
-  if (!user) {
+  // 2. Lấy dữ liệu tác giả + danh sách bài viết đã xuất bản từ backend (PHP + MySQL).
+  //    public/authors.php nhận "id" (số) hoặc "username" — trang author.html hiện tại
+  //    điều hướng chủ yếu bằng ?username=..., nên ưu tiên username khi rawKey không phải số.
+  let author = null;
+  let authorArticles = [];
+
+  if (rawKey) {
+    try {
+      const isNumericId = /^\d+$/.test(rawKey);
+      const apiUrl = resolveApiUrl(`public/authors.php?${isNumericId ? "id" : "username"}=${encodeURIComponent(rawKey)}`);
+      const res = await fetch(apiUrl);
+      const result = await res.json();
+      if (result && result.success && result.data) {
+        author = result.data;
+        authorArticles = Array.isArray(author.articles) ? author.articles : [];
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải hồ sơ tác giả từ backend", error);
+    }
+  }
+
+  // Nếu thực sự không có user nào khớp
+  if (!author) {
     if (container) container.style.display = "none";
     if (notFound) notFound.style.display = "block";
     const notFoundDesc = document.getElementById("author-not-found-desc");
@@ -58,27 +56,22 @@ function initAuthorPage() {
     return;
   }
 
-  const author = user;
-
   if (container) container.style.display = "block";
   if (notFound) notFound.style.display = "none";
 
   // Cập nhật tiêu đề trang
   document.title = `${author.full_name || author.username} - Hồ sơ | Mạch Tin`;
 
-  // Helpers
-  function getCategory(catId) {
-    return categories.find((c) => c.id === catId) || { name: "Tin tức", slug: "" };
+  // Helper lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong a.category)
+  function getCategory(a) {
+    return (a && a.category) || { name: "Tin tức", slug: "" };
   }
 
   // ============================================================================
   // A. THỐNG KÊ & HIỂN THỊ THÔNG TIN TÁC GIẢ / ĐỘC GIẢ
   // ============================================================================
-  const authorArticles = articles
-    .filter((a) => String(a.author_id) === String(author.id) && a.status === "published")
-    .sort((a, b) => new Date(String(b.published_at || b.created_at).replace(" ", "T")) - new Date(String(a.published_at || a.created_at).replace(" ", "T")));
-
-  const totalViews = authorArticles.reduce((sum, a) => sum + (Number(a.views) || 0), 0);
+  // authorArticles đã được backend lọc sẵn status = 'published' và sắp xếp published_at DESC
+  const totalViews = authorArticles.reduce((sum, a) => sum + getViews(a), 0);
 
   // 1. Breadcrumb: Trang chủ / Trang cá nhân / [Tên User]
   const breadcrumbAuthor = document.getElementById("breadcrumb-author");
@@ -136,8 +129,13 @@ function initAuthorPage() {
   // ============================================================================
   const categoryFilter = document.getElementById("author-cat-filter");
   if (categoryFilter) {
-    const authorCatIds = [...new Set(authorArticles.map((a) => a.category_id))];
-    const authorCats = categories.filter((c) => authorCatIds.includes(c.id));
+    const authorCatsMap = new Map();
+    authorArticles.forEach((a) => {
+      if (a.category_id !== null && a.category_id !== undefined && !authorCatsMap.has(a.category_id)) {
+        authorCatsMap.set(a.category_id, getCategory(a));
+      }
+    });
+    const authorCats = Array.from(authorCatsMap.values());
 
     let optionsHtml = `<option value="">Tất cả chuyên mục (${authorArticles.length})</option>`;
     authorCats.forEach((c) => {
@@ -181,7 +179,7 @@ function initAuthorPage() {
 
     listMount.innerHTML = filtered
       .map((a) => {
-        const cat = getCategory(a.category_id);
+        const cat = getCategory(a);
         const safeTitle = typeof escapeHtml === "function" ? escapeHtml(a.title) : a.title;
         const safeDesc = typeof escapeHtml === "function" ? escapeHtml(a.short_description || a.summary || "") : (a.short_description || "");
         const safeDate = typeof formatDate === "function" ? formatDate(a.published_at || a.created_at) : (a.published_at || a.created_at);
