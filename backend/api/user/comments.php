@@ -16,44 +16,10 @@ try {
 
 
     // =========================================================
-    // GET: Lấy danh sách bài viết yêu thích của user
-    // =========================================================
-    if ($method === 'GET') {
-
-
-        $stmt = $pdo->prepare("
-            SELECT
-                articles.id,
-                articles.title,
-                articles.slug,
-                articles.short_description,
-                articles.cover_image,
-                favorites.created_at
-            FROM favorites
-            INNER JOIN articles
-                ON favorites.article_id = articles.id
-            WHERE favorites.user_id = ?
-            ORDER BY favorites.created_at DESC
-        ");
-
-
-        $stmt->execute([$userId]);
-
-        $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-        jsonResponse(
-            true,
-            $favorites,
-            "Lấy danh sách yêu thích thành công"
-        );
-
-    }
-
-
-
-    // =========================================================
-    // POST: Thêm bài viết vào danh sách yêu thích
+    // POST: Thêm bình luận
+    // Input:
+    // article_id
+    // content
     // =========================================================
     if ($method === 'POST') {
 
@@ -76,14 +42,16 @@ try {
 
 
         $articleId = $input['article_id'] ?? null;
+        $content = trim($input['content'] ?? '');
 
 
-        if (!$articleId) {
+
+        if (!$articleId || $content === '') {
 
             jsonResponse(
                 false,
                 null,
-                "Thiếu article_id"
+                "Vui lòng nhập đầy đủ thông tin"
             );
 
         }
@@ -97,6 +65,7 @@ try {
             WHERE id = ?
             LIMIT 1
         ");
+
 
         $stmt->execute([$articleId]);
 
@@ -113,49 +82,22 @@ try {
 
 
 
-        // Kiểm tra đã yêu thích chưa
+        // Thêm bình luận
         $stmt = $pdo->prepare("
-            SELECT *
-            FROM favorites
-            WHERE user_id = ?
-            AND article_id = ?
-            LIMIT 1
-        ");
-
-
-        $stmt->execute([
-            $userId,
-            $articleId
-        ]);
-
-
-
-        if ($stmt->fetch()) {
-
-            jsonResponse(
-                false,
-                null,
-                "Bài viết đã có trong danh sách yêu thích"
-            );
-
-        }
-
-
-
-        // Thêm yêu thích
-        $stmt = $pdo->prepare("
-            INSERT INTO favorites
+            INSERT INTO comments
             (
+                article_id,
                 user_id,
-                article_id
+                content
             )
-            VALUES (?, ?)
+            VALUES (?, ?, ?)
         ");
 
 
         $stmt->execute([
+            $articleId,
             $userId,
-            $articleId
+            $content
         ]);
 
 
@@ -163,7 +105,7 @@ try {
         jsonResponse(
             true,
             null,
-            "Thêm yêu thích thành công"
+            "Bình luận thành công"
         );
 
     }
@@ -172,7 +114,9 @@ try {
 
 
     // =========================================================
-    // DELETE: Xóa bài viết khỏi danh sách yêu thích
+    // DELETE: Xóa bình luận của chính mình
+    // Input:
+    // comment_id
     // =========================================================
     if ($method === 'DELETE') {
 
@@ -195,49 +139,86 @@ try {
 
 
 
-        $articleId = $input['article_id'] ?? null;
+        $commentId = $input['comment_id'] ?? null;
 
 
-        if (!$articleId) {
+
+        if (!$commentId) {
 
             jsonResponse(
                 false,
                 null,
-                "Thiếu article_id"
+                "Thiếu comment_id"
             );
 
         }
 
 
 
+        // Kiểm tra comment thuộc user đang đăng nhập
         $stmt = $pdo->prepare("
-            DELETE FROM favorites
-            WHERE user_id = ?
-            AND article_id = ?
+            SELECT user_id
+            FROM comments
+            WHERE id = ?
+            LIMIT 1
         ");
 
 
+        $stmt->execute([$commentId]);
 
-        $stmt->execute([
-            $userId,
-            $articleId
-        ]);
+
+        $comment = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+
+        if (!$comment) {
+
+            jsonResponse(
+                false,
+                null,
+                "Không tìm thấy bình luận"
+            );
+
+        }
+
+
+
+        // Chỉ được xóa comment của chính mình
+        if ($comment['user_id'] != $userId) {
+
+            jsonResponse(
+                false,
+                null,
+                "Bạn không có quyền xóa bình luận này"
+            );
+
+        }
+
+
+
+        // Xóa bình luận
+        $stmt = $pdo->prepare("
+            DELETE FROM comments
+            WHERE id = ?
+        ");
+
+
+        $stmt->execute([$commentId]);
 
 
 
         jsonResponse(
             true,
             null,
-            "Xóa yêu thích thành công"
+            "Xóa bình luận thành công"
         );
 
     }
 
 
 
-    // =========================================================
-    // Method khác
-    // =========================================================
+
+    // Method không hỗ trợ
 
     jsonResponse(
         false,
