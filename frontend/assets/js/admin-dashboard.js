@@ -15,29 +15,32 @@
     initAdminDashboard();
   });
 
-  function initAdminDashboard() {
+  async function initAdminDashboard() {
     const container = document.getElementById("workspace-content");
     if (!container) return;
 
-    // 1. Lấy dữ liệu từ LocalStorage
-    const users = getTable("users") || [];
-    const articles = getTable("articles") || [];
-    const categories = getTable("categories") || [];
-    const comments = getTable("comments") || [];
+    try {
+      const [usersRes, articlesRes, categoriesRes, commentsRes] = await Promise.all([
+        fetch('/website-tin-tuc/backend/api/admin/users.php').then(r => r.json()),
+        fetch('/website-tin-tuc/backend/api/admin/published-articles.php').then(r => r.json()),
+        fetch('/website-tin-tuc/backend/api/public/categories.php').then(r => r.json()),
+        fetch('/website-tin-tuc/backend/api/admin/comments.php').then(r => r.json())
+      ]);
 
-    // 2. Tính toán các chỉ số KPI
-    const kpiData = calculateKPI(users, articles, comments);
+      const users = usersRes.data || [];
+      const articles = articlesRes.data || [];
+      const categories = categoriesRes.data || [];
+      const comments = commentsRes.data || [];
 
-    // 3. Render HTML Cấu trúc đồng bộ với Editor & Reporter
-    renderDashboardLayout(container, kpiData);
-
-    // 4. Khởi tạo biểu đồ
-    initTrendChart(articles, categories);
-    initCategoryShareChart(articles, categories);
-
-    // 5. Render 2 Bảng Top
-    renderTopArticles(articles, categories, users);
-    renderTopReporters(articles, users);
+      const kpiData = calculateKPI(users, articles, comments);
+      renderDashboardLayout(container, kpiData);
+      initTrendChart(articles, categories);
+      initCategoryShareChart(articles, categories);
+      renderTopArticles(articles, categories, users);
+      renderTopReporters(articles, users);
+    } catch (err) {
+      container.innerHTML = `<p>Không tải được dữ liệu thống kê.</p>`;
+    }
   }
 
   /**
@@ -53,8 +56,8 @@
     const totalViews = articles.reduce((sum, a) => sum + (Number(a.view_count || a.views) || 0), 0);
     const publishedArticles = articles.filter(a => a.status === "published");
     const hiddenArticles = articles.filter(a => a.status === "hidden");
-    const avgViewsPerArticle = publishedArticles.length > 0 
-      ? Math.round(totalViews / publishedArticles.length) 
+    const avgViewsPerArticle = publishedArticles.length > 0
+      ? Math.round(totalViews / publishedArticles.length)
       : 0;
 
     const publishedCount = publishedArticles.length;

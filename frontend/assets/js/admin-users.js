@@ -40,15 +40,18 @@
     initUsersPage();
   });
 
-  function initUsersPage() {
-    loadData();
+  async function initUsersPage() {
+    await loadData();
     renderPageStructure();
     bindEvents();
     renderTableRows();
   }
 
-  function loadData() {
-    allUsers = getTable("users") || [];
+  async function loadData() {
+    const res = await fetch('/website-tin-tuc/backend/api/admin/users.php');
+    const result = await res.json();
+    allUsers = result.data || [];
+    // allArticles, allComments, allCategories: tạm giữ getTable() cho tới khi Cặp 1/2/3 nối xong API tương ứng của họ
     allArticles = getTable("articles") || [];
     allComments = getTable("comments") || [];
     allCategories = getTable("categories") || [];
@@ -285,7 +288,7 @@
     // Lọc theo Tìm kiếm
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(u => 
+      filtered = filtered.filter(u =>
         (u.full_name && u.full_name.toLowerCase().includes(q)) ||
         (u.username && u.username.toLowerCase().includes(q)) ||
         (u.email && u.email.toLowerCase().includes(q)) ||
@@ -851,26 +854,31 @@
           confirmText: "Mở khóa tài khoản",
           confirmBtnClass: "admin-btn--primary",
           onConfirm: function () {
-            user.status = "active";
-            user.lock_reason = null;
-            user.locked_at = null;
+            fetch('/website-tin-tuc/backend/api/admin/users.php', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ user_id: user.id, status: 'active' })
+            })
+              .then(res => res.json())
+              .then(async result => {
+                if (result.success) {
+                  await loadData();
+                  if (typeof createNotification === "function") {
+                    createNotification({
+                      user_id: user.id,
+                      type: "account_unlocked",
+                      title: "Tài khoản đã được mở khóa",
+                      message: "Tài khoản của bạn đã được kích hoạt trở lại. Bạn có thể đăng nhập bình thường.",
+                      link: "#"
+                    });
+                  }
 
-            saveTable("users", allUsers);
-
-            if (typeof createNotification === "function") {
-              createNotification({
-                user_id: user.id,
-                type: "account_unlocked",
-                title: "Tài khoản đã được mở khóa",
-                message: "Tài khoản của bạn đã được kích hoạt trở lại. Bạn có thể đăng nhập bình thường.",
-                link: "#"
+                  closeModal("userActionModal");
+                  renderPageStructure();
+                  renderTableRows();
+                  showToast(`Đã mở khóa tài khoản '${user.full_name}' thành công.`, "success");
+                }
               });
-            }
-
-            closeModal("userActionModal");
-            renderPageStructure();
-            renderTableRows();
-            showToast(`Đã mở khóa tài khoản '${user.full_name}' thành công.`, "success");
           }
         });
       }
@@ -878,22 +886,22 @@
 
     // =========================================================================
     // 3. XÓA TÀI KHOẢN
-    // =========================================================================
-    window.handleDeleteUser = function (userId) {
-      closeAllActionMenus();
-      loadData();
-      const user = allUsers.find(u => u.id === userId);
-      if (!user) return;
+        // =========================================================================
+        window.handleDeleteUser = function (userId) {
+          closeAllActionMenus();
+          loadData();
+          const user = allUsers.find(u => u.id === userId);
+          if (!user) return;
 
-      const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
-      if (currentUser && String(currentUser.id) === String(user.id)) {
-        showToast("Bạn không thể xóa tài khoản đang đăng nhập hiện tại!", "error");
-        return;
-      }
+          const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+          if (currentUser && String(currentUser.id) === String(user.id)) {
+            showToast("Bạn không thể xóa tài khoản đang đăng nhập hiện tại!", "error");
+            return;
+          }
 
-      openConfirmActionModal({
-        title: "Xác nhận xóa tài khoản vĩnh viễn",
-        bodyHtml: `
+          openConfirmActionModal({
+            title: "Xác nhận xóa tài khoản vĩnh viễn",
+            bodyHtml: `
           <p style="font-size: 13.5px; line-height: 1.5; color: var(--ink); margin-bottom: 8px;">
             Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản <strong>${escapeHtml(user.full_name)}</strong> (@${escapeHtml(user.username)}) khỏi hệ thống không?
           </p>
@@ -901,43 +909,43 @@
             Cảnh báo: Toàn bộ dữ liệu của tài khoản này sẽ bị xóa khỏi danh sách người dùng và không thể hoàn tác.
           </p>
         `,
-        confirmText: "Xóa vĩnh viễn",
-        confirmBtnClass: "admin-btn--danger",
-        onConfirm: function () {
-          allUsers = allUsers.filter(u => u.id !== userId);
-          saveTable("users", allUsers);
+            confirmText: "Xóa vĩnh viễn",
+            confirmBtnClass: "admin-btn--danger",
+            onConfirm: function () {
+              allUsers = allUsers.filter(u => u.id !== userId);
+              saveTable("users", allUsers);
 
-          closeModal("userActionModal");
-          renderPageStructure();
-          renderTableRows();
-          showToast(`Đã xóa tài khoản '${user.full_name}' thành công.`, "success");
-        }
-      });
-    };
+              closeModal("userActionModal");
+              renderPageStructure();
+              renderTableRows();
+              showToast(`Đã xóa tài khoản '${user.full_name}' thành công.`, "success");
+            }
+          });
+        };
 
-    // =========================================================================
-    // 4. XEM CHI TIẾT LÝ DO KHÓA TÀI KHOẢN
-    // =========================================================================
-    window.handleViewLockReason = function (userId) {
-      closeAllActionMenus();
-      loadData();
-      const user = allUsers.find(u => u.id === userId);
-      if (!user) return;
+        // =========================================================================
+        // 4. XEM CHI TIẾT LÝ DO KHÓA TÀI KHOẢN
+        // =========================================================================
+        window.handleViewLockReason = function (userId) {
+          closeAllActionMenus();
+          loadData();
+          const user = allUsers.find(u => u.id === userId);
+          if (!user) return;
 
-      const titleEl = document.getElementById("viewLockReasonTitle");
-      const bodyEl = document.getElementById("viewLockReasonBody");
-      const footerEl = document.getElementById("viewLockReasonFooter");
-      const modal = document.getElementById("viewLockReasonModal");
-      if (!modal || !titleEl || !bodyEl || !footerEl) return;
+          const titleEl = document.getElementById("viewLockReasonTitle");
+          const bodyEl = document.getElementById("viewLockReasonBody");
+          const footerEl = document.getElementById("viewLockReasonFooter");
+          const modal = document.getElementById("viewLockReasonModal");
+          if (!modal || !titleEl || !bodyEl || !footerEl) return;
 
-      titleEl.innerHTML = `<span style="color: #DC2626; display: inline-flex; align-items: center; gap: 6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Chi tiết lý do khóa tài khoản</span>`;
+          titleEl.innerHTML = `<span style="color: #DC2626; display: inline-flex; align-items: center; gap: 6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Chi tiết lý do khóa tài khoản</span>`;
 
-      const reasonText = user.lock_reason || "Vi phạm quy chế hệ thống hoặc có hoạt động bất thường";
-      const lockTime = formatDateTime(user.locked_at || user.updated_at);
+          const reasonText = user.lock_reason || "Vi phạm quy chế hệ thống hoặc có hoạt động bất thường";
+          const lockTime = formatDateTime(user.locked_at || user.updated_at);
 
-      const avatarHtml = getUserAvatarHtml(user, 44, 16);
+          const avatarHtml = getUserAvatarHtml(user, 44, 16);
 
-      bodyEl.innerHTML = `
+          bodyEl.innerHTML = `
         <div style="display: flex; align-items: center; gap: 12px; background: #FAF8F4; border: 1px solid var(--line-soft); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;">
           ${avatarHtml}
           <div style="min-width: 0; flex: 1;">
@@ -977,66 +985,66 @@
         </div>
       `;
 
-      footerEl.innerHTML = `
+          footerEl.innerHTML = `
         <button type="button" class="admin-btn admin-btn--default" onclick="window.closeModal('viewLockReasonModal')">Đóng</button>
         <button type="button" class="admin-btn admin-btn--primary" onclick="window.closeModal('viewLockReasonModal'); window.handleToggleLockUser(${user.id}, false)">
           Mở khóa tài khoản ngay
         </button>
       `;
 
-      modal.style.display = "flex";
-    };
-  }
-
-  function openConfirmActionModal(config) {
-    const modal = document.getElementById("userActionModal");
-    const titleEl = document.getElementById("userActionModalTitle");
-    const bodyEl = document.getElementById("userActionModalBody");
-    const confirmBtn = document.getElementById("btnConfirmUserAction");
-
-    if (!modal || !titleEl || !bodyEl || !confirmBtn) return;
-
-    titleEl.textContent = config.title || "Xác nhận";
-    bodyEl.innerHTML = config.bodyHtml || "";
-    confirmBtn.textContent = config.confirmText || "Xác nhận";
-    confirmBtn.className = "admin-btn " + (config.confirmBtnClass || "admin-btn--primary");
-
-    confirmBtn.onclick = function () {
-      if (typeof config.onConfirm === "function") {
-        config.onConfirm();
+          modal.style.display = "flex";
+        };
       }
-    };
 
-    modal.style.display = "flex";
-  }
+      function openConfirmActionModal(config) {
+        const modal = document.getElementById("userActionModal");
+        const titleEl = document.getElementById("userActionModalTitle");
+        const bodyEl = document.getElementById("userActionModalBody");
+        const confirmBtn = document.getElementById("btnConfirmUserAction");
 
-  function getRoleName(role) {
-    switch (role) {
-      case "admin": return "Quản trị viên";
-      case "editor": return "Biên tập viên";
-      case "reporter": return "Phóng viên";
-      default: return "Độc giả";
-    }
-  }
+        if (!modal || !titleEl || !bodyEl || !confirmBtn) return;
 
-  function formatNumber(num) {
-    return Number(num || 0).toLocaleString("vi-VN");
-  }
+        titleEl.textContent = config.title || "Xác nhận";
+        bodyEl.innerHTML = config.bodyHtml || "";
+        confirmBtn.textContent = config.confirmText || "Xác nhận";
+        confirmBtn.className = "admin-btn " + (config.confirmBtnClass || "admin-btn--primary");
 
-  function formatDateTime(dateStr) {
-    if (!dateStr) return '<span style="color: var(--muted); font-size: 11.5px;">—</span>';
-    try {
-      const d = new Date(String(dateStr).replace(" ", "T"));
-      if (isNaN(d.getTime())) return `<span style="font-family: var(--f-mono); font-size: 12px; color: var(--muted);">${escapeHtml(dateStr)}</span>`;
-      const day = String(d.getDate()).padStart(2, "0");
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const year = d.getFullYear();
-      const hours = String(d.getHours()).padStart(2, "0");
-      const mins = String(d.getMinutes()).padStart(2, "0");
-      return `<span style="font-family: var(--f-mono); font-size: 12px; color: var(--muted); white-space: nowrap;">${hours}:${mins} ${day}/${month}/${year}</span>`;
-    } catch (e) {
-      return escapeHtml(dateStr);
-    }
-  }
+        confirmBtn.onclick = function () {
+          if (typeof config.onConfirm === "function") {
+            config.onConfirm();
+          }
+        };
 
-})();
+        modal.style.display = "flex";
+      }
+
+      function getRoleName(role) {
+        switch (role) {
+          case "admin": return "Quản trị viên";
+          case "editor": return "Biên tập viên";
+          case "reporter": return "Phóng viên";
+          default: return "Độc giả";
+        }
+      }
+
+      function formatNumber(num) {
+        return Number(num || 0).toLocaleString("vi-VN");
+      }
+
+      function formatDateTime(dateStr) {
+        if (!dateStr) return '<span style="color: var(--muted); font-size: 11.5px;">—</span>';
+        try {
+          const d = new Date(String(dateStr).replace(" ", "T"));
+          if (isNaN(d.getTime())) return `<span style="font-family: var(--f-mono); font-size: 12px; color: var(--muted);">${escapeHtml(dateStr)}</span>`;
+          const day = String(d.getDate()).padStart(2, "0");
+          const month = String(d.getMonth() + 1).padStart(2, "0");
+          const year = d.getFullYear();
+          const hours = String(d.getHours()).padStart(2, "0");
+          const mins = String(d.getMinutes()).padStart(2, "0");
+          return `<span style="font-family: var(--f-mono); font-size: 12px; color: var(--muted); white-space: nowrap;">${hours}:${mins} ${day}/${month}/${year}</span>`;
+        } catch (e) {
+          return escapeHtml(dateStr);
+        }
+      }
+
+    }) ();

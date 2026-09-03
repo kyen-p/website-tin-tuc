@@ -24,15 +24,17 @@
     initAdminCommentsPage();
   });
 
-  function initAdminCommentsPage() {
-    loadData();
+  async function initAdminCommentsPage() {
+    await loadData();
     renderPageStructure();
     bindEvents();
     renderCommentsTable();
   }
 
-  function loadData() {
-    allComments = getTable("comments") || [];
+  async function loadData() {
+    const res = await fetch('/website-tin-tuc/backend/api/admin/comments.php');
+    const result = await res.json();
+    allComments = result.data || [];
     allArticles = getTable("articles") || [];
     allUsers = getTable("users") || [];
   }
@@ -162,8 +164,20 @@
       if (!deleteTargetCommentId) return;
 
       allComments = allComments.filter((c) => Number(c.id) !== Number(deleteTargetCommentId));
-      saveTable("comments", allComments);
-
+      fetch('/website-tin-tuc/backend/api/admin/comments.php', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment_id: deleteTargetCommentId })
+      })
+        .then(res => res.json())
+        .then(async result => {
+          if (result.success) {
+            await loadData();
+            renderPageStructure();
+            renderCommentsTable();
+            showToast("Đã xóa bình luận thành công.", "warning");
+          }
+        });
       window.closeDeleteCommentModal();
       showToast("Đã xóa bình luận thành công!", "success");
       loadData();
@@ -190,8 +204,8 @@
     // Lọc theo từ khóa tìm kiếm
     if (searchQuery) {
       filtered = filtered.filter((c) => {
-        const user = allUsers.find((u) => u.id === c.user_id) || {};
-        const article = allArticles.find((a) => a.id === c.article_id) || {};
+        const user = { full_name: c.full_name, username: c.username, avatar: c.avatar };
+        const article = { title: c.article_title };
         const contentMatch = (c.content || "").toLowerCase().includes(searchQuery);
         const userMatch = (user.full_name || "").toLowerCase().includes(searchQuery) || (user.username || "").toLowerCase().includes(searchQuery);
         const articleMatch = (article.title || "").toLowerCase().includes(searchQuery);
