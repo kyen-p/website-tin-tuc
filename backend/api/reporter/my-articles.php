@@ -50,5 +50,5 @@ try {
     );
 
 } catch (PDOException $e) {
-    jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");
+    jsonResponse(false, null, $e->getMessage());
 }
