@@ -1,50 +1,51 @@
 /**
  * ==============================================================================
- * MẠCH TIN - PROFILE.JS (Quản lý Thông tin tài khoản - Single Card Layout)
+ * MẠCH TIN - PROFILE.JS
+ *
+ * API:
+ * GET / PUT  : ../../backend/api/user/profile.php
+ * POST upload: ../../backend/api/upload.php
  * ==============================================================================
  */
 
-function initProfilePage() {
-  // 1. Kiểm tra đăng nhập (Bảo vệ tuyến đường)
-  const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
-  if (!currentUser) {
-    if (typeof showToast === "function") {
-      showToast("Vui lòng đăng nhập để xem thông tin tài khoản", "warning");
-    }
-    setTimeout(() => {
-      window.location.href = "../public/login.html?redirect=" + encodeURIComponent(window.location.href);
-    }, 400);
-    return;
-  }
+const PROFILE_API = "../../backend/api/user/profile.php";
 
-  // 2. Khởi tạo Header và Footer chung
-  if (typeof initPublicHeader === "function") initPublicHeader("profile");
-  if (typeof initPublicFooter === "function") initPublicFooter();
+const UPLOAD_API = "../../backend/api/upload.php";
 
-  // 3. Lấy dữ liệu người dùng mới nhất từ Database
-  const users = typeof getTable === "function" ? getTable("users") : [];
-  const latestUser = users.find((u) => u.id === currentUser.id) || currentUser;
+let originalUserData = null;
+let currentAvatarValue = null;
 
+async function initProfilePage() {
   // DOM Elements
   const userRoleBadge = document.getElementById("userRoleBadge");
+
   const profileForm = document.getElementById("profileForm");
+
   const avatarContainer = document.getElementById("avatarPreviewContainer");
+
   const avatarFileInput = document.getElementById("avatarFileInput");
+
   const btnRemoveAvatar = document.getElementById("btnRemoveAvatar");
 
   const fullNameInput = document.getElementById("fullNameInput");
+
   const usernameInput = document.getElementById("usernameInput");
+
   const emailInput = document.getElementById("emailInput");
+
   const roleDisplayInput = document.getElementById("roleDisplayInput");
-  const createdAtDisplayInput = document.getElementById("createdAtDisplayInput");
+
+  const createdAtDisplayInput = document.getElementById(
+    "createdAtDisplayInput",
+  );
+
   const bioInput = document.getElementById("bioInput");
+
   const btnResetForm = document.getElementById("btnResetForm");
+
   const btnViewPublicProfile = document.getElementById("btnViewPublicProfile");
 
-  // Biến lưu trạng thái avatar hiện tại đang chỉnh sửa
-  let currentAvatarValue = latestUser.avatar || null;
-
-  // Map tên vai trò hiển thị tiếng Việt
+  // Map vai trò
   const roleMap = {
     admin: "Quản trị viên",
     editor: "Biên tập viên",
@@ -53,59 +54,243 @@ function initProfilePage() {
   };
 
   /**
-   * Cập nhật hiển thị hộp Avatar (ảnh hoặc chữ cái đầu)
+   * Hiển thị avatar
    */
   function renderAvatarBox(avatarUrl, nameText) {
     if (!avatarContainer) return;
-    const resolvedUrl = typeof resolveAssetPath === "function" ? resolveAssetPath(avatarUrl) : avatarUrl;
-    const initials = typeof getInitials === "function" ? getInitials(nameText) : "U";
 
-    if (resolvedUrl) {
+    const initials =
+      typeof getInitials === "function" ? getInitials(nameText || "") : "U";
+
+    const safeName =
+      typeof escapeHtml === "function"
+        ? escapeHtml(nameText || "")
+        : nameText || "";
+
+    if (avatarUrl) {
+      const resolvedUrl =
+        typeof resolveAssetPath === "function"
+          ? resolveAssetPath(avatarUrl)
+          : avatarUrl;
+
       avatarContainer.style.backgroundColor = "transparent";
+
       avatarContainer.innerHTML = `
-        <img src="${resolvedUrl}" alt="${escapeHtml(nameText || '')}" style="width: 100%; height: 100%; object-fit: cover;" onerror="const p=this.parentElement; this.remove(); if(p){ p.style.backgroundColor='var(--brass)'; p.innerHTML='<span style=\\'user-select: none;\\'>${initials}</span>'; }">
+        <img
+          src="${resolvedUrl}"
+          alt="${safeName}"
+          style="
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          "
+          onerror="
+            const p = this.parentElement;
+            this.remove();
+
+            if (p) {
+              p.style.backgroundColor = 'var(--brass)';
+              p.innerHTML =
+                '<span style=&quot;user-select:none;&quot;>${initials}</span>';
+            }
+          "
+        >
       `;
+
       if (btnRemoveAvatar) {
         btnRemoveAvatar.style.display = "inline-flex";
       }
     } else {
       avatarContainer.style.backgroundColor = "var(--brass)";
-      avatarContainer.innerHTML = `<span style="user-select: none;">${initials}</span>`;
+
+      avatarContainer.innerHTML = `
+        <span style="user-select: none;">
+          ${initials}
+        </span>
+      `;
+
       if (btnRemoveAvatar) {
-        btnRemoveAvatar.style.display = "none"; // Ẩn nút xóa khi đang là avatar mặc định
+        btnRemoveAvatar.style.display = "none";
       }
     }
   }
 
-  // 4. Điền dữ liệu người dùng vào Form
+  /**
+   * Điền dữ liệu API vào form
+   */
   function populateUserData(user) {
+    if (!user) return;
+
     currentAvatarValue = user.avatar || null;
 
     if (userRoleBadge) {
       userRoleBadge.textContent = roleMap[user.role] || "Độc giả";
-      userRoleBadge.className = `user-role-badge user-role-badge--${user.role || 'user'}`;
+
+      userRoleBadge.className = `user-role-badge user-role-badge--${user.role || "user"}`;
     }
 
     renderAvatarBox(currentAvatarValue, user.full_name || user.username);
 
-    if (fullNameInput) fullNameInput.value = user.full_name || "";
-    if (usernameInput) usernameInput.value = user.username || "";
-    if (emailInput) emailInput.value = user.email || "";
-    if (roleDisplayInput) roleDisplayInput.value = roleMap[user.role] || "Độc giả";
-    if (createdAtDisplayInput) {
-      createdAtDisplayInput.value = typeof formatDate === "function" 
-        ? formatDate(user.created_at || "2026-08-01 08:00:00") 
-        : user.created_at || "01/08/2026";
+    if (fullNameInput) {
+      fullNameInput.value = user.full_name || "";
     }
-    if (bioInput) bioInput.value = user.bio || "";
+
+    if (usernameInput) {
+      usernameInput.value = user.username || "";
+    }
+
+    if (emailInput) {
+      emailInput.value = user.email || "";
+    }
+
+    if (roleDisplayInput) {
+      roleDisplayInput.value = roleMap[user.role] || "Độc giả";
+    }
+
+    if (createdAtDisplayInput) {
+      createdAtDisplayInput.value =
+        typeof formatDate === "function"
+          ? formatDate(user.created_at)
+          : user.created_at || "";
+    }
+
+    if (bioInput) {
+      bioInput.value = user.bio || "";
+    }
+
     if (btnViewPublicProfile) {
-      btnViewPublicProfile.href = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(user, "../public/") : `../public/author.html?username=${encodeURIComponent(user.username || user.id)}`;
+      btnViewPublicProfile.href =
+        typeof getAuthorProfileUrl === "function"
+          ? getAuthorProfileUrl(user, "../public/")
+          : `../public/author.html?username=${encodeURIComponent(
+              user.username || user.id,
+            )}`;
     }
   }
 
-  populateUserData(latestUser);
+  /**
+   * GET: Lấy thông tin profile
+   */
+  async function loadProfile() {
+    try {
+      const response = await fetch(PROFILE_API, {
+        method: "GET",
+        credentials: "include",
+      });
 
-  // 5. Lắng nghe thay đổi Họ tên để cập nhật Avatar chữ cái theo thời gian thực (nếu không có ảnh)
+      const result = await response.json();
+
+      if (!result.success) {
+        if (typeof showToast === "function") {
+          showToast(
+            result.message || "Không thể tải thông tin tài khoản",
+            "error",
+          );
+        }
+
+        return;
+      }
+
+      originalUserData = result.data;
+
+      populateUserData(originalUserData);
+    } catch (error) {
+      console.error("Lỗi tải profile:", error);
+
+      if (typeof showToast === "function") {
+        showToast("Không thể kết nối đến máy chủ", "error");
+      }
+    }
+  }
+
+  /**
+   * Upload avatar
+   */
+  async function uploadAvatar(file) {
+    const formData = new FormData();
+
+    formData.append("image", file);
+    formData.append("type", "avatar");
+
+    const response = await fetch(UPLOAD_API, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Upload ảnh thất bại");
+    }
+
+    return result.data.url;
+  }
+
+  /**
+   * Chọn ảnh avatar
+   */
+  if (avatarFileInput) {
+    avatarFileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+
+      if (!file) return;
+
+      // Kiểm tra loại ảnh
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        if (typeof showToast === "function") {
+          showToast("Chỉ hỗ trợ ảnh JPG, JPEG, PNG và WEBP", "error");
+        }
+
+        avatarFileInput.value = "";
+        return;
+      }
+
+      // Theo backend: tối đa 5MB
+      if (file.size > 5 * 1024 * 1024) {
+        if (typeof showToast === "function") {
+          showToast("Ảnh không được vượt quá 5MB", "error");
+        }
+
+        avatarFileInput.value = "";
+        return;
+      }
+
+      try {
+        if (typeof showToast === "function") {
+          showToast("Đang tải ảnh lên...", "info");
+        }
+
+        const imageUrl = await uploadAvatar(file);
+
+        currentAvatarValue = imageUrl;
+
+        renderAvatarBox(
+          currentAvatarValue,
+          fullNameInput ? fullNameInput.value.trim() : "",
+        );
+
+        if (typeof showToast === "function") {
+          showToast(
+            "Upload ảnh thành công! Hãy bấm 'Lưu cập nhật' để hoàn tất.",
+            "success",
+          );
+        }
+      } catch (error) {
+        console.error("Lỗi upload avatar:", error);
+
+        if (typeof showToast === "function") {
+          showToast(error.message || "Upload ảnh thất bại", "error");
+        }
+
+        avatarFileInput.value = "";
+      }
+    });
+  }
+
+  /**
+   * Cập nhật avatar chữ cái khi thay đổi họ tên
+   */
   if (fullNameInput) {
     fullNameInput.addEventListener("input", (e) => {
       if (!currentAvatarValue) {
@@ -114,151 +299,135 @@ function initProfilePage() {
     });
   }
 
-  // 6. Xử lý Tải ảnh đại diện lên từ máy tính
-  if (avatarFileInput) {
-    avatarFileInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      // Validate loại file ảnh
-      if (!file.type.startsWith("image/")) {
-        if (typeof showToast === "function") showToast("Vui lòng chọn file hình ảnh hợp lệ (JPG, PNG, WebP)", "error");
-        avatarFileInput.value = "";
-        return;
-      }
-
-      // Validate dung lượng ảnh (tối đa 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        if (typeof showToast === "function") showToast("Kích thước ảnh không được vượt quá 2MB", "error");
-        avatarFileInput.value = "";
-        return;
-      }
-
-      // Đọc file thành DataURL base64
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        currentAvatarValue = event.target.result;
-        renderAvatarBox(currentAvatarValue, fullNameInput ? fullNameInput.value : "");
-        if (typeof showToast === "function") showToast("Đã tải ảnh lên thành công! Hãy bấm 'Lưu cập nhật' để lưu lại.", "info");
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // 7. Xử lý Xóa ảnh đại diện về mặc định (chữ cái đầu)
+  /**
+   * Xóa avatar
+   */
   if (btnRemoveAvatar) {
     btnRemoveAvatar.addEventListener("click", () => {
       currentAvatarValue = null;
-      if (avatarFileInput) avatarFileInput.value = "";
-      renderAvatarBox(null, fullNameInput ? fullNameInput.value : "");
-      if (typeof showToast === "function") showToast("Xóa ảnh đại diện thành công! Hãy bấm 'Lưu cập nhật' để lưu lại.", "info");
+
+      if (avatarFileInput) {
+        avatarFileInput.value = "";
+      }
+
+      renderAvatarBox(null, fullNameInput ? fullNameInput.value.trim() : "");
+
+      if (typeof showToast === "function") {
+        showToast(
+          "Đã xóa ảnh đại diện. Hãy bấm 'Lưu cập nhật' để lưu thay đổi.",
+          "info",
+        );
+      }
     });
   }
 
-  // 8. Xử lý nút Hủy thay đổi (Reset form về giá trị ban đầu)
+  /**
+   * Khôi phục dữ liệu ban đầu
+   */
   if (btnResetForm) {
     btnResetForm.addEventListener("click", (e) => {
       e.preventDefault();
-      populateUserData(latestUser);
-      if (avatarFileInput) avatarFileInput.value = "";
-      if (typeof showToast === "function") showToast("Đã khôi phục thông tin ban đầu", "info");
-    });
-  }
 
-  // 9. Xử lý Submit cập nhật thông tin
-  if (profileForm) {
-    profileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const newFullName = (fullNameInput ? fullNameInput.value : "").trim();
-      const newUsername = (usernameInput ? usernameInput.value : "").trim().toLowerCase();
-      const newEmail = (emailInput ? emailInput.value : "").trim().toLowerCase();
-      const newBio = (bioInput ? bioInput.value : "").trim();
-
-      // Validate dữ liệu
-      if (!newFullName) {
-        if (typeof showToast === "function") showToast("Họ và tên không được để trống", "error");
-        return;
+      if (originalUserData) {
+        populateUserData(originalUserData);
       }
 
-      if (!newUsername) {
-        if (typeof showToast === "function") showToast("Tên đăng nhập không được để trống", "error");
-        return;
-      }
-
-      const usernameRegex = /^[a-zA-Z0-9_]{3,30}$/;
-      if (!usernameRegex.test(newUsername)) {
-        if (typeof showToast === "function") {
-          showToast("Tên đăng nhập phải từ 3-30 ký tự (chỉ gồm chữ cái, chữ số và dấu gạch dưới)", "error");
-        }
-        return;
-      }
-
-      if (!newEmail) {
-        if (typeof showToast === "function") showToast("Email không được để trống", "error");
-        return;
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(newEmail)) {
-        if (typeof showToast === "function") showToast("Địa chỉ email không hợp lệ", "error");
-        return;
-      }
-
-      // Kiểm tra trùng username hoặc email với các tài khoản khác
-      const currentUsersList = typeof getTable === "function" ? getTable("users") : [];
-      
-      const usernameExists = currentUsersList.some(
-        (u) => u.id !== latestUser.id && (u.username || "").toLowerCase() === newUsername
-      );
-      if (usernameExists) {
-        if (typeof showToast === "function") showToast("Tên đăng nhập này đã có người sử dụng", "error");
-        return;
-      }
-
-      const emailExists = currentUsersList.some(
-        (u) => u.id !== latestUser.id && (u.email || "").toLowerCase() === newEmail
-      );
-      if (emailExists) {
-        if (typeof showToast === "function") showToast("Địa chỉ email này đã được đăng ký", "error");
-        return;
-      }
-
-      // Cập nhật thông tin vào Database
-      const updatedUser = {
-        ...latestUser,
-        full_name: newFullName,
-        username: newUsername,
-        email: newEmail,
-        bio: newBio,
-        avatar: currentAvatarValue,
-        updated_at: new Date().toISOString().replace("T", " ").substring(0, 19),
-      };
-
-      if (typeof updateRecord === "function") {
-        updateRecord("users", latestUser.id, updatedUser);
-      }
-
-      // Cập nhật Session hiện tại
-      if (typeof setCurrentUser === "function") {
-        setCurrentUser(updatedUser);
-      }
-
-      // Cập nhật lại UI Form và Header
-      populateUserData(updatedUser);
-
-      if (typeof initPublicHeader === "function") {
-        initPublicHeader("profile");
+      if (avatarFileInput) {
+        avatarFileInput.value = "";
       }
 
       if (typeof showToast === "function") {
-        showToast("Cập nhật thông tin tài khoản thành công!", "success");
+        showToast("Đã khôi phục thông tin ban đầu", "info");
       }
     });
   }
+
+  /**
+   * PUT: Cập nhật profile
+   *
+   * Theo PHP chỉ gửi:
+   * full_name
+   * bio
+   * avatar
+   */
+  if (profileForm) {
+    profileForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fullName = fullNameInput ? fullNameInput.value.trim() : "";
+
+      const bio = bioInput ? bioInput.value.trim() : "";
+
+      if (!fullName) {
+        if (typeof showToast === "function") {
+          showToast("Họ và tên không được để trống", "error");
+        }
+
+        return;
+      }
+
+      try {
+        const response = await fetch(PROFILE_API, {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            full_name: fullName,
+            bio: bio,
+            avatar: currentAvatarValue || "",
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          if (typeof showToast === "function") {
+            showToast(result.message || "Cập nhật thất bại", "error");
+          }
+
+          return;
+        }
+
+        originalUserData = result.data;
+
+        populateUserData(result.data);
+
+        if (typeof initPublicHeader === "function") {
+          initPublicHeader("profile");
+        }
+
+        if (typeof showToast === "function") {
+          showToast(
+            result.message || "Cập nhật thông tin tài khoản thành công!",
+            "success",
+          );
+        }
+      } catch (error) {
+        console.error("Lỗi cập nhật profile:", error);
+
+        if (typeof showToast === "function") {
+          showToast("Không thể kết nối đến máy chủ", "error");
+        }
+      }
+    });
+  }
+
+  // Khởi tạo Header / Footer
+  if (typeof initPublicHeader === "function") {
+    initPublicHeader("profile");
+  }
+
+  if (typeof initPublicFooter === "function") {
+    initPublicFooter();
+  }
+
+  // Lấy dữ liệu thật từ PHP
+  await loadProfile();
 }
 
-// Khởi chạy khi trang đã tải xong
+// Khởi chạy
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initProfilePage);
 } else {

@@ -1,30 +1,13 @@
 /**
  * ==============================================================================
- * MẠCH TIN - CHANGE-PASSWORD.JS (Xử lý Đổi mật khẩu)
+ * MẠCH TIN - CHANGE-PASSWORD.JS
+ * Kết nối PHP API: backend/api/user/change-password.php
  * ==============================================================================
  */
 
+const CHANGE_PASSWORD_API = "../../backend/api/user/change-password.php";
+
 function initChangePasswordPage() {
-  // 1. Kiểm tra đăng nhập (Bảo vệ tuyến đường)
-  const currentUser =
-    typeof getCurrentUser === "function" ? getCurrentUser() : null;
-  if (!currentUser) {
-    if (typeof showToast === "function") {
-      showToast("Vui lòng đăng nhập để đổi mật khẩu", "warning");
-    }
-    setTimeout(() => {
-      window.location.href =
-        "../public/login.html?redirect=" +
-        encodeURIComponent(window.location.href);
-    }, 400);
-    return;
-  }
-
-  // 2. Khởi tạo Header và Footer chung
-  if (typeof initPublicHeader === "function")
-    initPublicHeader("change-password");
-  if (typeof initPublicFooter === "function") initPublicFooter();
-
   // DOM Elements
   const changePasswordForm = document.getElementById("changePasswordForm");
   const currentPasswordInput = document.getElementById("currentPasswordInput");
@@ -33,25 +16,48 @@ function initChangePasswordPage() {
   const btnResetPasswordForm = document.getElementById("btnResetPasswordForm");
   const toggleButtons = document.querySelectorAll(".btn-toggle-password");
 
-  // Icon SVG Mắt mở & Mắt đóng
+  // Icon mắt mở
   const eyeOpenSvg = `
-    <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg
+      class="eye-icon"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
       <circle cx="12" cy="12" r="3"></circle>
     </svg>
   `;
+
+  // Icon mắt đóng
   const eyeCloseSvg = `
-    <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg
+      class="eye-icon"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
       <line x1="1" y1="1" x2="23" y2="23"></line>
     </svg>
   `;
 
-  // 3. Xử lý Toggle Ẩn/Hiện mật khẩu
+  // Toggle ẩn / hiện mật khẩu
   toggleButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const targetId = btn.getAttribute("data-target");
       const input = document.getElementById(targetId);
+
       if (!input) return;
 
       if (input.type === "password") {
@@ -64,132 +70,140 @@ function initChangePasswordPage() {
     });
   });
 
-  // 4. Xử lý Reset form
-  if (btnResetPasswordForm) {
-    btnResetPasswordForm.addEventListener("click", () => {
-      if (changePasswordForm) changePasswordForm.reset();
-      // Reset type về password
-      [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach(
-        (inp) => {
-          if (inp) inp.type = "password";
-        },
-      );
-      toggleButtons.forEach((btn) => {
-        btn.innerHTML = eyeOpenSvg;
-      });
+  // Reset form
+  function resetPasswordForm() {
+    if (changePasswordForm) {
+      changePasswordForm.reset();
+    }
+
+    [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach(
+      (input) => {
+        if (input) {
+          input.type = "password";
+        }
+      },
+    );
+
+    toggleButtons.forEach((btn) => {
+      btn.innerHTML = eyeOpenSvg;
     });
   }
 
-  // 5. Xử lý Submit Đổi mật khẩu
+  if (btnResetPasswordForm) {
+    btnResetPasswordForm.addEventListener("click", () => {
+      resetPasswordForm();
+    });
+  }
+
+  // Submit đổi mật khẩu
   if (changePasswordForm) {
-    changePasswordForm.addEventListener("submit", (e) => {
+    changePasswordForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const currentPassVal = currentPasswordInput
+      const oldPassword = currentPasswordInput
         ? currentPasswordInput.value.trim()
         : "";
-      const newPassVal = newPasswordInput ? newPasswordInput.value.trim() : "";
-      const confirmPassVal = confirmPasswordInput
+
+      const newPassword = newPasswordInput ? newPasswordInput.value.trim() : "";
+
+      const confirmPassword = confirmPasswordInput
         ? confirmPasswordInput.value.trim()
         : "";
 
       // Kiểm tra rỗng
-      if (!currentPassVal || !newPassVal || !confirmPassVal) {
+      if (!oldPassword || !newPassword || !confirmPassword) {
         if (typeof showToast === "function") {
           showToast("Vui lòng điền đầy đủ tất cả các trường mật khẩu", "error");
         }
         return;
       }
 
-      // Lấy danh sách users từ Storage hoặc mock-data
-      const users = typeof getTable === "function" ? getTable("users") : [];
-      const userIndex = users.findIndex((u) => u.id === currentUser.id);
-      const userRecord = userIndex !== -1 ? users[userIndex] : currentUser;
-
-      // Kiểm tra mật khẩu hiện tại
-      const storedPassword =
-        userRecord.password ||
-        (typeof MOCK_USERS !== "undefined" &&
-          MOCK_USERS.find((u) => u.id === currentUser.id)?.password) ||
-        "password123";
-      if (currentPassVal !== storedPassword) {
-        if (typeof showToast === "function") {
-          showToast("Mật khẩu hiện tại không chính xác", "error");
-        }
-        if (currentPasswordInput) {
-          currentPasswordInput.focus();
-          currentPasswordInput.select();
-        }
-        return;
-      }
-
-      // Kiểm tra điều kiện duy nhất: tối thiểu 8 ký tự
-      if (newPassVal.length < 8) {
+      // Tối thiểu 8 ký tự
+      if (newPassword.length < 8) {
         if (typeof showToast === "function") {
           showToast("Mật khẩu mới phải có tối thiểu 8 ký tự", "error");
         }
-        if (newPasswordInput) newPasswordInput.focus();
+
+        if (newPasswordInput) {
+          newPasswordInput.focus();
+        }
+
         return;
       }
 
-      // Kiểm tra mật khẩu mới không trùng mật khẩu cũ
-      if (newPassVal === currentPassVal) {
+      // Mật khẩu mới không trùng mật khẩu cũ
+      if (newPassword === oldPassword) {
         if (typeof showToast === "function") {
           showToast(
             "Mật khẩu mới không được trùng với mật khẩu hiện tại",
             "warning",
           );
         }
-        if (newPasswordInput) newPasswordInput.focus();
+
+        if (newPasswordInput) {
+          newPasswordInput.focus();
+        }
+
         return;
       }
 
-      // Kiểm tra xác nhận mật khẩu mới
-      if (newPassVal !== confirmPassVal) {
+      // Xác nhận mật khẩu
+      if (newPassword !== confirmPassword) {
         if (typeof showToast === "function") {
           showToast("Xác nhận mật khẩu mới không khớp", "error");
         }
-        if (confirmPasswordInput) confirmPasswordInput.focus();
+
+        if (confirmPasswordInput) {
+          confirmPasswordInput.focus();
+        }
+
         return;
       }
 
-      // Tiến hành lưu mật khẩu mới
-      if (userIndex !== -1) {
-        users[userIndex].password = newPassVal;
-        users[userIndex].updated_at = new Date().toISOString();
-        if (typeof saveTable === "function") {
-          saveTable("users", users);
+      try {
+        const response = await fetch(CHANGE_PASSWORD_API, {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            old_password: oldPassword,
+            new_password: newPassword,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          if (typeof showToast === "function") {
+            showToast(result.message || "Đổi mật khẩu thất bại", "error");
+          }
+          return;
         }
-      }
 
-      // Cập nhật phiên đăng nhập hiện tại
-      const sessionUser =
-        typeof getCurrentUser === "function" ? getCurrentUser() : currentUser;
-      if (sessionUser) {
-        sessionUser.password = newPassVal;
-        localStorage.setItem(
-          "mach_tin_current_user",
-          JSON.stringify(sessionUser),
-        );
-      }
+        resetPasswordForm();
 
-      // Xử lý sau khi đổi thành công: Cách 1 (Giữ phiên)
-      changePasswordForm.reset();
-      [currentPasswordInput, newPasswordInput, confirmPasswordInput].forEach(
-        (inp) => {
-          if (inp) inp.type = "password";
-        },
-      );
-      toggleButtons.forEach((btn) => {
-        btn.innerHTML = eyeOpenSvg;
-      });
+        if (typeof showToast === "function") {
+          showToast(result.message || "Đổi mật khẩu thành công!", "success");
+        }
+      } catch (error) {
+        console.error("Lỗi đổi mật khẩu:", error);
 
-      if (typeof showToast === "function") {
-        showToast("Đổi mật khẩu thành công!", "success");
+        if (typeof showToast === "function") {
+          showToast(
+            "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
+            "error",
+          );
+        }
       }
     });
   }
 }
 
-// Khởi chạy khi DOM sẵn sàng
-document.addEventListener("DOMContentLoaded", initChangePasswordPage);
+// Khởi chạy
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initChangePasswordPage);
+} else {
+  initChangePasswordPage();
+}

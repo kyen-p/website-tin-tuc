@@ -1,149 +1,336 @@
 /**
  * ==============================================================================
- * MẠCH TIN - FAVORITES.JS (Quản lý và hiển thị Bài viết yêu thích)
+ * MẠCH TIN - FAVORITES.JS
+ *
+ * API:
+ * GET    ../../backend/api/user/favorites.php
+ * POST   ../../backend/api/user/favorites.php
+ * DELETE ../../backend/api/user/favorites.php
  * ==============================================================================
  */
 
-function initFavoritesPage() {
-  // 1. Kiểm tra đăng nhập (Bảo vệ tuyến đường)
-  const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
-  if (!currentUser) {
-    if (typeof showToast === "function") {
-      showToast("Vui lòng đăng nhập để xem bài viết yêu thích", "warning");
-    }
-    setTimeout(() => {
-      window.location.href = "../public/login.html?redirect=" + encodeURIComponent(window.location.href);
-    }, 400);
-    return;
+const FAVORITES_API = "../../backend/api/user/favorites.php";
+
+async function initFavoritesPage() {
+  // Khởi tạo Header / Footer
+  if (typeof initPublicHeader === "function") {
+    initPublicHeader("favorites");
   }
 
-  // 2. Khởi tạo Header và Footer chung
-  if (typeof initPublicHeader === "function") initPublicHeader("favorites");
-  if (typeof initPublicFooter === "function") initPublicFooter();
+  if (typeof initPublicFooter === "function") {
+    initPublicFooter();
+  }
 
-  // 3. Render danh sách bài viết yêu thích
-  renderFavoritesList(currentUser);
+  // Lấy danh sách yêu thích từ PHP
+  await loadFavorites();
 }
 
 /**
- * Hiển thị danh sách bài viết yêu thích của người dùng
- * Layout & Style đúng chuẩn dạng hàng ngang Mạch Tin (giống ảnh mẫu)
+ * GET: Lấy danh sách bài viết yêu thích
  */
-function renderFavoritesList(currentUser) {
+async function loadFavorites() {
   const mount = document.getElementById("favorites-mount");
+
   if (!mount) return;
 
-  // Lấy dữ liệu bảng favorites, articles, categories, users, tags, article_tags
-  const allFavorites = typeof getTable === "function" ? getTable("favorites") : [];
-  const allArticles = typeof getTable === "function" ? getTable("articles") : (typeof MOCK_ARTICLES !== "undefined" ? MOCK_ARTICLES : []);
-  const allCategories = typeof getTable === "function" ? getTable("categories") : (typeof MOCK_CATEGORIES !== "undefined" ? MOCK_CATEGORIES : []);
-  const allUsers = typeof getTable === "function" ? getTable("users") : (typeof MOCK_USERS !== "undefined" ? MOCK_USERS : []);
-  const allTags = typeof getTable === "function" ? getTable("tags") : (typeof MOCK_TAGS !== "undefined" ? MOCK_TAGS : []);
-  const allArticleTags = typeof getTable === "function" ? getTable("article_tags") : (typeof MOCK_ARTICLE_TAGS !== "undefined" ? MOCK_ARTICLE_TAGS : []);
+  mount.innerHTML = `
+    <div
+      class="empty-state"
+      style="
+        text-align: center;
+        padding: 48px 16px;
+        color: var(--ink-soft);
+        font-size: 15px;
+      "
+    >
+      <p
+        style="
+          margin: 0;
+          font-family: var(--font-serif);
+          font-size: 17px;
+          color: var(--ink-muted);
+        "
+      >
+        Đang tải bài viết yêu thích...
+      </p>
+    </div>
+  `;
 
-  // Lọc các bản ghi yêu thích của user hiện tại
-  const userFavorites = allFavorites
-    .filter((f) => String(f.user_id) === String(currentUser.id))
-    .sort((a, b) => new Date(String(b.created_at).replace(" ", "T")) - new Date(String(a.created_at).replace(" ", "T")));
+  try {
+    const response = await fetch(FAVORITES_API, {
+      method: "GET",
+      credentials: "include",
+    });
 
-  // Lấy danh sách chi tiết các bài viết tương ứng
-  const favoriteArticles = [];
-  userFavorites.forEach((fav) => {
-    const article = allArticles.find((a) => String(a.id) === String(fav.article_id));
-    if (article && article.status === "published") {
-      favoriteArticles.push(article);
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Không thể tải danh sách yêu thích");
     }
-  });
 
-  // Trường hợp không có bài viết yêu thích
-  if (favoriteArticles.length === 0) {
+    renderFavoritesList(result.data || []);
+  } catch (error) {
+    console.error("Lỗi tải favorites:", error);
+
     mount.innerHTML = `
-      <div class="empty-state" style="text-align: center; padding: 48px 16px; color: var(--ink-soft); font-size: 15px;">
-        <p style="margin: 0; font-family: var(--font-serif); font-size: 17px; color: var(--ink-muted);">Bạn chưa lưu bài viết nào</p>
+      <div
+        class="empty-state"
+        style="
+          text-align: center;
+          padding: 48px 16px;
+          color: var(--ink-soft);
+          font-size: 15px;
+        "
+      >
+        <p
+          style="
+            margin: 0;
+            font-family: var(--font-serif);
+            font-size: 17px;
+            color: var(--ink-muted);
+          "
+        >
+          Không thể tải danh sách bài viết yêu thích.
+        </p>
       </div>
     `;
+
+    if (typeof showToast === "function") {
+      showToast(error.message || "Không thể kết nối đến máy chủ", "error");
+    }
+  }
+}
+
+/**
+ * Render danh sách từ dữ liệu PHP
+ */
+function renderFavoritesList(favoriteArticles) {
+  const mount = document.getElementById("favorites-mount");
+
+  if (!mount) return;
+
+  // Không có bài yêu thích
+  if (!Array.isArray(favoriteArticles) || favoriteArticles.length === 0) {
+    mount.innerHTML = `
+      <div
+        class="empty-state"
+        style="
+          text-align: center;
+          padding: 48px 16px;
+          color: var(--ink-soft);
+          font-size: 15px;
+        "
+      >
+        <p
+          style="
+            margin: 0;
+            font-family: var(--font-serif);
+            font-size: 17px;
+            color: var(--ink-muted);
+          "
+        >
+          Bạn chưa lưu bài viết nào
+        </p>
+      </div>
+    `;
+
     return;
   }
 
-  // Trường hợp có bài viết yêu thích: render dạng danh sách chuẩn phong cách Mạch Tin (như ảnh mẫu)
   mount.innerHTML = `
     <div class="favorites-articles-list">
-      ${favoriteArticles.map((article) => {
-        const cat = allCategories.find((c) => String(c.id) === String(article.category_id)) || { name: "Tin tức", slug: "tin-tuc" };
-        const author = allUsers.find((u) => String(u.id) === String(article.author_id)) || { full_name: article.author_name || "Ban Biên Tập" };
-        const detailUrl = typeof getArticleDetailUrl === "function" ? getArticleDetailUrl(article, "../public/") : `../public/article-detail.html?slug=${encodeURIComponent(article.slug || article.id)}`;
-        
-        // Thời gian & lượt đọc theo đúng chuẩn định dạng hệ thống
-        const safeDate = typeof formatDate === "function" ? formatDate(article.published_at || article.created_at) : (article.published_at || "");
-        const viewCount = Number(article.views || article.view_count || 0);
-        const safeViews = typeof formatNumber === "function" ? formatNumber(viewCount) : viewCount.toLocaleString("vi-VN");
+      ${favoriteArticles
+        .map((article) => {
+          const detailUrl = `../public/article-detail.html?slug=${encodeURIComponent(
+            article.slug || article.id,
+          )}`;
 
-        // Lấy danh sách tags của bài viết
-        const thisArticleTagIds = allArticleTags.filter((at) => at.article_id === article.id).map((at) => at.tag_id);
-        const thisTags = allTags.filter((t) => thisArticleTagIds.includes(t.id));
-        const tagsHtml = thisTags.length > 0
-          ? `<div class="search-article-card__tags" style="margin-top: 4px; margin-bottom: 12px; display: flex; gap: 6px; flex-wrap: wrap;">
-              ${thisTags.map((t) => `
-                <a href="../public/search.html?tag=${t.slug}" class="tag-chip" style="font-size: 11.5px; padding: 3px 8px; text-decoration: none; border-radius: 3px; background: var(--bg-soft); border: 1px solid var(--line-soft); color: var(--ink-soft);" onclick="event.stopPropagation();">
-                  #${typeof escapeHtml === "function" ? escapeHtml(t.name) : t.name}
-                </a>
-              `).join("")}
-            </div>`
-          : "";
+          const safeTitle =
+            typeof escapeHtml === "function"
+              ? escapeHtml(article.title || "")
+              : article.title || "";
 
-        const coverHtml = typeof renderCoverImage === "function"
-          ? renderCoverImage(article.cover_image || article.thumbnail, article.title, "ph--16x9")
-          : `<div class="ph ph--16x9"><img src="${article.cover_image || article.thumbnail || ''}" alt="${escapeHtml(article.title)}"></div>`;
+          const safeDescription =
+            typeof escapeHtml === "function"
+              ? escapeHtml(article.short_description || "")
+              : article.short_description || "";
 
-        return `
-          <article class="search-article-card" style="cursor: pointer;" onclick="window.location.href='${detailUrl}'">
-            
-            <!-- Thumbnail ảnh bài viết -->
-            <a href="${detailUrl}" class="search-article-card__thumb" aria-label="${typeof escapeHtml === "function" ? escapeHtml(article.title) : article.title}" onclick="event.stopPropagation();">
+          const safeDate =
+            typeof formatDate === "function"
+              ? formatDate(article.created_at)
+              : article.created_at || "";
+
+          const coverHtml =
+            typeof renderCoverImage === "function"
+              ? renderCoverImage(article.cover_image, article.title, "ph--16x9")
+              : `
+              <div class="ph ph--16x9">
+                ${
+                  article.cover_image
+                    ? `
+                      <img
+                        src="${article.cover_image}"
+                        alt="${safeTitle}"
+                      >
+                    `
+                    : ""
+                }
+              </div>
+            `;
+
+          return `
+          <article
+            class="search-article-card"
+            style="cursor: pointer;"
+            onclick="window.location.href='${detailUrl}'"
+          >
+
+            <!-- Thumbnail -->
+            <a
+              href="${detailUrl}"
+              class="search-article-card__thumb"
+              aria-label="${safeTitle}"
+              onclick="event.stopPropagation();"
+            >
               ${coverHtml}
             </a>
 
-            <!-- Nội dung bài viết -->
-            <div class="search-article-card__body">
-              <div>
-                <!-- Chuyên mục (Eyebrow) -->
-                <a href="../public/category.html?slug=${cat.slug}" class="eyebrow" style="text-decoration: none;" onclick="event.stopPropagation();">
-                  ${typeof escapeHtml === "function" ? escapeHtml(cat.name) : cat.name}
-                </a>
 
-                <!-- Tiêu đề bài viết -->
-                <h3 class="search-article-card__title" style="margin: 4px 0 8px;">
-                  <a href="${detailUrl}" onclick="event.stopPropagation();">
-                    ${typeof escapeHtml === "function" ? escapeHtml(article.title) : article.title}
+            <!-- Nội dung -->
+            <div class="search-article-card__body">
+
+              <div>
+
+                <!-- Tiêu đề -->
+                <h3
+                  class="search-article-card__title"
+                  style="margin: 4px 0 8px;"
+                >
+                  <a
+                    href="${detailUrl}"
+                    onclick="event.stopPropagation();"
+                  >
+                    ${safeTitle}
                   </a>
                 </h3>
 
-                <!-- Tóm tắt bài viết -->
-                <p class="search-article-card__dek" style="margin: 0 0 8px;">
-                  ${typeof escapeHtml === "function" ? escapeHtml(article.summary || article.short_description || "") : (article.summary || article.short_description || "")}
+
+                <!-- Mô tả -->
+                <p
+                  class="search-article-card__dek"
+                  style="margin: 0 0 8px;"
+                >
+                  ${safeDescription}
                 </p>
 
-                <!-- Danh sách Hashtag Chips -->
-                ${tagsHtml}
               </div>
 
-              <!-- Meta: Tác giả · Thời gian · Lượt đọc -->
+
+              <!-- Thời gian yêu thích -->
               <div class="search-article-card__meta">
-                <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author, '../public/') : '../public/author.html?username=' + encodeURIComponent(author.username || author.id)}" onclick="event.stopPropagation();">${typeof escapeHtml === "function" ? escapeHtml(author.full_name) : author.full_name}</a>
-                <span class="dot-sep">·</span>
-                <span>${safeDate}</span>
-                <span class="dot-sep">·</span>
-                <span>${safeViews} lượt đọc</span>
+                <span>
+                  Đã lưu: ${safeDate}
+                </span>
               </div>
 
             </div>
 
           </article>
         `;
-      }).join("")}
+        })
+        .join("")}
     </div>
   `;
 }
 
-// Khởi chạy khi DOM sẵn sàng
-document.addEventListener("DOMContentLoaded", initFavoritesPage);
+/**
+ * POST: Thêm bài viết yêu thích
+ * Có thể được gọi từ các trang bài viết khác.
+ */
+async function addFavorite(articleId) {
+  try {
+    const response = await fetch(FAVORITES_API, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        article_id: articleId,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Thêm yêu thích thất bại");
+    }
+
+    if (typeof showToast === "function") {
+      showToast(result.message || "Thêm yêu thích thành công", "success");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Lỗi thêm yêu thích:", error);
+
+    if (typeof showToast === "function") {
+      showToast(error.message || "Thêm yêu thích thất bại", "error");
+    }
+
+    return false;
+  }
+}
+
+/**
+ * DELETE: Xóa bài viết khỏi yêu thích
+ * Có thể được gọi từ các trang khác.
+ */
+async function removeFavorite(articleId) {
+  try {
+    const response = await fetch(FAVORITES_API, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        article_id: articleId,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Xóa yêu thích thất bại");
+    }
+
+    if (typeof showToast === "function") {
+      showToast(result.message || "Xóa yêu thích thành công", "success");
+    }
+
+    // Nếu đang ở trang favorites thì tải lại danh sách
+    const mount = document.getElementById("favorites-mount");
+
+    if (mount) {
+      await loadFavorites();
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Lỗi xóa yêu thích:", error);
+
+    if (typeof showToast === "function") {
+      showToast(error.message || "Xóa yêu thích thất bại", "error");
+    }
+
+    return false;
+  }
+}
+
+// Khởi chạy
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initFavoritesPage);
+} else {
+  initFavoritesPage();
+}
