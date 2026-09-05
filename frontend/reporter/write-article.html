@@ -283,28 +283,47 @@
     /**
      * Xử lý tải ảnh bìa lên
      */
-    function handleCoverFileChange(e) {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
+    async function handleCoverFileChange(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
 
-      if (!file.type.startsWith("image/")) {
-        showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WebP)!", "warning");
-        return;
-      }
+  if (!file.type.startsWith("image/")) {
+    showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WebP)!", "warning");
+    return;
+  }
 
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
-        return;
-      }
+  if (file.size > 5 * 1024 * 1024) {
+    showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
+    return;
+  }
 
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const dataUrl = event.target.result;
-        setCoverPreview(dataUrl);
-        showToast("Đã tải ảnh bìa thành công!", "success");
-      };
-      reader.readAsDataURL(file);
+  const formData = new FormData();
+  formData.append("image", file);
+  formData.append("type", "article");
+
+  try {
+    const response = await fetch("upload.php", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      showToast(result.message || "Tải ảnh bìa thất bại!", "error");
+      return;
     }
+
+    const imageUrl = result.data.url;
+
+    setCoverPreview(imageUrl);
+    showToast("Đã tải ảnh bìa thành công!", "success");
+
+  } catch (error) {
+    console.error(error);
+    showToast("Không thể tải ảnh lên máy chủ!", "error");
+  }
+}
 
     function setCoverPreview(src) {
       if (!src) {
@@ -344,56 +363,97 @@
     /**
      * Xử lý chèn ảnh minh họa trực tiếp vào nội dung bài viết
      */
-    function handleContentImageUpload(e) {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
+    async function handleContentImageUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
 
-      if (!file.type.startsWith("image/")) {
-        showToast("Vui lòng chọn tệp hình ảnh hợp lệ!", "warning");
-        return;
-      }
+  if (!file.type.startsWith("image/")) {
+    showToast("Vui lòng chọn tệp hình ảnh hợp lệ!", "warning");
+    return;
+  }
 
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const dataUrl = event.target.result;
-        if (editorInstance) {
-          const imageHtml = `<figure class="image" style="text-align: center; margin: 18px 0;"><img src="${dataUrl}" alt="Hình ảnh minh họa" style="max-width: 100%; height: auto; border-radius: 6px;"><figcaption style="font-size: 13px; color: #666; font-style: italic; margin-top: 6px;">Chú thích: Hình ảnh minh họa bài viết</figcaption></figure><p></p>`;
-          
-          // Thêm ảnh vào nội dung
-          const currentData = editorInstance.getData();
-          editorInstance.setData(currentData + imageHtml);
-          showToast("Đã chèn hình ảnh vào nội dung bài viết!", "success");
-        }
-        e.target.value = "";
-      };
-      reader.readAsDataURL(file);
+  if (file.size > 5 * 1024 * 1024) {
+    showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("image", file);
+  formData.append("type", "article");
+
+  try {
+    const response = await fetch("upload.php", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      showToast(result.message || "Tải ảnh thất bại!", "error");
+      return;
     }
+
+    const imageUrl = result.data.url;
+
+    if (editorInstance) {
+      const imageHtml = `<figure class="image" style="text-align: center; margin: 18px 0;">
+        <img src="${imageUrl}" alt="Hình ảnh minh họa" style="max-width: 100%; height: auto; border-radius: 6px;">
+        <figcaption style="font-size: 13px; color: #666; font-style: italic; margin-top: 6px;">
+          Chú thích: Hình ảnh minh họa bài viết
+        </figcaption>
+      </figure><p></p>`;
+
+      const currentData = editorInstance.getData();
+      editorInstance.setData(currentData + imageHtml);
+
+      showToast("Đã chèn hình ảnh vào nội dung bài viết!", "success");
+    }
+
+  } catch (error) {
+    console.error(error);
+    showToast("Không thể tải ảnh lên máy chủ!", "error");
+  } finally {
+    e.target.value = "";
+  }
+}
 
     /**
      * Adapter tải ảnh Base64 cho CKEditor 5 (không cần backend server, hỗ trợ paste/kéo thả/chọn file ảnh trực tiếp)
      */
     class CustomBase64UploadAdapter {
-      constructor(loader) {
-        this.loader = loader;
+  constructor(loader) {
+    this.loader = loader;
+  }
+
+  upload() {
+    return this.loader.file.then(async (file) => {
+      const formData = new FormData();
+
+      formData.append("image", file);
+      formData.append("type", "article");
+
+      const response = await fetch("upload.php", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || "Tải ảnh thất bại!");
       }
 
-      upload() {
-        return this.loader.file.then((file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-              const dataUrl = reader.result;
-              resolve({ default: dataUrl });
-            };
-            reader.onerror = (error) => reject(error);
-            reader.onabort = () => reject();
-            reader.readAsDataURL(file);
-          });
-        });
-      }
+      const imageUrl = result.data.url;
 
-      abort() {}
-    }
+      return {
+        default: imageUrl
+      };
+    });
+  }
+
+  abort() {}
+}
 
     function CustomUploadAdapterPlugin(editor) {
       editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
@@ -717,7 +777,7 @@
     /**
      * Lưu bài viết: 'draft' (Lưu nháp) hoặc 'pending' (Gửi duyệt)
      */
-    function saveArticle(targetStatus) {
+    async function saveArticle(targetStatus) {
       const currentUser = getCurrentUser();
       if (!currentUser) {
         showToast("Vui lòng đăng nhập trước khi thực hiện!", "error");
@@ -765,107 +825,40 @@
         return;
       }
 
-      let allArticles = getTable("articles") || [];
-      let allTags = getTable("tags") || [];
-      let allArticleTags = getTable("article_tags") || [];
+     const formData = new FormData();
 
-      const refNow = typeof getSystemTime === "function" ? getSystemTime() : new Date();
-      const nowStr = refNow.toISOString().replace("T", " ").substring(0, 19);
+formData.append("title", title);
+formData.append("short_description", sapo);
+formData.append("content", content);
+formData.append("cover_image", finalCover);
+formData.append("category_id", categoryId);
 
-      // 1. Phân loại và đồng bộ toàn bộ Tags vào bảng tags hệ thống
-      const articleTagIds = [];
-      selectedTags.forEach(tagName => {
-        const normName = normalizeTagSearch(tagName);
-        let found = allTags.find(t => t.name.toLowerCase() === tagName.toLowerCase() || normalizeTagSearch(t.name) === normName);
-        if (!found) {
-          const newTagId = allTags.length > 0 ? Math.max(...allTags.map(t => t.id || 0)) + 1 : 1;
-          found = {
-            id: newTagId,
-            name: tagName,
-            slug: typeof slugify === "function" ? slugify(tagName) : tagName.toLowerCase().replace(/\s+/g, "-"),
-            created_at: nowStr
-          };
-          allTags.push(found);
-        }
-        articleTagIds.push(found.id);
-      });
-      saveTable("tags", allTags);
+try {
+  const response = await fetch("reporter/write-article.php", {
+    method: "POST",
+    body: formData
+  });
 
-      let targetArticleId = currentArticleId;
+  const result = await response.json();
 
-      if (currentArticleId) {
-        // CẬP NHẬT BÀI VIẾT ĐÃ CÓ
-        const idx = allArticles.findIndex(a => a.id === currentArticleId);
-        if (idx !== -1) {
-          allArticles[idx].title = title;
-          allArticles[idx].slug = typeof slugify === "function" ? slugify(title) : title.toLowerCase().replace(/\s+/g, "-");
-          allArticles[idx].short_description = sapo;
-          allArticles[idx].sapo = sapo;
-          allArticles[idx].content = content;
-          allArticles[idx].category_id = Number(categoryId) || allArticles[idx].category_id;
-          allArticles[idx].tags_text = [...selectedTags]; // Lưu danh sách tên thẻ nguyên bản của PV
-          if (finalCover) {
-            allArticles[idx].cover_image = finalCover;
-            allArticles[idx].image = finalCover;
-          }
-          allArticles[idx].status = targetStatus;
-          allArticles[idx].updated_at = nowStr;
-          if (targetStatus === "pending") {
-            allArticles[idx].rejection_reason = null; // Xóa lý do từ chối cũ
-          }
-        }
-      } else {
-        // TẠO MỚI BÀI VIẾT
-        const newId = allArticles.length > 0 ? Math.max(...allArticles.map(a => a.id || 0)) + 1 : 1;
-        targetArticleId = newId;
+  if (!result.success) {
+    showToast(result.message || "Không thể lưu bài viết!", "error");
+    return;
+  }
 
-        const newArticle = {
-          id: newId,
-          title: title,
-          slug: typeof slugify === "function" ? slugify(title) : title.toLowerCase().replace(/\s+/g, "-"),
-          short_description: sapo,
-          sapo: sapo,
-          content: content,
-          cover_image: finalCover,
-          image: finalCover,
-          author_id: currentUser.id,
-          author: currentUser.full_name || currentUser.username,
-          category_id: Number(categoryId) || 1,
-          tags_text: [...selectedTags], // Lưu danh sách tên thẻ nguyên bản của PV
-          is_notable_event: false,
-          status: targetStatus,
-          rejection_reason: null,
-          view_count: 0,
-          views: 0,
-          published_at: null,
-          created_at: nowStr,
-          updated_at: nowStr
-        };
-        allArticles.unshift(newArticle);
-      }
+  showToast(
+    "Đã gửi bài viết lên Ban Biên tập để kiểm duyệt thành công!",
+    "success"
+  );
 
-      saveTable("articles", allArticles);
+  setTimeout(() => {
+    window.location.href = "my-articles.html";
+  }, 600);
 
-      // 2. Cập nhật bảng liên kết article_tags đối với tất cả các thẻ tag của bài viết
-      allArticleTags = allArticleTags.filter(at => at.article_id !== targetArticleId);
-      articleTagIds.forEach(tId => {
-        allArticleTags.push({
-          article_id: targetArticleId,
-          tag_id: tId
-        });
-      });
-      saveTable("article_tags", allArticleTags);
-
-      // 3. Thông báo và điều hướng
-      if (targetStatus === "pending") {
-        showToast("Đã gửi bài viết lên Ban Biên tập để kiểm duyệt thành công!", "success");
-      } else {
-        showToast("Đã lưu bản nháp bài viết thành công!", "success");
-      }
-
-      setTimeout(() => {
-        window.location.href = "my-articles.html";
-      }, 600);
+} catch (error) {
+  console.error("Lỗi gửi bài viết:", error);
+  showToast("Không thể kết nối đến máy chủ!", "error");
+}
     }
 
     window.selectTagFromDropdown = selectTagFromDropdown;
