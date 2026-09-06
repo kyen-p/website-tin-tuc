@@ -22,7 +22,7 @@ const CURRENT_DB_VERSION = "4.0.0"; // Chuẩn hóa 8 bảng (7 thực thể: si
  * Đảm bảo toàn bộ các trang (Trang chủ, Dashboard BTV, Phóng viên, Thống kê...) đồng bộ 100%
  */
 function getSystemTime() {
-  return new Date("2026-08-14T23:59:59");
+  return new Date();
 }
 
 // Tự động đồng bộ lại localStorage khi Mock Data được cập nhật phiên bản mới
@@ -594,23 +594,37 @@ const PULSE_SVG_ICON = `
 /**
  * Tự động render Header & Thanh Ticker cho các trang Public & User
  */
-function initPublicHeader(activeCategorySlug = "") {
+function getVietnameseDateLabel(date) {
+  const days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+  const dayName = days[date.getDay()];
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const yyyy = date.getFullYear();
+  return `${dayName}, ${dd}/${mm}/${yyyy}`;
+}
+
+async function initPublicHeader(activeCategorySlug = "") {
   const headerMount = document.getElementById("site-header");
   if (!headerMount) return;
 
   const user = getCurrentUser();
-  const categories = getTable("categories");
-  const allArticles = getTable("articles");
 
-  // Nhận diện đường dẫn tương đối tùy theo thư mục hiện tại (public/ hay user/)
+  // Đổi từ getTable() sang gọi API thật
+  const [categoriesRes, articlesRes] = await Promise.all([
+    fetch(resolveApiUrl("public/categories.php")).then(r => r.json()),
+    fetch(resolveApiUrl("public/articles.php")).then(r => r.json())
+  ]);
+  const categories = categoriesRes.data || [];
+  const allArticles = articlesRes.data || [];
+
   const currentPath = window.location.pathname;
   const isInUserDir = currentPath.includes("/user/");
   const publicPrefix = isInUserDir ? "../public/" : "";
   const userPrefix = isInUserDir ? "" : "../user/";
   const workspacePrefix = isInUserDir ? "../" : "../";
 
-  // Lấy 5 bài viết NÓNG nhất theo Điểm Nóng (Views / Hours + 1) cho thanh Ticker
-  const now = new Date("2026-08-13T12:00:00");
+  // Đổi từ mốc ngày giả định sang thời gian thật
+  const now = new Date();
   const hotArticles = allArticles
     .filter((a) => a.status === "published")
     .map((a) => {
@@ -733,8 +747,7 @@ function initPublicHeader(activeCategorySlug = "") {
     <header class="site-header">
       <div class="header-utility">
         <div class="wrap">
-          <span>Thứ Năm, 13/08/2026</span>
-          ${userUtilityHtml}
+        <span>${getVietnameseDateLabel(now)}</span>          ${userUtilityHtml}
         </div>
       </div>
       <div class="header-main">
@@ -812,7 +825,7 @@ function resolveAppRelativeUrl(rawLink) {
 /**
  * Tự động render Footer 3 cột thông tin tòa soạn
  */
-function initPublicFooter() {
+async function initPublicFooter() {
   const footerMount = document.getElementById("site-footer");
   if (!footerMount) return;
 
@@ -820,7 +833,10 @@ function initPublicFooter() {
   const isInUserDir = currentPath.includes("/user/");
   const publicPrefix = isInUserDir ? "../public/" : "";
 
-  const site = getTable("site_settings") || {};
+  // Đổi từ getTable() sang gọi API thật (dùng chung API admin đã có, GET không cần đăng nhập)
+  const res = await fetch(resolveApiUrl("admin/contact-config.php"));
+  const result = await res.json();
+  const site = result.data || {};
 
   footerMount.innerHTML = `
     <footer class="site-footer">
