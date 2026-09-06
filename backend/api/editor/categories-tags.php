@@ -1,0 +1,416 @@
+<?php
+
+/* MẠCH TIN - EDITOR | API QUẢN LÝ CHUYÊN MỤC VÀ TAG */
+
+require_once '../../config/database.php';
+require_once '../../helpers/response.php';
+require_once '../../helpers/auth.php';
+
+requireRole(['editor']);
+
+$method = $_SERVER['REQUEST_METHOD'];
+$type = $_GET['type'] ?? 'categories';
+
+if ($type !== 'categories' && $type !== 'tags') {
+    jsonResponse(false, null, "type phải là categories hoặc tags");
+}
+
+/* GET - LẤY DANH SÁCH */
+if ($method === 'GET') {
+    try {
+        if ($type === 'categories') {
+            $sql = "
+                SELECT c.id, c.name, c.slug, c.description, c.created_at,
+                       COUNT(a.id) AS article_count
+                FROM categories c
+                LEFT JOIN articles a ON c.id = a.category_id
+                GROUP BY c.id, c.name, c.slug, c.description, c.created_at
+                ORDER BY c.name ASC
+            ";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($categories as &$category) {
+                $category['article_count'] = (int)$category['article_count'];
+            }
+            unset($category);
+
+            jsonResponse(true, $categories, "Lấy danh sách chuyên mục thành công");
+        }
+
+        if ($type === 'tags') {
+            $sql = "
+                SELECT t.id, t.name, t.slug, t.created_at,
+                       COUNT(at.article_id) AS article_count
+                FROM tags t
+                LEFT JOIN article_tags at ON t.id = at.tag_id
+                GROUP BY t.id, t.name, t.slug, t.created_at
+                ORDER BY t.name ASC
+            ";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $tags = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($tags as &$tag) {
+                $tag['article_count'] = (int)$tag['article_count'];
+            }
+            unset($tag);
+
+            jsonResponse(true, $tags, "Lấy danh sách tag thành công");
+        }
+    } catch (PDOException $e) {
+        jsonResponse(false, null, "Không thể lấy dữ liệu: " . $e->getMessage());
+    }
+}
+
+/* POST - THÊM CATEGORY / TAG */
+if ($method === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($input)) {
+        jsonResponse(false, null, "Dữ liệu gửi lên không hợp lệ");
+    }
+
+    $name = trim($input['name'] ?? '');
+    $slug = trim($input['slug'] ?? '');
+    $description = trim($input['description'] ?? '');
+
+    if ($name === '') {
+        jsonResponse(false, null, "Tên không được để trống");
+    }
+
+    $slug = $slug === '' ? createSlug($name) : createSlug($slug);
+
+    if ($slug === '') {
+        jsonResponse(false, null, "Không thể tạo slug hợp lệ");
+    }
+
+    try {
+        if ($type === 'categories') {
+            $checkName = $pdo->prepare("
+                SELECT id FROM categories WHERE name = ? LIMIT 1
+            ");
+            $checkName->execute([$name]);
+
+            if ($checkName->fetch()) {
+                jsonResponse(false, null, "Chuyên mục đã tồn tại");
+            }
+
+            $checkSlug = $pdo->prepare("
+                SELECT id FROM categories WHERE slug = ? LIMIT 1
+            ");
+            $checkSlug->execute([$slug]);
+
+            if ($checkSlug->fetch()) {
+                jsonResponse(false, null, "Slug chuyên mục đã tồn tại");
+            }
+
+            $stmt = $pdo->prepare("
+                INSERT INTO categories (name, slug, description, created_at)
+                VALUES (?, ?, ?, NOW())
+            ");
+
+            $stmt->execute([
+                $name,
+                $slug,
+                $description !== '' ? $description : null
+            ]);
+
+            $newId = $pdo->lastInsertId();
+
+            $resultStmt = $pdo->prepare("
+                SELECT id, name, slug, description, created_at
+                FROM categories WHERE id = ?
+            ");
+            $resultStmt->execute([$newId]);
+            $result = $resultStmt->fetch(PDO::FETCH_ASSOC);
+
+            jsonResponse(true, $result, "Thêm chuyên mục thành công");
+        }
+
+        if ($type === 'tags') {
+            $checkName = $pdo->prepare("
+                SELECT id FROM tags WHERE name = ? LIMIT 1
+            ");
+            $checkName->execute([$name]);
+
+            if ($checkName->fetch()) {
+                jsonResponse(false, null, "Tag đã tồn tại");
+            }
+
+            $checkSlug = $pdo->prepare("
+                SELECT id FROM tags WHERE slug = ? LIMIT 1
+            ");
+            $checkSlug->execute([$slug]);
+
+            if ($checkSlug->fetch()) {
+                jsonResponse(false, null, "Slug tag đã tồn tại");
+            }
+
+            $stmt = $pdo->prepare("
+                INSERT INTO tags (name, slug, created_at)
+                VALUES (?, ?, NOW())
+            ");
+
+            $stmt->execute([$name, $slug]);
+            $newId = $pdo->lastInsertId();
+
+            $resultStmt = $pdo->prepare("
+                SELECT id, name, slug, created_at
+                FROM tags WHERE id = ?
+            ");
+            $resultStmt->execute([$newId]);
+            $result = $resultStmt->fetch(PDO::FETCH_ASSOC);
+
+            jsonResponse(true, $result, "Thêm tag thành công");
+        }
+    } catch (PDOException $e) {
+        jsonResponse(false, null, "Không thể thêm dữ liệu: " . $e->getMessage());
+    }
+}
+
+/* PUT - CẬP NHẬT CATEGORY / TAG */
+if ($method === 'PUT') {
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($input)) {
+        jsonResponse(false, null, "Dữ liệu gửi lên không hợp lệ");
+    }
+
+    $id = $input['id'] ?? null;
+
+    if (!$id) {
+        jsonResponse(false, null, "Thiếu id");
+    }
+
+    $name = trim($input['name'] ?? '');
+    $slug = trim($input['slug'] ?? '');
+    $description = trim($input['description'] ?? '');
+
+    if ($name === '') {
+        jsonResponse(false, null, "Tên không được để trống");
+    }
+
+    $slug = $slug === '' ? createSlug($name) : createSlug($slug);
+
+    if ($slug === '') {
+        jsonResponse(false, null, "Không thể tạo slug hợp lệ");
+    }
+
+    try {
+        if ($type === 'categories') {
+            $check = $pdo->prepare("
+                SELECT id FROM categories WHERE id = ?
+            ");
+            $check->execute([$id]);
+
+            if (!$check->fetch()) {
+                jsonResponse(false, null, "Không tìm thấy chuyên mục");
+            }
+
+            $checkName = $pdo->prepare("
+                SELECT id FROM categories
+                WHERE name = ? AND id <> ? LIMIT 1
+            ");
+            $checkName->execute([$name, $id]);
+
+            if ($checkName->fetch()) {
+                jsonResponse(false, null, "Tên chuyên mục đã tồn tại");
+            }
+
+            $checkSlug = $pdo->prepare("
+                SELECT id FROM categories
+                WHERE slug = ? AND id <> ? LIMIT 1
+            ");
+            $checkSlug->execute([$slug, $id]);
+
+            if ($checkSlug->fetch()) {
+                jsonResponse(false, null, "Slug chuyên mục đã tồn tại");
+            }
+
+            $stmt = $pdo->prepare("
+                UPDATE categories
+                SET name = ?, slug = ?, description = ?
+                WHERE id = ?
+            ");
+
+            $stmt->execute([
+                $name,
+                $slug,
+                $description !== '' ? $description : null,
+                $id
+            ]);
+
+            $resultStmt = $pdo->prepare("
+                SELECT id, name, slug, description, created_at
+                FROM categories WHERE id = ?
+            ");
+            $resultStmt->execute([$id]);
+            $result = $resultStmt->fetch(PDO::FETCH_ASSOC);
+
+            jsonResponse(true, $result, "Cập nhật chuyên mục thành công");
+        }
+
+        if ($type === 'tags') {
+            $check = $pdo->prepare("
+                SELECT id FROM tags WHERE id = ?
+            ");
+            $check->execute([$id]);
+
+            if (!$check->fetch()) {
+                jsonResponse(false, null, "Không tìm thấy tag");
+            }
+
+            $checkName = $pdo->prepare("
+                SELECT id FROM tags
+                WHERE name = ? AND id <> ? LIMIT 1
+            ");
+            $checkName->execute([$name, $id]);
+
+            if ($checkName->fetch()) {
+                jsonResponse(false, null, "Tên tag đã tồn tại");
+            }
+
+            $checkSlug = $pdo->prepare("
+                SELECT id FROM tags
+                WHERE slug = ? AND id <> ? LIMIT 1
+            ");
+            $checkSlug->execute([$slug, $id]);
+
+            if ($checkSlug->fetch()) {
+                jsonResponse(false, null, "Slug tag đã tồn tại");
+            }
+
+            $stmt = $pdo->prepare("
+                UPDATE tags
+                SET name = ?, slug = ?
+                WHERE id = ?
+            ");
+
+            $stmt->execute([$name, $slug, $id]);
+
+            $resultStmt = $pdo->prepare("
+                SELECT id, name, slug, created_at
+                FROM tags WHERE id = ?
+            ");
+            $resultStmt->execute([$id]);
+            $result = $resultStmt->fetch(PDO::FETCH_ASSOC);
+
+            jsonResponse(true, $result, "Cập nhật tag thành công");
+        }
+    } catch (PDOException $e) {
+        jsonResponse(false, null, "Không thể cập nhật dữ liệu: " . $e->getMessage());
+    }
+}
+
+/* DELETE - XÓA CATEGORY / TAG */
+if ($method === 'DELETE') {
+    $id = $_GET['id'] ?? null;
+
+    if (!$id) {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (is_array($input)) {
+            $id = $input['id'] ?? null;
+        }
+    }
+
+    if (!$id) {
+        jsonResponse(false, null, "Thiếu id cần xóa");
+    }
+
+    try {
+        if ($type === 'categories') {
+            $check = $pdo->prepare("
+                SELECT id FROM categories WHERE id = ?
+            ");
+            $check->execute([$id]);
+
+            if (!$check->fetch()) {
+                jsonResponse(false, null, "Không tìm thấy chuyên mục");
+            }
+
+            $articleCheck = $pdo->prepare("
+                SELECT COUNT(*) AS total
+                FROM articles WHERE category_id = ?
+            ");
+            $articleCheck->execute([$id]);
+            $articleCount = (int)$articleCheck->fetchColumn();
+
+            if ($articleCount > 0) {
+                jsonResponse(
+                    false,
+                    null,
+                    "Không thể xóa chuyên mục vì đang có "
+                    . $articleCount . " bài viết sử dụng"
+                );
+            }
+
+            $stmt = $pdo->prepare("
+                DELETE FROM categories WHERE id = ?
+            ");
+            $stmt->execute([$id]);
+
+            jsonResponse(true, null, "Xóa chuyên mục thành công");
+        }
+
+        if ($type === 'tags') {
+            $check = $pdo->prepare("
+                SELECT id FROM tags WHERE id = ?
+            ");
+            $check->execute([$id]);
+
+            if (!$check->fetch()) {
+                jsonResponse(false, null, "Không tìm thấy tag");
+            }
+
+            $linkStmt = $pdo->prepare("
+                DELETE FROM article_tags WHERE tag_id = ?
+            ");
+            $linkStmt->execute([$id]);
+
+            $stmt = $pdo->prepare("
+                DELETE FROM tags WHERE id = ?
+            ");
+            $stmt->execute([$id]);
+
+            jsonResponse(true, null, "Xóa tag thành công");
+        }
+    } catch (PDOException $e) {
+        jsonResponse(false, null, "Không thể xóa dữ liệu: " . $e->getMessage());
+    }
+}
+
+jsonResponse(false, null, "Phương thức HTTP không được hỗ trợ");
+
+/* HÀM TẠO SLUG */
+function createSlug($text)
+{
+    $text = mb_strtolower(trim($text), 'UTF-8');
+
+    $vietnamese = [
+        'à','á','ạ','ả','ã','â','ầ','ấ','ậ','ẩ','ẫ','ă','ằ','ắ','ặ','ẳ','ẵ',
+        'è','é','ẹ','ẻ','ẽ','ê','ề','ế','ệ','ể','ễ',
+        'ì','í','ị','ỉ','ĩ',
+        'ò','ó','ọ','ỏ','õ','ô','ồ','ố','ộ','ổ','ỗ','ơ','ờ','ớ','ợ','ở','ỡ',
+        'ù','ú','ụ','ủ','ũ','ư','ừ','ứ','ự','ử','ữ',
+        'ỳ','ý','ỵ','ỷ','ỹ','đ'
+    ];
+
+    $latin = [
+        'a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a',
+        'e','e','e','e','e','e','e','e','e','e','e',
+        'i','i','i','i','i',
+        'o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o',
+        'u','u','u','u','u','u','u','u','u','u','u',
+        'y','y','y','y','y','d'
+    ];
+
+    $text = str_replace($vietnamese, $latin, $text);
+    $text = preg_replace('/[^a-z0-9]+/', '-', $text);
+    return trim($text, '-');
+}
+

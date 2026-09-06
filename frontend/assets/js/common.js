@@ -228,13 +228,13 @@ function logout(redirectUrl) {
 function checkAuth(allowedRoles) {
   const user = getCurrentUser();
   if (!user) {
-    window.location.href = "/public/login.html";
+    window.location.href = "../public/login.html";
     return null;
   }
   if (allowedRoles && Array.isArray(allowedRoles) && !allowedRoles.includes(user.role)) {
     showToast("Bạn không có quyền truy cập trang này!", "error");
     setTimeout(() => {
-      window.location.href = "/public/index.html";
+      window.location.href = "../public/index.html";
     }, 1000);
     return null;
   }

@@ -57,15 +57,17 @@
     /**
      * Tải và tính toán dữ liệu thống kê cho Phóng viên từ LocalStorage
      */
-    function renderReporterDashboard(currentUser) {
+    async function renderReporterDashboard(currentUser) {
       const mount = document.getElementById("workspace-content");
       if (!mount) return;
 
-      const allArticles = getTable("articles") || [];
-      const allCategories = getTable("categories") || [];
-      const allFavorites = getTable("favorites") || [];
-      const allComments = getTable("comments") || [];
+      const response = await fetch('reporter/my-articles.php');
+const result = await response.json();
+const allArticles = result.data || [];
 
+const allCategories = getTable("categories") || [];
+const allFavorites = getTable("favorites") || [];
+const allComments = getTable("comments") || [];
       // Map danh mục theo ID để tra cứu nhanh
       const categoryMap = {};
       allCategories.forEach(cat => {

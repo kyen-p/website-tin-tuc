@@ -65,9 +65,12 @@
     /**
      * Tải danh sách bài viết của phóng viên từ LocalStorage
      */
-    function loadReporterArticles(currentUser) {
-      const allArticles = getTable("articles") || [];
-      const allCategories = getTable("categories") || [];
+    async function loadReporterArticles(currentUser) {
+      const response = await fetch('reporter/my-articles.php');
+const result = await response.json();
+const allArticles = result.data || [];
+
+const allCategories = getTable("categories") || [];
 
       // Map danh mục
       categoriesMap = {};
