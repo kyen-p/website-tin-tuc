@@ -511,6 +511,26 @@
   margin: 24px 0;
 }
 
+.body-text hr {
+  border: none;
+  border-top: 1.5px solid var(--line);
+  margin: 32px 0;
+}
+
+.body-text figure.media {
+  margin: 24px 0;
+  width: 100%;
+}
+
+.body-text figure.media iframe,
+.body-text iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  display: block;
+}
+
 .body-text th,
 .body-text td {
   border: 1px solid var(--line);

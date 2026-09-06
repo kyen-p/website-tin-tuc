@@ -14,59 +14,32 @@
 
 async function initHomePage() {
   // 1. Khởi tạo Header và Footer chung
-  initPublicHeader("");
-  initPublicFooter();
+await initPublicHeader("");
+await initPublicFooter();
 
-  // 2. Lấy dữ liệu bài viết đã xuất bản từ backend (PHP + MySQL)
-  //    API public/articles.php đã lọc sẵn status = 'published' và sắp xếp published_at DESC.
-  //    Chưa có API riêng cho "tags" (ngoài phạm vi 4 API Cặp 1 được giao) nên tag cloud
-  //    tạm thời vẫn lấy từ getTable("tags") như trước.
-  const tags = getTable("tags");
+  // 2. Lấy dữ liệu bài viết đã xuất bản và danh sách thẻ từ backend (PHP + MySQL)
+  let tags = [];
   let allArticles = [];
   try {
-    const res = await fetch(resolveApiUrl("public/articles.php"));
-    const result = await res.json();
-    allArticles = result && result.success && Array.isArray(result.data) ? result.data : [];
+    const [articleResult, tagResult] = await Promise.all([
+      fetch(resolveApiUrl("public/articles.php")).then(r => r.json()).catch(() => null),
+      fetch(resolveApiUrl("public/tags.php")).then(r => r.json()).catch(() => null)
+    ]);
+    allArticles = articleResult && articleResult.success && Array.isArray(articleResult.data) ? articleResult.data : [];
+    tags = tagResult && tagResult.success && Array.isArray(tagResult.data) ? tagResult.data : [];
   } catch (error) {
-    console.error("Lỗi khi tải danh sách bài viết từ backend", error);
     allArticles = [];
+    tags = [];
   }
 
-  // Helper lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong a.category)
-  function getCategory(a) {
-    return a.category || { name: "Tin tức", slug: "" };
-  }
-
-  // Helper lấy tác giả của 1 bài viết (đã được API nhúng sẵn trong a.author)
-  function getAuthor(a) {
-    return a.author || { full_name: "Ban Biên Tập", id: "" };
-  }
 
   // Bài viết trả về từ API đã là bài đã xuất bản và có published_at
   const publishedArticles = allArticles.filter((a) => a.published_at);
 
   // Mốc thời gian hệ thống
-  const now = typeof getSystemTime === "function" ? getSystemTime() : new Date("2026-08-14T23:59:59");
+  const now = getSystemTime();
 
-  // Helper chuẩn hóa định dạng số lượt đọc
-  function getViews(a) {
-    return Number(a.view_count || a.views || 0);
-  }
 
-  // Helper render dòng meta chuẩn đồng bộ: Tác giả · Thời gian · Lượt đọc
-  function renderCardMeta(a, author) {
-    const viewsFormatted = formatNumber(getViews(a));
-    const authorUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(author) : `author.html?username=${encodeURIComponent(author.username || author.id)}`;
-    return `
-      <div class="meta">
-        <a href="${authorUrl}">${escapeHtml(author.full_name)}</a>
-        <span class="dot-sep">·</span>
-        <span>${timeAgo(a.published_at)}</span>
-        <span class="dot-sep">·</span>
-        <span>${viewsFormatted} lượt đọc</span>
-      </div>
-    `;
-  }
 
   // ============================================================================
   // A. TÍNH ĐỘ "NÓNG" CHO KHỐI 1 (HERO GRID - 5 BÀI TIÊU ĐIỂM)
@@ -92,8 +65,8 @@ async function initHomePage() {
       const leadArticle = hotArticles[0];
       const subLeadArticle = hotArticles.length > 1 ? hotArticles[1] : null;
 
-      const leadCat = getCategory(leadArticle);
-      const leadAuthor = getAuthor(leadArticle);
+      const leadCat = getArticleCategory(leadArticle);
+      const leadAuthor = getArticleAuthor(leadArticle);
 
       let leftHtml = `
         <div class="hero-grid__main">
@@ -110,8 +83,8 @@ async function initHomePage() {
       `;
 
       if (subLeadArticle) {
-        const subCat = getCategory(subLeadArticle);
-        const subAuthor = getAuthor(subLeadArticle);
+        const subCat = getArticleCategory(subLeadArticle);
+        const subAuthor = getArticleAuthor(subLeadArticle);
         leftHtml += `
           <!-- Bài đinh số 2 (Đồng bộ cỡ chữ và cấu trúc y hệt bài đinh số 1) -->
           <article class="article-card">
@@ -135,8 +108,8 @@ async function initHomePage() {
           <div class="hero-grid__side">
             ${sideArticles
               .map((a) => {
-                const cat = getCategory(a);
-                const author = getAuthor(a);
+                const cat = getArticleCategory(a);
+                const author = getArticleAuthor(a);
                 return `
                   <article class="article-card">
                     <a href="${getArticleDetailUrl(a)}" class="card-link">
@@ -185,8 +158,8 @@ async function initHomePage() {
       latestSection.style.display = "block";
       latestMount.innerHTML = latestArticles
         .map((a) => {
-          const cat = getCategory(a);
-          const author = getAuthor(a);
+          const cat = getArticleCategory(a);
+          const author = getArticleAuthor(a);
           return `
             <article class="article-card">
               <a href="${getArticleDetailUrl(a)}" class="card-link">
@@ -229,8 +202,8 @@ async function initHomePage() {
     } else {
       streamMount.innerHTML = displayList
         .map((a, index) => {
-          const cat = getCategory(a);
-          const author = getAuthor(a);
+          const cat = getArticleCategory(a);
+          const author = getArticleAuthor(a);
           const isLast = index === displayList.length - 1 ? "no-border" : "";
 
           return `
@@ -257,56 +230,11 @@ async function initHomePage() {
   // D. RENDER BẢNG XẾP HẠNG "ĐỌC NHIỀU NHẤT TRONG TUẦN" (TOP 5 TUẦN QUA)
   // Lọc bài viết xuất bản trong vòng 7 ngày và sort theo views cao nhất
   // ============================================================================
-  const rankMount = document.getElementById("rank-mount");
-  const rankHeader = document.querySelector("aside .panel h3");
-  if (rankHeader) {
-    rankHeader.textContent = "Đọc nhiều nhất trong tuần";
-  }
-
-  if (rankMount) {
-    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-    const weeklyArticles = publishedArticles.filter((a) => {
-      if (!a.published_at) return false;
-      const pubDate = new Date(String(a.published_at).replace(" ", "T"));
-      return !isNaN(pubDate.getTime()) && pubDate >= oneWeekAgo && pubDate <= now;
-    });
-
-    const topWeeklyArticles = (weeklyArticles.length > 0 ? weeklyArticles : publishedArticles)
-      .sort((a, b) => getViews(b) - getViews(a))
-      .slice(0, 5);
-
-    if (topWeeklyArticles.length === 0) {
-      rankMount.innerHTML = `<p class="meta">Chưa có bài viết nổi bật trong tuần.</p>`;
-    } else {
-      rankMount.innerHTML = topWeeklyArticles
-        .map((a, index) => {
-          const isLast = index === topWeeklyArticles.length - 1 ? "no-border" : "";
-          const views = getViews(a);
-          return `
-            <div class="rank-item ${isLast}">
-              <div>
-                <h4 class="rank-item__title">
-                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
-                </h4>
-                <div class="meta">${formatNumber(views)} lượt đọc</div>
-              </div>
-            </div>
-          `;
-        })
-        .join("");
-    }
-  }
-
+ renderTopViewsPanel(document.getElementById("rank-mount"), allArticles);
   // ============================================================================
   // E. RENDER CHỦ ĐỀ ĐƯỢC QUAN TÂM (TAG CLOUD)
   // ============================================================================
-  const tagMount = document.getElementById("tag-mount");
-  if (tagMount && tags.length > 0) {
-    tagMount.innerHTML = tags
-      .map((t) => `<a href="search.html?tag=${t.slug}" class="tag-chip">#${escapeHtml(t.name)}</a>`)
-      .join("");
-  }
+  renderTagCloud(document.getElementById("tag-mount"), tags);
 }
 
 if (document.readyState === "loading") {

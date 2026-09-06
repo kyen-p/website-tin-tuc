@@ -7,7 +7,13 @@
 
 const CHANGE_PASSWORD_API = "../../backend/api/user/change-password.php";
 
-function initChangePasswordPage() {
+async function initChangePasswordPage() {
+  if (typeof initPublicHeader === "function") {
+    await initPublicHeader("change-password");
+  }
+  if (typeof initPublicFooter === "function") {
+    await initPublicFooter();
+  }
   // DOM Elements
   const changePasswordForm = document.getElementById("changePasswordForm");
   const currentPasswordInput = document.getElementById("currentPasswordInput");

@@ -30,9 +30,9 @@
 
   window.initPendingArticlesPage = initPendingArticlesPage;
 
-  function initPendingArticlesPage() {
+  async function initPendingArticlesPage() {
     currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
-    loadData();
+    await loadData();
     renderLayout();
     renderHeaderStats();
     renderArticlesList();
@@ -46,38 +46,23 @@
     }
   }
 
-  function fetchTable(tableName) {
-    if (typeof getTable === "function") {
-      const data = getTable(tableName);
-      if (Array.isArray(data) && data.length > 0) return data;
-    }
-    if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA[tableName])) {
-      return MOCK_DATA[tableName];
-    }
-    return [];
-  }
 
-  function saveTableData(tableName, data) {
-    if (typeof saveTable === "function") {
-      saveTable(tableName, data);
-    } else if (typeof setTable === "function") {
-      setTable(tableName, data);
+  async function loadData() {
+    try {
+      const [artRes, catRes] = await Promise.all([
+        fetch(resolveApiUrl("editor/pending-articles.php"), { credentials: "include" }).then(r => r.json()),
+        fetch(resolveApiUrl("public/categories.php")).then(r => r.json())
+      ]);
+      allArticles = artRes.success && Array.isArray(artRes.data) ? artRes.data : [];
+      allCategories = catRes.success && Array.isArray(catRes.data) ? catRes.data : [];
+      allUsers = [];
+      allTags = [];
+      allArticleTags = [];
+    } catch (err) {
+      console.error("Lỗi khi tải dữ liệu duyệt bài:", err);
+      allArticles = [];
+      allCategories = [];
     }
-  }
-
-  function getRefTime() {
-    if (typeof getSystemTime === "function") {
-      return getSystemTime();
-    }
-    return new Date("2026-08-14T23:59:59");
-  }
-
-  function loadData() {
-    allArticles = fetchTable("articles");
-    allCategories = fetchTable("categories");
-    allUsers = fetchTable("users");
-    allTags = fetchTable("tags");
-    allArticleTags = fetchTable("article_tags");
   }
 
   /**
@@ -620,16 +605,10 @@
 
     // Nạp Tags của bài viết do phóng viên gán
     let assignedTagNames = [];
-    if (article.tags_text && Array.isArray(article.tags_text) && article.tags_text.length > 0) {
+    if (article.tags && Array.isArray(article.tags)) {
+      assignedTagNames = article.tags.map(t => (typeof t === "string" ? t : (t.name || ""))).filter(Boolean);
+    } else if (article.tags_text && Array.isArray(article.tags_text) && article.tags_text.length > 0) {
       assignedTagNames = [...article.tags_text];
-    } else {
-      const currentTagIds = allArticleTags
-        .filter((rel) => String(rel.article_id) === String(article.id))
-        .map((rel) => rel.tag_id);
-
-      assignedTagNames = allTags
-        .filter((t) => currentTagIds.includes(t.id))
-        .map((t) => t.name);
     }
 
     modalSelectedTags = assignedTagNames;
@@ -693,78 +672,51 @@
   }
 
   /**
-   * XỬ LÝ: DUYỆT & XUẤT BẢN NGUYÊN BẢN BÀI VIẾT (TẠO TAG MỚI NẾU CÓ)
+   * XỬ LÝ: DUYỆT & XUẤT BẢN NGUYÊN BẢN BÀI VIẾT QUA BACKEND API
    */
-  function handleSaveOrPublish() {
+  async function handleSaveOrPublish() {
     if (!reviewingArticle) return;
-
-    const refNow = getRefTime();
-    const nowIso = refNow.toISOString().replace("T", " ").substring(0, 19);
-
-    let articles = fetchTable("articles");
-    let articleTags = fetchTable("article_tags");
-    let tagsTable = fetchTable("tags");
 
     // Lấy trạng thái Đưa vào Sự kiện đáng chú ý
     const isNotableModal = document.getElementById("modal-is-notable-checkbox");
     const isNotableConfirm = document.getElementById("confirm-is-notable-checkbox");
     const isNotableChecked = Boolean(isNotableConfirm ? isNotableConfirm.checked : (isNotableModal ? isNotableModal.checked : false));
 
-    // 1. Cập nhật trạng thái xuất bản cho bài viết
-    const artIndex = articles.findIndex((a) => String(a.id) === String(reviewingArticle.id));
-    if (artIndex !== -1) {
-      articles[artIndex].status = "published";
-      articles[artIndex].rejection_reason = null;
-      articles[artIndex].is_notable_event = isNotableChecked;
-      articles[artIndex].approved_by = currentUser ? currentUser.id : 7;
-      if (!articles[artIndex].published_at) {
-        articles[artIndex].published_at = nowIso;
+    try {
+      const res = await fetch(resolveApiUrl("editor/pending-articles.php"), {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          article_id: reviewingArticle.id,
+          action: "approve",
+          is_notable_event: isNotableChecked
+        })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        if (typeof showToast === "function") showToast(result.message || "Lỗi khi duyệt bài viết", "error");
+        return;
       }
-      articles[artIndex].updated_at = nowIso;
-    }
 
-    // 2. Xử lý lưu các Tags của bài viết vào bảng Tags hệ thống khi BTV Duyệt bài
-    const tagIdsForThisArticle = [];
-    modalSelectedTags.forEach((tagName) => {
-      let found = tagsTable.find((t) => t.name.toLowerCase() === tagName.toLowerCase());
-      if (!found) {
-        const newTagId = tagsTable.length > 0 ? Math.max(...tagsTable.map((t) => t.id || 0)) + 1 : 1;
-        found = {
-          id: newTagId,
-          name: tagName,
-          slug: typeof slugify === "function" ? slugify(tagName) : tagName.toLowerCase().replace(/\s+/g, "-"),
-          created_at: nowIso,
-        };
-        tagsTable.push(found);
+      const notableMsg = isNotableChecked ? " (Đã đưa vào Sự kiện đáng chú ý)" : "";
+      if (typeof showToast === "function") {
+        showToast(`Đã duyệt và xuất bản bài viết "${reviewingArticle.title}" thành công${notableMsg}!`, "success");
       }
-      tagIdsForThisArticle.push(found.id);
-    });
 
-    // Cập nhật quan hệ article_tags
-    articleTags = articleTags.filter((rel) => String(rel.article_id) !== String(reviewingArticle.id));
-    tagIdsForThisArticle.forEach((tagId) => {
-      articleTags.push({ article_id: reviewingArticle.id, tag_id: tagId });
-    });
-
-    // Lưu toàn bộ dữ liệu vào LocalStorage
-    saveTableData("articles", articles);
-    saveTableData("tags", tagsTable);
-    saveTableData("article_tags", articleTags);
-
-    const notableMsg = isNotableChecked ? " (Đã đưa vào Sự kiện đáng chú ý)" : "";
-    if (typeof showToast === "function") {
-      showToast(`Đã duyệt và xuất bản bài viết "${reviewingArticle.title}" thành công${notableMsg}!`, "success");
+      closeReviewModal();
+      await loadData();
+      renderHeaderStats();
+      renderArticlesList();
+    } catch (err) {
+      if (typeof showToast === "function") showToast("Lỗi kết nối khi duyệt bài viết", "error");
     }
-
-    closeReviewModal();
-    renderHeaderStats();
-    renderArticlesList();
   }
 
   /**
-   * XỬ LÝ: TỪ CHỐI BÀI VIẾT
+   * XỬ LÝ: TỪ CHỐI BÀI VIẾT QUA BACKEND API
    */
-  function handleConfirmReject() {
+  async function handleConfirmReject() {
     if (!reviewingArticle) return;
 
     const reason = document.getElementById("reject-reason-textarea").value.trim();
@@ -773,30 +725,36 @@
       return;
     }
 
-    const refNow = getRefTime();
-    const nowIso = refNow.toISOString().replace("T", " ").substring(0, 19);
+    try {
+      const res = await fetch(resolveApiUrl("editor/pending-articles.php"), {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          article_id: reviewingArticle.id,
+          action: "reject",
+          rejection_reason: reason
+        })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        if (typeof showToast === "function") showToast(result.message || "Lỗi khi từ chối bài viết", "error");
+        return;
+      }
 
-    let articles = fetchTable("articles");
+      document.getElementById("modal-reject-reason").style.display = "none";
+      closeReviewModal();
 
-    // Cập nhật bài viết thành 'rejected'
-    const artIndex = articles.findIndex((a) => String(a.id) === String(reviewingArticle.id));
-    if (artIndex !== -1) {
-      articles[artIndex].status = "rejected";
-      articles[artIndex].rejection_reason = reason;
-      articles[artIndex].updated_at = nowIso;
+      if (typeof showToast === "function") {
+        showToast("Đã từ chối bài viết và gửi lý do cho phóng viên!", "info");
+      }
+
+      await loadData();
+      renderHeaderStats();
+      renderArticlesList();
+    } catch (err) {
+      if (typeof showToast === "function") showToast("Lỗi kết nối khi từ chối bài viết", "error");
     }
-
-    saveTableData("articles", articles);
-
-    document.getElementById("modal-reject-reason").style.display = "none";
-    closeReviewModal();
-
-    if (typeof showToast === "function") {
-      showToast("Đã từ chối bài viết và gửi lý do cho phóng viên!", "info");
-    }
-
-    renderHeaderStats();
-    renderArticlesList();
   }
 
   /**

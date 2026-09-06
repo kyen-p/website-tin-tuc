@@ -7,19 +7,31 @@
  * ==============================================================================
  */
 
-const COMMENTS_API = "../../backend/api/user/comments.php";
-
+const COMMENTS_API = "../../backend/api/user/my-comments.php";
 let activeDeleteCommentId = null;
 
-function initMyCommentsPage() {
+async function initMyCommentsPage() {
   // Header
   if (typeof initPublicHeader === "function") {
-    initPublicHeader("my-comments");
+    await initPublicHeader("my-comments");
   }
 
   // Footer
   if (typeof initPublicFooter === "function") {
-    initPublicFooter();
+    await initPublicFooter();
+  }
+
+    try {
+    const response = await fetch(COMMENTS_API, { credentials: "include" });
+    const result = await response.json();
+    if (result.success) {
+      renderMyCommentsList(result.data || []);
+    } else {
+      renderCommentsApiNotAvailable();
+    }
+  } catch (error) {
+    console.error("Lỗi tải danh sách bình luận:", error);
+    renderCommentsApiNotAvailable();
   }
 
   // Đóng dropdown khi click ra ngoài
@@ -59,7 +71,7 @@ function renderCommentsApiNotAvailable() {
           color: var(--ink-muted);
         "
       >
-        Chức năng lấy danh sách bình luận đang chờ API hỗ trợ.
+        Bạn chưa bình luận bài viết nào.
       </p>
     </div>
   `;
@@ -384,6 +396,8 @@ async function confirmDeleteComment() {
     if (typeof showToast === "function") {
       showToast(result.message || "Xóa bình luận thành công!", "success");
     }
+
+    initMyCommentsPage();
   } catch (error) {
     console.error("Lỗi xóa bình luận:", error);
 

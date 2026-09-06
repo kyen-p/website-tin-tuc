@@ -103,27 +103,26 @@ const WORKSPACE_MENUS = {
 };
 
 /**
- * Tính toán số lượng huy hiệu (Badge Count) từ Mock Data sẵn có trong LocalStorage
+ * Tính toán số lượng huy hiệu (Badge Count)
  */
 function getSidebarBadge(key, currentRole, currentUser) {
-  try {
-    if (typeof getTable !== "function") return null;
+  if (currentRole === "editor" && key === "pending-articles") {
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", resolveApiUrl("editor/pending-articles.php"), false); // false = đồng bộ
+      xhr.withCredentials = true;
+      xhr.send(null);
 
-    if (currentRole === "reporter") {
-      return null;
-    } else if (currentRole === "editor") {
-      // Biên tập: 'Bài chờ duyệt' đếm bài status = pending cần duyệt ngay
-      if (key === "pending-articles") {
-        const articles = getTable("articles") || [];
-        const count = articles.filter(a => a.status === "pending").length;
-        return count > 0 ? { count, type: "warning" } : null;
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const res = JSON.parse(xhr.responseText);
+        const count = res && res.success && Array.isArray(res.data) ? res.data.length : 0;
+        if (count > 0) {
+          return { type: "warning", count: count };
+        }
       }
-      return null;
-    } else if (currentRole === "admin") {
-      return null;
+    } catch (error) {
+      console.error("Lỗi khi lấy số bài chờ duyệt", error);
     }
-  } catch (e) {
-    console.warn("Không thể tải badge count:", e);
   }
   return null;
 }
@@ -163,50 +162,23 @@ function initAdminLayout(currentRole, activeKey) {
   // 1. Kiểm tra xác thực và quyền truy cập (Route Guard)
   let currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
   
-  // Nếu chưa có user đăng nhập, nạp user mặc định của vai trò để xem trước mượt mà
   if (!currentUser) {
-    const users = typeof getTable === "function" ? getTable("users") : (typeof MOCK_DATA !== "undefined" ? MOCK_DATA.users : []);
-    const demoUser = (users && users.find(u => u.role === currentRole)) || (users && users.find(u => u.role === "editor")) || (users && users[0]);
-    if (demoUser) {
-      if (typeof setCurrentUser === "function") {
-        setCurrentUser(demoUser);
-      } else {
-        try { localStorage.setItem("machtin_current_user_id", String(demoUser.id)); } catch (e) {}
-      }
-      currentUser = demoUser;
-    } else {
-      window.location.href = "../public/login.html";
-      return null;
-    }
+    window.location.href = "../public/login.html";
+    return null;
   }
 
-  // Nếu người dùng không có vai trò hợp lệ (hoặc là độc giả thường 'reader/user')
+  // Nếu người dùng không có vai trò hợp lệ
   const validRoles = ["reporter", "editor", "admin"];
   if (!validRoles.includes(currentUser.role)) {
-    // Chuyển sang user editor nếu đang ở workspace editor
-    const users = typeof getTable === "function" ? getTable("users") : [];
-    const demoUser = users.find(u => u.role === currentRole);
-    if (demoUser) {
-      setCurrentUser(demoUser);
-      currentUser = demoUser;
-    } else {
-      window.location.href = "../public/index.html";
-      return null;
-    }
+    window.location.href = "../public/index.html";
+    return null;
   }
 
   // Nếu user cố truy cập vào khu vực không thuộc quyền của mình
   if (currentUser.role !== currentRole && currentUser.role !== "admin") {
-    const users = typeof getTable === "function" ? getTable("users") : [];
-    const demoUser = users.find(u => u.role === currentRole);
-    if (demoUser) {
-      setCurrentUser(demoUser);
-      currentUser = demoUser;
-    } else {
-      const targetFolder = currentUser.role;
-      window.location.href = `../${targetFolder}/dashboard.html`;
-      return null;
-    }
+    const targetFolder = currentUser.role;
+    window.location.href = `../${targetFolder}/dashboard.html`;
+    return null;
   }
 
   const roleConfig = WORKSPACE_MENUS[currentRole] || WORKSPACE_MENUS.reporter;

@@ -4,134 +4,105 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 
-// =========================================================
-// KIỂM TRA QUYỀN TRUY CẬP
-// =========================================================
-
-// Chỉ Reporter mới được tạo bài viết
+// Chỉ Reporter mới được tạo/sửa bài viết
 requireRole(['reporter']);
 
-// Chỉ cho phép phương thức POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    jsonResponse(false, null, "Phương thức không được hỗ trợ");
+$method = $_SERVER['REQUEST_METHOD'];
+$authorId = (int) $_SESSION['user_id'];
+
+// =========================================================
+// GET: Lấy thông tin bài viết cũ để sửa (theo id)
+// =========================================================
+if ($method === 'GET') {
+    $articleId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    if ($articleId <= 0) {
+        jsonResponse(false, null, "Thiếu id bài viết");
+    }
+
+    try {
+        $stmt = $pdo->prepare("
+            SELECT a.*, c.name AS category_name
+            FROM articles a
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.id = ? AND a.author_id = ?
+            LIMIT 1
+        ");
+        $stmt->execute([$articleId, $authorId]);
+        $article = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$article) {
+            jsonResponse(false, null, "Không tìm thấy bài viết hoặc bạn không có quyền");
+        }
+
+        // Lấy tags
+        $tagStmt = $pdo->prepare("
+            SELECT t.id, t.name, t.slug
+            FROM article_tags at
+            JOIN tags t ON at.tag_id = t.id
+            WHERE at.article_id = ?
+        ");
+        $tagStmt->execute([$articleId]);
+        $article['tags'] = $tagStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        jsonResponse(true, $article);
+    } catch (PDOException $e) {
+        jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
+    }
 }
 
 // =========================================================
-// ĐỌC DỮ LIỆU TỪ FRONTEND
+// POST hoặc PUT: Lưu nháp hoặc Gửi duyệt (Tạo mới hoặc Sửa)
 // =========================================================
+if ($method !== 'POST' && $method !== 'PUT') {
+    jsonResponse(false, null, "Phương thức không được hỗ trợ");
+}
 
-// Frontend gửi dữ liệu JSON
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!is_array($input)) {
     jsonResponse(false, null, "Dữ liệu gửi lên không hợp lệ");
 }
 
-// =========================================================
-// LẤY DỮ LIỆU
-// =========================================================
-
-$title = isset($input['title'])
-    ? trim($input['title'])
-    : '';
-
-$shortDescription = isset($input['short_description'])
-    ? trim($input['short_description'])
-    : '';
-
-$content = isset($input['content'])
-    ? trim($input['content'])
-    : '';
-
-$coverImage = isset($input['cover_image'])
-    ? trim($input['cover_image'])
-    : '';
-
-$categoryId = isset($input['category_id'])
-    ? (int) $input['category_id']
-    : 0;
-
-$status = isset($input['status'])
-    ? trim($input['status'])
-    : 'draft';
-
-$tags = isset($input['tags']) && is_array($input['tags'])
-    ? $input['tags']
-    : [];
-
-// ID của Reporter đang đăng nhập
-$authorId = (int) $_SESSION['user_id'];
-
-
-// =========================================================
-// KIỂM TRA STATUS
-// =========================================================
+$targetId = isset($input['id']) && (int)$input['id'] > 0 ? (int)$input['id'] : 0;
+$title = isset($input['title']) ? trim($input['title']) : '';
+$shortDescription = isset($input['short_description']) ? trim($input['short_description']) : '';
+$content = isset($input['content']) ? trim($input['content']) : '';
+$coverImage = isset($input['cover_image']) ? trim($input['cover_image']) : '';
+$categoryId = isset($input['category_id']) ? (int) $input['category_id'] : 0;
+$status = isset($input['status']) ? trim($input['status']) : 'draft';
+$tags = isset($input['tags']) && is_array($input['tags']) ? $input['tags'] : [];
 
 $allowedStatuses = ['draft', 'pending'];
-
 if (!in_array($status, $allowedStatuses, true)) {
     jsonResponse(false, null, "Trạng thái bài viết không hợp lệ");
 }
 
-
-// =========================================================
-// KIỂM TRA DỮ LIỆU THEO TỪNG TRẠNG THÁI
-// =========================================================
-
-// ---------------------------------------------------------
-// LƯU NHÁP
-// ---------------------------------------------------------
-// Draft có thể chưa hoàn chỉnh.
-// Chỉ yêu cầu tiêu đề để xác định bài viết.
-
 if ($status === 'draft') {
-
     if ($title === '') {
         jsonResponse(false, null, "Tiêu đề không được để trống khi lưu bản nháp");
     }
 }
 
-
-// ---------------------------------------------------------
-// GỬI CHỜ DUYỆT
-// ---------------------------------------------------------
-// Pending phải có đầy đủ thông tin cần thiết.
-
 if ($status === 'pending') {
-
     if ($title === '') {
         jsonResponse(false, null, "Tiêu đề không được để trống");
     }
-
     if ($shortDescription === '') {
         jsonResponse(false, null, "Mô tả ngắn không được để trống khi gửi duyệt");
     }
-
     if ($content === '') {
         jsonResponse(false, null, "Nội dung bài viết không được để trống khi gửi duyệt");
     }
-
     if ($categoryId <= 0) {
         jsonResponse(false, null, "Vui lòng chọn chuyên mục trước khi gửi duyệt");
     }
 }
 
-
-// =========================================================
-// HÀM TẠO SLUG
-// =========================================================
-
 function createSlug($text)
 {
     $text = trim($text);
-
-    // Chuyển về chữ thường
     $text = mb_strtolower($text, 'UTF-8');
-
-    // Chuyển đ thành d
     $text = str_replace('đ', 'd', $text);
-
-    // Chuyển tiếng Việt có dấu thành không dấu
     $text = preg_replace(
         [
             '/[áàảãạăắằẳẵặâấầẩẫậ]/u',
@@ -141,213 +112,126 @@ function createSlug($text)
             '/[úùủũụưứừửữự]/u',
             '/[ýỳỷỹỵ]/u'
         ],
-        [
-            'a',
-            'e',
-            'i',
-            'o',
-            'u',
-            'y'
-        ],
+        ['a', 'e', 'i', 'o', 'u', 'y'],
         $text
     );
-
-    // Các ký tự không phải chữ hoặc số thành dấu -
     $text = preg_replace('/[^a-z0-9]+/u', '-', $text);
-
-    // Xóa dấu - ở đầu và cuối
-    $text = trim($text, '-');
-
-    return $text;
+    return trim($text, '-');
 }
 
-
-// =========================================================
-// LƯU BÀI VIẾT
-// =========================================================
-
 try {
-
-    // =====================================================
-    // KIỂM TRA CATEGORY
-    // =====================================================
-    // Chỉ kiểm tra nếu Reporter đã chọn category.
-    // Draft có thể chưa chọn category.
-
     if ($categoryId > 0) {
-
-        $stmt = $pdo->prepare("
-            SELECT id
-            FROM categories
-            WHERE id = ?
-            LIMIT 1
-        ");
-
+        $stmt = $pdo->prepare("SELECT id FROM categories WHERE id = ? LIMIT 1");
         $stmt->execute([$categoryId]);
-
         if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
             jsonResponse(false, null, "Chuyên mục không tồn tại");
         }
     }
 
-
-    // =====================================================
-    // TẠO SLUG KHÔNG TRÙNG
-    // =====================================================
-
-    $baseSlug = createSlug($title);
-
-    if ($baseSlug === '') {
-        jsonResponse(false, null, "Không thể tạo slug từ tiêu đề");
-    }
-
-    $slug = $baseSlug;
-    $counter = 1;
-
-    while (true) {
-
-        $stmt = $pdo->prepare("
-            SELECT id
-            FROM articles
-            WHERE slug = ?
-            LIMIT 1
-        ");
-
-        $stmt->execute([$slug]);
-
-        if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
-            break;
-        }
-
-        $slug = $baseSlug . '-' . $counter;
-        $counter++;
-    }
-
-
-    // =====================================================
-    // BẮT ĐẦU TRANSACTION
-    // =====================================================
-
     $pdo->beginTransaction();
 
+    if ($targetId > 0) {
+        // Cập nhật bài viết có sẵn của tác giả
+        $checkStmt = $pdo->prepare("SELECT id, slug, status FROM articles WHERE id = ? AND author_id = ?");
+        $checkStmt->execute([$targetId, $authorId]);
+        $existing = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
-    // =====================================================
-    // THÊM BÀI VIẾT
-    // =====================================================
-
-    $stmt = $pdo->prepare("
-        INSERT INTO articles (
-            title,
-            slug,
-            short_description,
-            content,
-            cover_image,
-            author_id,
-            category_id,
-            status,
-            created_at,
-            updated_at
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-    ");
-
-    $stmt->execute([
-        $title,
-        $slug,
-
-        // Draft có thể để trống
-        $shortDescription !== ''
-            ? $shortDescription
-            : null,
-
-        // Draft có thể để trống
-        $content !== ''
-            ? $content
-            : null,
-
-        // Ảnh bìa có thể để trống
-        $coverImage !== ''
-            ? $coverImage
-            : null,
-
-        $authorId,
-
-        // Nếu chưa chọn category thì lưu NULL
-        $categoryId > 0
-            ? $categoryId
-            : null,
-
-        $status
-    ]);
-
-    // Lấy ID bài viết vừa tạo
-    $articleId = (int) $pdo->lastInsertId();
-
-
-    // =====================================================
-    // XỬ LÝ TAGS
-    // =====================================================
-
-    // Loại bỏ tag trùng nhau
-    $uniqueTags = array_unique($tags);
-
-    foreach ($uniqueTags as $tagId) {
-
-        $tagId = (int) $tagId;
-
-        // Bỏ qua giá trị không hợp lệ
-        if ($tagId <= 0) {
-            continue;
-        }
-
-        // Kiểm tra tag có tồn tại
-        $stmt = $pdo->prepare("
-            SELECT id
-            FROM tags
-            WHERE id = ?
-            LIMIT 1
-        ");
-
-        $stmt->execute([$tagId]);
-
-        // Nếu tag không tồn tại thì báo lỗi
-        if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
-
+        if (!$existing) {
             $pdo->rollBack();
-
-            jsonResponse(
-                false,
-                null,
-                "Tag có ID " . $tagId . " không tồn tại"
-            );
+            jsonResponse(false, null, "Không tìm thấy bài viết để cập nhật");
         }
 
-        // Gắn tag vào bài viết
-        $stmt = $pdo->prepare("
-            INSERT INTO article_tags (
-                article_id,
-                tag_id
-            )
-            VALUES (?, ?)
-        ");
+        $slug = $existing['slug'];
+        if (empty($slug)) {
+            $slug = createSlug($title) . '-' . $targetId;
+        }
 
+        $stmt = $pdo->prepare("
+            UPDATE articles SET
+                title = ?,
+                short_description = ?,
+                content = ?,
+                cover_image = ?,
+                category_id = ?,
+                status = ?,
+                updated_at = NOW()
+            WHERE id = ? AND author_id = ?
+        ");
         $stmt->execute([
-            $articleId,
-            $tagId
+            $title,
+            $shortDescription !== '' ? $shortDescription : null,
+            $content !== '' ? $content : null,
+            $coverImage !== '' ? $coverImage : null,
+            $categoryId > 0 ? $categoryId : null,
+            $status,
+            $targetId,
+            $authorId
         ]);
+
+        $articleId = $targetId;
+
+        // Xóa tags cũ để gắn lại
+        $pdo->prepare("DELETE FROM article_tags WHERE article_id = ?")->execute([$articleId]);
+    } else {
+        // Tạo mới bài viết
+        $baseSlug = createSlug($title);
+        if ($baseSlug === '') {
+            $baseSlug = 'bai-viet';
+        }
+        $slug = $baseSlug;
+        $counter = 1;
+        while (true) {
+            $stmt = $pdo->prepare("SELECT id FROM articles WHERE slug = ? LIMIT 1");
+            $stmt->execute([$slug]);
+            if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+                break;
+            }
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $stmt = $pdo->prepare("
+            INSERT INTO articles (
+                title, slug, short_description, content, cover_image,
+                author_id, category_id, status, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+        ");
+        $stmt->execute([
+            $title,
+            $slug,
+            $shortDescription !== '' ? $shortDescription : null,
+            $content !== '' ? $content : null,
+            $coverImage !== '' ? $coverImage : null,
+            $authorId,
+            $categoryId > 0 ? $categoryId : null,
+            $status
+        ]);
+        $articleId = (int)$pdo->lastInsertId();
     }
 
+    // Xử lý Tags
+    $uniqueTagNames = array_unique(array_map('trim', $tags));
+    foreach ($uniqueTagNames as $tagName) {
+        if ($tagName === '') continue;
 
-    // =====================================================
-    // HOÀN TẤT TRANSACTION
-    // =====================================================
+        $stmt = $pdo->prepare("SELECT id FROM tags WHERE LOWER(name) = LOWER(?) LIMIT 1");
+        $stmt->execute([$tagName]);
+        $existingTag = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existingTag) {
+            $tagId = (int)$existingTag['id'];
+        } else {
+            $tagSlug = createSlug($tagName);
+            $insertTag = $pdo->prepare("INSERT INTO tags (name, slug, created_at) VALUES (?, ?, NOW())");
+            $insertTag->execute([$tagName, $tagSlug]);
+            $tagId = (int)$pdo->lastInsertId();
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO article_tags (article_id, tag_id) VALUES (?, ?)");
+        $stmt->execute([$articleId, $tagId]);
+    }
 
     $pdo->commit();
-
-
-    // =====================================================
-    // TRẢ KẾT QUẢ
-    // =====================================================
 
     jsonResponse(
         true,
@@ -363,15 +247,8 @@ try {
     );
 
 } catch (PDOException $e) {
-
-    // Nếu lỗi khi đang transaction thì hoàn tác
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-
-    jsonResponse(
-        false,
-        null,
-        "Lỗi hệ thống, vui lòng thử lại sau"
-    );
+    jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
 }

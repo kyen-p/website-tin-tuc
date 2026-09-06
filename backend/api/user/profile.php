@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
+require_once __DIR__ . '/../../helpers/file.php';
 
 // Yêu cầu người dùng phải đăng nhập
 requireLogin();
@@ -82,6 +83,15 @@ try {
             jsonResponse(false, null, "Họ tên không được để trống");
         }
 
+        // Nếu người dùng đổi ảnh đại diện mới HOẶC xóa ảnh đại diện -> Xóa ảnh đại diện cũ khỏi máy chủ
+        $stmtOld = $pdo->prepare("SELECT avatar FROM users WHERE id = ?");
+        $stmtOld->execute([$userId]);
+        $currentAvatar = $stmtOld->fetchColumn();
+
+        if ($currentAvatar && $currentAvatar !== $avatar) {
+            deleteUploadedFile($currentAvatar);
+        }
+
         // Cập nhật đúng user đang đăng nhập
         $stmt = $pdo->prepare("
             UPDATE users
@@ -133,5 +143,5 @@ try {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 
 } catch (PDOException $e) {
-    jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");
+    jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
 }

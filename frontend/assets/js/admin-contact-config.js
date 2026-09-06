@@ -46,7 +46,7 @@
    */
   async function loadSettings() {
     try {
-      const res = await fetch('/website-tin-tuc/backend/api/admin/contact-config.php');
+      const res = await fetch(resolveApiUrl('admin/contact-config.php'));
       const result = await res.json();
       const rawSettings = result.data;
 
@@ -297,7 +297,7 @@
     const yt = document.getElementById("cfgYoutube")?.value.trim() || currentSettings.social_links.youtube;
     const tt = document.getElementById("cfgTiktok")?.value.trim() || currentSettings.social_links.tiktok;
 
-    fetch('/website-tin-tuc/backend/api/admin/contact-config.php', {
+    fetch(resolveApiUrl('admin/contact-config.php'), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

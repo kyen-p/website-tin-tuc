@@ -18,47 +18,32 @@ async function initCategoryPage() {
   let currentSort = "newest";
 
   // 1. Khởi tạo Header và Footer
-  if (typeof initPublicHeader === "function") {
-    initPublicHeader(categorySlug);
-  }
-  if (typeof initPublicFooter === "function") {
-    initPublicFooter();
-  }
+if (typeof initPublicHeader === "function") {
+  await initPublicHeader(categorySlug);
+}
+if (typeof initPublicFooter === "function") {
+  await initPublicFooter();
+}
 
-  // 2. Lấy dữ liệu từ backend (PHP + MySQL) cho bài viết & chuyên mục.
-  //    Chưa có API riêng cho "tags"/"article_tags" (ngoài phạm vi 4 API Cặp 1 được giao)
-  //    nên tag cloud/lọc theo tag tạm thời vẫn lấy từ getTable() như trước.
-  const tags = (typeof getTable === "function" ? getTable("tags") : []) || [];
-  const articleTags = (typeof getTable === "function" ? getTable("article_tags") : []) || [];
-
+  // 2. Lấy dữ liệu từ backend (PHP + MySQL) cho bài viết, chuyên mục & thẻ tag
+  let tags = [];
   let allArticles = [];
   let categories = [];
   try {
-    const [articlesRes, categoriesRes] = await Promise.all([
+    const [articlesRes, categoriesRes, tagsRes] = await Promise.all([
       fetch(resolveApiUrl("public/articles.php")).then((r) => r.json()),
       fetch(resolveApiUrl("public/categories.php")).then((r) => r.json()),
+      fetch(resolveApiUrl("public/tags.php")).then((r) => r.json()),
     ]);
     allArticles = articlesRes && articlesRes.success && Array.isArray(articlesRes.data) ? articlesRes.data : [];
     categories = categoriesRes && categoriesRes.success && Array.isArray(categoriesRes.data) ? categoriesRes.data : [];
+    tags = tagsRes && tagsRes.success && Array.isArray(tagsRes.data) ? tagsRes.data : [];
   } catch (error) {
     console.error("Lỗi khi tải dữ liệu chuyên mục từ backend", error);
   }
 
   // Tìm chuyên mục hiện tại
   const currentCategory = categorySlug ? categories.find((c) => c.slug === categorySlug) || null : null;
-
-  // Helpers
-  function getCategory(catId) {
-    return categories.find((c) => c.id === catId) || { name: "Tin tức", slug: "" };
-  }
-
-  function getAuthor(article) {
-    return (article && article.author) || { full_name: "Ban Biên Tập", id: "" };
-  }
-
-  function getViews(article) {
-    return Number(article.view_count || article.views || 0);
-  }
 
   // ============================================================================
   // A. RENDER TIÊU ĐỀ CHUYÊN MỤC, BREADCRUMB & DOCUMENT.TITLE ĐỘNG
@@ -101,15 +86,14 @@ async function initCategoryPage() {
   if (tagChipsMount) {
     let relevantTags = tags;
     if (currentCategory) {
-      const catArticleIds = allArticles
-        .filter((a) => a.category_id === currentCategory.id && a.status === "published")
-        .map((a) => a.id);
-      
-      const relevantTagIds = articleTags
-        .filter((at) => catArticleIds.includes(at.article_id))
-        .map((at) => at.tag_id);
-
-      relevantTags = tags.filter((t) => relevantTagIds.includes(t.id));
+      const catArticles = allArticles.filter((a) => a.category_id === currentCategory.id && a.status === "published");
+      const relevantTagSet = new Set();
+      catArticles.forEach(a => {
+        if (Array.isArray(a.tags)) {
+          a.tags.forEach(t => relevantTagSet.add(t.slug));
+        }
+      });
+      relevantTags = tags.filter((t) => relevantTagSet.has(t.slug));
     }
 
     let chipsHtml = `
@@ -156,7 +140,7 @@ async function initCategoryPage() {
 
     // Lọc theo chế độ Filter
     if (filterType === "latest") {
-      const now = typeof getSystemTime === "function" ? getSystemTime() : new Date("2026-08-14T23:59:59");
+      const now = getSystemTime();
       const twoDaysMs = 48 * 60 * 60 * 1000;
       const cutoffTime = now.getTime() - twoDaysMs;
 
@@ -172,18 +156,12 @@ async function initCategoryPage() {
 
     // Lọc theo tag
     if (currentTagSlug) {
-      const selectedTag = tags.find((t) => t.slug === currentTagSlug);
-      if (selectedTag) {
-        const articleIdsWithTag = articleTags
-          .filter((at) => at.tag_id === selectedTag.id)
-          .map((at) => at.article_id);
-        filtered = filtered.filter((a) => articleIdsWithTag.includes(a.id));
-      }
+      filtered = filtered.filter((a) => Array.isArray(a.tags) && a.tags.some(t => t.slug === currentTagSlug));
     }
 
     // Sắp xếp
     if (currentSort === "views") {
-      filtered.sort((a, b) => getViews(b) - getViews(a));
+      filtered.sort((a, b) => getArticleViews(b) - getArticleViews(a));
     } else {
       filtered.sort((a, b) => new Date(String(b.published_at || b.created_at).replace(" ", "T")) - new Date(String(a.published_at || a.created_at).replace(" ", "T")));
     }
@@ -209,8 +187,8 @@ async function initCategoryPage() {
 
     // Bài tiêu điểm (bài đầu tiên)
     const featuredArticle = filtered[0];
-    const featCat = getCategory(featuredArticle.category_id);
-    const featAuthor = getAuthor(featuredArticle);
+    const featCat = getArticleCategory(featuredArticle);
+    const featAuthor = getArticleAuthor(featuredArticle);
 
     if (featuredMount) {
       featuredMount.style.display = "block";
@@ -223,13 +201,7 @@ async function initCategoryPage() {
                 <span class="eyebrow is-crimson">${escapeHtml(featCat.name)}</span>
                 <h2 class="headline-lg" style="margin-top: 8px;">${escapeHtml(featuredArticle.title)}</h2>
                 <p class="dek">${escapeHtml(featuredArticle.short_description || featuredArticle.summary || "")}</p>
-                <div class="meta">
-                  <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(featAuthor) : 'author.html?username=' + encodeURIComponent(featAuthor.username || featAuthor.id)}">${escapeHtml(featAuthor.full_name)}</a>
-                  <span class="dot-sep">·</span>
-                  <span>${formatDate(featuredArticle.published_at || featuredArticle.created_at)}</span>
-                  <span class="dot-sep">·</span>
-                  <span>${formatNumber(getViews(featuredArticle))} lượt đọc</span>
-                </div>
+                ${renderCardMeta(featuredArticle, featAuthor)}
               </div>
             </div>
           </a>
@@ -245,8 +217,8 @@ async function initCategoryPage() {
       } else {
         gridMount.innerHTML = remainingArticles
           .map((a) => {
-            const cat = getCategory(a.category_id);
-            const author = getAuthor(a);
+            const cat = getArticleCategory(a);
+            const author = getArticleAuthor(a);
             return `
               <article class="article-card" style="padding-bottom: 20px;">
                 <a href="${getArticleDetailUrl(a)}" class="card-link" style="display: block;">
@@ -255,13 +227,7 @@ async function initCategoryPage() {
                   <h3 class="headline-md" style="margin-top: 6px;">${escapeHtml(a.title)}</h3>
                 </a>
                 <p class="dek" style="font-size: 13.5px; margin: 4px 0 10px;">${escapeHtml(a.short_description || a.summary || "")}</p>
-                <div class="meta">
-                  <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author) : 'author.html?username=' + encodeURIComponent(author.username || author.id)}">${escapeHtml(author.full_name)}</a>
-                  <span class="dot-sep">·</span>
-                  <span>${formatDate(a.published_at || a.created_at)}</span>
-                  <span class="dot-sep">·</span>
-                  <span>${formatNumber(getViews(a))} lượt đọc</span>
-                </div>
+                ${renderCardMeta(a, author)}
               </article>
             `;
           })
@@ -289,45 +255,64 @@ async function initCategoryPage() {
   // ============================================================================
   // E. RENDER SIDEBAR ĐỌC NHIỀU NHẤT TRONG TUẦN & CHỦ ĐỀ ĐANG QUAN TÂM
   // ============================================================================
-  const rankMount = document.getElementById("category-rank-mount");
-  if (rankMount) {
-    const publishedArticles = allArticles.filter((a) => a.status === "published");
-    const topRanked = [...publishedArticles]
-      .sort((a, b) => getViews(b) - getViews(a))
-      .slice(0, 5);
+ renderTopViewsPanel(document.getElementById("category-rank-mount"), allArticles);
 
-    if (topRanked.length === 0) {
-      rankMount.innerHTML = `<p class="meta">Chưa có bài viết nổi bật.</p>`;
-    } else {
-      rankMount.innerHTML = topRanked
-        .map((a, index) => {
-          const isLast = index === topRanked.length - 1 ? "no-border" : "";
-          return `
-            <div class="rank-item ${isLast}">
-              <div>
-                <h4 class="rank-item__title">
-                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
-                </h4>
-                <div class="meta">${formatNumber(getViews(a))} lượt đọc</div>
-              </div>
-            </div>
-          `;
-        })
-        .join("");
-    }
-  }
+ /**
+ * Lấy tác giả của 1 bài viết (đã được API nhúng sẵn trong article.author)
+ */
+function getArticleAuthor(article) {
+  return (article && article.author) || { full_name: "Ban Biên Tập", id: "" };
+}
+window.getArticleAuthor = getArticleAuthor;
+
+/**
+ * Lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong article.category)
+ */
+function getArticleCategory(article) {
+  return (article && article.category) || { name: "Tin tức", slug: "" };
+}
+window.getArticleCategory = getArticleCategory;
+
+/**
+ * Chuẩn hóa số lượt xem của 1 bài viết
+ */
+function getArticleViews(article) {
+  return Number(article.view_count || article.views || 0);
+}
+window.getArticleViews = getArticleViews;
+
+/**
+ * Render dòng meta chuẩn: Tác giả · Thời gian · Lượt đọc
+ */
+function renderCardMeta(article, author) {
+  const authorObj = author || getArticleAuthor(article);
+  const viewsFormatted = formatNumber(getArticleViews(article));
+  const authorUrl = getAuthorProfileUrl(authorObj);
+  return `
+    <div class="meta">
+      <a href="${authorUrl}">${escapeHtml(authorObj.full_name)}</a>
+      <span class="dot-sep">·</span>
+      <span>${formatDate(article.published_at || article.created_at)}</span>
+      <span class="dot-sep">·</span>
+      <span>${viewsFormatted} lượt đọc</span>
+    </div>
+  `;
+}
+window.renderCardMeta = renderCardMeta;
+
+/**
+ * Render Tag Cloud dùng chung (có thể highlight tag đang chọn)
+ */
+function renderTagCloud(mountEl, tags, activeSlug = "") {
+  if (!mountEl) return;
+  mountEl.innerHTML = tags
+    .map((t) => `<a href="search.html?tag=${t.slug}" class="tag-chip ${activeSlug === t.slug ? 'tag-chip--active' : ''}" data-slug="${t.slug}">#${escapeHtml(t.name)}</a>`)
+    .join("");
+}
+window.renderTagCloud = renderTagCloud;
 
   // Render Từ khóa nổi bật (Tag Cloud) ở Sidebar - Điều hướng sang search.html để hiển thị toàn bộ bài viết có tag đó
-  const sidebarTagMount = document.getElementById("category-tag-cloud-mount");
-  if (sidebarTagMount && tags.length > 0) {
-    sidebarTagMount.innerHTML = tags
-      .map((t) => `
-        <a href="search.html?tag=${t.slug}" class="tag-chip">
-          #${escapeHtml(t.name)}
-        </a>
-      `)
-      .join("");
-  }
+   renderTagCloud(document.getElementById("category-tag-cloud-mount"), tags, currentTagSlug);
 
   // Render lần đầu
   renderArticlesList();

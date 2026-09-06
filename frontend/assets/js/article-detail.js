@@ -3,13 +3,6 @@ async function initArticleDetailPage() {
   const articleId = Number(urlParams.get("id")) || 0;
   const articleSlug = (urlParams.get("slug") || "").trim();
 
-  // Chưa có API riêng cho "tags"/"article_tags"/"comments"/"favorites" (ngoài phạm vi
-  // 4 API Cặp 1 được giao) nên các phần này tạm thời vẫn lấy từ getTable() như trước.
-  const tags = getTable("tags");
-  const articleTags = getTable("article_tags");
-  let comments = getTable("comments");
-  let favorites = getTable("favorites");
-
   // 1. Lấy bài viết từ backend (PHP + MySQL). Gọi đúng 1 lần cho mỗi lần tải trang -
   //    khớp với yêu cầu "mỗi lần gọi API phải tăng view_count" của public/article-detail.php.
   let article = null;
@@ -25,8 +18,8 @@ async function initArticleDetailPage() {
   }
 
   const catSlug = article ? (article.category && article.category.slug) || "" : "";
-  initPublicHeader(catSlug);
-  initPublicFooter();
+  await initPublicHeader(catSlug);
+  await initPublicFooter();
 
   const container = document.getElementById("article-detail-container");
   const notFound = document.getElementById("article-not-found");
@@ -44,11 +37,10 @@ async function initArticleDetailPage() {
 
   const currentUser = getCurrentUser();
 
-  const category = article.category || { name: "Thời sự", slug: "thoi-su" };
-  const author = article.author || { full_name: "Ban Biên Tập", bio: "Đội ngũ phóng viên Mạch Tin", id: 1 };
+  const category = getArticleCategory(article);
+  const author = { ...getArticleAuthor(article), bio: (article.author && article.author.bio) || "Đội ngũ phóng viên Mạch Tin" };
 
-  const currentTagIds = articleTags.filter((at) => at.article_id === article.id).map((at) => at.tag_id);
-  const currentTags = tags.filter((t) => currentTagIds.includes(t.id));
+  const currentTags = Array.isArray(article.tags) ? article.tags : [];
 
   document.getElementById("breadcrumb-category").textContent = category.name;
   document.getElementById("breadcrumb-category").href = `category.html?slug=${category.slug}`;
@@ -96,7 +88,19 @@ async function initArticleDetailPage() {
       // Nếu nội dung chứa bất kỳ thẻ HTML nào (CKEditor sinh ra <p>, <figure>, <img>, <h3>,...)
       const hasHtmlTags = /<[a-z][\s\S]*>/i.test(rawContent);
       if (hasHtmlTags) {
-        contentContainer.innerHTML = rawContent;
+        // Tự động chuyển đổi thẻ <oembed url="..."> thành iframe video đáp ứng (YouTube, Vimeo)
+        let processedHtml = rawContent.replace(/<oembed\s+url=["']([^"']+)["']\s*><\/oembed>/gi, (match, url) => {
+          const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/i);
+          if (ytMatch) {
+            return `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:24px 0;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);"><iframe src="https://www.youtube.com/embed/${ytMatch[1]}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+          }
+          const vimeoMatch = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)/i);
+          if (vimeoMatch) {
+            return `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:24px 0;border-radius:8px;"><iframe src="https://player.vimeo.com/video/${vimeoMatch[1]}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe></div>`;
+          }
+          return match;
+        });
+        contentContainer.innerHTML = processedHtml;
       } else {
         contentContainer.innerHTML = rawContent
           .split(/\n\n+/)
@@ -122,7 +126,17 @@ async function initArticleDetailPage() {
 
   const sidebarTagsMount = document.getElementById("article-sidebar-tags");
   if (sidebarTagsMount) {
-    const displayTags = currentTags.length > 0 ? currentTags : tags.slice(0, 6);
+    let displayTags = currentTags.slice(0, 6);
+    if (displayTags.length === 0) {
+      try {
+        const tagRes = await fetch(resolveApiUrl("public/tags.php")).then(r => r.json());
+        if (tagRes.success && Array.isArray(tagRes.data)) {
+          displayTags = tagRes.data.slice(0, 6);
+        }
+      } catch (e) {
+        displayTags = [];
+      }
+    }
     sidebarTagsMount.innerHTML = displayTags
       .map((t) => `<a href="search.html?tag=${t.slug}" class="tag-chip">#${escapeHtml(t.name)}</a>`)
       .join("");
@@ -146,9 +160,20 @@ async function initArticleDetailPage() {
   }
 
   const favoriteBtn = document.getElementById("btn-favorite");
-  function checkFavoriteState() {
+  let userFavorites = [];
+
+  async function checkFavoriteState() {
     if (!currentUser || !favoriteBtn) return;
-    const isFav = favorites.some((f) => f.user_id === currentUser.id && f.article_id === article.id);
+    try {
+      const res = await fetch(resolveApiUrl("user/favorites.php"), { credentials: "include" });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        userFavorites = data.data;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    const isFav = userFavorites.some((f) => Number(f.id || f.article_id) === Number(article.id));
     if (isFav) {
       favoriteBtn.classList.add("is-active");
       favoriteBtn.title = "Đã lưu vào danh sách yêu thích";
@@ -157,43 +182,54 @@ async function initArticleDetailPage() {
       favoriteBtn.title = "Lưu bài viết yêu thích";
     }
   }
-  checkFavoriteState();
+  if (currentUser) {
+    checkFavoriteState();
+  }
 
   if (favoriteBtn) {
-    favoriteBtn.addEventListener("click", function () {
+    favoriteBtn.addEventListener("click", async function () {
       if (!currentUser) {
         showToast("Vui lòng đăng nhập để lưu bài viết yêu thích!", "warning");
         return;
       }
 
-      favorites = getTable("favorites");
-      const index = favorites.findIndex((f) => f.user_id === currentUser.id && f.article_id === article.id);
-      if (index >= 0) {
-        favorites.splice(index, 1);
-        saveTable("favorites", favorites);
-        checkFavoriteState();
-        showToast("Đã bỏ bài viết khỏi danh sách yêu thích.", "info");
-      } else {
-        favorites.push({
-          id: Date.now(),
-          user_id: currentUser.id,
-          article_id: article.id,
-          created_at: new Date().toISOString().replace("T", " ").substring(0, 19)
-        });
-        saveTable("favorites", favorites);
-        checkFavoriteState();
-        showToast("Đã lưu bài viết vào mục Yêu thích!", "success");
-
-        // Bắn thông báo cho tác giả bài viết (nếu không phải tự thích bài của mình)
-        if (Number(article.author_id) !== Number(currentUser.id)) {
-          createNotification({
-            user_id: article.author_id,
-            type: "article_liked",
-            title: "Lượt thích bài viết",
-            message: `${currentUser.full_name || "Một độc giả"} đã thêm bài viết '${article.title}' vào danh sách yêu thích.`,
-            link: typeof getArticleDetailUrl === "function" ? getArticleDetailUrl(article, "../public/") : `../public/article-detail.html?slug=${encodeURIComponent(article.slug || article.id)}`
+      const isFav = userFavorites.some((f) => Number(f.id || f.article_id) === Number(article.id));
+      try {
+        if (isFav) {
+          const res = await fetch(resolveApiUrl("user/favorites.php"), {
+            method: "DELETE",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ article_id: article.id })
           });
+          const data = await res.json();
+          if (data.success) {
+            userFavorites = userFavorites.filter((f) => Number(f.id || f.article_id) !== Number(article.id));
+            favoriteBtn.classList.remove("is-active");
+            favoriteBtn.title = "Lưu bài viết yêu thích";
+            showToast("Đã bỏ bài viết khỏi danh sách yêu thích.", "info");
+          } else {
+            showToast(data.message || "Không thể bỏ yêu thích", "error");
+          }
+        } else {
+          const res = await fetch(resolveApiUrl("user/favorites.php"), {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ article_id: article.id })
+          });
+          const data = await res.json();
+          if (data.success) {
+            userFavorites.push({ id: article.id, article_id: article.id });
+            favoriteBtn.classList.add("is-active");
+            favoriteBtn.title = "Đã lưu vào danh sách yêu thích";
+            showToast("Đã lưu bài viết vào mục Yêu thích!", "success");
+          } else {
+            showToast(data.message || "Không thể lưu yêu thích", "error");
+          }
         }
+      } catch (err) {
+        showToast("Lỗi kết nối máy chủ!", "error");
       }
     });
   }
@@ -231,11 +267,17 @@ async function initArticleDetailPage() {
     if (commentLoginPrompt) commentLoginPrompt.style.display = "block";
   }
 
-  function renderComments() {
-    comments = getTable("comments");
-    const articleComments = comments
-      .filter((c) => c.article_id === article.id && !c.is_deleted)
-      .sort((a, b) => new Date(String(b.created_at).replace(" ", "T")) - new Date(String(a.created_at).replace(" ", "T")));
+  let articleComments = [];
+
+  async function renderComments() {
+    try {
+      const res = await fetch(resolveApiUrl(`public/comments.php?article_id=${article.id}`));
+      const data = await res.json();
+      articleComments = (data.success && Array.isArray(data.data)) ? data.data : [];
+    } catch (e) {
+      console.error("Lỗi khi tải bình luận:", e);
+      articleComments = [];
+    }
 
     if (commentCountMount) {
       commentCountMount.textContent = `${articleComments.length}`;
@@ -254,8 +296,14 @@ async function initArticleDetailPage() {
 
     commentListMount.innerHTML = articleComments
       .map((c) => {
-        const commentUser = users.find((u) => u.id === c.user_id) || { full_name: "Độc giả", username: "guest" };
-        const isMyComment = currentUser && currentUser.id === c.user_id;
+        const commentUser = {
+          id: c.user_id,
+          full_name: c.full_name || "Độc giả",
+          username: c.username || "user",
+          avatar: c.avatar,
+          role: c.role || "user"
+        };
+        const isMyComment = currentUser && Number(currentUser.id) === Number(c.user_id);
         const commentUserUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(commentUser) : `author.html?username=${encodeURIComponent(commentUser.username || commentUser.id)}`;
 
         return `
@@ -315,7 +363,7 @@ async function initArticleDetailPage() {
   const commentInput = document.getElementById("comment-input");
 
   if (submitCommentBtn && commentInput) {
-    submitCommentBtn.addEventListener("click", function () {
+    submitCommentBtn.addEventListener("click", async function () {
       if (!currentUser) return;
       const content = commentInput.value.trim();
       if (!content) {
@@ -324,32 +372,28 @@ async function initArticleDetailPage() {
         return;
       }
 
-      comments = getTable("comments");
-      const newComment = {
-        id: Date.now(),
-        article_id: article.id,
-        user_id: currentUser.id,
-        content: content,
-        is_deleted: false,
-        created_at: new Date().toISOString().replace("T", " ").substring(0, 19)
-      };
-
-      comments.push(newComment);
-      saveTable("comments", comments);
-      commentInput.value = "";
-      renderComments();
-      showToast("Bình luận của bạn đã được đăng thành công!", "success");
-
-      // Bắn thông báo cho tác giả bài viết (nếu không phải tự bình luận bài của mình)
-      if (Number(article.author_id) !== Number(currentUser.id)) {
-        const articleSlugVal = article.slug || (typeof slugify === "function" ? slugify(article.title) : "") || article.id;
-        createNotification({
-          user_id: article.author_id,
-          type: "article_commented",
-          title: "Bình luận mới trên bài viết",
-          message: `${currentUser.full_name || "Một độc giả"} đã bình luận về bài viết '${article.title}' của bạn.`,
-          link: `../public/article-detail.html?slug=${encodeURIComponent(articleSlugVal)}&comment_id=${newComment.id}#comment-${newComment.id}`
+      try {
+        const res = await fetch(resolveApiUrl("user/my-comments.php"), {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            article_id: article.id,
+            content: content
+          })
         });
+        const data = await res.json();
+        if (!data.success) {
+          showToast(data.message || "Không thể gửi bình luận", "error");
+          return;
+        }
+
+        commentInput.value = "";
+        await renderComments();
+        showToast("Bình luận của bạn đã được đăng thành công!", "success");
+      } catch (err) {
+        console.error("Lỗi khi gửi bình luận:", err);
+        showToast("Lỗi kết nối khi gửi bình luận!", "error");
       }
     });
   }
@@ -476,9 +520,9 @@ function cancelEditComment(commentId) {
 }
 
 /**
- * Lưu nội dung bình luận đã chỉnh sửa
+ * Lưu nội dung bình luận đã chỉnh sửa qua API
  */
-function saveEditComment(commentId) {
+async function saveEditComment(commentId) {
   const textarea = document.getElementById(`comment-edit-input-${commentId}`);
   if (!textarea) return;
 
@@ -489,13 +533,18 @@ function saveEditComment(commentId) {
     return;
   }
 
-  let comments = getTable("comments");
-  const commentIndex = comments.findIndex((c) => String(c.id) === String(commentId));
-  if (commentIndex > -1) {
-    comments[commentIndex].content = newContent;
-    comments[commentIndex].is_edited = true;
-    comments[commentIndex].updated_at = new Date().toISOString().replace("T", " ").substring(0, 19);
-    saveTable("comments", comments);
+  try {
+    const res = await fetch(resolveApiUrl("user/my-comments.php"), {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ comment_id: commentId, content: newContent })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      showToast(data.message || "Không thể cập nhật bình luận", "error");
+      return;
+    }
 
     showToast("Đã cập nhật bình luận thành công!", "success");
     
@@ -505,6 +554,9 @@ function saveEditComment(commentId) {
       viewEl.innerHTML = `<p class="comment-text">${escapeHtml(newContent)}</p>`;
     }
     cancelEditComment(commentId);
+  } catch (err) {
+    console.error("Lỗi cập nhật bình luận:", err);
+    showToast("Lỗi kết nối khi cập nhật bình luận!", "error");
   }
 }
 
@@ -526,15 +578,21 @@ function closeDeleteDetailCommentModal() {
   }
 }
 
-function confirmDeleteDetailComment() {
+async function confirmDeleteDetailComment() {
   if (!activeDeleteDetailCommentId) return;
 
-  let comments = getTable("comments");
-  const commentIndex = comments.findIndex((c) => String(c.id) === String(activeDeleteDetailCommentId));
-
-  if (commentIndex > -1) {
-    comments[commentIndex].is_deleted = true;
-    saveTable("comments", comments);
+  try {
+    const res = await fetch(resolveApiUrl("user/my-comments.php"), {
+      method: "DELETE",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ comment_id: activeDeleteDetailCommentId })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      showToast(data.message || "Không thể xóa bình luận", "error");
+      return;
+    }
 
     showToast("Đã xóa bình luận thành công!", "success");
     closeDeleteDetailCommentModal();
@@ -546,11 +604,13 @@ function confirmDeleteDetailComment() {
     }
     
     // Cập nhật lại số đếm
-    const articleId = comments[commentIndex].article_id;
-    const remainingCount = comments.filter((c) => c.article_id === articleId && !c.is_deleted).length;
-    const commentCountMount = document.getElementById("comment-count-mount");
-    if (commentCountMount) {
-      commentCountMount.textContent = `${remainingCount}`;
+    const countMount = document.getElementById("comment-count-mount");
+    if (countMount) {
+      const current = parseInt(countMount.textContent) || 1;
+      countMount.textContent = String(Math.max(0, current - 1));
     }
+  } catch (err) {
+    console.error("Lỗi xóa bình luận:", err);
+    showToast("Lỗi kết nối khi xóa bình luận!", "error");
   }
 }

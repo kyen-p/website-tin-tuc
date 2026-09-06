@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,11 @@
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/admin-layout.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-  
+
   <!-- CKEditor 5 Classic CDN -->
   <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 </head>
+
 <body>
 
   <div class="admin-workspace">
@@ -29,7 +31,8 @@
         <div class="admin-page-header">
           <div>
             <h1 class="admin-page-title" id="page-main-title">Soạn bài viết mới</h1>
-            <p class="admin-page-subtitle" id="page-main-subtitle">Nhập đầy đủ thông tin bài báo và gửi lên Ban Biên tập để kiểm duyệt.</p>
+            <p class="admin-page-subtitle" id="page-main-subtitle">Nhập đầy đủ thông tin bài báo và gửi lên Ban Biên tập
+              để kiểm duyệt.</p>
           </div>
         </div>
 
@@ -37,13 +40,14 @@
           <!-- Form layout 2 cột -->
           <form id="article-form" onsubmit="return false;">
             <div class="admin-form-layout">
-              
+
               <!-- CỘT TRÁI: NỘI DUNG CHÍNH (Tiêu đề, Sapo, CKEditor) -->
               <div class="admin-form-main-col">
 
                 <div class="admin-form-card">
                   <h3 class="admin-form-card__title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                       <polyline points="14 2 14 8 20 8"></polyline>
                       <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -57,13 +61,8 @@
                     <label class="admin-form-label" for="article-title">
                       Tiêu đề bài viết <span class="required-mark">*</span>
                     </label>
-                    <input 
-                      type="text" 
-                      id="article-title" 
-                      class="admin-form-input" 
-                      placeholder="Ví dụ: Đội tuyển Việt Nam chốt danh sách dự SEA Games..." 
-                      required
-                    >
+                    <input type="text" id="article-title" class="admin-form-input"
+                      placeholder="Ví dụ: Đội tuyển Việt Nam chốt danh sách dự SEA Games..." required>
                     <div class="admin-form-hint">Tiêu đề nên ngắn gọn, thu hút và phản ánh đúng nội dung sự kiện.</div>
                   </div>
 
@@ -72,21 +71,25 @@
                     <label class="admin-form-label" for="article-sapo">
                       Tóm tắt / Sapo <span class="required-mark">*</span>
                     </label>
-                    <textarea 
-                      id="article-sapo" 
-                      class="admin-form-textarea" 
-                      rows="3" 
-                      placeholder="Tóm tắt nội dung chính của bài viết trong 2-3 câu..."
-                      required
-                    ></textarea>
-                    <div class="admin-form-hint">Đoạn tóm tắt sẽ hiển thị nổi bật ở đầu bài và trong danh sách tin tức.</div>
+                    <textarea id="article-sapo" class="admin-form-textarea" rows="3"
+                      placeholder="Tóm tắt nội dung chính của bài viết trong 2-3 câu..." required></textarea>
+                    <div class="admin-form-hint">Đoạn tóm tắt sẽ hiển thị nổi bật ở đầu bài và trong danh sách tin tức.
+                    </div>
                   </div>
 
                   <!-- Trình soạn thảo CKEditor 5 -->
                   <div class="admin-form-group">
-                    <label class="admin-form-label" style="margin-bottom: 8px;">
-                      Nội dung chi tiết <span class="required-mark">*</span>
-                    </label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                      <label class="admin-form-label" style="margin: 0;">
+                        Nội dung chi tiết <span class="required-mark">*</span>
+                      </label>
+                      <!-- Thống kê chữ cho phóng viên -->
+                      <div id="editor-word-stats" style="font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; font-family: var(--f-sans); background: var(--paper-alt); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line);">
+                        <span><strong id="stat-words" style="color: var(--brass-dark); font-weight: 600;">0</strong> từ</span>
+                        <span style="opacity: 0.5;">•</span>
+                        <span><strong id="stat-chars" style="font-weight: 600;">0</strong> ký tự</span>
+                      </div>
+                    </div>
                     <div id="editor-container">
                       <textarea id="editor"></textarea>
                     </div>
@@ -96,11 +99,12 @@
 
               <!-- CỘT PHẢI: THÔNG TIN PHỤ & XUẤT BẢN -->
               <div class="admin-form-side-col">
-                
+
                 <!-- 1. Ảnh bìa bài viết -->
                 <div class="admin-form-card">
                   <h3 class="admin-form-card__title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                       <circle cx="8.5" cy="8.5" r="1.5"></circle>
                       <polyline points="21 15 16 10 5 21"></polyline>
@@ -109,38 +113,49 @@
                   </h3>
 
                   <!-- Khung Preview Ảnh bìa -->
-                  <div id="cover-preview-container" style="position: relative; width: 100%; height: 170px; border-radius: 8px; border: 1.5px dashed var(--line); background: var(--paper-alt); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 12px; cursor: pointer;" onclick="document.getElementById('cover-file-input').click()">
+                  <div id="cover-preview-container"
+                    style="position: relative; width: 100%; height: 170px; border-radius: 8px; border: 1.5px dashed var(--line); background: var(--paper-alt); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 12px; cursor: pointer;"
+                    onclick="document.getElementById('cover-file-input').click()">
                     <!-- Khi chưa có ảnh -->
                     <div id="cover-empty-placeholder" style="text-align: center; padding: 16px;">
-                      <div style="width: 44px; height: 44px; border-radius: 50%; background: #FFF; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; color: var(--brass-dark);">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <div
+                        style="width: 44px; height: 44px; border-radius: 50%; background: #FFF; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; color: var(--brass-dark);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                           <circle cx="8.5" cy="8.5" r="1.5"></circle>
                           <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
                       </div>
                       <div style="font-size: 13px; font-weight: 600; color: var(--ink);">Bấm để tải ảnh bìa lên</div>
-                      <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Hỗ trợ JPG, PNG, WebP (Tối đa 5MB)</div>
+                      <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Hỗ trợ JPG, PNG, WebP (Tối
+                        đa 5MB)</div>
                     </div>
 
                     <!-- Khi đã có ảnh -->
-                    <img id="cover-image-preview" src="" alt="Ảnh bìa bài viết" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                    <img id="cover-image-preview" src="" alt="Ảnh bìa bài viết"
+                      style="display: none; width: 100%; height: 100%; object-fit: cover;">
                   </div>
 
-                  <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="handleCoverFileChange(event)">
+                  <input type="file" id="cover-file-input" accept="image/*" style="display: none;"
+                    onchange="handleCoverFileChange(event)">
 
                   <!-- Nút thao tác ảnh bìa -->
                   <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button type="button" class="admin-btn admin-btn--sm admin-btn--default" style="flex: 1; font-size: 12.5px;" onclick="document.getElementById('cover-file-input').click()">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <button type="button" class="admin-btn admin-btn--sm admin-btn--default"
+                      style="flex: 1; font-size: 12.5px;" onclick="document.getElementById('cover-file-input').click()">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                       </svg>
                       Tải ảnh khác
                     </button>
-                    <button type="button" id="btn-remove-cover" class="admin-btn admin-btn--sm admin-btn--danger" style="display: none; font-size: 12.5px;" onclick="removeCoverImage()">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <button type="button" id="btn-remove-cover" class="admin-btn admin-btn--sm admin-btn--danger"
+                      style="display: none; font-size: 12.5px;" onclick="removeCoverImage()">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                       </svg>
@@ -148,14 +163,16 @@
                     </button>
                   </div>
                   <div class="admin-form-hint" style="margin-top: 8px;">
-                    * Lưu ý: Nếu bạn không tải ảnh bìa riêng, hệ thống sẽ tự động lấy ảnh đầu tiên trong nội dung bài viết làm ảnh bìa.
+                    * Lưu ý: Nếu bạn không tải ảnh bìa riêng, hệ thống sẽ tự động lấy ảnh đầu tiên trong nội dung bài
+                    viết làm ảnh bìa.
                   </div>
                 </div>
 
                 <!-- 2. Chuyên mục & Phân loại -->
                 <div class="admin-form-card">
                   <h3 class="admin-form-card__title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
                       <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                       <polyline points="2 17 12 22 22 17"></polyline>
                       <polyline points="2 12 12 17 22 12"></polyline>
@@ -175,38 +192,40 @@
 
                   <!-- Quản lý Thẻ (Tags) thông minh -->
                   <div class="admin-form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <div
+                      style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                       <label class="admin-form-label" style="margin: 0;">
                         Thẻ bài viết (Tags)
                       </label>
-                      <span id="tags-count-badge" style="font-size: 11.5px; font-family: var(--f-mono); color: var(--muted); font-weight: 600;">0/5 thẻ</span>
+                      <span id="tags-count-badge"
+                        style="font-size: 11.5px; font-family: var(--f-mono); color: var(--muted); font-weight: 600;">0/5
+                        thẻ</span>
                     </div>
-                    
+
                     <div style="position: relative;">
-                      <div class="admin-tags-input-container" id="tags-container" onclick="document.getElementById('tag-input').focus()">
+                      <div class="admin-tags-input-container" id="tags-container"
+                        onclick="document.getElementById('tag-input').focus()">
                         <div id="selected-tags-mount" style="display: contents;"></div>
-                        <input 
-                          type="text" 
-                          id="tag-input" 
-                          class="admin-tag-text-input" 
-                          placeholder="Gõ tìm tag (VD: congnghe, thethao...) hoặc nhấn Enter..."
-                          autocomplete="off"
-                        >
+                        <input type="text" id="tag-input" class="admin-tag-text-input"
+                          placeholder="Gõ tìm tag (VD: congnghe, thethao...) hoặc nhấn Enter..." autocomplete="off">
                       </div>
 
                       <!-- Dropdown gợi ý tìm kiếm tag thông minh (không dấu/hoa thường) -->
-                      <div id="tag-search-dropdown" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #FFF; border: 1.5px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(19, 27, 46, 0.15); z-index: 100; max-height: 200px; overflow-y: auto;">
+                      <div id="tag-search-dropdown"
+                        style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #FFF; border: 1.5px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(19, 27, 46, 0.15); z-index: 100; max-height: 200px; overflow-y: auto;">
                         <div id="tag-search-dropdown-list"></div>
                       </div>
                     </div>
 
                     <div class="admin-form-hint" style="margin-top: 6px;">
-                      Gắn tối đa 5 thẻ Tag. Gõ chữ (không dấu hoặc có dấu) để chọn thẻ có sẵn, hoặc nhấn <strong>Enter</strong> để tạo tag mới.
+                      Gắn tối đa 5 thẻ Tag. Gõ chữ (không dấu hoặc có dấu) để chọn thẻ có sẵn, hoặc nhấn
+                      <strong>Enter</strong> để tạo tag mới.
                     </div>
 
                     <!-- Gợi ý thẻ có sẵn trong hệ thống -->
                     <div style="margin-top: 10px;">
-                      <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 5px; font-weight: 600;">Thẻ phổ biến trong hệ thống:</div>
+                      <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 5px; font-weight: 600;">Thẻ phổ
+                        biến trong hệ thống:</div>
                       <div class="admin-tag-suggestions" id="tags-suggestion-mount"></div>
                     </div>
                   </div>
@@ -223,7 +242,8 @@
               <div class="admin-sticky-actions__right">
                 <a href="my-articles.html" class="admin-btn admin-btn--default">Hủy bỏ</a>
                 <button type="button" class="admin-btn admin-btn--default" onclick="saveArticle('draft')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                     <polyline points="17 21 17 13 7 13 7 21"></polyline>
                     <polyline points="7 3 7 8 15 8"></polyline>
@@ -231,7 +251,8 @@
                   Lưu nháp
                 </button>
                 <button type="button" class="admin-btn admin-btn--primary" onclick="saveArticle('pending')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"></line>
                     <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                   </svg>
@@ -247,7 +268,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-  <script src="../assets/js/mock-data.js"></script>
+
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>
   <script>
@@ -284,46 +305,60 @@
      * Xử lý tải ảnh bìa lên
      */
     async function handleCoverFileChange(e) {
-  const file = e.target.files && e.target.files[0];
-  if (!file) return;
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
 
-  if (!file.type.startsWith("image/")) {
-    showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WebP)!", "warning");
-    return;
-  }
+      if (!file.type.startsWith("image/")) {
+        showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WebP)!", "warning");
+        return;
+      }
 
-  if (file.size > 5 * 1024 * 1024) {
-    showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
-    return;
-  }
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
+        return;
+      }
 
-  const formData = new FormData();
-  formData.append("image", file);
-  formData.append("type", "article");
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("type", "article");
 
-  try {
-    const response = await fetch("upload.php", {
-      method: "POST",
-      body: formData
-    });
+      const oldCoverUrl = currentCoverDataUrl;
 
-    const result = await response.json();
+      try {
+        const uploadUrl = typeof resolveApiUrl === "function" ? resolveApiUrl("upload.php") : "../../backend/api/upload.php";
+        const response = await fetch(uploadUrl, {
+          method: "POST",
+          credentials: "include",
+          body: formData
+        });
 
-    if (!result.success) {
-      showToast(result.message || "Tải ảnh bìa thất bại!", "error");
-      return;
+        const result = await response.json();
+
+        if (!result.success) {
+          showToast(result.message || "Tải ảnh bìa thất bại!", "error");
+          return;
+        }
+
+        const imageUrl = result.data.url;
+
+        // Nếu trước đó đã upload 1 ảnh khác trong phiên viết bài này, xóa file cũ đi
+        if (oldCoverUrl && oldCoverUrl.includes("backend/api/upload/") && oldCoverUrl !== imageUrl) {
+          fetch(uploadUrl, {
+            method: "DELETE",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: oldCoverUrl })
+          }).catch(console.error);
+        }
+
+        setCoverPreview(imageUrl);
+        showToast("Đã tải ảnh bìa thành công!", "success");
+
+      } catch (error) {
+        console.error(error);
+        showToast("Không thể tải ảnh lên máy chủ!", "error");
+      }
     }
-
-    const imageUrl = result.data.url;
-
-    setCoverPreview(imageUrl);
-    showToast("Đã tải ảnh bìa thành công!", "success");
-
-  } catch (error) {
-    console.error(error);
-    showToast("Không thể tải ảnh lên máy chủ!", "error");
-  }
-}
 
     function setCoverPreview(src) {
       if (!src) {
@@ -336,14 +371,16 @@
       const btnRemove = document.getElementById("btn-remove-cover");
 
       if (previewImg && placeholder && btnRemove) {
-        previewImg.src = src;
+        const displaySrc = typeof resolveAssetPath === "function" ? resolveAssetPath(src) : src;
+        previewImg.src = displaySrc;
         previewImg.style.display = "block";
         placeholder.style.display = "none";
         btnRemove.style.display = "inline-flex";
       }
     }
 
-    function removeCoverImage() {
+    async function removeCoverImage() {
+      const oldUrl = currentCoverDataUrl;
       currentCoverDataUrl = "";
       const fileInput = document.getElementById("cover-file-input");
       if (fileInput) fileInput.value = "";
@@ -358,106 +395,128 @@
         placeholder.style.display = "block";
         btnRemove.style.display = "none";
       }
+
+      // Xóa file vật lý trên server nếu là ảnh đã upload
+      if (oldUrl && oldUrl.includes("backend/api/upload/")) {
+        try {
+          const uploadUrl = typeof resolveApiUrl === "function" ? resolveApiUrl("upload.php") : "../../backend/api/upload.php";
+          await fetch(uploadUrl, {
+            method: "DELETE",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: oldUrl })
+          });
+          showToast("Đã xóa ảnh bìa thành công!", "info");
+        } catch (err) {
+          console.error("Lỗi khi xóa file ảnh bìa:", err);
+        }
+      }
     }
 
     /**
      * Xử lý chèn ảnh minh họa trực tiếp vào nội dung bài viết
      */
     async function handleContentImageUpload(e) {
-  const file = e.target.files && e.target.files[0];
-  if (!file) return;
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
 
-  if (!file.type.startsWith("image/")) {
-    showToast("Vui lòng chọn tệp hình ảnh hợp lệ!", "warning");
-    return;
-  }
+      if (!file.type.startsWith("image/")) {
+        showToast("Vui lòng chọn tệp hình ảnh hợp lệ!", "warning");
+        return;
+      }
 
-  if (file.size > 5 * 1024 * 1024) {
-    showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
-    return;
-  }
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
+        return;
+      }
 
-  const formData = new FormData();
-  formData.append("image", file);
-  formData.append("type", "article");
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("type", "article");
 
-  try {
-    const response = await fetch("upload.php", {
-      method: "POST",
-      body: formData
-    });
+      try {
+        const uploadUrl = typeof resolveApiUrl === "function" ? resolveApiUrl("upload.php") : "../../backend/api/upload.php";
+        const response = await fetch(uploadUrl, {
+          method: "POST",
+          credentials: "include",
+          body: formData
+        });
 
-    const result = await response.json();
+        const result = await response.json();
 
-    if (!result.success) {
-      showToast(result.message || "Tải ảnh thất bại!", "error");
-      return;
-    }
+        if (!result.success) {
+          showToast(result.message || "Tải ảnh thất bại!", "error");
+          return;
+        }
 
-    const imageUrl = result.data.url;
+        const imageUrl = result.data.url;
+        const displayUrl = typeof resolveAssetPath === "function" ? resolveAssetPath(imageUrl) : imageUrl;
 
-    if (editorInstance) {
-      const imageHtml = `<figure class="image" style="text-align: center; margin: 18px 0;">
-        <img src="${imageUrl}" alt="Hình ảnh minh họa" style="max-width: 100%; height: auto; border-radius: 6px;">
+        if (editorInstance) {
+          const imageHtml = `<figure class="image" style="text-align: center; margin: 18px 0;">
+        <img src="${displayUrl}" alt="Hình ảnh minh họa" style="max-width: 100%; height: auto; border-radius: 6px;">
         <figcaption style="font-size: 13px; color: #666; font-style: italic; margin-top: 6px;">
           Chú thích: Hình ảnh minh họa bài viết
         </figcaption>
       </figure><p></p>`;
 
-      const currentData = editorInstance.getData();
-      editorInstance.setData(currentData + imageHtml);
+          const currentData = editorInstance.getData();
+          editorInstance.setData(currentData + imageHtml);
 
-      showToast("Đã chèn hình ảnh vào nội dung bài viết!", "success");
+          showToast("Đã chèn hình ảnh vào nội dung bài viết!", "success");
+        }
+
+      } catch (error) {
+        console.error(error);
+        showToast("Không thể tải ảnh lên máy chủ!", "error");
+      } finally {
+        e.target.value = "";
+      }
     }
 
-  } catch (error) {
-    console.error(error);
-    showToast("Không thể tải ảnh lên máy chủ!", "error");
-  } finally {
-    e.target.value = "";
-  }
-}
-
     /**
-     * Adapter tải ảnh Base64 cho CKEditor 5 (không cần backend server, hỗ trợ paste/kéo thả/chọn file ảnh trực tiếp)
+     * Adapter tải ảnh lên máy chủ PHP cho CKEditor 5
      */
-    class CustomBase64UploadAdapter {
-  constructor(loader) {
-    this.loader = loader;
-  }
-
-  upload() {
-    return this.loader.file.then(async (file) => {
-      const formData = new FormData();
-
-      formData.append("image", file);
-      formData.append("type", "article");
-
-      const response = await fetch("upload.php", {
-        method: "POST",
-        body: formData
-      });
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.message || "Tải ảnh thất bại!");
+    class CustomServerUploadAdapter {
+      constructor(loader) {
+        this.loader = loader;
       }
 
-      const imageUrl = result.data.url;
+      upload() {
+        return this.loader.file.then(async (file) => {
+          const formData = new FormData();
 
-      return {
-        default: imageUrl
-      };
-    });
-  }
+          formData.append("image", file);
+          formData.append("type", "article");
 
-  abort() {}
-}
+          const uploadUrl = typeof resolveApiUrl === "function" ? resolveApiUrl("upload.php") : "../../backend/api/upload.php";
+          const response = await fetch(uploadUrl, {
+            method: "POST",
+            credentials: "include",
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(result.message || "Tải ảnh thất bại!");
+          }
+
+          const imageUrl = result.data.url;
+          const displayUrl = typeof resolveAssetPath === "function" ? resolveAssetPath(imageUrl) : imageUrl;
+
+          return {
+            default: displayUrl
+          };
+        });
+      }
+
+      abort() { }
+    }
 
     function CustomUploadAdapterPlugin(editor) {
       editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-        return new CustomBase64UploadAdapter(loader);
+        return new CustomServerUploadAdapter(loader);
       };
     }
 
@@ -468,11 +527,14 @@
       try {
         editorInstance = await ClassicEditor.create(document.querySelector("#editor"), {
           extraPlugins: [CustomUploadAdapterPlugin],
+          mediaEmbed: {
+            previewsInData: true
+          },
           toolbar: [
             'heading', '|',
-            'bold', 'italic', 'underline', 'link', '|',
+            'bold', 'italic', 'link', '|',
             'bulletedList', 'numberedList', '|',
-            'imageUpload', 'insertTable', 'blockQuote', '|',
+            'imageUpload', 'mediaEmbed', 'insertTable', 'blockQuote', 'horizontalLine', '|',
             'undo', 'redo'
           ],
           image: {
@@ -484,91 +546,136 @@
               'imageStyle:side'
             ]
           },
-          placeholder: 'Bắt đầu viết nội dung bài báo tại đây...'
+          table: {
+            contentToolbar: [
+              'tableColumn',
+              'tableRow',
+              'mergeTableCells'
+            ]
+          },
+          placeholder: 'Bắt đầu viết nội dung bài báo tại đây (hỗ trợ kéo thả ảnh, dán link YouTube/video)...'
         });
+
+        // Cập nhật thống kê từ & thời gian đọc trong thời gian thực
+        editorInstance.model.document.on('change:data', () => {
+          updateWordStats();
+        });
+
       } catch (error) {
         console.error("Lỗi khởi tạo CKEditor 5:", error);
       }
     }
 
     /**
-     * Đổ danh sách chuyên mục vào dropdown
+     * Tính toán số từ và số ký tự
      */
-    function loadCategories() {
-      const categories = getTable("categories") || [];
-      const select = document.getElementById("article-category");
-      if (!select) return;
+    function updateWordStats() {
+      if (!editorInstance) return;
+      const data = editorInstance.getData() || "";
 
-      categories.forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat.id;
-        opt.textContent = cat.name;
-        select.appendChild(opt);
-      });
+      // Dùng phần tử ảo để bóc tách văn bản thuần không kèm thẻ HTML
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = data;
+      const pureText = (tempDiv.textContent || tempDiv.innerText || "").trim();
+
+      const words = pureText ? pureText.split(/\s+/).filter(Boolean).length : 0;
+      const chars = pureText.length;
+
+      const statWords = document.getElementById("stat-words");
+      const statChars = document.getElementById("stat-chars");
+
+      if (statWords) statWords.textContent = words.toLocaleString("vi-VN");
+      if (statChars) statChars.textContent = chars.toLocaleString("vi-VN");
     }
 
     /**
-     * Tải thẻ hệ thống & hiển thị gợi ý
+     * Đổ danh sách chuyên mục vào dropdown từ API Backend
      */
-    function loadSystemTags() {
-      systemTags = getTable("tags") || [];
-      const mount = document.getElementById("tags-suggestion-mount");
-      if (!mount) return;
+    async function loadCategories() {
+      try {
+        const res = await fetch(resolveApiUrl("public/categories.php")).then(r => r.json());
+        const categories = res.success && Array.isArray(res.data) ? res.data : [];
+        const select = document.getElementById("article-category");
+        if (!select) return;
 
-      mount.innerHTML = systemTags.slice(0, 8).map(t => {
-        return `<span class="admin-tag-suggest-item" onclick="addTag('${escapeHtml(t.name)}')">+ ${escapeHtml(t.name)}</span>`;
-      }).join("");
-    }
-
-    /**
-     * Tải thông tin bài viết cũ khi Sửa
-     */
-    function loadExistingArticle(id) {
-      const articles = getTable("articles") || [];
-      const art = articles.find(a => a.id === id);
-      if (!art) {
-        showToast("Không tìm thấy bài viết yêu cầu", "error");
-        return;
-      }
-
-      document.getElementById("page-main-title").textContent = "Chỉnh sửa bài viết";
-      document.getElementById("page-main-subtitle").textContent = `Đang cập nhật bài viết: "${art.title || ''}"`;
-      document.getElementById("save-status-hint").innerHTML = `Trạng thái hiện tại: <strong>${art.status === 'rejected' ? 'Bị từ chối (Cần sửa)' : 'Bản nháp'}</strong>`;
-
-      // Điền thông tin
-      document.getElementById("article-title").value = art.title || "";
-      document.getElementById("article-sapo").value = art.short_description || art.sapo || "";
-      document.getElementById("article-category").value = art.category_id || "";
-
-      // Hiển thị ảnh bìa nếu có
-      if (art.cover_image || art.image) {
-        setCoverPreview(art.cover_image || art.image);
-      } else {
-        removeCoverImage();
-      }
-
-      // Đặt nội dung CKEditor
-      if (editorInstance) {
-        editorInstance.setData(art.content || "");
-      }
-
-      // Đặt thẻ (Hỗ trợ tags_text hoặc quan hệ article_tags)
-      const allArticleTags = getTable("article_tags") || [];
-      const myTagIds = allArticleTags.filter(at => at.article_id === id).map(at => at.tag_id);
-      const allTags = getTable("tags") || [];
-      
-      selectedTags = [];
-      if (art.tags_text && Array.isArray(art.tags_text) && art.tags_text.length > 0) {
-        selectedTags = [...art.tags_text];
-      } else {
-        myTagIds.forEach(tId => {
-          const found = allTags.find(t => t.id === tId);
-          if (found && !selectedTags.includes(found.name)) {
-            selectedTags.push(found.name);
-          }
+        categories.forEach(cat => {
+          const opt = document.createElement("option");
+          opt.value = cat.id;
+          opt.textContent = cat.name;
+          select.appendChild(opt);
         });
+      } catch (err) {
+        console.error("Lỗi tải chuyên mục:", err);
       }
-      renderSelectedTags();
+    }
+
+    /**
+     * Tải thẻ hệ thống & hiển thị gợi ý từ API Backend
+     */
+    async function loadSystemTags() {
+      try {
+        const res = await fetch(resolveApiUrl("public/tags.php")).then(r => r.json());
+        systemTags = res.success && Array.isArray(res.data) ? res.data : [];
+        const mount = document.getElementById("tags-suggestion-mount");
+        if (!mount) return;
+
+        mount.innerHTML = systemTags.slice(0, 8).map(t => {
+          return `<span class="admin-tag-suggest-item" onclick="addTag('${escapeHtml(t.name)}')">+ ${escapeHtml(t.name)}</span>`;
+        }).join("");
+      } catch (err) {
+        console.error("Lỗi tải tags hệ thống:", err);
+      }
+    }
+
+    /**
+     * Tải thông tin bài viết cũ khi Sửa từ Backend API
+     */
+    async function loadExistingArticle(id) {
+      try {
+        const response = await fetch(resolveApiUrl(`reporter/write-article.php?id=${id}`), {
+          credentials: "include"
+        });
+        const res = await response.json();
+        if (!res.success || !res.data) {
+          showToast(res.message || "Không tìm thấy bài viết yêu cầu", "error");
+          return;
+        }
+
+        const art = res.data;
+
+        document.getElementById("page-main-title").textContent = "Chỉnh sửa bài viết";
+        document.getElementById("page-main-subtitle").textContent = `Đang cập nhật bài viết: "${art.title || ''}"`;
+        document.getElementById("save-status-hint").innerHTML = `Trạng thái hiện tại: <strong>${art.status === 'rejected' ? 'Bị từ chối (Cần sửa)' : 'Bản nháp'}</strong>`;
+
+        // Điền thông tin
+        document.getElementById("article-title").value = art.title || "";
+        document.getElementById("article-sapo").value = art.short_description || art.sapo || "";
+        document.getElementById("article-category").value = art.category_id || "";
+
+        // Hiển thị ảnh bìa nếu có
+        if (art.cover_image || art.image) {
+          setCoverPreview(art.cover_image || art.image);
+        } else {
+          removeCoverImage();
+        }
+
+        // Đặt nội dung CKEditor
+        if (editorInstance) {
+          editorInstance.setData(art.content || "");
+          updateWordStats();
+        }
+
+        selectedTags = [];
+        if (art.tags && Array.isArray(art.tags)) {
+          selectedTags = art.tags.map(t => (typeof t === "string" ? t : (t.name || ""))).filter(Boolean);
+        } else if (art.tags_text && Array.isArray(art.tags_text)) {
+          selectedTags = [...art.tags_text];
+        }
+        renderSelectedTags();
+      } catch (err) {
+        console.error("Lỗi khi tải bài viết cũ:", err);
+        showToast("Không thể tải thông tin bài viết cũ!", "error");
+      }
     }
 
     /**
@@ -602,7 +709,7 @@
         }
 
         const normQuery = normalizeTagSearch(query);
-        const allTags = getTable("tags") || [];
+        const allTags = systemTags;
 
         // Lọc các tag hệ thống khớp chuỗi (bất kể dấu/hoa thường)
         const matchedTags = allTags.filter(t => {
@@ -667,7 +774,7 @@
           if (query) {
             // Kiểm tra xem có tag nào trong hệ thống khớp không
             const normQuery = normalizeTagSearch(query);
-            const allTags = getTable("tags") || [];
+            const allTags = systemTags;
             const found = allTags.find(t => normalizeTagSearch(t.name) === normQuery);
             if (found) {
               addTag(found.name);
@@ -703,45 +810,18 @@
     function addTag(tagName) {
       const trimmed = tagName.trim().replace(/^#/, "");
       if (!trimmed) return;
-      
-      // Kiểm tra trùng lặp (không phân biệt dấu/hoa thường)
+
       const normTrimmed = normalizeTagSearch(trimmed);
       if (selectedTags.some(t => normalizeTagSearch(t) === normTrimmed)) {
         showToast(`Thẻ #${trimmed} đã được chọn!`, "info");
         return;
       }
-
       if (selectedTags.length >= 5) {
         showToast("Mỗi bài viết chỉ được gắn tối đa 5 thẻ Tag!", "warning");
         return;
       }
 
-      // Kiểm tra trong bảng tags của hệ thống
-      let allTags = getTable("tags") || [];
-      let matchedSystemTag = allTags.find(t => normalizeTagSearch(t.name) === normTrimmed);
-
-      // NẾU CHƯA CÓ TRONG HỆ THỐNG -> TẠO MỚI NGAY VÀO BẢNG TAGS
-      if (!matchedSystemTag) {
-        const refNow = typeof getSystemTime === "function" ? getSystemTime() : new Date();
-        const nowStr = refNow.toISOString().replace("T", " ").substring(0, 19);
-        const newTagId = allTags.length > 0 ? Math.max(...allTags.map(t => t.id || 0)) + 1 : 1;
-        
-        matchedSystemTag = {
-          id: newTagId,
-          name: trimmed,
-          slug: typeof slugify === "function" ? slugify(trimmed) : trimmed.toLowerCase().replace(/\s+/g, "-"),
-          created_at: nowStr
-        };
-        allTags.push(matchedSystemTag);
-        saveTable("tags", allTags);
-        systemTags = allTags;
-        loadSystemTags();
-        showToast(`Đã tạo và thêm thẻ mới: #${trimmed}`, "success");
-      }
-
-      const finalTagName = matchedSystemTag.name;
-
-      selectedTags.push(finalTagName);
+      selectedTags.push(trimmed);
       renderSelectedTags();
     }
 
@@ -814,10 +894,7 @@
         }
       }
       if (!finalCover) {
-        const allCats = getTable("categories") || [];
-        const chosenCat = allCats.find(c => String(c.id) === String(categoryId));
-        const catSlug = chosenCat ? chosenCat.slug : "thoi-su";
-        finalCover = `../assets/images/categories/${catSlug}.jpg`;
+        finalCover = "../assets/images/placeholder.jpg";
       }
 
       if (!content || content === "<p></p>" || content === "<p><br data-cke-filler=\"true\"></p>") {
@@ -825,40 +902,48 @@
         return;
       }
 
-     const formData = new FormData();
+      const payload = {
+        title: title,
+        short_description: sapo,
+        content: content,
+        cover_image: finalCover,
+        category_id: categoryId,
+        status: targetStatus,
+        tags: selectedTags
+      };
 
-formData.append("title", title);
-formData.append("short_description", sapo);
-formData.append("content", content);
-formData.append("cover_image", finalCover);
-formData.append("category_id", categoryId);
+      if (currentArticleId) {
+        payload.id = currentArticleId;
+      }
+      
+      try {
+        const response = await fetch(resolveApiUrl("reporter/write-article.php"), {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
 
-try {
-  const response = await fetch("reporter/write-article.php", {
-    method: "POST",
-    body: formData
-  });
+        const result = await response.json();
 
-  const result = await response.json();
+        if (!result.success) {
+          showToast(result.message || "Không thể lưu bài viết!", "error");
+          return;
+        }
 
-  if (!result.success) {
-    showToast(result.message || "Không thể lưu bài viết!", "error");
-    return;
-  }
+        const successMsg = targetStatus === "draft"
+          ? "Đã lưu bản nháp bài viết thành công!"
+          : "Đã gửi bài viết lên Ban Biên tập để kiểm duyệt thành công!";
+        showToast(successMsg, "success");
 
-  showToast(
-    "Đã gửi bài viết lên Ban Biên tập để kiểm duyệt thành công!",
-    "success"
-  );
+        setTimeout(() => {
+          window.location.href = "my-articles.html";
+        }, 600);
 
-  setTimeout(() => {
-    window.location.href = "my-articles.html";
-  }, 600);
-
-} catch (error) {
-  console.error("Lỗi gửi bài viết:", error);
-  showToast("Không thể kết nối đến máy chủ!", "error");
-}
+      } catch (error) {
+        console.error("Lỗi gửi bài viết:", error);
+        showToast("Không thể kết nối đến máy chủ!", "error");
+      }
     }
 
     window.selectTagFromDropdown = selectTagFromDropdown;
@@ -867,5 +952,5 @@ try {
     window.saveArticle = saveArticle;
   </script>
 </body>
-</html>
 
+</html>

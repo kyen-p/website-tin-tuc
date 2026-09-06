@@ -30,57 +30,21 @@
     initCategoriesTagsPage();
   });
 
-  window.initCategoriesTagsPage = initCategoriesTagsPage;
-
-  function initCategoriesTagsPage() {
-    loadData();
+  async function initCategoriesTagsPage() {
+    await loadData();
     renderWorkspaceLayout();
     renderCategoriesSection();
     renderTagsSection();
     attachEventListeners();
   }
 
-  function fetchTable(tableName) {
-    if (typeof getTable === "function") {
-      const data = getTable(tableName);
-      if (Array.isArray(data) && data.length > 0) return data;
-    }
-    if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA[tableName])) {
-      return MOCK_DATA[tableName];
-    }
-    return [];
-  }
-
-  function saveTableData(tableName, data) {
-    if (typeof saveTable === "function") {
-      saveTable(tableName, data);
-    } else if (typeof setTable === "function") {
-      setTable(tableName, data);
-    }
-  }
-
-  function loadData() {
-    allCategories = fetchTable("categories");
-    allTags = fetchTable("tags");
-    allArticles = fetchTable("articles");
-    allArticleTags = fetchTable("article_tags");
-  }
-
-  /**
-   * Tính số lượng bài viết cho 1 chuyên mục
-   */
-  function getCategoryArticleCount(categoryId) {
-    return allArticles.filter((a) => String(a.category_id) === String(categoryId)).length;
-  }
-
-  /**
-   * Tính số lượng bài viết cho 1 tag
-   */
-  function getTagArticleCount(tagId) {
-    const validArticleIds = new Set(allArticles.map((a) => String(a.id)));
-    return allArticleTags.filter(
-      (at) => String(at.tag_id) === String(tagId) && validArticleIds.has(String(at.article_id))
-    ).length;
+  async function loadData() {
+    const [catRes, tagRes] = await Promise.all([
+      fetch(resolveApiUrl("editor/categories-tags.php?type=categories"), { credentials: "include" }).then(r => r.json()),
+      fetch(resolveApiUrl("editor/categories-tags.php?type=tags"), { credentials: "include" }).then(r => r.json())
+    ]);
+    allCategories = catRes.data || [];
+    allTags = tagRes.data || [];
   }
 
   /**
@@ -234,7 +198,7 @@
 
     mount.innerHTML = list
       .map((cat) => {
-        const articleCount = getCategoryArticleCount(cat.id);
+        const articleCount = Number(cat.article_count) || 0;
         const canDelete = articleCount === 0;
 
         return `
@@ -261,19 +225,18 @@
             </button>
 
             <!-- Nút Xóa (Bảo vệ dữ liệu) -->
-            ${
-              canDelete
-                ? `
+            ${canDelete
+            ? `
               <button type="button" class="btn-delete-cat" data-id="${cat.id}" data-name="${escapeHtml(cat.name)}" style="background: #FEE2E2; border: 1px solid #FECACA; color: #DC2626; padding: 5px 10px; border-radius: 4px; font-size: 11.5px; font-weight: 600; cursor: pointer;" title="Xóa chuyên mục này">
                 Xóa
               </button>
             `
-                : `
+            : `
               <button type="button" class="btn-delete-cat-disabled" data-count="${articleCount}" style="background: #F3F4F6; border: 1px solid #E5E7EB; color: #9CA3AF; padding: 5px 10px; border-radius: 4px; font-size: 11.5px; font-weight: 500; cursor: not-allowed;" title="Chuyên mục đang có ${articleCount} bài viết. Không thể xóa để bảo đảm toàn vẹn dữ liệu!">
                 Khóa xóa
               </button>
             `
-            }
+          }
           </div>
         </div>
       `;
@@ -295,9 +258,9 @@
 
     // 1. Lọc theo trạng thái bài viết
     if (currentTagFilter === "has_articles") {
-      list = list.filter((t) => getTagArticleCount(t.id) > 0);
+      list = list.filter((t) => Number(t.article_count) > 0);
     } else if (currentTagFilter === "zero_articles") {
-      list = list.filter((t) => getTagArticleCount(t.id) === 0);
+      list = list.filter((t) => Number(t.article_count) === 0);
     }
 
     // 2. Tìm kiếm
@@ -307,8 +270,7 @@
     }
 
     // Sắp xếp: Tag có nhiều bài nhất lên đầu
-    list.sort((a, b) => getTagArticleCount(b.id) - getTagArticleCount(a.id));
-
+    list.sort((a, b) => Number(b.article_count) - Number(a.article_count));
     if (list.length === 0) {
       mount.innerHTML = `
         <div style="padding: 30px 16px; text-align: center; color: var(--muted); font-size: 13px; background: #FAF8F5; border-radius: 8px;">
@@ -320,8 +282,7 @@
 
     mount.innerHTML = list
       .map((tag) => {
-        const articleCount = getTagArticleCount(tag.id);
-        const isZero = articleCount === 0;
+        const articleCount = Number(tag.article_count) || 0; const isZero = articleCount === 0;
 
         return `
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px; background: ${isZero ? "#FFFBF0" : "#FAF8F5"}; border: 1px solid ${isZero ? "rgba(184, 147, 79, 0.3)" : "var(--line-soft)"}; border-radius: 6px; transition: all 0.15s;" onmouseover="this.style.background='#F6F3ED'" onmouseout="this.style.background='${isZero ? "#FFFBF0" : "#FAF8F5"}'">
@@ -501,7 +462,7 @@
   /**
    * Xử lý Lưu Chuyên mục
    */
-  function handleSaveCategory() {
+  async function handleSaveCategory() {
     const idVal = document.getElementById("modal-cat-id").value;
     const nameVal = document.getElementById("modal-cat-name").value.trim();
     let slugVal = document.getElementById("modal-cat-slug").value.trim();
@@ -512,162 +473,99 @@
       return;
     }
 
-    slugVal = slugify(slugVal || nameVal);
+    const method = idVal ? "PUT" : "POST";
+    const body = idVal
+      ? { id: idVal, name: nameVal, slug: slugVal, description: descVal }
+      : { name: nameVal, slug: slugVal, description: descVal };
 
-    const nowIso = new Date().toISOString().replace("T", " ").substring(0, 19);
+    const res = await fetch(resolveApiUrl("editor/categories-tags.php?type=categories"), {
+      method: method,
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const result = await res.json();
 
-    if (idVal) {
-      // SỬA CHUYÊN MỤC
-      const idx = allCategories.findIndex((c) => String(c.id) === String(idVal));
-      if (idx !== -1) {
-        allCategories[idx].name = nameVal;
-        allCategories[idx].slug = slugVal;
-        allCategories[idx].description = descVal;
-        allCategories[idx].updated_at = nowIso;
-      }
-      if (typeof showToast === "function") showToast(`Đã cập nhật chuyên mục "${nameVal}" thành công!`, "success");
-    } else {
-      // TẠO MỚI CHUYÊN MỤC
-      const newId = allCategories.length > 0 ? Math.max(...allCategories.map((c) => c.id || 0)) + 1 : 1;
-      allCategories.push({
-        id: newId,
-        name: nameVal,
-        slug: slugVal,
-        description: descVal,
-        created_at: nowIso,
-      });
-      if (typeof showToast === "function") showToast(`Đã tạo chuyên mục mới "${nameVal}" thành công!`, "success");
+    if (!result.success) {
+      if (typeof showToast === "function") showToast(result.message || "Có lỗi xảy ra", "error");
+      return;
     }
 
-    saveTableData("categories", allCategories);
+    if (typeof showToast === "function") {
+      showToast(idVal ? `Đã cập nhật chuyên mục "${nameVal}" thành công!` : `Đã tạo chuyên mục mới "${nameVal}" thành công!`, "success");
+    }
+
     document.getElementById("modal-category").style.display = "none";
+    await loadData();
     renderCategoriesSection();
   }
 
   /**
    * Xử lý Xóa Chuyên mục
    */
-  function handleDeleteCategory(catId, catName) {
-    const articleCount = getCategoryArticleCount(catId);
-    if (articleCount > 0) {
-      if (typeof showToast === "function") {
-        showToast(`Không thể xóa chuyên mục "${catName}" vì đang chứa ${articleCount} bài viết!`, "warning");
-      }
-      return;
-    }
-
+  async function handleDeleteCategory(catId, catName) {
     if (!confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn chuyên mục "${catName}"?`)) {
       return;
     }
 
-    allCategories = allCategories.filter((c) => String(c.id) !== String(catId));
-    saveTableData("categories", allCategories);
+    const res = await fetch(resolveApiUrl(`editor/categories-tags.php?type=categories&id=${catId}`), {
+      method: "DELETE",
+      credentials: "include"
+    });
+    const result = await res.json();
 
-    if (typeof showToast === "function") {
-      showToast(`Đã xóa chuyên mục "${catName}" thành công!`, "info");
-    }
-    renderCategoriesSection();
-  }
-
-  /**
-   * Xử lý Lưu / Sửa / Gộp Thẻ Tag
-   */
-  function handleSaveTag() {
-    const idVal = document.getElementById("modal-tag-id").value;
-    const nameVal = document.getElementById("modal-tag-name").value.trim().replace(/^#/, "");
-
-    if (!nameVal) {
-      if (typeof showToast === "function") showToast("Vui lòng nhập tên thẻ tag!", "warning");
+    if (!result.success) {
+      if (typeof showToast === "function") showToast(result.message, "warning");
       return;
     }
 
-    const slugVal = typeof slugify === "function" ? slugify(nameVal) : nameVal.toLowerCase().replace(/\s+/g, "-");
-    const nowIso = new Date().toISOString().replace("T", " ").substring(0, 19);
+    if (typeof showToast === "function") showToast(`Đã xóa chuyên mục "${catName}" thành công!`, "info");
+    await loadData();
+    renderCategoriesSection();
+  } 
 
-    if (idVal) {
-      // SỬA HOẶC GỘP TAG
-      const currentTag = allTags.find((t) => String(t.id) === String(idVal));
-      if (!currentTag) return;
+ 
+/**
+ * Xử lý Lưu / Sửa Thẻ Tag
+ */
+async function handleSaveTag() {
+  const idVal = document.getElementById("modal-tag-id").value;
+  const nameVal = document.getElementById("modal-tag-name").value.trim().replace(/^#/, "");
 
-      // Kiểm tra xem tên mới có trùng với một tag ĐÃ CÓ KHÁC không (GỘP THẺ TỰ ĐỘNG)
-      const existingTargetTag = allTags.find(
-        (t) => String(t.id) !== String(idVal) && (t.name.toLowerCase() === nameVal.toLowerCase() || t.slug === slugVal)
-      );
-
-      if (existingTargetTag) {
-        // GỘP: Chuyển tất cả bài viết từ currentTag sang existingTargetTag
-        let mergeCount = 0;
-        allArticleTags.forEach((at) => {
-          if (String(at.tag_id) === String(currentTag.id)) {
-            // Kiểm tra xem bài này đã gắn tag đích chưa để tránh trùng lặp
-            const alreadyHasTarget = allArticleTags.some(
-              (item) => String(item.article_id) === String(at.article_id) && String(item.tag_id) === String(existingTargetTag.id)
-            );
-            if (!alreadyHasTarget) {
-              at.tag_id = existingTargetTag.id;
-              mergeCount++;
-            }
-          }
-        });
-
-        // Xóa các liên kết thừa (duplicate article_tags)
-        const uniqueArticleTags = [];
-        allArticleTags.forEach((item) => {
-          const exists = uniqueArticleTags.some(
-            (u) => String(u.article_id) === String(item.article_id) && String(u.tag_id) === String(item.tag_id)
-          );
-          if (!exists) uniqueArticleTags.push(item);
-        });
-        allArticleTags = uniqueArticleTags;
-
-        // Xóa tag cũ khỏi allTags
-        allTags = allTags.filter((t) => String(t.id) !== String(currentTag.id));
-
-        saveTableData("tags", allTags);
-        saveTableData("article_tags", allArticleTags);
-
-        if (typeof showToast === "function") {
-          showToast(`Đã tự động gộp thẻ "#${currentTag.name}" vào "#${existingTargetTag.name}" thành công!`, "success");
-        }
-      } else {
-        // ĐỔI TÊN ĐƠN THUẦN
-        const idx = allTags.findIndex((t) => String(t.id) === String(idVal));
-        if (idx !== -1) {
-          allTags[idx].name = nameVal;
-          allTags[idx].slug = slugVal;
-        }
-        saveTableData("tags", allTags);
-        if (typeof showToast === "function") {
-          showToast(`Đã đổi tên thẻ tag thành "#${nameVal}"!`, "success");
-        }
-      }
-    } else {
-      // TẠO MỚI TAG
-      const exists = allTags.some((t) => t.name.toLowerCase() === nameVal.toLowerCase());
-      if (exists) {
-        if (typeof showToast === "function") showToast(`Thẻ tag "#${nameVal}" đã tồn tại trong hệ thống!`, "warning");
-        return;
-      }
-
-      const newId = allTags.length > 0 ? Math.max(...allTags.map((t) => t.id || 0)) + 1 : 1;
-      allTags.push({
-        id: newId,
-        name: nameVal,
-        slug: slugVal,
-        created_at: nowIso,
-      });
-      saveTableData("tags", allTags);
-      if (typeof showToast === "function") showToast(`Đã tạo mới thẻ tag "#${nameVal}" thành công!`, "success");
-    }
-
-    document.getElementById("modal-tag").style.display = "none";
-    renderTagsSection();
+  if (!nameVal) {
+    if (typeof showToast === "function") showToast("Vui lòng nhập tên thẻ tag!", "warning");
+    return;
   }
 
+  const method = idVal ? "PUT" : "POST";
+  const body = idVal ? { id: idVal, name: nameVal } : { name: nameVal };
+
+  const res = await fetch(resolveApiUrl("editor/categories-tags.php?type=tags"), {
+    method: method,
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const result = await res.json();
+
+  if (!result.success) {
+    if (typeof showToast === "function") showToast(result.message || "Có lỗi xảy ra", "error");
+    return;
+  }
+
+  if (typeof showToast === "function") {
+    showToast(idVal ? `Đã đổi tên thẻ tag thành "#${nameVal}"!` : `Đã tạo mới thẻ tag "#${nameVal}" thành công!`, "success");
+  }
+
+  document.getElementById("modal-tag").style.display = "none";
+  await loadData();
+  renderTagsSection();
+}
+
   /**
-   * Xử lý Xóa Thẻ Tag (Gỡ sạch khỏi toàn bộ bài viết)
+   * Xử lý Xóa Thẻ Tag (Gỡ sạch khỏi toàn bộ bài viết qua API)
    */
-  function handleDeleteTag(tagId, tagName, articleCount) {
+  async function handleDeleteTag(tagId, tagName, articleCount) {
     const msg =
       Number(articleCount) > 0
         ? `Thẻ "#${tagName}" đang được gắn trong ${articleCount} bài viết. Bạn có chắc chắn muốn xóa vĩnh viễn thẻ này? (Thẻ sẽ tự động được gỡ khỏi tất cả bài viết liên quan)`
@@ -675,30 +573,39 @@
 
     if (!confirm(msg)) return;
 
-    // 1. Xóa khỏi allTags
-    allTags = allTags.filter((t) => String(t.id) !== String(tagId));
-
-    // 2. Gỡ khỏi article_tags
-    allArticleTags = allArticleTags.filter((at) => String(at.tag_id) !== String(tagId));
-
-    saveTableData("tags", allTags);
-    saveTableData("article_tags", allArticleTags);
-
-    if (typeof showToast === "function") {
-      showToast(`Đã xóa vĩnh viễn thẻ "#${tagName}" khỏi hệ thống!`, "info");
+    try {
+      const res = await fetch(resolveApiUrl(`editor/categories-tags.php?type=tags&id=${tagId}`), {
+        method: "DELETE",
+        credentials: "include"
+      });
+      const result = await res.json();
+      if (result && result.success) {
+        if (typeof showToast === "function") {
+          showToast(`Đã xóa vĩnh viễn thẻ "#${tagName}" khỏi hệ thống!`, "success");
+        }
+        await loadData();
+        renderTagsSection();
+      } else {
+        if (typeof showToast === "function") {
+          showToast((result && result.message) || "Không thể xóa thẻ!", "error");
+        }
+      }
+    } catch (err) {
+      console.error("Lỗi xóa tag:", err);
+      if (typeof showToast === "function") {
+        showToast("Lỗi kết nối khi xóa thẻ!", "error");
+      }
     }
-    renderTagsSection();
   }
 
   /**
    * Dọn dẹp tất cả các tag rác có 0 bài viết
    */
-  function handleCleanZeroArticleTags() {
-    const zeroTags = allTags.filter((t) => getTagArticleCount(t.id) === 0);
+  async function handleCleanZeroArticleTags() {
+    const zeroTags = allTags.filter((t) => Number(t.article_count) === 0);
+
     if (zeroTags.length === 0) {
-      if (typeof showToast === "function") {
-        showToast("Hệ thống không có thẻ tag rác (0 bài viết) nào cần dọn dẹp!", "info");
-      }
+      if (typeof showToast === "function") showToast("Hệ thống không có thẻ tag rác (0 bài viết) nào cần dọn dẹp!", "info");
       return;
     }
 
@@ -706,13 +613,15 @@
       return;
     }
 
-    const zeroIds = zeroTags.map((t) => String(t.id));
-    allTags = allTags.filter((t) => !zeroIds.includes(String(t.id)));
-
-    saveTableData("tags", allTags);
-    if (typeof showToast === "function") {
-      showToast(`Đã dọn dẹp thành công ${zeroTags.length} thẻ tag rác!`, "success");
+    for (const tag of zeroTags) {
+      await fetch(resolveApiUrl(`editor/categories-tags.php?type=tags&id=${tag.id}`), {
+        method: "DELETE",
+        credentials: "include"
+      });
     }
+
+    if (typeof showToast === "function") showToast(`Đã dọn dẹp thành công ${zeroTags.length} thẻ tag rác!`, "success");
+    await loadData();
     renderTagsSection();
   }
 

@@ -43,9 +43,9 @@
   async function loadData() {
     try {
       const [articlesRes, categoriesRes, usersRes] = await Promise.all([
-        fetch('/website-tin-tuc/backend/api/admin/published-articles.php').then(r => r.json()),
-        fetch('/website-tin-tuc/backend/api/public/categories.php').then(r => r.json()),
-        fetch('/website-tin-tuc/backend/api/admin/users.php').then(r => r.json())
+        fetch(resolveApiUrl('admin/published-articles.php')).then(r => r.json()),
+        fetch(resolveApiUrl('public/categories.php')).then(r => r.json()),
+        fetch(resolveApiUrl('admin/users.php')).then(r => r.json())
       ]);
       allArticles = articlesRes.data || [];
       allCategories = categoriesRes.data || [];
@@ -601,7 +601,7 @@
   window.adminToggleHideArticle = async function (id) {
     closeAllActionMenus();
 
-    const res = await fetch('/website-tin-tuc/backend/api/admin/published-articles.php', {
+    const res = await fetch(resolveApiUrl('admin/published-articles.php'), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: id, toggle_status: true })
@@ -672,7 +672,7 @@
       return;
     }
 
-    const res = await fetch('/website-tin-tuc/backend/api/admin/published-articles.php', {
+    const res = await fetch(resolveApiUrl('admin/published-articles.php'), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -726,7 +726,7 @@
   async function handleConfirmDelete() {
     if (!deletingArticleId) return;
 
-    const res = await fetch('/website-tin-tuc/backend/api/admin/published-articles.php', {
+    const res = await fetch(resolveApiUrl('admin/published-articles.php'), {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: deletingArticleId })

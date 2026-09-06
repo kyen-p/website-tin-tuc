@@ -14,11 +14,11 @@ const FAVORITES_API = "../../backend/api/user/favorites.php";
 async function initFavoritesPage() {
   // Khởi tạo Header / Footer
   if (typeof initPublicHeader === "function") {
-    initPublicHeader("favorites");
+    await initPublicHeader("favorites");
   }
 
   if (typeof initPublicFooter === "function") {
-    initPublicFooter();
+    await initPublicFooter();
   }
 
   // Lấy danh sách yêu thích từ PHP
@@ -129,7 +129,7 @@ function renderFavoritesList(favoriteArticles) {
             color: var(--ink-muted);
           "
         >
-          Bạn chưa lưu bài viết nào
+          Bạn chưa thích bài viết nào
         </p>
       </div>
     `;

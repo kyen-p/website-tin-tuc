@@ -395,7 +395,7 @@ async function initProfilePage() {
         populateUserData(result.data);
 
         if (typeof initPublicHeader === "function") {
-          initPublicHeader("profile");
+          await initPublicHeader("profile");
         }
 
         if (typeof showToast === "function") {
@@ -416,11 +416,11 @@ async function initProfilePage() {
 
   // Khởi tạo Header / Footer
   if (typeof initPublicHeader === "function") {
-    initPublicHeader("profile");
+    await initPublicHeader("profile");
   }
 
   if (typeof initPublicFooter === "function") {
-    initPublicFooter();
+    await initPublicFooter();
   }
 
   // Lấy dữ liệu thật từ PHP

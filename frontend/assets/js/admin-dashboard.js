@@ -21,10 +21,10 @@
 
     try {
       const [usersRes, articlesRes, categoriesRes, commentsRes] = await Promise.all([
-        fetch('/website-tin-tuc/backend/api/admin/users.php').then(r => r.json()),
-        fetch('/website-tin-tuc/backend/api/admin/published-articles.php').then(r => r.json()),
-        fetch('/website-tin-tuc/backend/api/public/categories.php').then(r => r.json()),
-        fetch('/website-tin-tuc/backend/api/admin/comments.php').then(r => r.json())
+        fetch(resolveApiUrl('admin/users.php')).then(r => r.json()),
+        fetch(resolveApiUrl('admin/published-articles.php')).then(r => r.json()),
+        fetch(resolveApiUrl('public/categories.php')).then(r => r.json()),
+        fetch(resolveApiUrl('admin/comments.php')).then(r => r.json())
       ]);
 
       const users = usersRes.data || [];
@@ -287,11 +287,7 @@
     });
 
     if (!maxDate) {
-      if (typeof getSystemTime === "function") {
-        maxDate = getSystemTime();
-      } else {
-        maxDate = new Date("2026-08-14T23:59:59");
-      }
+      maxDate = getSystemTime();
     }
 
     const labels = [];

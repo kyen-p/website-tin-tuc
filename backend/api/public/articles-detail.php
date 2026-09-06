@@ -86,6 +86,16 @@ try {
         ],
     ];
 
+    $tagStmt = $pdo->prepare("
+        SELECT t.id, t.name, t.slug 
+        FROM article_tags at 
+        JOIN tags t ON at.tag_id = t.id 
+        WHERE at.article_id = ?
+        ORDER BY t.name ASC
+    ");
+    $tagStmt->execute([$articleId]);
+    $article['tags'] = $tagStmt->fetchAll(PDO::FETCH_ASSOC);
+
     jsonResponse(true, $article);
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");

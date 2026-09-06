@@ -37,7 +37,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-  <script src="../assets/js/mock-data.js"></script>
+
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>
   <script>
@@ -61,57 +61,41 @@
       const mount = document.getElementById("workspace-content");
       if (!mount) return;
 
-      const response = await fetch('reporter/my-articles.php');
-const result = await response.json();
-const allArticles = result.data || [];
-
-const allCategories = getTable("categories") || [];
-const allFavorites = getTable("favorites") || [];
-const allComments = getTable("comments") || [];
-      // Map danh mục theo ID để tra cứu nhanh
-      const categoryMap = {};
-      allCategories.forEach(cat => {
-        categoryMap[cat.id] = cat.name;
-      });
-
-      // Map số lượt thích (favorites) theo article_id
-      const likesMap = {};
-      allFavorites.forEach(fav => {
-        if (fav && fav.article_id) {
-          likesMap[fav.article_id] = (likesMap[fav.article_id] || 0) + 1;
+      try {
+        const response = await fetch(resolveApiUrl("reporter/dashboard.php"), {
+          credentials: "include"
+        });
+        const result = await response.json();
+        
+        if (!result.success || !result.data) {
+          mount.innerHTML = `<div class="admin-card" style="padding: 24px; text-align: center; color: var(--muted);">Không thể tải dữ liệu thống kê từ máy chủ.</div>`;
+          return;
         }
-      });
 
-      // Map số bình luận hợp lệ theo article_id (không tính bình luận đã xóa is_deleted)
-      const commentsMap = {};
-      allComments.forEach(cmt => {
-        if (cmt && cmt.article_id && !cmt.is_deleted) {
-          commentsMap[cmt.article_id] = (commentsMap[cmt.article_id] || 0) + 1;
-        }
-      });
+        const data = result.data;
+        const allArticles = data.articles || [];
 
-      // Lọc các bài viết ĐÃ XUẤT BẢN của riêng phóng viên này
-      const publishedArticles = allArticles.filter(art => {
-        const isAuthor = Number(art.author_id) === Number(currentUser.id) || 
-                         (art.author && currentUser.full_name && art.author.trim().toLowerCase() === currentUser.full_name.trim().toLowerCase()) ||
-                         (art.author && currentUser.username && art.author.trim().toLowerCase() === currentUser.username.trim().toLowerCase());
-        return isAuthor && art.status === "published";
-      });
+        // Lọc các bài viết ĐÃ XUẤT BẢN
+        const publishedArticles = allArticles.filter(art => art.status === "published");
 
-      // Chuẩn hóa dữ liệu cho từng bài viết - đồng bộ views / view_count
-      reporterArticlesData = publishedArticles.map(art => {
-        const viewsNum = Number(art.views !== undefined ? art.views : (art.view_count || 0));
-        return {
-          id: art.id,
-          title: art.title || "Chưa đặt tiêu đề",
-          category_id: art.category_id,
-          category_name: categoryMap[art.category_id] || "Tổng hợp",
-          published_at: art.published_at || art.created_at || "",
-          views: viewsNum,
-          comments_count: commentsMap[art.id] || 0,
-          likes_count: likesMap[art.id] || 0
-        };
-      });
+        // Chuẩn hóa dữ liệu cho từng bài viết
+        reporterArticlesData = publishedArticles.map(art => {
+          const viewsNum = Number(art.view_count || art.views || 0);
+          return {
+            id: art.id,
+            title: art.title || "Chưa đặt tiêu đề",
+            category_id: art.category_id,
+            category_name: art.category_name || "Tổng hợp",
+            published_at: art.published_at || art.created_at || "",
+            views: viewsNum,
+            comments_count: Number(art.comment_count || 0),
+            likes_count: 0
+          };
+        });
+      } catch (err) {
+        console.error("Lỗi khi tải bảng điều khiển phóng viên:", err);
+        reporterArticlesData = [];
+      }
 
       // Tính toán các chỉ số KPI tổng quan
       const totalPublished = reporterArticlesData.length;

@@ -38,8 +38,7 @@ CREATE TABLE `articles` (
   `approved_by` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
   `is_notable_event` tinyint(1) DEFAULT 0,
-  `status` enum('draft','pending','published','rejected') DEFAULT 'draft',
-  `rejection_reason` text DEFAULT NULL,
+  `status` enum('draft','pending','published','rejected','hidden') DEFAULT 'draft',  `rejection_reason` text DEFAULT NULL,
   `view_count` int(11) DEFAULT 0,
   `published_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
@@ -107,8 +106,6 @@ CREATE TABLE `favorites` (
 
 CREATE TABLE `site_settings` (
   `id` int(11) NOT NULL,
-  `name` varchar(100) DEFAULT NULL,
-  `logo` varchar(255) DEFAULT NULL,
   `contact_email` varchar(100) DEFAULT NULL,
   `contact_phone` varchar(20) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,

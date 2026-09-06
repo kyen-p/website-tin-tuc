@@ -2,122 +2,22 @@
  * ==============================================================================
  * MẠCH TIN - COMMON.JS (Tiện ích & Hàm dùng chung toàn hệ thống)
  * ==============================================================================
- * 1. Database Helper (Đọc/Ghi localStorage đồng bộ với MOCK_DATA)
- * 2. Auth & Session Helper (getCurrentUser, login, logout, checkAuth)
- * 3. Formatting & Security Utilities (formatDate, timeAgo, escapeHtml, getInitials)
- * 4. Toast Notification (Toastify JS wrapper)
- * 5. Public Chrome Renderers (Header & Footer dùng chung)
+ * 1. Auth & Session Helper (getCurrentUser, logout, checkAuth - kết nối PHP / MySQL)
+ * 2. Formatting & Security Utilities (formatDate, timeAgo, escapeHtml, getInitials)
+ * 3. Toast Notification (Toastify JS wrapper)
+ * 4. Public Chrome Renderers (Header & Footer dùng chung)
  * ==============================================================================
  */
 
-// Key lưu trữ phiên đăng nhập và phiên bản dữ liệu mẫu trong localStorage
-const SESSION_KEY = "machtin_current_user_id";
-const DB_PREFIX = "machtin_tbl_";
-const DB_VERSION_KEY = "machtin_db_version";
-const CURRENT_DB_VERSION = "4.0.0"; // Chuẩn hóa 8 bảng (7 thực thể: site_settings, users, categories, tags, articles, comments, favorites; 1 liên kết: article_tags)
-
 /**
- * Lấy mốc thời gian hệ thống dùng chung (System Reference Time)
- * Trả về mốc thời gian tham chiếu của cơ sở dữ liệu mẫu (14/08/2026 23:59:59)
- * Đảm bảo toàn bộ các trang (Trang chủ, Dashboard BTV, Phóng viên, Thống kê...) đồng bộ 100%
+ * Lấy mốc thời gian hệ thống dùng chung
  */
 function getSystemTime() {
   return new Date();
 }
 
-// Tự động đồng bộ lại localStorage khi Mock Data được cập nhật phiên bản mới
-(function checkDbVersion() {
-  try {
-    const savedVersion = localStorage.getItem(DB_VERSION_KEY);
-    if (savedVersion !== CURRENT_DB_VERSION && typeof MOCK_DATA !== "undefined") {
-      Object.keys(MOCK_DATA).forEach((key) => {
-        localStorage.removeItem(DB_PREFIX + key);
-      });
-      localStorage.setItem(DB_VERSION_KEY, CURRENT_DB_VERSION);
-      // Nạp ngay dữ liệu mới vào localStorage
-      Object.keys(MOCK_DATA).forEach((key) => {
-        localStorage.setItem(DB_PREFIX + key, JSON.stringify(MOCK_DATA[key]));
-      });
-    }
-  } catch (e) {
-    console.error("Lỗi khi kiểm tra phiên bản dữ liệu", e);
-  }
-})();
-
 // ==============================================================================
-// 1. DATABASE HELPER (LOCAL STORAGE SYNC)
-// ==============================================================================
-
-/**
- * GHI CHÚ PHẠM VI CẶP 1 (deviation có chủ đích so với tài liệu):
- * Tài liệu yêu cầu bỏ hẳn getTable()/saveTable()/setTable() khỏi common.js.
- * Trong phạm vi phiên làm việc này, các mảng dữ liệu KHÔNG thuộc Auth/Public
- * (tags, article_tags, comments, favorites, site_settings) và toàn bộ khu vực
- * User/Reporter/Editor/Admin (Cặp 2, Cặp 3) vẫn CHƯA có API backend tương ứng
- * và vẫn hoàn toàn phụ thuộc 3 hàm này. Xóa hẳn ngay bây giờ sẽ làm sập toàn bộ
- * các khu vực đó. Vì vậy 3 hàm được GIỮ LẠI, chỉ riêng luồng Auth (getCurrentUser)
- * đã ngừng dùng chúng và chuyển hẳn sang gọi backend PHP + MySQL như yêu cầu.
- * Khi Cặp 2/Cặp 3 hoàn thành các API còn lại, có thể xóa hẳn 3 hàm này.
- */
-
-/**
- * Lấy dữ liệu của một bảng (Nạp từ localStorage hoặc khởi tạo từ MOCK_DATA)
- */
-function getTable(tableName) {
-  try {
-    const raw = localStorage.getItem(DB_PREFIX + tableName);
-    if (raw) {
-      return JSON.parse(raw);
-    }
-  } catch (error) {
-    console.error("Lỗi khi đọc bảng " + tableName, error);
-  }
-
-  // Khởi tạo từ MOCK_DATA nếu chưa có trong localStorage
-  if (typeof MOCK_DATA !== "undefined" && MOCK_DATA[tableName]) {
-    const seedData = JSON.parse(JSON.stringify(MOCK_DATA[tableName]));
-    saveTable(tableName, seedData);
-    return seedData;
-  }
-  return [];
-}
-
-/**
- * Lưu dữ liệu của một bảng vào localStorage
- */
-function saveTable(tableName, data) {
-  try {
-    localStorage.setItem(DB_PREFIX + tableName, JSON.stringify(data));
-  } catch (error) {
-    console.error("Lỗi khi lưu bảng " + tableName, error);
-  }
-}
-
-/**
- * Alias setTable đồng bộ cho saveTable
- */
-function setTable(tableName, data) {
-  return saveTable(tableName, data);
-}
-window.saveTable = saveTable;
-window.setTable = setTable;
-window.getTable = getTable;
-
-/**
- * Khôi phục lại toàn bộ dữ liệu gốc từ MOCK_DATA
- */
-function resetDatabase() {
-  if (typeof MOCK_DATA === "undefined") return;
-  Object.keys(MOCK_DATA).forEach((key) => {
-    localStorage.removeItem(DB_PREFIX + key);
-  });
-  localStorage.removeItem(SESSION_KEY);
-  showToast("Đã khôi phục dữ liệu mẫu gốc thành công!", "success");
-  setTimeout(() => window.location.reload(), 800);
-}
-
-// ==============================================================================
-// 2. AUTH & SESSION HELPER (CẶP 1 — đã chuyển sang PHP Session + MySQL)
+// 1. AUTH & SESSION HELPER (Kết nối PHP Session + MySQL Backend)
 // ==============================================================================
 
 /**
@@ -139,6 +39,41 @@ function resolveApiUrl(apiPath) {
   return prefix + cleanPath;
 }
 window.resolveApiUrl = resolveApiUrl;
+
+/**
+ * Phân tích chuỗi JSON an toàn: nếu phản hồi là mã PHP thô (khi chạy không có server PHP)
+ * hoặc trang lỗi HTML thì trả về null thay vì ném ngoại lệ làm crash ứng dụng.
+ */
+function safeJsonParse(text) {
+  if (!text || typeof text !== "string") return null;
+  const trimmed = text.trim();
+  if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
+    return null;
+  }
+  try {
+    return JSON.parse(trimmed);
+  } catch (e) {
+    return null;
+  }
+}
+window.safeJsonParse = safeJsonParse;
+
+/**
+ * Gọi API trả về JSON an toàn: tự động phân tích và xử lý khi backend trả về JSON hoặc rỗng.
+ */
+async function safeFetchJson(url, options) {
+  try {
+    const res = await fetch(url, options);
+    if (!res.ok) return { success: false, data: null };
+    const text = await res.text();
+    const parsed = safeJsonParse(text);
+    if (parsed) return parsed;
+    return { success: false, data: null };
+  } catch (err) {
+    return { success: false, data: null };
+  }
+}
+window.safeFetchJson = safeFetchJson;
 
 // Cache trong bộ nhớ (chỉ tồn tại trong 1 lần tải trang) để tránh gọi lại me.php
 // nhiều lần khi nhiều đoạn code trên cùng 1 trang đều gọi getCurrentUser().
@@ -162,13 +97,12 @@ function getCurrentUser() {
     xhr.open("GET", resolveApiUrl("auth/me.php"), false); // false = đồng bộ
     xhr.send(null);
     if (xhr.status >= 200 && xhr.status < 300) {
-      const res = JSON.parse(xhr.responseText);
+      const res = safeJsonParse(xhr.responseText);
       __machtinCurrentUserCache = res && res.success && res.data ? res.data : null;
     } else {
       __machtinCurrentUserCache = null;
     }
   } catch (error) {
-    console.error("Lỗi khi lấy thông tin người dùng hiện tại từ backend", error);
     __machtinCurrentUserCache = null;
   }
   return __machtinCurrentUserCache;
@@ -194,7 +128,7 @@ window.setCurrentUser = setCurrentUser;
  * Đăng xuất tài khoản: gọi API hủy PHP Session, sau đó mới điều hướng.
  */
 function logout(redirectUrl) {
-  fetch(resolveApiUrl("auth/logout.php"), { method: "POST" })
+  fetch(resolveApiUrl("auth/logout.php"), { method: "POST", credentials: "include" })
     .catch((error) => {
       console.error("Lỗi khi gọi API đăng xuất", error);
     })
@@ -315,6 +249,39 @@ function escapeHtml(text) {
 }
 
 /**
+ * Render danh sách "Top bài đọc nhiều" dùng chung cho mọi trang
+ * @param {HTMLElement} mountEl - div chứa danh sách
+ * @param {Array} articles - mảng bài viết đã published
+ * @param {string} emptyText - text hiển thị khi rỗng
+ */
+function renderTopViewsPanel(mountEl, articles, emptyText = "Chưa có bài viết nổi bật trong tuần.") {
+  if (!mountEl) return;
+
+  const topArticles = articles
+    .filter((a) => a.status === "published")
+    .sort((a, b) => (Number(b.views || b.view_count) || 0) - (Number(a.views || a.view_count) || 0))
+    .slice(0, 5);
+
+  if (topArticles.length === 0) {
+    mountEl.innerHTML = `<p class="meta">${emptyText}</p>`;
+    return;
+  }
+
+  mountEl.innerHTML = topArticles
+    .map((a, idx) => `
+      <div class="rank-item ${idx === topArticles.length - 1 ? 'no-border' : ''}">
+        <div>
+          <h4 class="rank-item__title">
+            <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
+          </h4>
+          <div class="meta" style="font-size: 11.5px;">${(Number(a.views || a.view_count) || 0).toLocaleString("vi-VN")} lượt đọc</div>
+        </div>
+      </div>
+    `)
+    .join("");
+}
+
+/**
  * Định dạng ngày đăng bài chuẩn toàn hệ thống Mạch Tin:
  * - Nếu < 48 giờ: 'Vừa xong' / 'X phút trước' / 'X giờ trước' / '1 ngày trước'
  * - Nếu > 48 giờ: 'HH:mm, DD/MM/YYYY' (ví dụ: '09:30, 13/08/2026')
@@ -324,7 +291,7 @@ function formatDate(dateStr) {
   const d = new Date(String(dateStr).replace(" ", "T"));
   if (isNaN(d.getTime())) return dateStr;
 
-  const now = typeof getSystemTime === "function" ? getSystemTime() : new Date("2026-08-14T23:59:59");
+  const now = getSystemTime();
   const diffMs = now.getTime() - d.getTime();
 
   // Nếu trong vòng 48 giờ (2 ngày)
@@ -400,21 +367,26 @@ function resolveAssetPath(path) {
   // Loại bỏ dấu / ở đầu nếu có
   const cleanPath = trimmed.startsWith("/") ? trimmed.substring(1) : trimmed;
 
-  // Kiểm tra nếu trang hiện tại nằm trong thư mục con (ví dụ /public/, /admin/, /user/, /reporter/)
+  // Kiểm tra nếu trang hiện tại nằm trong thư mục con (ví dụ /public/, /admin/, /user/, /reporter/, /editor/)
   const currentPath = window.location.pathname;
   const isSubfolder = /\/(public|admin|reporter|editor|user)\//.test(currentPath) || 
                       currentPath.includes("/public") || 
                       window.location.href.includes("/public/") ||
                       window.location.href.includes("/admin/") ||
                       window.location.href.includes("/user/") ||
-                      window.location.href.includes("/reporter/");
+                      window.location.href.includes("/reporter/") ||
+                      window.location.href.includes("/editor/");
+
+  // Nếu đường dẫn trỏ tới backend (ví dụ backend/api/upload/...): cần lùi 2 cấp từ frontend/subfolder/
+  if (cleanPath.startsWith("backend/")) {
+    return isSubfolder ? "../../" + cleanPath : "../" + cleanPath;
+  }
 
   if (isSubfolder && !cleanPath.startsWith("../")) {
     return "../" + cleanPath;
   }
   return cleanPath;
 }
-
 /**
  * Tạo thẻ ảnh bìa bài viết với fallback placeholder tự động
  */
@@ -609,13 +581,13 @@ async function initPublicHeader(activeCategorySlug = "") {
 
   const user = getCurrentUser();
 
-  // Đổi từ getTable() sang gọi API thật
+  // Lấy dữ liệu an toàn từ API PHP backend
   const [categoriesRes, articlesRes] = await Promise.all([
-    fetch(resolveApiUrl("public/categories.php")).then(r => r.json()),
-    fetch(resolveApiUrl("public/articles.php")).then(r => r.json())
+    safeFetchJson(resolveApiUrl("public/categories.php")),
+    safeFetchJson(resolveApiUrl("public/articles.php"))
   ]);
-  const categories = categoriesRes.data || [];
-  const allArticles = articlesRes.data || [];
+  const categories = (categoriesRes && categoriesRes.data) || [];
+  const allArticles = (articlesRes && articlesRes.data) || [];
 
   const currentPath = window.location.pathname;
   const isInUserDir = currentPath.includes("/user/");
@@ -833,10 +805,9 @@ async function initPublicFooter() {
   const isInUserDir = currentPath.includes("/user/");
   const publicPrefix = isInUserDir ? "../public/" : "";
 
-  // Đổi từ getTable() sang gọi API thật (dùng chung API admin đã có, GET không cần đăng nhập)
-  const res = await fetch(resolveApiUrl("admin/contact-config.php"));
-  const result = await res.json();
-  const site = result.data || {};
+  // Lấy dữ liệu cấu hình liên hệ từ API
+  const result = await safeFetchJson(resolveApiUrl("admin/contact-config.php"));
+  const site = (result && result.data) || {};
 
   footerMount.innerHTML = `
     <footer class="site-footer">

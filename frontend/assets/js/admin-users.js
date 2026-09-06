@@ -48,13 +48,25 @@
   }
 
   async function loadData() {
-    const res = await fetch('/website-tin-tuc/backend/api/admin/users.php');
-    const result = await res.json();
-    allUsers = result.data || [];
-    // allArticles, allComments, allCategories: tạm giữ getTable() cho tới khi Cặp 1/2/3 nối xong API tương ứng của họ
-    allArticles = getTable("articles") || [];
-    allComments = getTable("comments") || [];
-    allCategories = getTable("categories") || [];
+    try {
+      const [usersRes, articlesRes, commentsRes, categoriesRes] = await Promise.all([
+        fetch(resolveApiUrl("admin/users.php"), { credentials: "include" }).then(r => r.json()).catch(() => ({ success: false })),
+        fetch(resolveApiUrl("admin/published-articles.php"), { credentials: "include" }).then(r => r.json()).catch(() => ({ success: false })),
+        fetch(resolveApiUrl("admin/comments.php"), { credentials: "include" }).then(r => r.json()).catch(() => ({ success: false })),
+        fetch(resolveApiUrl("public/categories.php")).then(r => r.json()).catch(() => ({ success: false }))
+      ]);
+
+      allUsers = (usersRes && usersRes.data) || [];
+      allArticles = (articlesRes && articlesRes.data) || [];
+      allComments = (commentsRes && commentsRes.data) || [];
+      allCategories = (categoriesRes && categoriesRes.data) || [];
+    } catch (e) {
+      console.error("Lỗi tải dữ liệu người dùng:", e);
+      allUsers = [];
+      allArticles = [];
+      allComments = [];
+      allCategories = [];
+    }
   }
 
   /**
@@ -731,26 +743,28 @@
         `,
         confirmText: "Xác nhận đổi vai trò",
         confirmBtnClass: "admin-btn--primary",
-        onConfirm: function () {
-          user.role = newRole;
-          user.updated_at = new Date().toISOString().replace("T", " ").substring(0, 19);
-
-          saveTable("users", allUsers);
-
-          if (typeof createNotification === "function") {
-            createNotification({
-              user_id: user.id,
-              type: "role_changed",
-              title: "Vai trò tài khoản đã được cập nhật",
-              message: `Quản trị viên đã thay đổi vai trò của bạn từ '${getRoleName(oldRole)}' sang '${getRoleName(newRole)}'.`,
-              link: "#"
+        onConfirm: async function () {
+          try {
+            const res = await fetch(resolveApiUrl("admin/users.php"), {
+              method: "PUT",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ user_id: user.id, role: newRole }),
             });
+            const result = await res.json();
+            if (result && result.success) {
+              closeModal("userActionModal");
+              await loadData();
+              renderPageStructure();
+              renderTableRows();
+              showToast(`Đã phân quyền tài khoản '${user.full_name}' thành '${getRoleName(newRole)}' thành công!`, "success");
+            } else {
+              showToast((result && result.message) || "Không thể đổi vai trò!", "error");
+            }
+          } catch (e) {
+            console.error("Lỗi đổi vai trò:", e);
+            showToast("Lỗi kết nối khi cập nhật vai trò!", "error");
           }
-
-          closeModal("userActionModal");
-          renderPageStructure();
-          renderTableRows();
-          showToast(`Đã phân quyền tài khoản '${user.full_name}' thành '${getRoleName(newRole)}' thành công!`, "success");
         }
       });
     };
@@ -803,28 +817,33 @@
           `,
           confirmText: "Khóa tài khoản",
           confirmBtnClass: "admin-btn--danger",
-          onConfirm: function () {
+          onConfirm: async function () {
             const reason = document.getElementById("modal-lock-reason") ? document.getElementById("modal-lock-reason").value.trim() : "";
-            user.status = "locked";
-            user.lock_reason = reason || ACCOUNT_LOCK_PRESETS[0];
-            user.locked_at = new Date().toISOString().replace("T", " ").substring(0, 19);
-
-            saveTable("users", allUsers);
-
-            if (typeof createNotification === "function") {
-              createNotification({
-                user_id: user.id,
-                type: "account_locked",
-                title: "Tài khoản của bạn đã bị khóa",
-                message: `Tài khoản đã bị tạm khóa với lý do: ${user.lock_reason}. Vui lòng liên hệ ban quản trị nếu có thắc mắc.`,
-                link: "#"
+            try {
+              const res = await fetch(resolveApiUrl("admin/users.php"), {
+                method: "PUT",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  user_id: user.id,
+                  status: "locked",
+                  lock_reason: reason || ACCOUNT_LOCK_PRESETS[0],
+                }),
               });
+              const result = await res.json();
+              if (result && result.success) {
+                closeModal("userActionModal");
+                await loadData();
+                renderPageStructure();
+                renderTableRows();
+                showToast(`Đã khóa tài khoản '${user.full_name}' thành công.`, "warning");
+              } else {
+                showToast((result && result.message) || "Không thể khóa tài khoản!", "error");
+              }
+            } catch (e) {
+              console.error("Lỗi khóa tài khoản:", e);
+              showToast("Lỗi kết nối khi khóa tài khoản!", "error");
             }
-
-            closeModal("userActionModal");
-            renderPageStructure();
-            renderTableRows();
-            showToast(`Đã khóa tài khoản '${user.full_name}' thành công.`, "warning");
           }
         });
 
@@ -854,8 +873,9 @@
           confirmText: "Mở khóa tài khoản",
           confirmBtnClass: "admin-btn--primary",
           onConfirm: function () {
-            fetch('/website-tin-tuc/backend/api/admin/users.php', {
+            fetch(resolveApiUrl('admin/users.php'), {
               method: 'PUT',
+              credentials: 'include',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ user_id: user.id, status: 'active' })
             })
@@ -911,14 +931,28 @@
         `,
             confirmText: "Xóa vĩnh viễn",
             confirmBtnClass: "admin-btn--danger",
-            onConfirm: function () {
-              allUsers = allUsers.filter(u => u.id !== userId);
-              saveTable("users", allUsers);
-
-              closeModal("userActionModal");
-              renderPageStructure();
-              renderTableRows();
-              showToast(`Đã xóa tài khoản '${user.full_name}' thành công.`, "success");
+            onConfirm: async function () {
+              try {
+                const res = await fetch(resolveApiUrl("admin/users.php"), {
+                  method: "PUT",
+                  credentials: "include",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ user_id: userId, delete: true }),
+                });
+                const result = await res.json();
+                if (result && result.success) {
+                  closeModal("userActionModal");
+                  await loadData();
+                  renderPageStructure();
+                  renderTableRows();
+                  showToast(`Đã xóa tài khoản '${user.full_name}' thành công.`, "success");
+                } else {
+                  showToast((result && result.message) || "Không thể xóa tài khoản!", "error");
+                }
+              } catch (e) {
+                console.error("Lỗi xóa tài khoản:", e);
+                showToast("Lỗi kết nối khi xóa tài khoản!", "error");
+              }
             }
           });
         };

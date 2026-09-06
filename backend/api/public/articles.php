@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 $categorySlug = isset($_GET['category']) ? trim($_GET['category']) : '';
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$tagSlug = isset($_GET['tag']) ? trim($_GET['tag']) : '';
 
 try {
     $sql = "SELECT
@@ -28,6 +29,15 @@ try {
         $params[] = $categorySlug;
     }
 
+    if ($tagSlug !== '') {
+        $sql .= " AND a.id IN (
+            SELECT at.article_id FROM article_tags at 
+            JOIN tags t ON at.tag_id = t.id 
+            WHERE t.slug = ?
+        )";
+        $params[] = $tagSlug;
+    }
+
     if ($search !== '') {
         $sql .= " AND (a.title LIKE ? OR a.short_description LIKE ? OR a.content LIKE ?)";
         $likeTerm = '%' . $search . '%';
@@ -42,7 +52,32 @@ try {
     $stmt->execute($params);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $articles = array_map('mapArticleRow', $rows);
+    // Lấy tags cho từng bài viết
+    $articleIds = array_column($rows, 'id');
+    $tagsByArticle = [];
+    if (!empty($articleIds)) {
+        $inPlaceholders = implode(',', array_fill(0, count($articleIds), '?'));
+        $tagStmt = $pdo->prepare("
+            SELECT at.article_id, t.id, t.name, t.slug 
+            FROM article_tags at 
+            JOIN tags t ON at.tag_id = t.id 
+            WHERE at.article_id IN ($inPlaceholders)
+        ");
+        $tagStmt->execute($articleIds);
+        while ($t = $tagStmt->fetch(PDO::FETCH_ASSOC)) {
+            $tagsByArticle[$t['article_id']][] = [
+                'id' => (int)$t['id'],
+                'name' => $t['name'],
+                'slug' => $t['slug']
+            ];
+        }
+    }
+
+    $articles = array_map(function($row) use ($tagsByArticle) {
+        $mapped = mapArticleRow($row);
+        $mapped['tags'] = $tagsByArticle[$row['id']] ?? [];
+        return $mapped;
+    }, $rows);
 
     jsonResponse(true, $articles);
 } catch (PDOException $e) {

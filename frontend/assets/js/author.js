@@ -14,12 +14,8 @@ async function initAuthorPage() {
   const rawKey = (urlParams.get("username") || urlParams.get("slug") || urlParams.get("id") || urlParams.get("author_id") || "").trim();
 
   // 1. Khởi tạo Header và Footer chung
-  if (typeof initPublicHeader === "function") initPublicHeader("");
-  if (typeof initPublicFooter === "function") initPublicFooter();
-
-  function getViews(a) {
-    return Number(a.view_count || a.views || 0);
-  }
+  if (typeof initPublicHeader === "function") await initPublicHeader("");
+  if (typeof initPublicFooter === "function") await initPublicFooter();
 
   const container = document.getElementById("author-container");
   const notFound = document.getElementById("author-not-found");
@@ -33,8 +29,7 @@ async function initAuthorPage() {
   if (rawKey) {
     try {
       const isNumericId = /^\d+$/.test(rawKey);
-      const apiUrl = resolveApiUrl(`public/authors.php?${isNumericId ? "id" : "username"}=${encodeURIComponent(rawKey)}`);
-      const res = await fetch(apiUrl);
+      const apiUrl = resolveApiUrl(`public/author.php?${isNumericId ? "id" : "username"}=${encodeURIComponent(rawKey)}`); const res = await fetch(apiUrl);
       const result = await res.json();
       if (result && result.success && result.data) {
         author = result.data;
@@ -62,16 +57,12 @@ async function initAuthorPage() {
   // Cập nhật tiêu đề trang
   document.title = `${author.full_name || author.username} - Hồ sơ | Mạch Tin`;
 
-  // Helper lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong a.category)
-  function getCategory(a) {
-    return (a && a.category) || { name: "Tin tức", slug: "" };
-  }
 
   // ============================================================================
   // A. THỐNG KÊ & HIỂN THỊ THÔNG TIN TÁC GIẢ / ĐỘC GIẢ
   // ============================================================================
   // authorArticles đã được backend lọc sẵn status = 'published' và sắp xếp published_at DESC
-  const totalViews = authorArticles.reduce((sum, a) => sum + getViews(a), 0);
+  const totalViews = authorArticles.reduce((sum, a) => sum + getArticleViews(a), 0);
 
   // 1. Breadcrumb: Trang chủ / Trang cá nhân / [Tên User]
   const breadcrumbAuthor = document.getElementById("breadcrumb-author");
@@ -132,7 +123,7 @@ async function initAuthorPage() {
     const authorCatsMap = new Map();
     authorArticles.forEach((a) => {
       if (a.category_id !== null && a.category_id !== undefined && !authorCatsMap.has(a.category_id)) {
-        authorCatsMap.set(a.category_id, getCategory(a));
+        authorCatsMap.set(a.category_id, getArticleCategory(a));
       }
     });
     const authorCats = Array.from(authorCatsMap.values());
@@ -179,11 +170,11 @@ async function initAuthorPage() {
 
     listMount.innerHTML = filtered
       .map((a) => {
-        const cat = getCategory(a);
+        const cat = getArticleCategory(a);
         const safeTitle = typeof escapeHtml === "function" ? escapeHtml(a.title) : a.title;
         const safeDesc = typeof escapeHtml === "function" ? escapeHtml(a.short_description || a.summary || "") : (a.short_description || "");
         const safeDate = typeof formatDate === "function" ? formatDate(a.published_at || a.created_at) : (a.published_at || a.created_at);
-        const safeViews = typeof formatNumber === "function" ? formatNumber(getViews(a)) : getViews(a);
+        const safeViews = typeof formatNumber === "function" ? formatNumber(getArticleViews(a)) : getArticleViews(a);
         const coverImg = typeof renderCoverImage === "function" ? renderCoverImage(a.cover_image || a.thumbnail, a.title, "ph--4x3") : `<img src="${a.thumbnail || a.cover_image}" alt="${safeTitle}">`;
 
         return `

@@ -2,6 +2,7 @@
 require_once '../../config/database.php';
 require_once '../../helpers/response.php';
 require_once '../../helpers/auth.php';
+require_once '../../helpers/file.php';
 
 requireRole(['admin']);
 
@@ -55,9 +56,37 @@ if ($method === 'DELETE') {
     $id = $input['id'] ?? null;
     if (!$id) jsonResponse(false, null, "Thiếu id bài viết");
 
+    // Lấy thông tin bài viết để xóa các file ảnh vật lý liên quan (ảnh bìa + ảnh minh họa trong bài)
+    $stmtFind = $pdo->prepare("SELECT cover_image, content FROM articles WHERE id = ?");
+    $stmtFind->execute([$id]);
+    $article = $stmtFind->fetch(PDO::FETCH_ASSOC);
+
+    if ($article) {
+        // 1. Xóa ảnh bìa (cover_image)
+        if (!empty($article['cover_image'])) {
+            deleteUploadedFile($article['cover_image']);
+        }
+
+        // 2. Quét và xóa các ảnh minh họa chèn trong nội dung bài viết
+        if (!empty($article['content'])) {
+            preg_match_all('/src=["\']([^"\']+)["\']/i', $article['content'], $matches);
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $imgSrc) {
+                    // Nếu là ảnh upload cục bộ của hệ thống
+                    if (strpos($imgSrc, 'backend/api/upload/') !== false) {
+                        // Chuẩn hóa lấy đúng đường dẫn bắt đầu từ backend/api/upload/...
+                        $pos = strpos($imgSrc, 'backend/api/upload/');
+                        $cleanImgPath = substr($imgSrc, $pos);
+                        deleteUploadedFile($cleanImgPath);
+                    }
+                }
+            }
+        }
+    }
+
     // Nhờ đã khai báo ON DELETE CASCADE trong database, xóa articles sẽ tự xóa luôn
     // comments, article_tags, favorites liên quan — không cần code PHP dọn từng bảng
     $stmt = $pdo->prepare("DELETE FROM articles WHERE id = ?");
     $stmt->execute([$id]);
-    jsonResponse(true, null, "Đã xóa vĩnh viễn bài viết");
+    jsonResponse(true, null, "Đã xóa vĩnh viễn bài viết và các tệp ảnh liên quan");
 }

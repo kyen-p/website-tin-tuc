@@ -1,13 +1,34 @@
 <?php
 
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../helpers/response.php';
-require_once __DIR__ . '/../../helpers/auth.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../helpers/response.php';
+require_once __DIR__ . '/../helpers/auth.php';
+require_once __DIR__ . '/../helpers/file.php';
 
 requireLogin();
 
-// Chỉ cho phép POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+$method = $_SERVER['REQUEST_METHOD'];
+
+// Xử lý XÓA ảnh (DELETE)
+if ($method === 'DELETE') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $url = $input['url'] ?? $_GET['url'] ?? '';
+
+    if (empty($url)) {
+        jsonResponse(false, null, "Thiếu thông tin đường dẫn ảnh cần xóa");
+    }
+
+    $deleted = deleteUploadedFile($url);
+    if ($deleted) {
+        jsonResponse(true, null, "Đã xóa vĩnh viễn file ảnh khỏi máy chủ");
+    } else {
+        // Trả về true kể cả khi file không tồn tại để tránh chặn luồng frontend
+        jsonResponse(true, null, "File không tồn tại hoặc đã được xóa trước đó");
+    }
+}
+
+// Chỉ chấp nhận POST nếu không phải DELETE
+if ($method !== 'POST') {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 }
 
@@ -45,7 +66,7 @@ if ($imageInfo === false) {
     jsonResponse(false, null, "File được chọn không phải là ảnh");
 }
 
-// Chỉ chấp nhận các định dạng ảnh
+// Chỉ chấp nhận các định dạng ảnh hợp lệ
 $allowedMimeTypes = [
     'image/jpeg' => 'jpg',
     'image/png' => 'png',
@@ -65,42 +86,35 @@ if (!isset($allowedMimeTypes[$mimeType])) {
 // Lấy extension từ MIME type thật
 $extension = $allowedMimeTypes[$mimeType];
 
-// Chọn thư mục lưu ảnh
+// Chọn thư mục lưu ảnh (theo cấu trúc backend/api/upload/articles/ và backend/api/upload/avatars/)
 if ($type === 'avatar') {
-    $uploadDir = __DIR__ . '/../uploads/avatars/';
+    $uploadDir = __DIR__ . '/upload/avatars/';
+    $dbPathPrefix = 'backend/api/upload/avatars/';
 } else {
-    $uploadDir = __DIR__ . '/../uploads/articles/';
+    $uploadDir = __DIR__ . '/upload/articles/';
+    $dbPathPrefix = 'backend/api/upload/articles/';
 }
 
-// Kiểm tra thư mục tồn tại
+// Tự động tạo thư mục nếu chưa tồn tại (Slide 69)
 if (!is_dir($uploadDir)) {
-    jsonResponse(false, null, "Thư mục lưu ảnh không tồn tại");
+    mkdir($uploadDir, 0777, true);
 }
 
-// Kiểm tra quyền ghi
-if (!is_writable($uploadDir)) {
-    jsonResponse(false, null, "Thư mục lưu ảnh không có quyền ghi");
-}
-
-// Tạo tên file riêng
+// Tạo tên file riêng biệt không trùng lặp
 $fileName = $type . '_' . uniqid() . '_' . time() . '.' . $extension;
 
-// Đường dẫn vật lý của file
+// Đường dẫn vật lý của file đích
 $targetPath = $uploadDir . $fileName;
 
-// Lưu ảnh
+// Di chuyển file từ thư mục tạm sang thư mục đích (Slide 74)
 if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-    jsonResponse(false, null, "Không thể lưu ảnh");
+    jsonResponse(false, null, "Không thể lưu ảnh vào máy chủ");
 }
 
-// Đường dẫn ảnh lưu trong database
-if ($type === 'avatar') {
-    $imageUrl = 'backend/uploads/avatars/' . $fileName;
-} else {
-    $imageUrl = 'backend/uploads/articles/' . $fileName;
-}
+// Đường dẫn ảnh chuẩn lưu trong database và trả về frontend
+$imageUrl = $dbPathPrefix . $fileName;
 
-// Trả kết quả
+// Trả kết quả JSON
 jsonResponse(
     true,
     [

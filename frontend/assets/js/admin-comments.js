@@ -32,11 +32,21 @@
   }
 
   async function loadData() {
-    const res = await fetch('/website-tin-tuc/backend/api/admin/comments.php');
-    const result = await res.json();
-    allComments = result.data || [];
-    allArticles = getTable("articles") || [];
-    allUsers = getTable("users") || [];
+    try {
+      const [commentsRes, articlesRes, usersRes] = await Promise.all([
+        fetch(resolveApiUrl("admin/comments.php"), { credentials: "include" }).then((r) => r.json()).catch(() => ({ success: false })),
+        fetch(resolveApiUrl("admin/published-articles.php"), { credentials: "include" }).then((r) => r.json()).catch(() => ({ success: false })),
+        fetch(resolveApiUrl("admin/users.php"), { credentials: "include" }).then((r) => r.json()).catch(() => ({ success: false })),
+      ]);
+      allComments = (commentsRes && commentsRes.data) || [];
+      allArticles = (articlesRes && articlesRes.data) || [];
+      allUsers = (usersRes && usersRes.data) || [];
+    } catch (e) {
+      console.error("Lỗi tải dữ liệu bình luận quản trị:", e);
+      allComments = [];
+      allArticles = [];
+      allUsers = [];
+    }
   }
 
   function renderPageStructure() {
@@ -160,32 +170,31 @@
       if (modal) modal.style.display = "none";
     };
 
-    window.confirmDeleteComment = function () {
+    window.confirmDeleteComment = async function () {
       if (!deleteTargetCommentId) return;
 
-      allComments = allComments.filter((c) => Number(c.id) !== Number(deleteTargetCommentId));
-      fetch('/website-tin-tuc/backend/api/admin/comments.php', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ comment_id: deleteTargetCommentId })
-      })
-        .then(res => res.json())
-        .then(async result => {
-          if (result.success) {
-            await loadData();
-            renderPageStructure();
-            renderCommentsTable();
-            showToast("Đã xóa bình luận thành công.", "warning");
-          }
-        });
+      const toDeleteId = deleteTargetCommentId;
       window.closeDeleteCommentModal();
-      showToast("Đã xóa bình luận thành công!", "success");
-      loadData();
-      renderCommentsTable();
 
-      const totalBadge = document.getElementById("commentTotalBadge");
-      if (totalBadge) {
-        totalBadge.textContent = allComments.filter((c) => !c.is_deleted).length;
+      try {
+        const res = await fetch(resolveApiUrl("admin/comments.php"), {
+          method: "DELETE",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comment_id: toDeleteId }),
+        });
+        const result = await res.json();
+        if (result && result.success) {
+          showToast(result.message || "Đã xóa bình luận thành công.", "success");
+          await loadData();
+          renderPageStructure();
+          renderCommentsTable();
+        } else {
+          showToast((result && result.message) || "Xóa bình luận thất bại.", "error");
+        }
+      } catch (err) {
+        console.error("Lỗi xóa bình luận:", err);
+        showToast("Lỗi kết nối khi xóa bình luận!", "error");
       }
     };
   }

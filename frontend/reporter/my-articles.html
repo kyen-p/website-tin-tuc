@@ -44,7 +44,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-  <script src="../assets/js/mock-data.js"></script>
+
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>
   <script>
@@ -63,47 +63,48 @@
     });
 
     /**
-     * Tải danh sách bài viết của phóng viên từ LocalStorage
+     * Tải danh sách bài viết của phóng viên từ Backend PHP API
      */
     async function loadReporterArticles(currentUser) {
-      const response = await fetch('reporter/my-articles.php');
-const result = await response.json();
-const allArticles = result.data || [];
+      try {
+        const [resArticles, resCategories] = await Promise.all([
+          fetch(resolveApiUrl("reporter/my-articles.php"), { credentials: "include" }).then(r => r.json()),
+          fetch(resolveApiUrl("public/categories.php")).then(r => r.json())
+        ]);
 
-const allCategories = getTable("categories") || [];
+        reporterArticles = (resArticles.success && Array.isArray(resArticles.data)) ? resArticles.data : [];
+        const allCategories = (resCategories.success && Array.isArray(resCategories.data)) ? resCategories.data : [];
 
-      // Map danh mục
-      categoriesMap = {};
-      allCategories.forEach(c => {
-        categoriesMap[c.id] = c.name;
-      });
+        // Map danh mục
+        categoriesMap = {};
+        allCategories.forEach(c => {
+          categoriesMap[c.id] = c.name;
+        });
 
-      // Lọc các bài viết của riêng phóng viên
-      reporterArticles = allArticles.filter(art => {
-        return Number(art.author_id) === Number(currentUser.id) || 
-               (art.author && currentUser.full_name && art.author.trim().toLowerCase() === currentUser.full_name.trim().toLowerCase()) ||
-               (art.author && currentUser.username && art.author.trim().toLowerCase() === currentUser.username.trim().toLowerCase());
-      });
+        // Sắp xếp mặc định theo ngày mới nhất
+        reporterArticles.sort((a, b) => {
+          const timeA = new Date(a.updated_at || a.published_at || a.created_at || 0).getTime();
+          const timeB = new Date(b.updated_at || b.published_at || b.created_at || 0).getTime();
+          return timeB - timeA;
+        });
 
-      // Sắp xếp mặc định theo ngày mới nhất
-      reporterArticles.sort((a, b) => {
-        const timeA = new Date(a.updated_at || a.published_at || a.created_at || 0).getTime();
-        const timeB = new Date(b.updated_at || b.published_at || b.created_at || 0).getTime();
-        return timeB - timeA;
-      });
-
-      // Kiểm tra tham số ?id= hoặc ?article_id= trên URL để chuyển tab phù hợp & tự mở modal nếu có yêu cầu
-      const urlParams = new URLSearchParams(window.location.search);
-      const targetArticleId = urlParams.get("id") || urlParams.get("article_id");
-      if (targetArticleId) {
-        const targetArt = reporterArticles.find(a => String(a.id) === String(targetArticleId));
-        if (targetArt) {
-          currentTab = targetArt.status; // Chuyển thẳng tới tab chứa bài viết
+        // Kiểm tra tham số ?id= hoặc ?article_id= trên URL để chuyển tab phù hợp & tự mở modal nếu có yêu cầu
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetArticleId = urlParams.get("id") || urlParams.get("article_id");
+        if (targetArticleId) {
+          const targetArt = reporterArticles.find(a => String(a.id) === String(targetArticleId));
+          if (targetArt) {
+            currentTab = targetArt.status; // Chuyển thẳng tới tab chứa bài viết
+          }
         }
-      }
 
-      renderUI();
-      checkAndHighlightArticle();
+        renderUI();
+        checkAndHighlightArticle();
+      } catch (err) {
+        console.error("Lỗi khi tải bài viết phóng viên:", err);
+        reporterArticles = [];
+        renderUI();
+      }
     }
 
     /**
@@ -446,11 +447,7 @@ const allCategories = getTable("categories") || [];
      * Hiển thị đầy đủ: Nội dung, Hình ảnh, Lý do từ chối (nếu có) và các nút hành động trực tiếp
      */
     function openArticleDetailModal(articleId) {
-      const allArticles = getTable("articles") || [];
-      const allTags = getTable("tags") || [];
-      const allArticleTags = getTable("article_tags") || [];
-
-      const article = allArticles.find(a => Number(a.id) === Number(articleId));
+      const article = reporterArticles.find(a => Number(a.id) === Number(articleId));
       if (!article) {
         showToast("Không tìm thấy bài viết này", "warning");
         return;
@@ -462,9 +459,8 @@ const allCategories = getTable("categories") || [];
       let tagNames = [];
       if (article.tags_text && Array.isArray(article.tags_text) && article.tags_text.length > 0) {
         tagNames = article.tags_text;
-      } else {
-        const tagIds = allArticleTags.filter(rel => Number(rel.article_id) === Number(article.id)).map(rel => rel.tag_id);
-        tagNames = allTags.filter(t => tagIds.includes(t.id)).map(t => t.name);
+      } else if (Array.isArray(article.tags)) {
+        tagNames = article.tags.map(t => typeof t === "object" ? t.name : t);
       }
 
       const rejectionText = article.reject_reason || article.rejection_reason || "";
@@ -710,40 +706,58 @@ const allCategories = getTable("categories") || [];
     }
 
     /**
-     * Nghiệp vụ: Khi sửa bài đang CHỜ DUYỆT -> Chuyển về NHÁP và chuyển trang
+     * Nghiệp vụ: Khi sửa bài đang CHỜ DUYỆT -> Chuyển về NHÁP và chuyển trang qua API
      */
-    function handleEditPending(id) {
-      const allArticles = getTable("articles") || [];
-      const idx = allArticles.findIndex(a => a.id === id);
-      if (idx !== -1) {
-        allArticles[idx].status = "draft";
-        allArticles[idx].updated_at = new Date().toISOString();
+    async function handleEditPending(id) {
+      try {
+        const res = await fetch(resolveApiUrl("reporter/my-articles.php"), {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ article_id: id, action: "withdraw" })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          showToast(data.message || "Không thể thu hồi bài viết", "error");
+          return;
+        }
 
-        saveTable("articles", allArticles);
         showToast("Đã thu hồi bài viết về Bản nháp để chỉnh sửa", "info");
         setTimeout(() => {
           window.location.href = `write-article.html?id=${id}`;
         }, 300);
+      } catch (err) {
+        console.error("Lỗi khi thu hồi bài viết:", err);
+        showToast("Lỗi kết nối khi thu hồi bài viết!", "error");
       }
     }
 
     /**
-     * Nghiệp vụ: GỬI DUYỆT LẠI bài bị từ chối
+     * Nghiệp vụ: GỬI DUYỆT LẠI bài bị từ chối qua API
      */
-    function handleResubmit(id) {
-      const allArticles = getTable("articles") || [];
-      const idx = allArticles.findIndex(a => a.id === id);
-      if (idx !== -1) {
-        allArticles[idx].status = "pending";
-        allArticles[idx].updated_at = new Date().toISOString();
+    async function handleResubmit(id) {
+      try {
+        const res = await fetch(resolveApiUrl("reporter/my-articles.php"), {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ article_id: id, action: "submit" })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          showToast(data.message || "Không thể gửi duyệt lại", "error");
+          return;
+        }
 
-        saveTable("articles", allArticles);
         showToast("Đã gửi duyệt lại bài viết lên Ban Biên tập thành công!", "success");
         
         const currentUser = getCurrentUser();
         if (currentUser) {
           loadReporterArticles(currentUser);
         }
+      } catch (err) {
+        console.error("Lỗi khi gửi duyệt lại bài viết:", err);
+        showToast("Lỗi kết nối khi gửi duyệt lại!", "error");
       }
     }
 
@@ -793,25 +807,36 @@ const allCategories = getTable("categories") || [];
     }
 
     /**
-     * Thực hiện xóa bài nháp khỏi LocalStorage
+     * Thực hiện xóa bài nháp qua Backend API
      */
-    function executeDeleteDraft() {
+    async function executeDeleteDraft() {
       if (!articleIdToDelete) return;
 
-      let allArticles = getTable("articles") || [];
-      allArticles = allArticles.filter(a => a.id !== articleIdToDelete);
-      saveTable("articles", allArticles);
+      try {
+        const res = await fetch(resolveApiUrl("reporter/my-articles.php"), {
+          method: "DELETE",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ article_id: articleIdToDelete })
+        });
+        const data = await res.json();
+        
+        closeDeleteModal();
+        if (!data.success) {
+          showToast(data.message || "Không thể xóa bài nháp", "error");
+          return;
+        }
 
-      let allArticleTags = getTable("article_tags") || [];
-      allArticleTags = allArticleTags.filter(at => at.article_id !== articleIdToDelete);
-      saveTable("article_tags", allArticleTags);
-      
-      closeDeleteModal();
-      showToast("Đã xóa bản nháp thành công", "success");
+        showToast("Đã xóa bản nháp thành công", "success");
 
-      const currentUser = getCurrentUser();
-      if (currentUser) {
-        loadReporterArticles(currentUser);
+        const currentUser = getCurrentUser();
+        if (currentUser) {
+          loadReporterArticles(currentUser);
+        }
+      } catch (err) {
+        console.error("Lỗi khi xóa bài nháp:", err);
+        closeDeleteModal();
+        showToast("Lỗi kết nối khi xóa bài nháp!", "error");
       }
     }
 

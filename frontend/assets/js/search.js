@@ -6,8 +6,8 @@
 
 async function initSearchPage() {
   // 1. Khởi tạo Header và Footer dùng chung
-  if (typeof initPublicHeader === "function") initPublicHeader("search");
-  if (typeof initPublicFooter === "function") initPublicFooter();
+  if (typeof initPublicHeader === "function") await initPublicHeader("search");
+  if (typeof initPublicFooter === "function") await initPublicFooter();
 
   // 2. Lấy tham số URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -16,29 +16,23 @@ async function initSearchPage() {
   let selectedCategory = urlParams.get("cat") || "all";
   let selectedSort = urlParams.get("sort") || "newest";
 
-  // 3. Lấy dữ liệu bài viết & chuyên mục từ backend (PHP + MySQL).
-  //    Chưa có API riêng cho "tags"/"article_tags" (ngoài phạm vi 4 API Cặp 1 được giao)
-  //    nên tag cloud/lọc theo tag tạm thời vẫn lấy từ getTable() như trước.
-  const tags = (typeof getTable === "function" ? getTable("tags") : []) || [];
-  const articleTags = (typeof getTable === "function" ? getTable("article_tags") : []) || [];
-
+  // 3. Lấy dữ liệu bài viết, chuyên mục & thẻ tag từ backend (PHP + MySQL).
+  let tags = [];
   let articles = [];
   let categories = [];
   try {
-    const [articlesRes, categoriesRes] = await Promise.all([
+    const [articlesRes, categoriesRes, tagsRes] = await Promise.all([
       fetch(resolveApiUrl("public/articles.php")).then((r) => r.json()),
       fetch(resolveApiUrl("public/categories.php")).then((r) => r.json()),
+      fetch(resolveApiUrl("public/tags.php")).then((r) => r.json()),
     ]);
     articles = articlesRes && articlesRes.success && Array.isArray(articlesRes.data) ? articlesRes.data : [];
     categories = categoriesRes && categoriesRes.success && Array.isArray(categoriesRes.data) ? categoriesRes.data : [];
+    tags = tagsRes && tagsRes.success && Array.isArray(tagsRes.data) ? tagsRes.data : [];
   } catch (error) {
     console.error("Lỗi khi tải dữ liệu tìm kiếm từ backend", error);
   }
 
-  // Helper lấy tác giả (đã được API nhúng sẵn trong article.author)
-  function getAuthor(article) {
-    return (article && article.author) || { full_name: "Ban Biên Tập", id: 1 };
-  }
 
   // DOM Elements
   const searchForm = document.getElementById("searchForm");
@@ -61,7 +55,7 @@ async function initSearchPage() {
   setupCategoryOptions();
   renderHotTags();
   renderSidebarAllTags();
-  renderTopViews();
+  renderTopViewsPanel(document.getElementById("topViewsMount"), articles);
 
   // 5. Lắng nghe sự kiện Lọc & Sắp xếp
   if (categoryFilter) {
@@ -117,12 +111,11 @@ async function initSearchPage() {
       );
 
       if (activeTagObj) {
-        // Lấy danh sách ID bài viết liên kết với tag này từ bảng article_tags
-        const matchedArticleIds = articleTags
-          .filter((at) => at.tag_id === activeTagObj.id)
-          .map((at) => at.article_id);
-
-        publishedArticles = publishedArticles.filter((a) => matchedArticleIds.includes(a.id));
+        publishedArticles = publishedArticles.filter((a) =>
+          Array.isArray(a.tags) && a.tags.some(
+            (t) => t.id === activeTagObj.id || t.slug === activeTagObj.slug
+          )
+        );
       }
     }
 
@@ -221,9 +214,7 @@ async function initSearchPage() {
     searchResultsList.innerHTML = list
       .map((article) => {
         const cat = categories.find((c) => c.id === article.category_id) || { name: "Tin tức", slug: "tin-tuc" };
-        const author = getAuthor(article);
-        const safeDate = typeof formatDate === "function" ? formatDate(article.published_at || article.created_at) : article.published_at || "";
-        const safeViews = (Number(article.views || article.view_count) || 0).toLocaleString("vi-VN");
+        const author = getArticleAuthor(article);
 
         // Highlight từ khóa trong Tiêu đề và Tóm tắt nếu có từ khóa
         const rawTitle = article.title || "";
@@ -263,8 +254,7 @@ async function initSearchPage() {
                 ${tagsHtml}
               </div>
               <div class="search-article-card__meta">
-                <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author) : 'author.html?username=' + encodeURIComponent(author.username || author.id)}">${escapeHtml(author.full_name)}</a>
-                <span class="dot-sep">·</span>
+              ${renderCardMeta(article, author)}                <span class="dot-sep">·</span>
                 <span>${safeDate}</span>
                 <span class="dot-sep">·</span>
                 <span>${safeViews} lượt đọc</span>
@@ -350,46 +340,11 @@ async function initSearchPage() {
 
   function renderHotTags() {
     if (!hotTagsMount) return;
-    const hotTags = tags.slice(0, 6);
-    hotTagsMount.innerHTML = hotTags
-      .map((t) => {
-        const isActive = tagParam && (t.slug === tagParam || t.name.toLowerCase() === tagParam.toLowerCase());
-        return `<a href="search.html?tag=${t.slug}" class="tag-chip ${isActive ? 'tag-chip--active' : ''}" data-slug="${t.slug}" style="font-size: 12px;">#${escapeHtml(t.name)}</a>`;
-      })
-      .join("");
+    renderTagCloud(hotTagsMount, tags.slice(0, 6), tagParam);
   }
 
-  function renderSidebarAllTags() {
-    if (!sidebarAllTagsMount) return;
-    sidebarAllTagsMount.innerHTML = tags
-      .map((t) => {
-        const isActive = tagParam && (t.slug === tagParam || t.name.toLowerCase() === tagParam.toLowerCase());
-        return `<a href="search.html?tag=${t.slug}" class="tag-chip ${isActive ? 'tag-chip--active' : ''}" data-slug="${t.slug}">#${escapeHtml(t.name)}</a>`;
-      })
-      .join("");
-  }
-
-  function renderTopViews() {
-    if (!topViewsMount) return;
-    const topArticles = articles
-      .filter((a) => a.status === "published")
-      .sort((a, b) => (Number(b.views || b.view_count) || 0) - (Number(a.views || a.view_count) || 0))
-      .slice(0, 5);
-
-    topViewsMount.innerHTML = topArticles
-      .map((a, idx) => `
-        <div class="rank-item ${idx === topArticles.length - 1 ? 'no-border' : ''}">
-          <div>
-            <h4 class="rank-item__title">
-              <a href="${getArticleDetailUrl(a)}">
-                ${escapeHtml(a.title)}
-              </a>
-            </h4>
-            <div class="meta" style="font-size: 11.5px;">${(Number(a.views || a.view_count) || 0).toLocaleString("vi-VN")} lượt đọc</div>
-          </div>
-        </div>
-      `)
-      .join("");
+    function renderSidebarAllTags() {
+    renderTagCloud(sidebarAllTagsMount, tags, tagParam);
   }
 }
 
