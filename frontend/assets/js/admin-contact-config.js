@@ -23,42 +23,49 @@
     contact_email: "lienhe@machtin.vn",
     contact_phone: "028 1234 5678",
     address: "02 Võ Oanh, phường Thạnh Mỹ Tây, TP. Hồ Chí Minh",
+    short_description: "Bắt mạch dòng chảy tin tức Việt Nam - cập nhật liên tục, xác thực trước khi đăng tải.",
     social_links: {
       facebook: "https://facebook.com/machtin",
       youtube: "https://youtube.com/machtin",
       tiktok: "https://tiktok.com/machtin"
     }
   };
-
   let currentSettings = {};
 
   document.addEventListener("DOMContentLoaded", () => {
     initContactConfigPage();
   });
 
-  function initContactConfigPage() {
-    loadSettings();
+  async function initContactConfigPage() {
+    await loadSettings();
     renderPageStructure();
     bindEvents();
   }
-
   /**
    * Tải cấu hình từ LocalStorage (key: 'site_settings')
    */
-  function loadSettings() {
-    const rawSettings = getTable("site_settings");
-    if (rawSettings && typeof rawSettings === "object") {
-      currentSettings = {
-        contact_email: rawSettings.contact_email || DEFAULT_SETTINGS.contact_email,
-        contact_phone: rawSettings.contact_phone || DEFAULT_SETTINGS.contact_phone,
-        address: rawSettings.address || DEFAULT_SETTINGS.address,
-        social_links: {
-          facebook: (rawSettings.social_links && rawSettings.social_links.facebook) || DEFAULT_SETTINGS.social_links.facebook,
-          youtube: (rawSettings.social_links && rawSettings.social_links.youtube) || DEFAULT_SETTINGS.social_links.youtube,
-          tiktok: (rawSettings.social_links && rawSettings.social_links.tiktok) || DEFAULT_SETTINGS.social_links.tiktok
-        }
-      };
-    } else {
+  async function loadSettings() {
+    try {
+      const res = await fetch('/website-tin-tuc/backend/api/admin/contact-config.php');
+      const result = await res.json();
+      const rawSettings = result.data;
+
+      if (rawSettings) {
+        currentSettings = {
+          contact_email: rawSettings.contact_email || DEFAULT_SETTINGS.contact_email,
+          contact_phone: rawSettings.contact_phone || DEFAULT_SETTINGS.contact_phone,
+          address: rawSettings.address || DEFAULT_SETTINGS.address,
+          short_description: rawSettings.short_description || DEFAULT_SETTINGS.short_description,
+          social_links: {
+            facebook: rawSettings.social_links?.facebook || DEFAULT_SETTINGS.social_links.facebook,
+            youtube: rawSettings.social_links?.youtube || DEFAULT_SETTINGS.social_links.youtube,
+            tiktok: rawSettings.social_links?.tiktok || DEFAULT_SETTINGS.social_links.tiktok,
+          }
+        };
+      } else {
+        currentSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+      }
+    } catch (err) {
       currentSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
     }
   }
@@ -82,7 +89,31 @@
 
         <div style="padding: 24px;">
           <form id="contactConfigForm">
-            
+            <!-- PHẦN 0: GIỚI THIỆU TÒA SOẠN -->
+<div style="margin-bottom: 28px;">
+  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft);">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 17px; height: 17px; color: #1B2A4A;">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <h3 style="font-size: 14px; font-weight: 700; color: var(--ink); margin: 0; font-family: var(--f-sans);">Giới thiệu tòa soạn</h3>
+  </div>
+
+  <div class="admin-form-group" style="margin-bottom: 0;">
+    <label class="admin-form-label" for="cfgShortDescription">
+      Mô tả ngắn (hiển thị ở chân trang)
+    </label>
+    <textarea 
+      id="cfgShortDescription" 
+      class="admin-form-textarea" 
+      rows="2" 
+      placeholder="Câu mô tả ngắn về tòa soạn..."
+    >${escapeHtml(currentSettings.short_description)}</textarea>
+    <span style="font-size: 11px; color: var(--muted); margin-top: 4px; display: block;">Câu này hiển thị ngay dưới logo ở chân trang mọi trang công khai</span>
+  </div>
+</div>
+
             <!-- PHẦN 1: THÔNG TIN LIÊN LẠC TRỰC TIẾP -->
             <div style="margin-bottom: 28px;">
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft);">
@@ -141,6 +172,7 @@
                 <span style="font-size: 11px; color: var(--muted); margin-top: 4px; display: block;">Địa chỉ vật lý của trụ sở tòa soạn Mạch Tin</span>
               </div>
             </div>
+
 
             <!-- PHẦN 2: ĐƯỜNG DẪN MẠNG XÃ HỘI -->
             <div style="margin-bottom: 28px;">
@@ -253,59 +285,43 @@
   }
 
   /**
-   * Lưu cấu hình vào LocalStorage
+   * Lưu cấu hình 
    */
+
   function saveSettings(isReset = false) {
     const email = document.getElementById("cfgEmail")?.value.trim() || currentSettings.contact_email;
     const phone = document.getElementById("cfgPhone")?.value.trim() || currentSettings.contact_phone;
     const address = document.getElementById("cfgAddress")?.value.trim() || currentSettings.address;
+    const shortDesc = document.getElementById("cfgShortDescription")?.value.trim() || currentSettings.short_description;
     const fb = document.getElementById("cfgFacebook")?.value.trim() || currentSettings.social_links.facebook;
     const yt = document.getElementById("cfgYoutube")?.value.trim() || currentSettings.social_links.youtube;
     const tt = document.getElementById("cfgTiktok")?.value.trim() || currentSettings.social_links.tiktok;
 
-    // Lấy site_settings hiện tại để giữ các trường khác nếu có
-    const rawSettings = getTable("site_settings") || {};
-    rawSettings.contact_email = email;
-    rawSettings.contact_phone = phone;
-    rawSettings.address = address;
-    rawSettings.social_links = {
-      facebook: fb,
-      youtube: yt,
-      tiktok: tt
-    };
-
-    saveTable("site_settings", rawSettings);
-
-    currentSettings = {
-      contact_email: email,
-      contact_phone: phone,
-      address: address,
-      social_links: {
+    fetch('/website-tin-tuc/backend/api/admin/contact-config.php', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contact_email: email,
+        contact_phone: phone,
+        address: address,
+        short_description: shortDesc,
         facebook: fb,
         youtube: yt,
         tiktok: tt
-      }
-    };
-
-    if (typeof Toastify !== "undefined") {
-      Toastify({
-        text: isReset ? "Đã khôi phục thông tin liên hệ mặc định!" : "Đã lưu cấu hình thông tin liên hệ thành công!",
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        style: { background: "#131B2E" }
-      }).showToast();
-    }
+      })
+    })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          currentSettings = {
+            contact_email: email,
+            contact_phone: phone,
+            address: address,
+            short_description: shortDesc,
+            social_links: { facebook: fb, youtube: yt, tiktok: tt }
+          };
+          showToast("Cập nhật thành công");
+        }
+      });
   }
-
-  function escapeHtml(str) {
-    if (!str) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
 })();

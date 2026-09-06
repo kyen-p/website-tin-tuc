@@ -12,29 +12,38 @@
  * ==============================================================================
  */
 
-function initHomePage() {
+async function initHomePage() {
   // 1. Khởi tạo Header và Footer chung
   initPublicHeader("");
   initPublicFooter();
 
-  // 2. Lấy dữ liệu cần thiết từ Database Helper
-  const categories = getTable("categories");
-  const users = getTable("users");
+  // 2. Lấy dữ liệu bài viết đã xuất bản từ backend (PHP + MySQL)
+  //    API public/articles.php đã lọc sẵn status = 'published' và sắp xếp published_at DESC.
+  //    Chưa có API riêng cho "tags" (ngoài phạm vi 4 API Cặp 1 được giao) nên tag cloud
+  //    tạm thời vẫn lấy từ getTable("tags") như trước.
   const tags = getTable("tags");
-  const allArticles = getTable("articles");
-
-  // Helper lấy chuyên mục theo ID
-  function getCategory(categoryId) {
-    return categories.find((c) => c.id === categoryId) || { name: "Tin tức", slug: "" };
+  let allArticles = [];
+  try {
+    const res = await fetch(resolveApiUrl("public/articles.php"));
+    const result = await res.json();
+    allArticles = result && result.success && Array.isArray(result.data) ? result.data : [];
+  } catch (error) {
+    console.error("Lỗi khi tải danh sách bài viết từ backend", error);
+    allArticles = [];
   }
 
-  // Helper lấy tác giả theo ID
-  function getAuthor(authorId) {
-    return users.find((u) => u.id === authorId) || { full_name: "Ban Biên Tập", id: "" };
+  // Helper lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong a.category)
+  function getCategory(a) {
+    return a.category || { name: "Tin tức", slug: "" };
   }
 
-  // Lọc chỉ lấy bài viết đã đăng chính thức và có ngày xuất bản
-  const publishedArticles = allArticles.filter((a) => a.status === "published" && a.published_at);
+  // Helper lấy tác giả của 1 bài viết (đã được API nhúng sẵn trong a.author)
+  function getAuthor(a) {
+    return a.author || { full_name: "Ban Biên Tập", id: "" };
+  }
+
+  // Bài viết trả về từ API đã là bài đã xuất bản và có published_at
+  const publishedArticles = allArticles.filter((a) => a.published_at);
 
   // Mốc thời gian hệ thống
   const now = typeof getSystemTime === "function" ? getSystemTime() : new Date("2026-08-14T23:59:59");
@@ -83,8 +92,8 @@ function initHomePage() {
       const leadArticle = hotArticles[0];
       const subLeadArticle = hotArticles.length > 1 ? hotArticles[1] : null;
 
-      const leadCat = getCategory(leadArticle.category_id);
-      const leadAuthor = getAuthor(leadArticle.author_id);
+      const leadCat = getCategory(leadArticle);
+      const leadAuthor = getAuthor(leadArticle);
 
       let leftHtml = `
         <div class="hero-grid__main">
@@ -101,8 +110,8 @@ function initHomePage() {
       `;
 
       if (subLeadArticle) {
-        const subCat = getCategory(subLeadArticle.category_id);
-        const subAuthor = getAuthor(subLeadArticle.author_id);
+        const subCat = getCategory(subLeadArticle);
+        const subAuthor = getAuthor(subLeadArticle);
         leftHtml += `
           <!-- Bài đinh số 2 (Đồng bộ cỡ chữ và cấu trúc y hệt bài đinh số 1) -->
           <article class="article-card">
@@ -126,8 +135,8 @@ function initHomePage() {
           <div class="hero-grid__side">
             ${sideArticles
               .map((a) => {
-                const cat = getCategory(a.category_id);
-                const author = getAuthor(a.author_id);
+                const cat = getCategory(a);
+                const author = getAuthor(a);
                 return `
                   <article class="article-card">
                     <a href="${getArticleDetailUrl(a)}" class="card-link">
@@ -176,8 +185,8 @@ function initHomePage() {
       latestSection.style.display = "block";
       latestMount.innerHTML = latestArticles
         .map((a) => {
-          const cat = getCategory(a.category_id);
-          const author = getAuthor(a.author_id);
+          const cat = getCategory(a);
+          const author = getAuthor(a);
           return `
             <article class="article-card">
               <a href="${getArticleDetailUrl(a)}" class="card-link">
@@ -220,8 +229,8 @@ function initHomePage() {
     } else {
       streamMount.innerHTML = displayList
         .map((a, index) => {
-          const cat = getCategory(a.category_id);
-          const author = getAuthor(a.author_id);
+          const cat = getCategory(a);
+          const author = getAuthor(a);
           const isLast = index === displayList.length - 1 ? "no-border" : "";
 
           return `

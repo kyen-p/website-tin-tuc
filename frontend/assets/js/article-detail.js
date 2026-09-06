@@ -1,31 +1,30 @@
-function initArticleDetailPage() {
+async function initArticleDetailPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const articleId = Number(urlParams.get("id")) || 0;
   const articleSlug = (urlParams.get("slug") || "").trim();
 
-  const articles = getTable("articles");
-  const categories = getTable("categories");
-  const users = getTable("users");
+  // Chưa có API riêng cho "tags"/"article_tags"/"comments"/"favorites" (ngoài phạm vi
+  // 4 API Cặp 1 được giao) nên các phần này tạm thời vẫn lấy từ getTable() như trước.
   const tags = getTable("tags");
   const articleTags = getTable("article_tags");
   let comments = getTable("comments");
   let favorites = getTable("favorites");
 
+  // 1. Lấy bài viết từ backend (PHP + MySQL). Gọi đúng 1 lần cho mỗi lần tải trang -
+  //    khớp với yêu cầu "mỗi lần gọi API phải tăng view_count" của public/article-detail.php.
   let article = null;
-  if (articleSlug) {
-    article = articles.find((a) => a.slug === articleSlug && a.status === "published");
-    if (!article) {
-      article = articles.find((a) => (a.slug || "").toLowerCase() === articleSlug.toLowerCase() && a.status === "published");
+  try {
+    const params = articleSlug ? `slug=${encodeURIComponent(articleSlug)}` : `id=${encodeURIComponent(articleId)}`;
+    const res = await fetch(resolveApiUrl(`public/article-detail.php?${params}`));
+    const result = await res.json();
+    if (result && result.success && result.data) {
+      article = result.data;
     }
-    if (!article && typeof slugify === "function") {
-      article = articles.find((a) => slugify(a.title) === articleSlug && a.status === "published");
-    }
-  }
-  if (!article && articleId) {
-    article = articles.find((a) => a.id === articleId && a.status === "published");
+  } catch (error) {
+    console.error("Lỗi khi tải bài viết từ backend", error);
   }
 
-  const catSlug = article ? (categories.find((c) => c.id === article.category_id)?.slug || "") : "";
+  const catSlug = article ? (article.category && article.category.slug) || "" : "";
   initPublicHeader(catSlug);
   initPublicFooter();
 
@@ -45,28 +44,8 @@ function initArticleDetailPage() {
 
   const currentUser = getCurrentUser();
 
-  // Chống tăng lượt đọc ảo (Spam F5): Chỉ tăng view 1 lần duy nhất cho mỗi bài viết trong 1 phiên
-  const viewedKey = "machtin_session_viewed_articles";
-  let viewedInSession = [];
-  try {
-    viewedInSession = JSON.parse(sessionStorage.getItem(viewedKey) || "[]");
-  } catch (e) {
-    viewedInSession = [];
-  }
-
-  if (!viewedInSession.includes(article.id)) {
-    const currentViews = Number(article.views || article.view_count || 0) + 1;
-    article.views = currentViews;
-    article.view_count = currentViews; // Đồng bộ cả 2 trường
-    saveTable("articles", articles);
-
-    // Ghi nhớ bài viết này đã được tính view trong phiên
-    viewedInSession.push(article.id);
-    sessionStorage.setItem(viewedKey, JSON.stringify(viewedInSession));
-  }
-
-  const category = categories.find((c) => c.id === article.category_id) || { name: "Thời sự", slug: "thoi-su" };
-  const author = users.find((u) => u.id === article.author_id) || { full_name: "Ban Biên Tập", bio: "Đội ngũ phóng viên Mạch Tin", id: 1 };
+  const category = article.category || { name: "Thời sự", slug: "thoi-su" };
+  const author = article.author || { full_name: "Ban Biên Tập", bio: "Đội ngũ phóng viên Mạch Tin", id: 1 };
 
   const currentTagIds = articleTags.filter((at) => at.article_id === article.id).map((at) => at.tag_id);
   const currentTags = tags.filter((t) => currentTagIds.includes(t.id));
@@ -77,7 +56,7 @@ function initArticleDetailPage() {
 
   document.getElementById("article-category-badge").textContent = category.name;
   document.getElementById("article-title").textContent = article.title;
-  document.getElementById("article-summary").textContent = article.summary || "";
+  document.getElementById("article-summary").textContent = article.short_description || article.summary || "";
 
   const authorProfileUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(author) : `author.html?username=${encodeURIComponent(author.username || author.id)}`;
 
@@ -87,7 +66,7 @@ function initArticleDetailPage() {
     document.getElementById("author-name-link").href = authorProfileUrl;
   }
   document.getElementById("article-time").textContent = formatDateTime(article.published_at || article.created_at);
-  document.getElementById("article-views").textContent = `${formatNumber(article.views)} lượt đọc`;
+  document.getElementById("article-views").textContent = `${formatNumber(article.view_count || article.views || 0)} lượt đọc`;
 
   const authorAvatarTop = document.getElementById("author-avatar-top");
   if (authorAvatarTop) {
@@ -377,8 +356,17 @@ function initArticleDetailPage() {
 
   const relatedMount = document.getElementById("related-articles-mount");
   if (relatedMount) {
-    const relatedArticles = articles
-      .filter((a) => a.category_id === article.category_id && a.id !== article.id && a.status === "published")
+    let sameCategoryArticles = [];
+    try {
+      const relatedRes = await fetch(resolveApiUrl(`public/articles.php?category=${encodeURIComponent(category.slug || "")}`));
+      const relatedResult = await relatedRes.json();
+      sameCategoryArticles = relatedResult && relatedResult.success && Array.isArray(relatedResult.data) ? relatedResult.data : [];
+    } catch (error) {
+      console.error("Lỗi khi tải bài viết liên quan từ backend", error);
+    }
+
+    const relatedArticles = sameCategoryArticles
+      .filter((a) => a.id !== article.id)
       .slice(0, 4);
 
     if (relatedArticles.length > 0) {

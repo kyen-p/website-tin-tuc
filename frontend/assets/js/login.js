@@ -69,59 +69,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (hasError) return;
 
-        // Tìm kiếm trong bảng users
-        const users = getTable("users") || [];
-        const accountLower = account.toLowerCase();
+        const submitBtn = document.getElementById("loginSubmitBtn");
+        if (submitBtn) submitBtn.disabled = true;
 
-        const user = users.find(
-            (u) =>
-                (u.username && u.username.toLowerCase() === accountLower) ||
-                (u.email && u.email.toLowerCase() === accountLower)
-        );
+        // Gọi API backend đăng nhập. "account" có thể là email hoặc username,
+        // được gửi lên dưới field "email" đúng specification - backend tự nhận diện.
+        fetch(resolveApiUrl("auth/login.php"), {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ email: account, password: password }).toString(),
+        })
+            .then((res) => res.json())
+            .then((result) => {
+                if (submitBtn) submitBtn.disabled = false;
 
-        // Kiểm tra khớp mật khẩu
-        if (!user || user.password !== password) {
-            accountField?.classList.add("has-error");
-            passwordField?.classList.add("has-error");
+                if (!result.success) {
+                    // Tài khoản bị khóa
+                    if (result.data && result.data.lock_reason !== undefined) {
+                        if (lockedAlert) {
+                            if (lockedReasonText) {
+                                lockedReasonText.textContent = result.data.lock_reason || "Vi phạm quy chế cộng đồng của tòa soạn.";
+                            }
+                            lockedAlert.classList.add("is-show");
+                        }
+                        showToast("Tài khoản này đã bị khóa quyền truy cập.", "error");
+                        return;
+                    }
 
-            // Xóa dòng thông báo của ô account để không bị hiện chữ "Vui lòng nhập..."
-            if (accountError) {
-                accountError.textContent = "";
-            }
-
-            if (passwordError) {
-                passwordError.textContent = "Email/Username hoặc mật khẩu không chính xác.";
-            }
-            showToast("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.", "error");
-            return;
-        }
-
-        // Kiểm tra tài khoản bị khóa
-        if (user.status === "locked") {
-            if (lockedAlert) {
-                if (lockedReasonText) {
-                    lockedReasonText.textContent = user.lock_reason || "Vi phạm quy chế cộng đồng của tòa soạn.";
+                    // Sai tài khoản/mật khẩu hoặc lỗi khác
+                    accountField?.classList.add("has-error");
+                    passwordField?.classList.add("has-error");
+                    if (accountError) accountError.textContent = "";
+                    if (passwordError) passwordError.textContent = result.message || "Email/Username hoặc mật khẩu không chính xác.";
+                    showToast(result.message || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.", "error");
+                    return;
                 }
-                lockedAlert.classList.add("is-show");
-            }
-            showToast("Tài khoản này đã bị khóa quyền truy cập.", "error");
-            return;
-        }
 
-        // Đăng nhập thành công
-        setCurrentUser(user);
-        showToast(`Đăng nhập thành công!`, "success");
+                // Đăng nhập thành công
+                showToast("Đăng nhập thành công!", "success");
 
-        setTimeout(() => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const redirectUrl = urlParams.get("redirect");
+                setTimeout(() => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirectUrl = urlParams.get("redirect");
 
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            } else {
-                redirectByRole(user.role);
-            }
-        }, 600);
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    } else {
+                        redirectByRole(result.data.role);
+                    }
+                }, 600);
+            })
+            .catch((error) => {
+                if (submitBtn) submitBtn.disabled = false;
+                console.error("Lỗi khi gọi API đăng nhập", error);
+                showToast("Không thể kết nối máy chủ. Vui lòng thử lại sau.", "error");
+            });
     });
 });
 

@@ -34,18 +34,27 @@
   document.addEventListener("DOMContentLoaded", () => {
     initPublishedArticlesPage();
   });
-
-  function initPublishedArticlesPage() {
-    loadData();
+  async function initPublishedArticlesPage() {
+    await loadData();
     renderPageStructure();
     bindEvents();
     renderTableRows();
   }
-
-  function loadData() {
-    allArticles = getTable("articles") || [];
-    allCategories = getTable("categories") || [];
-    allUsers = getTable("users") || [];
+  async function loadData() {
+    try {
+      const [articlesRes, categoriesRes, usersRes] = await Promise.all([
+        fetch('/website-tin-tuc/backend/api/admin/published-articles.php').then(r => r.json()),
+        fetch('/website-tin-tuc/backend/api/public/categories.php').then(r => r.json()),
+        fetch('/website-tin-tuc/backend/api/admin/users.php').then(r => r.json())
+      ]);
+      allArticles = articlesRes.data || [];
+      allCategories = categoriesRes.data || [];
+      allUsers = usersRes.data || [];
+    } catch (err) {
+      allArticles = [];
+      allCategories = [];
+      allUsers = [];
+    }
   }
 
   /**
@@ -358,7 +367,6 @@
     const countBadge = document.getElementById("list-count-badge");
     if (!tbody) return;
 
-    loadData();
 
     // 1. Lọc theo Tab (Chỉ quản lý bài đã đăng: published hoặc hidden)
     let filtered = allArticles.filter(art => {
@@ -519,10 +527,10 @@
                 <!-- Ẩn / Hiện -->
                 <button type="button" class="admin-dropdown-item" onclick="window.adminToggleHideArticle(${art.id})">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    ${isHidden 
-                      ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>' 
-                      : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
-                    }
+                    ${isHidden
+          ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>'
+          : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+        }
                   </svg>
                   <span>${toggleHideLabel}</span>
                 </button>
@@ -548,7 +556,7 @@
   // ============================================================================
   // QUẢN LÝ MENU THAO TÁC 3 CHẤM (ACTION DROPDOWN)
   // ============================================================================
-  
+
   function closeAllActionMenus() {
     document.querySelectorAll(".admin-action-dropdown-menu").forEach(menu => {
       menu.style.display = "none";
@@ -590,31 +598,22 @@
   /**
    * 1. Ẩn / Hiện lại bài viết
    */
-  window.adminToggleHideArticle = function (id) {
+  window.adminToggleHideArticle = async function (id) {
     closeAllActionMenus();
-    loadData();
-    const article = allArticles.find(a => Number(a.id) === Number(id));
-    if (!article) return;
 
-    const newStatus = article.status === "hidden" ? "published" : "hidden";
-    article.status = newStatus;
-    article.updated_at = new Date().toISOString().replace("T", " ").substring(0, 19);
+    const res = await fetch('/website-tin-tuc/backend/api/admin/published-articles.php', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, toggle_status: true })
+    });
+    const result = await res.json();
 
-    saveTable("articles", allArticles);
-
-    const msg = newStatus === "hidden" ? `Đã tạm ẩn bài viết "${article.title}"` : `Đã hiển thị lại bài viết "${article.title}"`;
-    if (typeof showToast === "function") {
-      showToast(msg, newStatus === "hidden" ? "warning" : "success");
-    } else if (typeof Toastify !== "undefined") {
-      Toastify({
-        text: msg,
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        style: { background: newStatus === "hidden" ? "#B45309" : "#16A34A" }
-      }).showToast();
+    if (result.success) {
+      const msg = result.data.status === "hidden" ? "Đã tạm ẩn bài viết" : "Đã hiển thị lại bài viết";
+      if (typeof showToast === "function") showToast(msg, result.data.status === "hidden" ? "warning" : "success");
     }
 
+    await loadData();
     renderPageStructure();
     bindEvents();
     renderTableRows();
@@ -625,7 +624,6 @@
    */
   window.adminOpenEditArticle = function (id) {
     closeAllActionMenus();
-    loadData();
     const article = allArticles.find(a => Number(a.id) === Number(id));
     if (!article) return;
 
@@ -658,12 +656,8 @@
     }
   }
 
-  function handleSaveEdit() {
+  async function handleSaveEdit() {
     if (!editingArticleId) return;
-    loadData();
-
-    const article = allArticles.find(a => Number(a.id) === Number(editingArticleId));
-    if (!article) return;
 
     const title = (document.getElementById("editTitle")?.value || "").trim();
     const categoryId = Number(document.getElementById("editCategory")?.value) || 1;
@@ -673,52 +667,39 @@
     const content = (document.getElementById("editContent")?.value || "").trim();
 
     if (!title) {
-      if (typeof showToast === "function") {
-        showToast("Vui lòng nhập tiêu đề bài viết.", "error");
-      } else {
-        alert("Vui lòng nhập tiêu đề bài viết.");
-      }
+      if (typeof showToast === "function") showToast("Vui lòng nhập tiêu đề bài viết.", "error");
+      else alert("Vui lòng nhập tiêu đề bài viết.");
       return;
     }
 
-    // Cập nhật đè dữ liệu
-    article.title = title;
-    article.category_id = categoryId;
-    article.status = status;
-    article.is_notable_event = isNotable;
-    article.short_description = description;
-    article.sapo = description;
-    article.summary = description;
-    article.content = content;
-    article.updated_at = new Date().toISOString().replace("T", " ").substring(0, 19);
+    const res = await fetch('/website-tin-tuc/backend/api/admin/published-articles.php', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: editingArticleId,
+        title, category_id: categoryId, status,
+        is_notable_event: isNotable,
+        short_description: description,
+        content
+      })
+    });
+    const result = await res.json();
 
-    saveTable("articles", allArticles);
-
-    const msg = `Đã cập nhật bài viết thành công (Quyền Admin)!`;
-    if (typeof showToast === "function") {
-      showToast(msg, "success");
-    } else if (typeof Toastify !== "undefined") {
-      Toastify({
-        text: msg,
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        style: { background: "#131B2E" }
-      }).showToast();
+    if (result.success && typeof showToast === "function") {
+      showToast("Đã cập nhật bài viết thành công (Quyền Admin)!", "success");
     }
 
     closeEditModal();
+    await loadData();
     renderPageStructure();
     bindEvents();
     renderTableRows();
   }
-
   /**
    * 3. Mở Modal Xóa bài viết
    */
   window.adminOpenDeleteArticle = function (id) {
     closeAllActionMenus();
-    loadData();
     const article = allArticles.find(a => Number(a.id) === Number(id));
     if (!article) return;
 
@@ -742,51 +723,22 @@
     }
   }
 
-  function handleConfirmDelete() {
+  async function handleConfirmDelete() {
     if (!deletingArticleId) return;
-    loadData();
 
-    const targetId = Number(deletingArticleId);
+    const res = await fetch('/website-tin-tuc/backend/api/admin/published-articles.php', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: deletingArticleId })
+    });
+    const result = await res.json();
 
-    // 1. Xóa khỏi danh sách articles
-    allArticles = allArticles.filter(a => Number(a.id) !== targetId);
-    saveTable("articles", allArticles);
-
-    // 2. Dọn dẹp bình luận liên quan
-    try {
-      let allComments = getTable("comments") || [];
-      allComments = allComments.filter(c => Number(c.article_id) !== targetId);
-      saveTable("comments", allComments);
-    } catch (e) {}
-
-    // 3. Dọn dẹp article_tags
-    try {
-      let allTags = getTable("article_tags") || [];
-      allTags = allTags.filter(t => Number(t.article_id) !== targetId);
-      saveTable("article_tags", allTags);
-    } catch (e) {}
-
-    // 4. Dọn dẹp favorites
-    try {
-      let allFavs = getTable("favorites") || [];
-      allFavs = allFavs.filter(f => Number(f.article_id) !== targetId);
-      saveTable("favorites", allFavs);
-    } catch (e) {}
-
-    const msg = `Đã xóa vĩnh viễn bài viết khỏi hệ thống.`;
-    if (typeof showToast === "function") {
-      showToast(msg, "success");
-    } else if (typeof Toastify !== "undefined") {
-      Toastify({
-        text: msg,
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        style: { background: "#DC2626" }
-      }).showToast();
+    if (result.success && typeof showToast === "function") {
+      showToast("Đã xóa vĩnh viễn bài viết khỏi hệ thống.", "success");
     }
 
     closeDeleteModal();
+    await loadData();
     renderPageStructure();
     bindEvents();
     renderTableRows();
