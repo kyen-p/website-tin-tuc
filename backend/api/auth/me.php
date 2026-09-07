@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 try {
     $stmt = $pdo->prepare(
-        "SELECT id, username, email, full_name, avatar, bio, role, status, comment_locked, created_at
+        "SELECT id, username, email, full_name, avatar, bio, role, status, created_at
          FROM users WHERE id = ? LIMIT 1"
     );
     $stmt->execute([$_SESSION['user_id']]);

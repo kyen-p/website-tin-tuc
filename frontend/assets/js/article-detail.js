@@ -251,12 +251,12 @@ async function initArticleDetailPage() {
     if (commentFormMount) commentFormMount.style.display = "block";
     if (commentLoginPrompt) commentLoginPrompt.style.display = "none";
 
-    if (currentUser.is_comment_locked || currentUser.comment_locked) {
+    if (currentUser.status === "locked") {
       if (commentFormMount) {
-        const lockReason = currentUser.comment_lock_reason || "Vi phạm tiêu chuẩn cộng đồng bình luận";
+        const lockReason = currentUser.lock_reason || "Vi phạm tiêu chuẩn cộng đồng";
         commentFormMount.innerHTML = `
           <div style="background: #FFFBEB; border-left: 3px solid #D97706; padding: 14px 16px; border-radius: 4px; font-size: 13.5px; color: #92400E; margin: 0;">
-            <p style="margin: 0 0 4px 0; font-weight: 600;">Tài khoản của bạn đã bị tạm khóa tính năng bình luận.</p>
+            <p style="margin: 0 0 4px 0; font-weight: 600;">Tài khoản của bạn hiện đang bị khóa.</p>
             <p style="margin: 0; font-size: 12.5px; opacity: 0.95;"><strong>Lý do:</strong> ${escapeHtml(lockReason)}</p>
           </div>
         `;

@@ -526,7 +526,7 @@
 
  
 /**
- * Xử lý Lưu / Sửa Thẻ Tag
+ * Xử lý Lưu / Sửa / Gộp Thẻ Tag
  */
 async function handleSaveTag() {
   const idVal = document.getElementById("modal-tag-id").value;
@@ -540,26 +540,48 @@ async function handleSaveTag() {
   const method = idVal ? "PUT" : "POST";
   const body = idVal ? { id: idVal, name: nameVal } : { name: nameVal };
 
-  const res = await fetch(resolveApiUrl("editor/categories-tags.php?type=tags"), {
-    method: method,
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  const result = await res.json();
-
-  if (!result.success) {
-    if (typeof showToast === "function") showToast(result.message || "Có lỗi xảy ra", "error");
-    return;
+  const btnSave = document.getElementById("btn-save-tag");
+  if (btnSave) {
+    btnSave.disabled = true;
+    btnSave.textContent = "Đang xử lý...";
   }
 
-  if (typeof showToast === "function") {
-    showToast(idVal ? `Đã đổi tên thẻ tag thành "#${nameVal}"!` : `Đã tạo mới thẻ tag "#${nameVal}" thành công!`, "success");
-  }
+  try {
+    const res = await fetch(resolveApiUrl("editor/categories-tags.php?type=tags"), {
+      method: method,
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const result = await res.json();
 
-  document.getElementById("modal-tag").style.display = "none";
-  await loadData();
-  renderTagsSection();
+    if (!result.success) {
+      if (typeof showToast === "function") showToast(result.message || "Có lỗi xảy ra", "error");
+      return;
+    }
+
+    if (result.data && result.data.merged) {
+      if (typeof showToast === "function") {
+        showToast(result.message || `Đã gộp thẻ thành công vào thẻ "#${result.data.target_name}"!`, "success");
+      }
+    } else {
+      if (typeof showToast === "function") {
+        showToast(idVal ? `Đã đổi tên thẻ tag thành "#${nameVal}"!` : `Đã tạo mới thẻ tag "#${nameVal}" thành công!`, "success");
+      }
+    }
+
+    document.getElementById("modal-tag").style.display = "none";
+    await loadData();
+    renderTagsSection();
+  } catch (err) {
+    console.error("Lỗi khi lưu thẻ tag:", err);
+    if (typeof showToast === "function") showToast("Lỗi kết nối máy chủ", "error");
+  } finally {
+    if (btnSave) {
+      btnSave.disabled = false;
+      btnSave.textContent = "Lưu Thẻ Tag";
+    }
+  }
 }
 
   /**

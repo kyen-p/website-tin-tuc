@@ -355,14 +355,28 @@ async function initProfilePage() {
       e.preventDefault();
 
       const fullName = fullNameInput ? fullNameInput.value.trim() : "";
-
+      const username = usernameInput ? usernameInput.value.trim() : "";
+      const email = emailInput ? emailInput.value.trim() : "";
       const bio = bioInput ? bioInput.value.trim() : "";
 
       if (!fullName) {
         if (typeof showToast === "function") {
           showToast("Họ và tên không được để trống", "error");
         }
+        return;
+      }
 
+      if (!username) {
+        if (typeof showToast === "function") {
+          showToast("Tên đăng nhập không được để trống", "error");
+        }
+        return;
+      }
+
+      if (!email) {
+        if (typeof showToast === "function") {
+          showToast("Email không được để trống", "error");
+        }
         return;
       }
 
@@ -374,6 +388,8 @@ async function initProfilePage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            username: username,
+            email: email,
             full_name: fullName,
             bio: bio,
             avatar: currentAvatarValue || "",
@@ -386,13 +402,25 @@ async function initProfilePage() {
           if (typeof showToast === "function") {
             showToast(result.message || "Cập nhật thất bại", "error");
           }
-
           return;
         }
 
         originalUserData = result.data;
-
         populateUserData(result.data);
+
+        // Đồng bộ dữ liệu người dùng vào localStorage và sessionStorage
+        try {
+          const cachedUser = JSON.parse(localStorage.getItem("user") || "{}");
+          const updatedUser = Object.assign({}, cachedUser, result.data);
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          sessionStorage.setItem("user", JSON.stringify(updatedUser));
+        } catch (e) {
+          console.warn("Không thể lưu cache user:", e);
+        }
+
+        if (typeof setCurrentUser === "function") {
+          setCurrentUser(result.data);
+        }
 
         if (typeof initPublicHeader === "function") {
           await initPublicHeader("profile");

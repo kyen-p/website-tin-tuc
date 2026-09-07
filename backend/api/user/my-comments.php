@@ -46,13 +46,13 @@ try {
             jsonResponse(false, null, "Vui lòng nhập đầy đủ thông tin");
         }
 
-        // Kiểm tra quyền bình luận của user
-        $stmt = $pdo->prepare("SELECT is_comment_locked, comment_lock_reason FROM users WHERE id = ?");
+        // Kiểm tra quyền của user (tài khoản có bị khóa không)
+        $stmt = $pdo->prepare("SELECT status, lock_reason FROM users WHERE id = ?");
         $stmt->execute([$userId]);
         $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($userRow && !empty($userRow['is_comment_locked'])) {
-            jsonResponse(false, null, "Tài khoản của bạn đã bị khóa tính năng bình luận: " . ($userRow['comment_lock_reason'] ?: "Vi phạm tiêu chuẩn cộng đồng"));
+        if ($userRow && $userRow['status'] === 'locked') {
+            jsonResponse(false, null, "Tài khoản của bạn đã bị khóa: " . ($userRow['lock_reason'] ?: "Vi phạm tiêu chuẩn cộng đồng"));
         }
 
         // Kiểm tra bài viết tồn tại và đã xuất bản

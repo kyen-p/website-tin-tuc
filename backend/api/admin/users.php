@@ -8,7 +8,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
     requireRole(['admin']);
-    $stmt = $pdo->query("SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, comment_locked, created_at FROM users ORDER BY created_at DESC");
+    $stmt = $pdo->query("SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, created_at FROM users ORDER BY created_at DESC");
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     jsonResponse(true, $users);
 }
@@ -16,34 +16,40 @@ if ($method === 'GET') {
 if ($method === 'PUT') {
     requireRole(['admin']);
     $input = json_decode(file_get_contents('php://input'), true);
-    $userId = $input['user_id'];
+    $userId = isset($input['user_id']) ? (int)$input['user_id'] : 0;
+    $currentAdminId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : 0;
 
-    if (!empty($input['delete'])) {
-        // Xóa tài khoản (dùng cho handleDeleteUser)
-        // Lấy ảnh đại diện để xóa file vật lý trên máy chủ
-        $stmtFind = $pdo->prepare("SELECT avatar FROM users WHERE id = ?");
-        $stmtFind->execute([$userId]);
-        $userObj = $stmtFind->fetch(PDO::FETCH_ASSOC);
-        if ($userObj && !empty($userObj['avatar'])) {
-            deleteUploadedFile($userObj['avatar']);
-        }
-
-        $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
-        $stmt->execute([$userId]);
-        jsonResponse(true, null, "Đã xóa tài khoản");
+    if ($userId <= 0) {
+        jsonResponse(false, null, "ID người dùng không hợp lệ");
     }
 
+    // Kiểm tra thông tin tài khoản đích
+    $stmtFind = $pdo->prepare("SELECT id, role, status FROM users WHERE id = ?");
+    $stmtFind->execute([$userId]);
+    $targetUser = $stmtFind->fetch(PDO::FETCH_ASSOC);
+
+    if (!$targetUser) {
+        jsonResponse(false, null, "Không tìm thấy người dùng");
+    }
+
+    // Không cho phép thao tác trên tài khoản của chính mình
+    if ($userId === $currentAdminId) {
+        jsonResponse(false, null, "Không thể tự thao tác trên tài khoản của chính bạn");
+    }
+
+    // Không cho phép sửa tài khoản Admin khác qua giao diện này
+    if ($targetUser['role'] === 'admin') {
+        jsonResponse(false, null, "Tài khoản Quản trị viên được bảo vệ cố định, không thể can thiệp qua giao diện");
+    }
+
+    // Cập nhật vai trò (chỉ cho phép luân chuyển giữa user, reporter, editor)
     if (isset($input['role'])) {
-        $allowedRoles = ['user', 'reporter', 'editor', 'admin'];
-        if (in_array($input['role'], $allowedRoles, true)) {
-            $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
-            $stmt->execute([$input['role'], $userId]);
+        $allowedRoles = ['user', 'reporter', 'editor'];
+        if (!in_array($input['role'], $allowedRoles, true)) {
+            jsonResponse(false, null, "Vai trò mới không hợp lệ hoặc không có quyền cấp quyền này");
         }
-    }
-
-    if (isset($input['comment_locked'])) {
-        $stmt = $pdo->prepare("UPDATE users SET comment_locked = ? WHERE id = ?");
-        $stmt->execute([(int)$input['comment_locked'], $userId]);
+        $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
+        $stmt->execute([$input['role'], $userId]);
     }
 
     if (isset($input['status'])) {

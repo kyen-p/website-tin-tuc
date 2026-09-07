@@ -110,7 +110,7 @@
       rows="2" 
       placeholder="Câu mô tả ngắn về tòa soạn..."
     >${escapeHtml(currentSettings.short_description)}</textarea>
-    <span style="font-size: 11px; color: var(--muted); margin-top: 4px; display: block;">Câu này hiển thị ngay dưới logo ở chân trang mọi trang công khai</span>
+    <span style="font-size: 11px; color: var(--muted); margin-top: 4px; display: block;">Mô tả ngắn hiển thị ngay dưới logo ở chân trang</span>
   </div>
 </div>
 

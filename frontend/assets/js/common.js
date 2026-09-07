@@ -807,3 +807,84 @@ async function initPublicFooter() {
     </footer>
   `;
 }
+
+/**
+ * ==============================================================================
+ * 6. PUBLIC SIDEBAR RENDERER (ĐỌC NHIỀU NHẤT TRONG TUẦN & TAG NỔI BẬT)
+ * Dùng chung đồng nhất cho cả 3 trang: index.html, category.html, search.html
+ * ==============================================================================
+ */
+async function initPublicSidebar(options = {}) {
+  const rankMountId = options.rankMountId || "rank-mount";
+  const tagMountId = options.tagMountId || "tag-mount";
+
+  const rankMount = document.getElementById(rankMountId);
+  const tagMount = document.getElementById(tagMountId);
+
+  if (!rankMount && !tagMount) return;
+
+  const currentPath = window.location.pathname;
+  const isInUserDir = currentPath.includes("/user/");
+  const publicPrefix = isInUserDir ? "../public/" : "";
+
+  // 1. Tải dữ liệu song song từ API Backend
+  const [topWeeklyRes, tagsRes] = await Promise.all([
+    safeFetchJson(resolveApiUrl("public/articles.php?top_weekly=1")),
+    safeFetchJson(resolveApiUrl("public/tags.php?featured=1"))
+  ]);
+
+  const topArticles = (topWeeklyRes && topWeeklyRes.data) || [];
+  const featuredTags = (tagsRes && tagsRes.data) || [];
+
+  // 2. Render Khối "Đọc nhiều nhất trong tuần"
+  if (rankMount) {
+    if (!topArticles || topArticles.length === 0) {
+      rankMount.innerHTML = "";
+    } else {
+      rankMount.innerHTML = topArticles
+        .slice(0, 5)
+        .map((a, index) => {
+          const isLast = index === Math.min(topArticles.length, 5) - 1 ? "no-border" : "";
+          const views = Number(a.views || a.view_count) || 0;
+          const detailUrl = `${publicPrefix}article-detail.html?id=${encodeURIComponent(a.id)}`;
+
+          return `
+            <div class="rank-item ${isLast}">
+              <div>
+                <h4 class="rank-item__title">
+                  <a href="${detailUrl}">${escapeHtml(a.title)}</a>
+                </h4>
+                <div class="meta">${views.toLocaleString("vi-VN")} lượt đọc</div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+  }
+
+  // 3. Render Khối "Tag nổi bật" - Luôn dẫn đến search.html?tag=...
+  if (tagMount) {
+    if (!featuredTags || featuredTags.length === 0) {
+      tagMount.innerHTML = "";
+    } else {
+      const activeTagParam = new URLSearchParams(window.location.search).get("tag") || "";
+
+      tagMount.innerHTML = featuredTags
+        .slice(0, 15)
+        .map((t) => {
+          const tagSlug = t.slug || t.id;
+          const isActive = activeTagParam && (t.slug === activeTagParam || t.name.toLowerCase() === activeTagParam.toLowerCase());
+          const targetUrl = `${publicPrefix}search.html?tag=${encodeURIComponent(tagSlug)}`;
+
+          return `
+            <a href="${targetUrl}" class="tag-chip ${isActive ? 'tag-chip--active' : ''}" data-slug="${escapeHtml(t.slug || '')}">
+              #${escapeHtml(t.name)}
+            </a>
+          `;
+        })
+        .join("");
+    }
+  }
+}
+

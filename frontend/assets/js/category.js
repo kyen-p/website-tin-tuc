@@ -278,47 +278,13 @@ if (typeof initPublicFooter === "function") {
   }
 
   // ============================================================================
-  // E. RENDER SIDEBAR ĐỌC NHIỀU NHẤT TRONG TUẦN & CHỦ ĐỀ ĐANG QUAN TÂM
+  // E. RENDER SIDEBAR: "ĐỌC NHIỀU NHẤT TRONG TUẦN" & "TAG NỔI BẬT"
+  // Sử dụng hàm chung initPublicSidebar từ common.js để đồng nhất tiêu chí
   // ============================================================================
-  const rankMount = document.getElementById("category-rank-mount");
-  if (rankMount) {
-    const publishedArticles = allArticles.filter((a) => a.status === "published");
-    const topRanked = [...publishedArticles]
-      .sort((a, b) => getViews(b) - getViews(a))
-      .slice(0, 5);
-
-    if (topRanked.length === 0) {
-      rankMount.innerHTML = `<p class="meta">Chưa có bài viết nổi bật.</p>`;
-    } else {
-      rankMount.innerHTML = topRanked
-        .map((a, index) => {
-          const isLast = index === topRanked.length - 1 ? "no-border" : "";
-          return `
-            <div class="rank-item ${isLast}">
-              <div>
-                <h4 class="rank-item__title">
-                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
-                </h4>
-                <div class="meta">${formatNumber(getViews(a))} lượt đọc</div>
-              </div>
-            </div>
-          `;
-        })
-        .join("");
-    }
-  }
-
-  // Render Từ khóa nổi bật (Tag Cloud) ở Sidebar - Điều hướng sang search.html để hiển thị toàn bộ bài viết có tag đó
-  const sidebarTagMount = document.getElementById("category-tag-cloud-mount");
-  if (sidebarTagMount && tags.length > 0) {
-    sidebarTagMount.innerHTML = tags
-      .map((t) => `
-        <a href="search.html?tag=${t.slug}" class="tag-chip">
-          #${escapeHtml(t.name)}
-        </a>
-      `)
-      .join("");
-  }
+  await initPublicSidebar({
+    rankMountId: "category-rank-mount",
+    tagMountId: "category-tag-cloud-mount"
+  });
 
   // Render lần đầu
   renderArticlesList();

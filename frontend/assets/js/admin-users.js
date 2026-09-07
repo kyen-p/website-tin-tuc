@@ -11,7 +11,7 @@
  * 5. Phân quyền / Đổi vai trò linh hoạt kèm thông báo tự động
  * 6. Khóa / Mở khóa tài khoản (khóa đăng nhập) & Khóa / Mở khóa quyền bình luận độc lập
  * 7. Xem chi tiết hồ sơ & đóng góp (bài viết, bình luận, tương tác)
- * 8. Xóa tài khoản với modal xác nhận an toàn
+ * 8. Bảo vệ an toàn tài khoản Quản trị viên và duy trì toàn vẹn dữ liệu (sử dụng Khóa/Mở khóa)
  * ==============================================================================
  */
 
@@ -199,10 +199,9 @@
                   <option value="user">Độc giả (User)</option>
                   <option value="reporter">Phóng viên (Reporter)</option>
                   <option value="editor">Biên tập viên (Editor)</option>
-                  <option value="admin">Quản trị viên (Admin)</option>
                 </select>
                 <p style="font-size: 12px; color: var(--muted); margin: 6px 0 0 0; line-height: 1.4;">
-                  Hệ thống sẽ tự động cập nhật phạm vi quyền hạn tương ứng và gửi thông báo đến tài khoản này.
+                  Hệ thống hỗ trợ luân chuyển giữa 3 vai trò: Độc giả, Phóng viên và Biên tập viên. Vai trò Quản trị viên được bảo vệ cố định.
                 </p>
               </div>
             </div>
@@ -214,7 +213,7 @@
         </div>
       </div>
 
-      <!-- 2. MODAL XÁC NHẬN CHUNG (KHÓA/MỞ KHÓA/XÓA) -->
+      <!-- 2. MODAL XÁC NHẬN CHUNG (KHÓA / MỞ KHÓA / PHÂN QUYỀN) -->
       <div id="userActionModal" class="admin-modal-overlay" style="display:none;">
         <div class="admin-modal" style="max-width: 460px; width: 100%;">
           <div class="admin-modal__header">
@@ -352,7 +351,6 @@
     tbody.innerHTML = filtered.map(user => {
       const isSelf = currentUser && String(currentUser.id) === String(user.id);
       const isLocked = user.status === "locked";
-      const isCommentLocked = user.comment_locked === true || user.is_comment_locked === true;
 
       // Tính toán đóng góp (đếm tổng số bài đã xuất bản)
       let contributionHtml = "";
@@ -447,8 +445,8 @@
 
           <!-- CỘT 6: THAO TÁC 3 CHẤM -->
           <td style="text-align: center; position: relative;">
-            ${isSelf ? `
-              <span style="color: var(--muted); font-size: 13px; font-weight: 500;" title="Không thể thao tác trên tài khoản của chính bạn">—</span>
+            ${isSelf || user.role === "admin" ? `
+              <span style="color: var(--muted); font-size: 13px; font-weight: 500;" title="${isSelf ? 'Không thể thao tác trên tài khoản của chính bạn' : 'Tài khoản Quản trị viên được bảo vệ cố định'}">—</span>
             ` : `
               <div class="admin-action-dropdown-wrapper" style="position: relative; display: inline-block;">
                 <button 
@@ -494,13 +492,6 @@
                       <span style="color:#C62828;">Khóa tài khoản</span>
                     </button>
                   `}
-
-                  <!-- Xóa tài khoản -->
-                  <div class="admin-dropdown-divider" style="height:1px; background:var(--line-soft); margin:4px 0;"></div>
-                  <button type="button" class="admin-dropdown-item admin-dropdown-item--danger" onclick="window.handleDeleteUser(${user.id})">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    <span>Xóa tài khoản</span>
-                  </button>
                 </div>
               </div>
             `}
@@ -667,6 +658,11 @@
         return;
       }
 
+      if (user.role === "admin") {
+        showToast("Tài khoản Quản trị viên được bảo vệ cố định, không thể thay đổi vai trò!", "warning");
+        return;
+      }
+
       document.getElementById("change-role-user-id").value = user.id;
       document.getElementById("change-role-select").value = user.role || "user";
 
@@ -709,7 +705,18 @@
         return;
       }
 
+      if (user.role === "admin") {
+        showToast("Tài khoản Quản trị viên được bảo vệ cố định, không thể thay đổi vai trò!", "warning");
+        return;
+      }
+
       const newRole = document.getElementById("change-role-select").value;
+      const allowedRoles = ["user", "reporter", "editor"];
+      if (!allowedRoles.includes(newRole)) {
+        showToast("Vai trò được chọn không hợp lệ!", "error");
+        return;
+      }
+
       const oldRole = user.role || "user";
 
       if (oldRole === newRole) {
@@ -792,6 +799,11 @@
       const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
       if (currentUser && String(currentUser.id) === String(user.id)) {
         showToast("Không thể thực hiện thao tác trên tài khoản của chính bạn!", "warning");
+        return;
+      }
+
+      if (user.role === "admin") {
+        showToast("Tài khoản Quản trị viên được bảo vệ cố định, không thể khóa!", "warning");
         return;
       }
 
@@ -905,62 +917,9 @@
     };
 
     // =========================================================================
-    // 3. XÓA TÀI KHOẢN
-        // =========================================================================
-        window.handleDeleteUser = function (userId) {
-          closeAllActionMenus();
-          loadData();
-          const user = allUsers.find(u => u.id === userId);
-          if (!user) return;
-
-          const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
-          if (currentUser && String(currentUser.id) === String(user.id)) {
-            showToast("Bạn không thể xóa tài khoản đang đăng nhập hiện tại!", "error");
-            return;
-          }
-
-          openConfirmActionModal({
-            title: "Xác nhận xóa tài khoản vĩnh viễn",
-            bodyHtml: `
-          <p style="font-size: 13.5px; line-height: 1.5; color: var(--ink); margin-bottom: 8px;">
-            Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản <strong>${escapeHtml(user.full_name)}</strong> (@${escapeHtml(user.username)}) khỏi hệ thống không?
-          </p>
-          <p style="font-size: 12px; color: var(--crimson); margin: 0; font-weight: 500;">
-            Cảnh báo: Toàn bộ dữ liệu của tài khoản này sẽ bị xóa khỏi danh sách người dùng và không thể hoàn tác.
-          </p>
-        `,
-            confirmText: "Xóa vĩnh viễn",
-            confirmBtnClass: "admin-btn--danger",
-            onConfirm: async function () {
-              try {
-                const res = await fetch(resolveApiUrl("admin/users.php"), {
-                  method: "PUT",
-                  credentials: "include",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ user_id: userId, delete: true }),
-                });
-                const result = await res.json();
-                if (result && result.success) {
-                  closeModal("userActionModal");
-                  await loadData();
-                  renderPageStructure();
-                  renderTableRows();
-                  showToast(`Đã xóa tài khoản '${user.full_name}' thành công.`, "success");
-                } else {
-                  showToast((result && result.message) || "Không thể xóa tài khoản!", "error");
-                }
-              } catch (e) {
-                console.error("Lỗi xóa tài khoản:", e);
-                showToast("Lỗi kết nối khi xóa tài khoản!", "error");
-              }
-            }
-          });
-        };
-
-        // =========================================================================
-        // 4. XEM CHI TIẾT LÝ DO KHÓA TÀI KHOẢN
-        // =========================================================================
-        window.handleViewLockReason = function (userId) {
+    // 3. XEM CHI TIẾT LÝ DO KHÓA TÀI KHOẢN
+    // =========================================================================
+    window.handleViewLockReason = function (userId) {
           closeAllActionMenus();
           loadData();
           const user = allUsers.find(u => u.id === userId);

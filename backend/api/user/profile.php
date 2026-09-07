@@ -70,6 +70,14 @@ try {
             ? trim($input['full_name'])
             : '';
 
+        $username = isset($input['username'])
+            ? trim($input['username'])
+            : '';
+
+        $email = isset($input['email'])
+            ? trim($input['email'])
+            : '';
+
         $bio = isset($input['bio'])
             ? trim($input['bio'])
             : '';
@@ -80,7 +88,39 @@ try {
 
         // Kiểm tra họ tên
         if ($fullName === '') {
-            jsonResponse(false, null, "Họ tên không được để trống");
+            jsonResponse(false, null, "Họ và tên không được để trống");
+        }
+
+        // Kiểm tra tên đăng nhập
+        if ($username === '') {
+            jsonResponse(false, null, "Tên đăng nhập không được để trống");
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9_]{3,30}$/', $username)) {
+            jsonResponse(false, null, "Tên đăng nhập từ 3 - 30 ký tự, không chứa dấu cách hoặc ký tự đặc biệt");
+        }
+
+        // Kiểm tra email
+        if ($email === '') {
+            jsonResponse(false, null, "Email không được để trống");
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            jsonResponse(false, null, "Định dạng email không hợp lệ");
+        }
+
+        // Kiểm tra trùng lặp username
+        $stmtCheckUser = $pdo->prepare("SELECT id FROM users WHERE username = ? AND id != ? LIMIT 1");
+        $stmtCheckUser->execute([$username, $userId]);
+        if ($stmtCheckUser->fetch()) {
+            jsonResponse(false, null, "Tên đăng nhập này đã có người sử dụng. Vui lòng chọn tên khác!");
+        }
+
+        // Kiểm tra trùng lặp email
+        $stmtCheckEmail = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1");
+        $stmtCheckEmail->execute([$email, $userId]);
+        if ($stmtCheckEmail->fetch()) {
+            jsonResponse(false, null, "Email này đã được sử dụng bởi một tài khoản khác!");
         }
 
         // Nếu người dùng đổi ảnh đại diện mới HOẶC xóa ảnh đại diện -> Xóa ảnh đại diện cũ khỏi máy chủ
@@ -96,6 +136,8 @@ try {
         $stmt = $pdo->prepare("
             UPDATE users
             SET
+                username = ?,
+                email = ?,
                 full_name = ?,
                 bio = ?,
                 avatar = ?
@@ -103,6 +145,8 @@ try {
         ");
 
         $stmt->execute([
+            $username,
+            $email,
             $fullName,
             $bio,
             $avatar,
@@ -128,6 +172,15 @@ try {
 
         $stmt->execute([$userId]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Cập nhật lại session
+        if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+            $_SESSION['user']['username'] = $user['username'];
+            $_SESSION['user']['email'] = $user['email'];
+            $_SESSION['user']['full_name'] = $user['full_name'];
+            $_SESSION['user']['avatar'] = $user['avatar'];
+            $_SESSION['user']['bio'] = $user['bio'];
+        }
 
         jsonResponse(
             true,

@@ -58,8 +58,12 @@ async function initSearchPage() {
   // 4. Render các thành phần tĩnh & danh mục
   setupCategoryOptions();
   renderHotTags();
-  renderSidebarAllTags();
-  renderTopViews();
+
+  // Khởi tạo Sidebar chung đồng nhất (Đọc nhiều nhất trong tuần & Tag nổi bật)
+  await initPublicSidebar({
+    rankMountId: "topViewsMount",
+    tagMountId: "sidebarAllTagsMount"
+  });
 
   // 5. Lắng nghe sự kiện Lọc & Sắp xếp
   if (categoryFilter) {
@@ -353,39 +357,6 @@ async function initSearchPage() {
         const isActive = tagParam && (t.slug === tagParam || t.name.toLowerCase() === tagParam.toLowerCase());
         return `<a href="search.html?tag=${t.slug}" class="tag-chip ${isActive ? 'tag-chip--active' : ''}" data-slug="${t.slug}" style="font-size: 12px;">#${escapeHtml(t.name)}</a>`;
       })
-      .join("");
-  }
-
-  function renderSidebarAllTags() {
-    if (!sidebarAllTagsMount) return;
-    sidebarAllTagsMount.innerHTML = tags
-      .map((t) => {
-        const isActive = tagParam && (t.slug === tagParam || t.name.toLowerCase() === tagParam.toLowerCase());
-        return `<a href="search.html?tag=${t.slug}" class="tag-chip ${isActive ? 'tag-chip--active' : ''}" data-slug="${t.slug}">#${escapeHtml(t.name)}</a>`;
-      })
-      .join("");
-  }
-
-  function renderTopViews() {
-    if (!topViewsMount) return;
-    const topArticles = articles
-      .filter((a) => a.status === "published")
-      .sort((a, b) => (Number(b.views || b.view_count) || 0) - (Number(a.views || a.view_count) || 0))
-      .slice(0, 5);
-
-    topViewsMount.innerHTML = topArticles
-      .map((a, idx) => `
-        <div class="rank-item ${idx === topArticles.length - 1 ? 'no-border' : ''}">
-          <div>
-            <h4 class="rank-item__title">
-              <a href="${getArticleDetailUrl(a)}">
-                ${escapeHtml(a.title)}
-              </a>
-            </h4>
-            <div class="meta" style="font-size: 11.5px;">${(Number(a.views || a.view_count) || 0).toLocaleString("vi-VN")} lượt đọc</div>
-          </div>
-        </div>
-      `)
       .join("");
   }
 }

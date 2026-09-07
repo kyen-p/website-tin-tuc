@@ -144,7 +144,6 @@ CREATE TABLE `users` (
   `status` enum('active','locked') DEFAULT 'active',
   `lock_reason` text DEFAULT NULL,
   `locked_at` datetime DEFAULT NULL,
-  `comment_locked` tinyint(1) DEFAULT 0,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

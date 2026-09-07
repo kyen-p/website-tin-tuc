@@ -67,7 +67,6 @@
 
     const activeComments = comments.filter(c => !c.is_deleted);
     const totalComments = comments.length;
-    const lockedCommentUsers = users.filter(u => u.comment_locked).length;
 
     return {
       totalUsers,
@@ -82,8 +81,7 @@
       totalPublishedAndHidden,
       totalArticles,
       totalComments,
-      activeCommentsCount: activeComments.length,
-      lockedCommentUsers
+      activeCommentsCount: activeComments.length
     };
   }
 

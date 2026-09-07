@@ -256,34 +256,68 @@ if ($method === 'PUT') {
 
         if ($type === 'tags') {
             $check = $pdo->prepare("
-                SELECT id FROM tags WHERE id = ?
+                SELECT id, name FROM tags WHERE id = ?
             ");
             $check->execute([$id]);
+            $currentTag = $check->fetch(PDO::FETCH_ASSOC);
 
-            if (!$check->fetch()) {
+            if (!$currentTag) {
                 jsonResponse(false, null, "Không tìm thấy tag");
             }
 
-            $checkName = $pdo->prepare("
-                SELECT id FROM tags
-                WHERE name = ? AND id <> ? LIMIT 1
+            // Kiểm tra xem tên tag mới (hoặc slug mới) đã trùng với một tag khác có sẵn chưa
+            $checkTarget = $pdo->prepare("
+                SELECT id, name, slug FROM tags
+                WHERE (name = ? OR slug = ?) AND id <> ?
+                LIMIT 1
             ");
-            $checkName->execute([$name, $id]);
+            $checkTarget->execute([$name, $slug, $id]);
+            $targetTag = $checkTarget->fetch(PDO::FETCH_ASSOC);
 
-            if ($checkName->fetch()) {
-                jsonResponse(false, null, "Tên tag đã tồn tại");
+            // =========================================================================
+            // TRƯỜNG HỢP 1: TÊN / SLUG ĐÃ TỒN TẠI -> THỰC HIỆN GỘP THẺ TAG THÔNG MINH
+            // =========================================================================
+            if ($targetTag) {
+                $targetId = (int)$targetTag['id'];
+                $targetName = $targetTag['name'];
+
+                $pdo->beginTransaction();
+                try {
+                    // 1. Chuyển toàn bộ liên kết bài viết từ tag hiện tại ($id) sang tag đích ($targetId)
+                    // Dùng INSERT IGNORE để nếu bài viết đã có sẵn cả 2 tag thì không bị lỗi trùng lặp khóa chính
+                    $stmtMove = $pdo->prepare("
+                        INSERT IGNORE INTO article_tags (article_id, tag_id)
+                        SELECT article_id, ?
+                        FROM article_tags
+                        WHERE tag_id = ?
+                    ");
+                    $stmtMove->execute([$targetId, $id]);
+
+                    // 2. Xóa các bản ghi liên kết cũ của tag nguồn
+                    $stmtClean = $pdo->prepare("DELETE FROM article_tags WHERE tag_id = ?");
+                    $stmtClean->execute([$id]);
+
+                    // 3. Xóa tag nguồn khỏi bảng tags
+                    $stmtDelete = $pdo->prepare("DELETE FROM tags WHERE id = ?");
+                    $stmtDelete->execute([$id]);
+
+                    $pdo->commit();
+
+                    jsonResponse(true, [
+                        'merged' => true,
+                        'source_id' => $id,
+                        'target_id' => $targetId,
+                        'target_name' => $targetName
+                    ], "Đã gộp thẻ tag thành công vào thẻ '#{$targetName}'!");
+                } catch (Exception $e) {
+                    $pdo->rollBack();
+                    jsonResponse(false, null, "Không thể gộp thẻ tag: " . $e->getMessage());
+                }
             }
 
-            $checkSlug = $pdo->prepare("
-                SELECT id FROM tags
-                WHERE slug = ? AND id <> ? LIMIT 1
-            ");
-            $checkSlug->execute([$slug, $id]);
-
-            if ($checkSlug->fetch()) {
-                jsonResponse(false, null, "Slug tag đã tồn tại");
-            }
-
+            // =========================================================================
+            // TRƯỜNG HỢP 2: TÊN TAG MỚI HOÀN TOÀN -> CẬP NHẬT TÊN VÀ SLUG BÌNH THƯỜNG
+            // =========================================================================
             $stmt = $pdo->prepare("
                 UPDATE tags
                 SET name = ?, slug = ?

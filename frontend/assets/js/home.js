@@ -254,59 +254,13 @@ await initPublicFooter();
   }
 
   // ============================================================================
-  // D. RENDER BẢNG XẾP HẠNG "ĐỌC NHIỀU NHẤT TRONG TUẦN" (TOP 5 TUẦN QUA)
-  // Lọc bài viết xuất bản trong vòng 7 ngày và sort theo views cao nhất
+  // D. RENDER SIDEBAR: "ĐỌC NHIỀU NHẤT TRONG TUẦN" & "TAG NỔI BẬT"
+  // Sử dụng hàm chung initPublicSidebar từ common.js để đồng nhất tiêu chí
   // ============================================================================
-  const rankMount = document.getElementById("rank-mount");
-  const rankHeader = document.querySelector("aside .panel h3");
-  if (rankHeader) {
-    rankHeader.textContent = "Đọc nhiều nhất trong tuần";
-  }
-
-  if (rankMount) {
-    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-    const weeklyArticles = publishedArticles.filter((a) => {
-      if (!a.published_at) return false;
-      const pubDate = new Date(String(a.published_at).replace(" ", "T"));
-      return !isNaN(pubDate.getTime()) && pubDate >= oneWeekAgo && pubDate <= now;
-    });
-
-    const topWeeklyArticles = (weeklyArticles.length > 0 ? weeklyArticles : publishedArticles)
-      .sort((a, b) => getViews(b) - getViews(a))
-      .slice(0, 5);
-
-    if (topWeeklyArticles.length === 0) {
-      rankMount.innerHTML = `<p class="meta">Chưa có bài viết nổi bật trong tuần.</p>`;
-    } else {
-      rankMount.innerHTML = topWeeklyArticles
-        .map((a, index) => {
-          const isLast = index === topWeeklyArticles.length - 1 ? "no-border" : "";
-          const views = getViews(a);
-          return `
-            <div class="rank-item ${isLast}">
-              <div>
-                <h4 class="rank-item__title">
-                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
-                </h4>
-                <div class="meta">${formatNumber(views)} lượt đọc</div>
-              </div>
-            </div>
-          `;
-        })
-        .join("");
-    }
-  }
-
-  // ============================================================================
-  // E. RENDER CHỦ ĐỀ ĐƯỢC QUAN TÂM (TAG CLOUD)
-  // ============================================================================
-  const tagMount = document.getElementById("tag-mount");
-  if (tagMount && tags.length > 0) {
-    tagMount.innerHTML = tags
-      .map((t) => `<a href="search.html?tag=${t.slug}" class="tag-chip">#${escapeHtml(t.name)}</a>`)
-      .join("");
-  }
+  await initPublicSidebar({
+    rankMountId: "rank-mount",
+    tagMountId: "tag-mount"
+  });
 }
 
 if (document.readyState === "loading") {

@@ -42,8 +42,8 @@ try {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     $stmt = $pdo->prepare(
-        "INSERT INTO users (username, email, password, full_name, role, status, comment_locked, created_at)
-         VALUES (?, ?, ?, ?, 'user', 'active', 0, NOW())"
+        "INSERT INTO users (username, email, password, full_name, role, status, created_at)
+         VALUES (?, ?, ?, ?, 'user', 'active', NOW())"
     );
     $stmt->execute([$username, $email, $hashedPassword, $fullName]);
 
