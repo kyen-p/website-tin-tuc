@@ -13,7 +13,7 @@ async function initChangePasswordPage() {
   }
   if (typeof initPublicFooter === "function") {
     await initPublicFooter();
-  }
+  } 
   // DOM Elements
   const changePasswordForm = document.getElementById("changePasswordForm");
   const currentPasswordInput = document.getElementById("currentPasswordInput");

@@ -71,7 +71,7 @@ function renderCommentsApiNotAvailable() {
           color: var(--ink-muted);
         "
       >
-        Bạn chưa bình luận bài viết nào.
+        Bạn chưa có bình luận nào.
       </p>
     </div>
   `;

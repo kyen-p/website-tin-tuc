@@ -249,39 +249,6 @@ function escapeHtml(text) {
 }
 
 /**
- * Render danh sách "Top bài đọc nhiều" dùng chung cho mọi trang
- * @param {HTMLElement} mountEl - div chứa danh sách
- * @param {Array} articles - mảng bài viết đã published
- * @param {string} emptyText - text hiển thị khi rỗng
- */
-function renderTopViewsPanel(mountEl, articles, emptyText = "Chưa có bài viết nổi bật trong tuần.") {
-  if (!mountEl) return;
-
-  const topArticles = articles
-    .filter((a) => a.status === "published")
-    .sort((a, b) => (Number(b.views || b.view_count) || 0) - (Number(a.views || a.view_count) || 0))
-    .slice(0, 5);
-
-  if (topArticles.length === 0) {
-    mountEl.innerHTML = `<p class="meta">${emptyText}</p>`;
-    return;
-  }
-
-  mountEl.innerHTML = topArticles
-    .map((a, idx) => `
-      <div class="rank-item ${idx === topArticles.length - 1 ? 'no-border' : ''}">
-        <div>
-          <h4 class="rank-item__title">
-            <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
-          </h4>
-          <div class="meta" style="font-size: 11.5px;">${(Number(a.views || a.view_count) || 0).toLocaleString("vi-VN")} lượt đọc</div>
-        </div>
-      </div>
-    `)
-    .join("");
-}
-
-/**
  * Định dạng ngày đăng bài chuẩn toàn hệ thống Mạch Tin:
  * - Nếu < 48 giờ: 'Vừa xong' / 'X phút trước' / 'X giờ trước' / '1 ngày trước'
  * - Nếu > 48 giờ: 'HH:mm, DD/MM/YYYY' (ví dụ: '09:30, 13/08/2026')
@@ -379,7 +346,7 @@ function resolveAssetPath(path) {
 
   // Nếu đường dẫn trỏ tới backend (ví dụ backend/api/upload/...): cần lùi 2 cấp từ frontend/subfolder/
   if (cleanPath.startsWith("backend/")) {
-    return isSubfolder ? "../../" + cleanPath : "../" + cleanPath;
+    return isSubfolder ? "../../" + cleanPath : cleanPath;
   }
 
   if (isSubfolder && !cleanPath.startsWith("../")) {
@@ -387,6 +354,7 @@ function resolveAssetPath(path) {
   }
   return cleanPath;
 }
+
 /**
  * Tạo thẻ ảnh bìa bài viết với fallback placeholder tự động
  */

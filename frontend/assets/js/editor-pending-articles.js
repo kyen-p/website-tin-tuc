@@ -46,6 +46,12 @@
     }
   }
 
+  function getRefTime() {
+    if (typeof getSystemTime === "function") {
+      return getSystemTime();
+    }
+    return new Date();
+  }
 
   async function loadData() {
     try {

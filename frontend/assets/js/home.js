@@ -32,6 +32,15 @@ await initPublicFooter();
     tags = [];
   }
 
+  // Helper lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong a.category)
+  function getCategory(a) {
+    return a.category || { name: "Tin tức", slug: "" };
+  }
+
+  // Helper lấy tác giả của 1 bài viết (đã được API nhúng sẵn trong a.author)
+  function getAuthor(a) {
+    return a.author || { full_name: "Ban Biên Tập", id: "" };
+  }
 
   // Bài viết trả về từ API đã là bài đã xuất bản và có published_at
   const publishedArticles = allArticles.filter((a) => a.published_at);
@@ -39,7 +48,25 @@ await initPublicFooter();
   // Mốc thời gian hệ thống
   const now = getSystemTime();
 
+  // Helper chuẩn hóa định dạng số lượt đọc
+  function getViews(a) {
+    return Number(a.view_count || a.views || 0);
+  }
 
+  // Helper render dòng meta chuẩn đồng bộ: Tác giả · Thời gian · Lượt đọc
+  function renderCardMeta(a, author) {
+    const viewsFormatted = formatNumber(getViews(a));
+    const authorUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(author) : `author.html?username=${encodeURIComponent(author.username || author.id)}`;
+    return `
+      <div class="meta">
+        <a href="${authorUrl}">${escapeHtml(author.full_name)}</a>
+        <span class="dot-sep">·</span>
+        <span>${timeAgo(a.published_at)}</span>
+        <span class="dot-sep">·</span>
+        <span>${viewsFormatted} lượt đọc</span>
+      </div>
+    `;
+  }
 
   // ============================================================================
   // A. TÍNH ĐỘ "NÓNG" CHO KHỐI 1 (HERO GRID - 5 BÀI TIÊU ĐIỂM)
@@ -65,8 +92,8 @@ await initPublicFooter();
       const leadArticle = hotArticles[0];
       const subLeadArticle = hotArticles.length > 1 ? hotArticles[1] : null;
 
-      const leadCat = getArticleCategory(leadArticle);
-      const leadAuthor = getArticleAuthor(leadArticle);
+      const leadCat = getCategory(leadArticle);
+      const leadAuthor = getAuthor(leadArticle);
 
       let leftHtml = `
         <div class="hero-grid__main">
@@ -83,8 +110,8 @@ await initPublicFooter();
       `;
 
       if (subLeadArticle) {
-        const subCat = getArticleCategory(subLeadArticle);
-        const subAuthor = getArticleAuthor(subLeadArticle);
+        const subCat = getCategory(subLeadArticle);
+        const subAuthor = getAuthor(subLeadArticle);
         leftHtml += `
           <!-- Bài đinh số 2 (Đồng bộ cỡ chữ và cấu trúc y hệt bài đinh số 1) -->
           <article class="article-card">
@@ -108,8 +135,8 @@ await initPublicFooter();
           <div class="hero-grid__side">
             ${sideArticles
               .map((a) => {
-                const cat = getArticleCategory(a);
-                const author = getArticleAuthor(a);
+                const cat = getCategory(a);
+                const author = getAuthor(a);
                 return `
                   <article class="article-card">
                     <a href="${getArticleDetailUrl(a)}" class="card-link">
@@ -158,8 +185,8 @@ await initPublicFooter();
       latestSection.style.display = "block";
       latestMount.innerHTML = latestArticles
         .map((a) => {
-          const cat = getArticleCategory(a);
-          const author = getArticleAuthor(a);
+          const cat = getCategory(a);
+          const author = getAuthor(a);
           return `
             <article class="article-card">
               <a href="${getArticleDetailUrl(a)}" class="card-link">
@@ -202,8 +229,8 @@ await initPublicFooter();
     } else {
       streamMount.innerHTML = displayList
         .map((a, index) => {
-          const cat = getArticleCategory(a);
-          const author = getArticleAuthor(a);
+          const cat = getCategory(a);
+          const author = getAuthor(a);
           const isLast = index === displayList.length - 1 ? "no-border" : "";
 
           return `
@@ -230,11 +257,56 @@ await initPublicFooter();
   // D. RENDER BẢNG XẾP HẠNG "ĐỌC NHIỀU NHẤT TRONG TUẦN" (TOP 5 TUẦN QUA)
   // Lọc bài viết xuất bản trong vòng 7 ngày và sort theo views cao nhất
   // ============================================================================
- renderTopViewsPanel(document.getElementById("rank-mount"), allArticles);
+  const rankMount = document.getElementById("rank-mount");
+  const rankHeader = document.querySelector("aside .panel h3");
+  if (rankHeader) {
+    rankHeader.textContent = "Đọc nhiều nhất trong tuần";
+  }
+
+  if (rankMount) {
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    const weeklyArticles = publishedArticles.filter((a) => {
+      if (!a.published_at) return false;
+      const pubDate = new Date(String(a.published_at).replace(" ", "T"));
+      return !isNaN(pubDate.getTime()) && pubDate >= oneWeekAgo && pubDate <= now;
+    });
+
+    const topWeeklyArticles = (weeklyArticles.length > 0 ? weeklyArticles : publishedArticles)
+      .sort((a, b) => getViews(b) - getViews(a))
+      .slice(0, 5);
+
+    if (topWeeklyArticles.length === 0) {
+      rankMount.innerHTML = `<p class="meta">Chưa có bài viết nổi bật trong tuần.</p>`;
+    } else {
+      rankMount.innerHTML = topWeeklyArticles
+        .map((a, index) => {
+          const isLast = index === topWeeklyArticles.length - 1 ? "no-border" : "";
+          const views = getViews(a);
+          return `
+            <div class="rank-item ${isLast}">
+              <div>
+                <h4 class="rank-item__title">
+                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
+                </h4>
+                <div class="meta">${formatNumber(views)} lượt đọc</div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+  }
+
   // ============================================================================
   // E. RENDER CHỦ ĐỀ ĐƯỢC QUAN TÂM (TAG CLOUD)
   // ============================================================================
-  renderTagCloud(document.getElementById("tag-mount"), tags);
+  const tagMount = document.getElementById("tag-mount");
+  if (tagMount && tags.length > 0) {
+    tagMount.innerHTML = tags
+      .map((t) => `<a href="search.html?tag=${t.slug}" class="tag-chip">#${escapeHtml(t.name)}</a>`)
+      .join("");
+  }
 }
 
 if (document.readyState === "loading") {

@@ -33,6 +33,10 @@ async function initSearchPage() {
     console.error("Lỗi khi tải dữ liệu tìm kiếm từ backend", error);
   }
 
+  // Helper lấy tác giả (đã được API nhúng sẵn trong article.author)
+  function getAuthor(article) {
+    return (article && article.author) || { full_name: "Ban Biên Tập", id: 1 };
+  }
 
   // DOM Elements
   const searchForm = document.getElementById("searchForm");
@@ -55,7 +59,7 @@ async function initSearchPage() {
   setupCategoryOptions();
   renderHotTags();
   renderSidebarAllTags();
-  renderTopViewsPanel(document.getElementById("topViewsMount"), articles);
+  renderTopViews();
 
   // 5. Lắng nghe sự kiện Lọc & Sắp xếp
   if (categoryFilter) {
@@ -214,7 +218,9 @@ async function initSearchPage() {
     searchResultsList.innerHTML = list
       .map((article) => {
         const cat = categories.find((c) => c.id === article.category_id) || { name: "Tin tức", slug: "tin-tuc" };
-        const author = getArticleAuthor(article);
+        const author = getAuthor(article);
+        const safeDate = typeof formatDate === "function" ? formatDate(article.published_at || article.created_at) : article.published_at || "";
+        const safeViews = (Number(article.views || article.view_count) || 0).toLocaleString("vi-VN");
 
         // Highlight từ khóa trong Tiêu đề và Tóm tắt nếu có từ khóa
         const rawTitle = article.title || "";
@@ -254,7 +260,8 @@ async function initSearchPage() {
                 ${tagsHtml}
               </div>
               <div class="search-article-card__meta">
-              ${renderCardMeta(article, author)}                <span class="dot-sep">·</span>
+                <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author) : 'author.html?username=' + encodeURIComponent(author.username || author.id)}">${escapeHtml(author.full_name)}</a>
+                <span class="dot-sep">·</span>
                 <span>${safeDate}</span>
                 <span class="dot-sep">·</span>
                 <span>${safeViews} lượt đọc</span>
@@ -340,11 +347,46 @@ async function initSearchPage() {
 
   function renderHotTags() {
     if (!hotTagsMount) return;
-    renderTagCloud(hotTagsMount, tags.slice(0, 6), tagParam);
+    const hotTags = tags.slice(0, 6);
+    hotTagsMount.innerHTML = hotTags
+      .map((t) => {
+        const isActive = tagParam && (t.slug === tagParam || t.name.toLowerCase() === tagParam.toLowerCase());
+        return `<a href="search.html?tag=${t.slug}" class="tag-chip ${isActive ? 'tag-chip--active' : ''}" data-slug="${t.slug}" style="font-size: 12px;">#${escapeHtml(t.name)}</a>`;
+      })
+      .join("");
   }
 
-    function renderSidebarAllTags() {
-    renderTagCloud(sidebarAllTagsMount, tags, tagParam);
+  function renderSidebarAllTags() {
+    if (!sidebarAllTagsMount) return;
+    sidebarAllTagsMount.innerHTML = tags
+      .map((t) => {
+        const isActive = tagParam && (t.slug === tagParam || t.name.toLowerCase() === tagParam.toLowerCase());
+        return `<a href="search.html?tag=${t.slug}" class="tag-chip ${isActive ? 'tag-chip--active' : ''}" data-slug="${t.slug}">#${escapeHtml(t.name)}</a>`;
+      })
+      .join("");
+  }
+
+  function renderTopViews() {
+    if (!topViewsMount) return;
+    const topArticles = articles
+      .filter((a) => a.status === "published")
+      .sort((a, b) => (Number(b.views || b.view_count) || 0) - (Number(a.views || a.view_count) || 0))
+      .slice(0, 5);
+
+    topViewsMount.innerHTML = topArticles
+      .map((a, idx) => `
+        <div class="rank-item ${idx === topArticles.length - 1 ? 'no-border' : ''}">
+          <div>
+            <h4 class="rank-item__title">
+              <a href="${getArticleDetailUrl(a)}">
+                ${escapeHtml(a.title)}
+              </a>
+            </h4>
+            <div class="meta" style="font-size: 11.5px;">${(Number(a.views || a.view_count) || 0).toLocaleString("vi-VN")} lượt đọc</div>
+          </div>
+        </div>
+      `)
+      .join("");
   }
 }
 

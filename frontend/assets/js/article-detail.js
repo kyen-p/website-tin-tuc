@@ -37,8 +37,8 @@ async function initArticleDetailPage() {
 
   const currentUser = getCurrentUser();
 
-  const category = getArticleCategory(article);
-  const author = { ...getArticleAuthor(article), bio: (article.author && article.author.bio) || "Đội ngũ phóng viên Mạch Tin" };
+  const category = article.category || { name: "Thời sự", slug: "thoi-su" };
+  const author = article.author || { full_name: "Ban Biên Tập", bio: "Đội ngũ phóng viên Mạch Tin", id: 1 };
 
   const currentTags = Array.isArray(article.tags) ? article.tags : [];
 

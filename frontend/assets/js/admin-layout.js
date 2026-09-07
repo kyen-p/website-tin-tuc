@@ -106,24 +106,6 @@ const WORKSPACE_MENUS = {
  * Tính toán số lượng huy hiệu (Badge Count)
  */
 function getSidebarBadge(key, currentRole, currentUser) {
-  if (currentRole === "editor" && key === "pending-articles") {
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", resolveApiUrl("editor/pending-articles.php"), false); // false = đồng bộ
-      xhr.withCredentials = true;
-      xhr.send(null);
-
-      if (xhr.status >= 200 && xhr.status < 300) {
-        const res = JSON.parse(xhr.responseText);
-        const count = res && res.success && Array.isArray(res.data) ? res.data.length : 0;
-        if (count > 0) {
-          return { type: "warning", count: count };
-        }
-      }
-    } catch (error) {
-      console.error("Lỗi khi lấy số bài chờ duyệt", error);
-    }
-  }
   return null;
 }
 

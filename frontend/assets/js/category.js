@@ -45,6 +45,19 @@ if (typeof initPublicFooter === "function") {
   // Tìm chuyên mục hiện tại
   const currentCategory = categorySlug ? categories.find((c) => c.slug === categorySlug) || null : null;
 
+  // Helpers
+  function getCategory(catId) {
+    return categories.find((c) => c.id === catId) || { name: "Tin tức", slug: "" };
+  }
+
+  function getAuthor(article) {
+    return (article && article.author) || { full_name: "Ban Biên Tập", id: "" };
+  }
+
+  function getViews(article) {
+    return Number(article.view_count || article.views || 0);
+  }
+
   // ============================================================================
   // A. RENDER TIÊU ĐỀ CHUYÊN MỤC, BREADCRUMB & DOCUMENT.TITLE ĐỘNG
   // ============================================================================
@@ -161,7 +174,7 @@ if (typeof initPublicFooter === "function") {
 
     // Sắp xếp
     if (currentSort === "views") {
-      filtered.sort((a, b) => getArticleViews(b) - getArticleViews(a));
+      filtered.sort((a, b) => getViews(b) - getViews(a));
     } else {
       filtered.sort((a, b) => new Date(String(b.published_at || b.created_at).replace(" ", "T")) - new Date(String(a.published_at || a.created_at).replace(" ", "T")));
     }
@@ -187,8 +200,8 @@ if (typeof initPublicFooter === "function") {
 
     // Bài tiêu điểm (bài đầu tiên)
     const featuredArticle = filtered[0];
-    const featCat = getArticleCategory(featuredArticle);
-    const featAuthor = getArticleAuthor(featuredArticle);
+    const featCat = getCategory(featuredArticle.category_id);
+    const featAuthor = getAuthor(featuredArticle);
 
     if (featuredMount) {
       featuredMount.style.display = "block";
@@ -201,7 +214,13 @@ if (typeof initPublicFooter === "function") {
                 <span class="eyebrow is-crimson">${escapeHtml(featCat.name)}</span>
                 <h2 class="headline-lg" style="margin-top: 8px;">${escapeHtml(featuredArticle.title)}</h2>
                 <p class="dek">${escapeHtml(featuredArticle.short_description || featuredArticle.summary || "")}</p>
-                ${renderCardMeta(featuredArticle, featAuthor)}
+                <div class="meta">
+                  <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(featAuthor) : 'author.html?username=' + encodeURIComponent(featAuthor.username || featAuthor.id)}">${escapeHtml(featAuthor.full_name)}</a>
+                  <span class="dot-sep">·</span>
+                  <span>${formatDate(featuredArticle.published_at || featuredArticle.created_at)}</span>
+                  <span class="dot-sep">·</span>
+                  <span>${formatNumber(getViews(featuredArticle))} lượt đọc</span>
+                </div>
               </div>
             </div>
           </a>
@@ -217,8 +236,8 @@ if (typeof initPublicFooter === "function") {
       } else {
         gridMount.innerHTML = remainingArticles
           .map((a) => {
-            const cat = getArticleCategory(a);
-            const author = getArticleAuthor(a);
+            const cat = getCategory(a.category_id);
+            const author = getAuthor(a);
             return `
               <article class="article-card" style="padding-bottom: 20px;">
                 <a href="${getArticleDetailUrl(a)}" class="card-link" style="display: block;">
@@ -227,7 +246,13 @@ if (typeof initPublicFooter === "function") {
                   <h3 class="headline-md" style="margin-top: 6px;">${escapeHtml(a.title)}</h3>
                 </a>
                 <p class="dek" style="font-size: 13.5px; margin: 4px 0 10px;">${escapeHtml(a.short_description || a.summary || "")}</p>
-                ${renderCardMeta(a, author)}
+                <div class="meta">
+                  <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author) : 'author.html?username=' + encodeURIComponent(author.username || author.id)}">${escapeHtml(author.full_name)}</a>
+                  <span class="dot-sep">·</span>
+                  <span>${formatDate(a.published_at || a.created_at)}</span>
+                  <span class="dot-sep">·</span>
+                  <span>${formatNumber(getViews(a))} lượt đọc</span>
+                </div>
               </article>
             `;
           })
@@ -255,64 +280,45 @@ if (typeof initPublicFooter === "function") {
   // ============================================================================
   // E. RENDER SIDEBAR ĐỌC NHIỀU NHẤT TRONG TUẦN & CHỦ ĐỀ ĐANG QUAN TÂM
   // ============================================================================
- renderTopViewsPanel(document.getElementById("category-rank-mount"), allArticles);
+  const rankMount = document.getElementById("category-rank-mount");
+  if (rankMount) {
+    const publishedArticles = allArticles.filter((a) => a.status === "published");
+    const topRanked = [...publishedArticles]
+      .sort((a, b) => getViews(b) - getViews(a))
+      .slice(0, 5);
 
- /**
- * Lấy tác giả của 1 bài viết (đã được API nhúng sẵn trong article.author)
- */
-function getArticleAuthor(article) {
-  return (article && article.author) || { full_name: "Ban Biên Tập", id: "" };
-}
-window.getArticleAuthor = getArticleAuthor;
-
-/**
- * Lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong article.category)
- */
-function getArticleCategory(article) {
-  return (article && article.category) || { name: "Tin tức", slug: "" };
-}
-window.getArticleCategory = getArticleCategory;
-
-/**
- * Chuẩn hóa số lượt xem của 1 bài viết
- */
-function getArticleViews(article) {
-  return Number(article.view_count || article.views || 0);
-}
-window.getArticleViews = getArticleViews;
-
-/**
- * Render dòng meta chuẩn: Tác giả · Thời gian · Lượt đọc
- */
-function renderCardMeta(article, author) {
-  const authorObj = author || getArticleAuthor(article);
-  const viewsFormatted = formatNumber(getArticleViews(article));
-  const authorUrl = getAuthorProfileUrl(authorObj);
-  return `
-    <div class="meta">
-      <a href="${authorUrl}">${escapeHtml(authorObj.full_name)}</a>
-      <span class="dot-sep">·</span>
-      <span>${formatDate(article.published_at || article.created_at)}</span>
-      <span class="dot-sep">·</span>
-      <span>${viewsFormatted} lượt đọc</span>
-    </div>
-  `;
-}
-window.renderCardMeta = renderCardMeta;
-
-/**
- * Render Tag Cloud dùng chung (có thể highlight tag đang chọn)
- */
-function renderTagCloud(mountEl, tags, activeSlug = "") {
-  if (!mountEl) return;
-  mountEl.innerHTML = tags
-    .map((t) => `<a href="search.html?tag=${t.slug}" class="tag-chip ${activeSlug === t.slug ? 'tag-chip--active' : ''}" data-slug="${t.slug}">#${escapeHtml(t.name)}</a>`)
-    .join("");
-}
-window.renderTagCloud = renderTagCloud;
+    if (topRanked.length === 0) {
+      rankMount.innerHTML = `<p class="meta">Chưa có bài viết nổi bật.</p>`;
+    } else {
+      rankMount.innerHTML = topRanked
+        .map((a, index) => {
+          const isLast = index === topRanked.length - 1 ? "no-border" : "";
+          return `
+            <div class="rank-item ${isLast}">
+              <div>
+                <h4 class="rank-item__title">
+                  <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
+                </h4>
+                <div class="meta">${formatNumber(getViews(a))} lượt đọc</div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+  }
 
   // Render Từ khóa nổi bật (Tag Cloud) ở Sidebar - Điều hướng sang search.html để hiển thị toàn bộ bài viết có tag đó
-   renderTagCloud(document.getElementById("category-tag-cloud-mount"), tags, currentTagSlug);
+  const sidebarTagMount = document.getElementById("category-tag-cloud-mount");
+  if (sidebarTagMount && tags.length > 0) {
+    sidebarTagMount.innerHTML = tags
+      .map((t) => `
+        <a href="search.html?tag=${t.slug}" class="tag-chip">
+          #${escapeHtml(t.name)}
+        </a>
+      `)
+      .join("");
+  }
 
   // Render lần đầu
   renderArticlesList();
