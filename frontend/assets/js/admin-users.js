@@ -502,22 +502,22 @@
   }
 
   /**
-   * Helper sinh HTML avatar người dùng với chuẩn resolve đường dẫn và fallback chữ cái
+   * Helper sinh HTML avatar người dùng đồng nhất với toàn bộ hệ thống (sử dụng renderUserAvatar từ common.js)
    */
-  function getUserAvatarHtml(user, size = 38, fontSize = 14) {
-    if (!user) return `<div style="width: ${size}px; height: ${size}px; border-radius: 50%; background: #FAF8F4; border: 1px solid var(--line); color: var(--brass-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: ${fontSize}px; font-family: var(--f-display);">U</div>`;
-    const initials = (user.full_name || user.username || "U").charAt(0).toUpperCase();
-    const rawAvatar = user.avatar || "";
-    const resolvedAvatar = rawAvatar && typeof resolveAssetPath === "function" ? resolveAssetPath(rawAvatar) : rawAvatar;
+  function getUserAvatarHtml(user, size = 38) {
+    let sizeClass = "avatar-badge--md";
+    if (size <= 30) sizeClass = "avatar-badge--sm";
+    else if (size <= 40) sizeClass = "avatar-badge--md";
+    else if (size <= 60) sizeClass = "avatar-badge--lg";
+    else sizeClass = "avatar-badge--xl";
 
-    if (resolvedAvatar) {
-      return `
-        <div style="width: ${size}px; height: ${size}px; border-radius: 50%; overflow: hidden; border: 1px solid var(--line); background: #FAF8F4; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
-          <img src="${resolvedAvatar}" alt="${escapeHtml(user.full_name || user.username)}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.remove(); this.parentElement.innerHTML='<span style=\\'font-weight: 700; font-size: ${fontSize}px; color: var(--brass-dark); font-family: var(--f-display);\\'>${initials}</span>';">
-        </div>
-      `;
+    if (typeof renderUserAvatar === "function") {
+      return renderUserAvatar(user, `avatar-badge ${sizeClass}`);
     }
-    return `<div style="width: ${size}px; height: ${size}px; border-radius: 50%; background: #FAF8F4; border: 1px solid var(--line); color: var(--brass-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: ${fontSize}px; font-family: var(--f-display); flex-shrink: 0;">${initials}</div>`;
+
+    // Fallback an toàn nếu chưa tải common.js
+    const initials = (user && (user.full_name || user.username) || "U").substring(0, 2).toUpperCase();
+    return `<div class="avatar-badge ${sizeClass}">${initials}</div>`;
   }
 
   function getRoleBadgeHtml(role) {

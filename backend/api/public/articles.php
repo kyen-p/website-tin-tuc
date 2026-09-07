@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $categorySlug = isset($_GET['category']) ? trim($_GET['category']) : '';
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $tagSlug = isset($_GET['tag']) ? trim($_GET['tag']) : '';
+$topWeekly = isset($_GET['top_weekly']) && ($_GET['top_weekly'] == '1' || $_GET['top_weekly'] === 'true');
 
 try {
     $sql = "SELECT
@@ -24,29 +25,35 @@ try {
 
     $params = [];
 
-    if ($categorySlug !== '') {
-        $sql .= " AND c.slug = ?";
-        $params[] = $categorySlug;
-    }
+    // Nếu yêu cầu top bài đọc nhiều nhất trong tuần (7 ngày gần nhất)
+    if ($topWeekly) {
+        $sql .= " AND a.published_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+        $sql .= " ORDER BY a.view_count DESC, a.published_at DESC LIMIT 5";
+    } else {
+        if ($categorySlug !== '') {
+            $sql .= " AND c.slug = ?";
+            $params[] = $categorySlug;
+        }
 
-    if ($tagSlug !== '') {
-        $sql .= " AND a.id IN (
-            SELECT at.article_id FROM article_tags at 
-            JOIN tags t ON at.tag_id = t.id 
-            WHERE t.slug = ?
-        )";
-        $params[] = $tagSlug;
-    }
+        if ($tagSlug !== '') {
+            $sql .= " AND a.id IN (
+                SELECT at.article_id FROM article_tags at 
+                JOIN tags t ON at.tag_id = t.id 
+                WHERE t.slug = ?
+            )";
+            $params[] = $tagSlug;
+        }
 
-    if ($search !== '') {
-        $sql .= " AND (a.title LIKE ? OR a.short_description LIKE ? OR a.content LIKE ?)";
-        $likeTerm = '%' . $search . '%';
-        $params[] = $likeTerm;
-        $params[] = $likeTerm;
-        $params[] = $likeTerm;
-    }
+        if ($search !== '') {
+            $sql .= " AND (a.title LIKE ? OR a.short_description LIKE ? OR a.content LIKE ?)";
+            $likeTerm = '%' . $search . '%';
+            $params[] = $likeTerm;
+            $params[] = $likeTerm;
+            $params[] = $likeTerm;
+        }
 
-    $sql .= " ORDER BY a.published_at DESC";
+        $sql .= " ORDER BY a.published_at DESC";
+    }
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
