@@ -146,7 +146,7 @@ async function initSearchPage() {
 
     // D. Sắp xếp kết quả
     if (selectedSort === "views") {
-      publishedArticles.sort((a, b) => (Number(b.views || b.view_count) || 0) - (Number(a.views || a.view_count) || 0));
+      publishedArticles.sort((a, b) => getArticleViews(b) - getArticleViews(a));
     } else if (selectedSort === "oldest") {
       publishedArticles.sort((a, b) => {
         const dateA = new Date(String(a.published_at || a.created_at).replace(" ", "T")).getTime();
@@ -224,7 +224,7 @@ async function initSearchPage() {
         const cat = categories.find((c) => c.id === article.category_id) || { name: "Tin tức", slug: "tin-tuc" };
         const author = getAuthor(article);
         const safeDate = typeof formatDate === "function" ? formatDate(article.published_at || article.created_at) : article.published_at || "";
-        const safeViews = (Number(article.views || article.view_count) || 0).toLocaleString("vi-VN");
+        const safeViews = getArticleViews(article).toLocaleString("vi-VN");
 
         // Highlight từ khóa trong Tiêu đề và Tóm tắt nếu có từ khóa
         const rawTitle = article.title || "";

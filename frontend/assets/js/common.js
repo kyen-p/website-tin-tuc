@@ -249,14 +249,44 @@ function escapeHtml(text) {
 }
 
 /**
+ * Chuyển chuỗi ngày giờ từ Backend (hoặc chuẩn ISO) thành đối tượng Date chuẩn múi giờ hệ thống
+ */
+function parseSystemDate(dateStr) {
+  if (!dateStr) return null;
+  if (dateStr instanceof Date) return isNaN(dateStr.getTime()) ? null : dateStr;
+  
+  const s = String(dateStr).trim();
+  // Nếu là dạng MySQL 'YYYY-MM-DD HH:mm:ss'
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(s)) {
+    // Thêm định danh múi giờ Việt Nam +07:00 nếu chưa có
+    return new Date(s.replace(" ", "T") + "+07:00");
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    return new Date(s + "T00:00:00+07:00");
+  }
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+window.parseSystemDate = parseSystemDate;
+
+/**
+ * Helper lấy số lượt xem bài viết chuẩn hóa (ưu tiên view_count từ database)
+ */
+function getArticleViews(article) {
+  if (!article) return 0;
+  return Number(article.view_count || 0);
+}
+window.getArticleViews = getArticleViews;
+
+/**
  * Định dạng ngày đăng bài chuẩn toàn hệ thống Mạch Tin:
  * - Nếu < 48 giờ: 'Vừa xong' / 'X phút trước' / 'X giờ trước' / '1 ngày trước'
  * - Nếu > 48 giờ: 'HH:mm, DD/MM/YYYY' (ví dụ: '09:30, 13/08/2026')
  */
 function formatDate(dateStr) {
   if (!dateStr) return "";
-  const d = new Date(String(dateStr).replace(" ", "T"));
-  if (isNaN(d.getTime())) return dateStr;
+  const d = parseSystemDate(dateStr);
+  if (!d) return String(dateStr);
 
   const now = getSystemTime();
   const diffMs = now.getTime() - d.getTime();
@@ -285,8 +315,8 @@ function formatDate(dateStr) {
  */
 function formatDateTime(dateStr) {
   if (!dateStr) return "";
-  const d = new Date(String(dateStr).replace(" ", "T"));
-  if (isNaN(d.getTime())) return dateStr;
+  const d = parseSystemDate(dateStr);
+  if (!d) return String(dateStr);
   const hours = String(d.getHours()).padStart(2, "0");
   const minutes = String(d.getMinutes()).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
@@ -563,14 +593,13 @@ async function initPublicHeader(activeCategorySlug = "") {
   const userPrefix = isInUserDir ? "" : "../user/";
   const workspacePrefix = isInUserDir ? "../" : "../";
 
-  // Đổi từ mốc ngày giả định sang thời gian thật
-  const now = new Date();
+  const now = getSystemTime();
   const hotArticles = allArticles
     .filter((a) => a.status === "published")
     .map((a) => {
-      const pubDate = new Date(String(a.published_at || a.created_at).replace(" ", "T"));
-      const hoursDiff = Math.max(0, (now.getTime() - pubDate.getTime()) / (1000 * 60 * 60));
-      const views = Number(a.view_count || a.views || 0);
+      const pubDate = parseSystemDate(a.published_at || a.created_at);
+      const hoursDiff = Math.max(0, (now.getTime() - (pubDate ? pubDate.getTime() : now.getTime())) / (1000 * 60 * 60));
+      const views = getArticleViews(a);
       return { ...a, hotScore: views / (hoursDiff + 1) };
     })
     .sort((a, b) => b.hotScore - a.hotScore)
@@ -845,7 +874,7 @@ async function initPublicSidebar(options = {}) {
         .slice(0, 5)
         .map((a, index) => {
           const isLast = index === Math.min(topArticles.length, 5) - 1 ? "no-border" : "";
-          const views = Number(a.views || a.view_count) || 0;
+          const views = getArticleViews(a);
           const detailUrl = `${publicPrefix}article-detail.html?id=${encodeURIComponent(a.id)}`;
 
           return `

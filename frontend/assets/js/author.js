@@ -17,7 +17,7 @@ async function initAuthorPage() {
   if (typeof initPublicHeader === "function") await initPublicHeader("");
   if (typeof initPublicFooter === "function") await initPublicFooter();
   function getViews(a) {
-    return Number(a.view_count || a.views || 0);
+    return typeof getArticleViews === "function" ? getArticleViews(a) : Number(a?.view_count || 0);
   }
 
   const container = document.getElementById("author-container");

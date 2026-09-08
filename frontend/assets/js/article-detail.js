@@ -58,7 +58,7 @@ async function initArticleDetailPage() {
     document.getElementById("author-name-link").href = authorProfileUrl;
   }
   document.getElementById("article-time").textContent = formatDateTime(article.published_at || article.created_at);
-  document.getElementById("article-views").textContent = `${formatNumber(article.view_count || article.views || 0)} lượt đọc`;
+  document.getElementById("article-views").textContent = `${formatNumber(getArticleViews(article))} lượt đọc`;
 
   const authorAvatarTop = document.getElementById("author-avatar-top");
   if (authorAvatarTop) {

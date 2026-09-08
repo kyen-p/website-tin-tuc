@@ -389,8 +389,8 @@
     // 3. Sắp xếp theo lựa chọn sortField & sortOrder (Ngày xuất bản hoặc Lượt xem)
     filtered.sort((a, b) => {
       if (sortField === "views") {
-        const vA = Number(a.view_count || a.views || 0);
-        const vB = Number(b.view_count || b.views || 0);
+        const vA = getArticleViews(a);
+        const vB = getArticleViews(b);
         return sortOrder === "asc" ? vA - vB : vB - vA;
       } else {
         // Mặc định: published_at
@@ -491,7 +491,7 @@
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
-              <span>${(Number(art.view_count || art.views) || 0).toLocaleString("vi-VN")}</span>
+              <span>${getArticleViews(art).toLocaleString("vi-VN")}</span>
             </div>
           </td>
           <td style="text-align: center;">

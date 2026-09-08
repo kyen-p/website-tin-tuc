@@ -13,7 +13,6 @@
 
   let allComments = [];
   let allArticles = [];
-  let allUsers = [];
 
   let searchQuery = "";
   let articleFilter = "all";
@@ -33,19 +32,16 @@
 
   async function loadData() {
     try {
-      const [commentsRes, articlesRes, usersRes] = await Promise.all([
+      const [commentsRes, articlesRes] = await Promise.all([
         fetch(resolveApiUrl("admin/comments.php"), { credentials: "include" }).then((r) => r.json()).catch(() => ({ success: false })),
         fetch(resolveApiUrl("admin/published-articles.php"), { credentials: "include" }).then((r) => r.json()).catch(() => ({ success: false })),
-        fetch(resolveApiUrl("admin/users.php"), { credentials: "include" }).then((r) => r.json()).catch(() => ({ success: false })),
       ]);
       allComments = (commentsRes && commentsRes.data) || [];
       allArticles = (articlesRes && articlesRes.data) || [];
-      allUsers = (usersRes && usersRes.data) || [];
     } catch (e) {
       console.error("Lỗi tải dữ liệu bình luận quản trị:", e);
       allComments = [];
       allArticles = [];
-      allUsers = [];
     }
   }
 
@@ -242,8 +238,16 @@
 
     tbody.innerHTML = filtered
       .map((c) => {
-        const user = allUsers.find((u) => u.id === c.user_id) || { full_name: "Độc giả", username: "guest" };
-        const article = allArticles.find((a) => a.id === c.article_id) || { title: "Bài viết không xác định", id: c.article_id };
+        const user = {
+          full_name: c.full_name || "Độc giả",
+          username: c.username || "user",
+          avatar: c.avatar || ""
+        };
+        const article = {
+          id: c.article_id,
+          title: c.article_title || "Bài viết không xác định",
+          slug: c.article_slug || c.article_id
+        };
 
         return `
           <tr>
@@ -251,8 +255,8 @@
               <div style="display: flex; align-items: center; gap: 10px;">
                 ${renderUserAvatar(user, "avatar-badge avatar-badge--sm")}
                 <div>
-                  <div style="font-weight: 600; color: var(--ink); font-size: 13.5px;">${escapeHtml(user.full_name || user.username)}</div>
-                  <div style="font-size: 12px; color: var(--muted); font-family: var(--f-mono);">@${escapeHtml(user.username || "user")}</div>
+                  <div style="font-weight: 600; color: var(--ink); font-size: 13.5px;">${escapeHtml(user.full_name)}</div>
+                  <div style="font-size: 12px; color: var(--muted); font-family: var(--f-mono);">@${escapeHtml(user.username)}</div>
                 </div>
               </div>
             </td>
@@ -262,7 +266,7 @@
               </div>
             </td>
             <td>
-              <a href="${typeof getArticleDetailUrl === 'function' ? getArticleDetailUrl(article, '../public/') : '../public/article-detail.html?slug=' + encodeURIComponent(article.slug || article.id)}" target="_blank" class="admin-table__link" style="font-size: 13px; font-weight: 500; color: var(--brass-dark); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${escapeHtml(article.title)}">
+              <a href="${typeof getArticleDetailUrl === 'function' ? getArticleDetailUrl(article, '../public/') : '../public/article-detail.html?slug=' + encodeURIComponent(article.slug)}" target="_blank" class="admin-table__link" style="font-size: 13px; font-weight: 500; color: var(--brass-dark); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${escapeHtml(article.title)}">
                 ${escapeHtml(article.title)} ↗
               </a>
             </td>

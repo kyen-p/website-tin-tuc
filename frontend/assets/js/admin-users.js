@@ -75,7 +75,7 @@
   function calculateCounts() {
     const total = allUsers.length;
     const staff = allUsers.filter(u => u.role === "admin" || u.role === "editor" || u.role === "reporter").length;
-    const readers = allUsers.filter(u => u.role === "user" || u.role === "reader" || !u.role).length;
+    const readers = allUsers.filter(u => u.role === "user").length;
     const locked = allUsers.filter(u => u.status === "locked" || u.status === "inactive").length;
 
     return { total, staff, readers, locked };
@@ -279,7 +279,7 @@
     if (currentTab === "staff") {
       filtered = filtered.filter(u => u.role === "admin" || u.role === "editor" || u.role === "reporter");
     } else if (currentTab === "reader") {
-      filtered = filtered.filter(u => u.role === "user" || u.role === "reader" || !u.role);
+      filtered = filtered.filter(u => u.role === "user");
     } else if (currentTab === "locked") {
       filtered = filtered.filter(u => u.status === "locked" || u.status === "inactive");
     }

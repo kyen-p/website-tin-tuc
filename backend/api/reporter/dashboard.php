@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $userId = (int)$_SESSION['user_id'];
 
 try {
-    // 1. Thống kê bài viết theo trạng thái
+    // 1. Thống kê bài viết theo trạng thái và tổng lượt xem, tổng lượt yêu thích
     $statsStmt = $pdo->prepare("
         SELECT
             COUNT(*) AS total_articles,
@@ -21,27 +21,28 @@ try {
             SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_count,
             SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) AS draft_count,
             SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) AS rejected_count,
-            COALESCE(SUM(view_count), 0) AS total_views
+            COALESCE(SUM(view_count), 0) AS total_views,
+            (SELECT COUNT(*) 
+             FROM favorites fav 
+             JOIN articles art ON fav.article_id = art.id 
+             WHERE art.author_id = ? AND art.status = 'published') AS total_favorites
         FROM articles
         WHERE author_id = ?
     ");
-    $statsStmt->execute([$userId]);
+    $statsStmt->execute([$userId, $userId]);
     $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
 
-    // 2. Danh sách bài viết gần đây của tác giả kèm số bình luận
+    // 2. Danh sách bài viết gần đây của tác giả kèm số bình luận và số lượt yêu thích
     $articlesStmt = $pdo->prepare("
         SELECT
             a.id, a.title, a.slug, a.cover_image, a.category_id, a.status,
             a.view_count, a.published_at, a.created_at, a.updated_at, a.rejection_reason,
             c.name AS category_name,
-            COUNT(cm.id) AS comment_count
+            (SELECT COUNT(*) FROM comments cm WHERE cm.article_id = a.id AND cm.is_deleted = 0) AS comment_count,
+            (SELECT COUNT(*) FROM favorites fav WHERE fav.article_id = a.id) AS favorite_count
         FROM articles a
         LEFT JOIN categories c ON a.category_id = c.id
-        LEFT JOIN comments cm ON cm.article_id = a.id AND cm.is_deleted = 0
         WHERE a.author_id = ?
-        GROUP BY a.id, a.title, a.slug, a.cover_image, a.category_id, a.status,
-                 a.view_count, a.published_at, a.created_at, a.updated_at, a.rejection_reason,
-                 c.name
         ORDER BY a.created_at DESC
     ");
     $articlesStmt->execute([$userId]);
@@ -66,6 +67,7 @@ try {
             'draft_count' => (int)($stats['draft_count'] ?? 0),
             'rejected_count' => (int)($stats['rejected_count'] ?? 0),
             'total_views' => (int)($stats['total_views'] ?? 0),
+            'total_favorites' => (int)($stats['total_favorites'] ?? 0),
         ],
         'articles' => $articles,
         'top_articles' => $topArticles

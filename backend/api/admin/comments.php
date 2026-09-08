@@ -7,7 +7,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
     requireRole(['admin']);
-    $stmt = $pdo->query("SELECT c.*, u.full_name, u.username, u.avatar, a.title AS article_title 
+    $stmt = $pdo->query("SELECT c.*, u.full_name, u.username, u.avatar, a.title AS article_title, a.slug AS article_slug 
         FROM comments c 
         JOIN users u ON c.user_id = u.id 
         JOIN articles a ON c.article_id = a.id 

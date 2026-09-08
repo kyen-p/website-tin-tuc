@@ -55,7 +55,7 @@ if (typeof initPublicFooter === "function") {
   }
 
   function getViews(article) {
-    return Number(article.view_count || article.views || 0);
+    return typeof getArticleViews === "function" ? getArticleViews(article) : Number(article?.view_count || 0);
   }
 
   // ============================================================================

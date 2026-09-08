@@ -50,7 +50,7 @@ await initPublicFooter();
 
   // Helper chuẩn hóa định dạng số lượt đọc
   function getViews(a) {
-    return Number(a.view_count || a.views || 0);
+    return typeof getArticleViews === "function" ? getArticleViews(a) : Number(a.view_count || 0);
   }
 
   // Helper render dòng meta chuẩn đồng bộ: Tác giả · Thời gian · Lượt đọc
@@ -73,8 +73,8 @@ await initPublicFooter();
   // Điểm Nóng = Views / (Số giờ trôi qua + 1)
   // ============================================================================
   const scoredArticles = publishedArticles.map((a) => {
-    const pubDate = new Date(String(a.published_at).replace(" ", "T"));
-    const hoursDiff = Math.max(0, (now.getTime() - pubDate.getTime()) / (1000 * 60 * 60));
+    const pubDate = typeof parseSystemDate === "function" ? parseSystemDate(a.published_at) : new Date(String(a.published_at).replace(" ", "T"));
+    const hoursDiff = Math.max(0, (now.getTime() - (pubDate ? pubDate.getTime() : now.getTime())) / (1000 * 60 * 60));
     const views = getViews(a);
     const hotScore = views / (hoursDiff + 1);
     return { ...a, hotScore, hoursDiff };

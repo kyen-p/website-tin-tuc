@@ -43,16 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Chuẩn hóa dữ liệu cho từng bài viết
         reporterArticlesData = publishedArticles.map(art => {
-          const viewsNum = Number(art.view_count || art.views || 0);
           return {
             id: art.id,
             title: art.title || "Chưa đặt tiêu đề",
             category_id: art.category_id,
             category_name: art.category_name || "Tổng hợp",
             published_at: art.published_at || art.created_at || "",
-            views: viewsNum,
+            view_count: getArticleViews(art),
             comments_count: Number(art.comment_count || 0),
-            likes_count: 0
+            favorites_count: Number(art.favorite_count || 0)
           };
         });
       } catch (err) {
@@ -62,9 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Tính toán các chỉ số KPI tổng quan
       const totalPublished = reporterArticlesData.length;
-      const totalViews = reporterArticlesData.reduce((sum, item) => sum + item.views, 0);
+      const totalViews = reporterArticlesData.reduce((sum, item) => sum + item.view_count, 0);
       const totalComments = reporterArticlesData.reduce((sum, item) => sum + item.comments_count, 0);
-      const totalLikes = reporterArticlesData.reduce((sum, item) => sum + item.likes_count, 0);
+      const totalFavorites = reporterArticlesData.reduce((sum, item) => sum + item.favorites_count, 0);
 
       // Nếu phóng viên chưa có bài nào được đăng
       if (totalPublished === 0) {
@@ -118,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </svg>
               </div>
               <div class="admin-stat-card__content">
-                <div class="admin-stat-card__label">Tổng lượt thích</div>
+                <div class="admin-stat-card__label">Tổng lượt lưu/thích</div>
                 <div class="admin-stat-card__value">0</div>
               </div>
             </div>
@@ -197,8 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
               </svg>
             </div>
             <div class="admin-stat-card__content">
-              <div class="admin-stat-card__label">Tổng lượt thích</div>
-              <div class="admin-stat-card__value">${totalLikes.toLocaleString('vi-VN')}</div>
+              <div class="admin-stat-card__label">Tổng lượt lưu/thích</div>
+              <div class="admin-stat-card__value">${totalFavorites.toLocaleString('vi-VN')}</div>
             </div>
           </div>
         </div>
@@ -252,10 +251,10 @@ document.addEventListener("DOMContentLoaded", () => {
                       <span class="admin-sort-icon">${getSortIcon('comments_count')}</span>
                     </div>
                   </th>
-                  <th class="is-sortable admin-col-num ${currentSortField === 'likes_count' ? 'is-sorted' : ''}" onclick="handleSort('likes_count')">
+                  <th class="is-sortable admin-col-num ${currentSortField === 'favorites_count' ? 'is-sorted' : ''}" onclick="handleSort('favorites_count')">
                     <div class="admin-th-content" style="justify-content: flex-end;">
-                      <span>Lượt thích</span>
-                      <span class="admin-sort-icon">${getSortIcon('likes_count')}</span>
+                      <span>Lưu bài</span>
+                      <span class="admin-sort-icon">${getSortIcon('favorites_count')}</span>
                     </div>
                   </th>
                 </tr>
@@ -342,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
                 </svg>
-                ${item.views.toLocaleString('vi-VN')}
+                ${item.view_count.toLocaleString('vi-VN')}
               </span>
             </td>
             <td class="admin-col-num">
@@ -358,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
-                ${item.likes_count.toLocaleString('vi-VN')}
+                ${item.favorites_count.toLocaleString('vi-VN')}
               </span>
             </td>
           </tr>
@@ -374,7 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
       } else {
         currentSortField = field;
-        currentSortDirection = (field === "published_at" || field === "views" || field === "comments_count" || field === "likes_count") ? "desc" : "asc";
+        currentSortDirection = (field === "published_at" || field === "views" || field === "comments_count" || field === "favorites_count") ? "desc" : "asc";
       }
 
       // Cập nhật lại UI bảng

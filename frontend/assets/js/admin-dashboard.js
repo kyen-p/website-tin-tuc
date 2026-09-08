@@ -53,7 +53,7 @@
     const reporterCount = users.filter(u => u.role === "reporter").length;
     const readerCount = users.filter(u => u.role === "user").length;
 
-    const totalViews = articles.reduce((sum, a) => sum + (Number(a.view_count || a.views) || 0), 0);
+    const totalViews = articles.reduce((sum, a) => sum + getArticleViews(a), 0);
     const publishedArticles = articles.filter(a => a.status === "published");
     const hiddenArticles = articles.filter(a => a.status === "hidden");
     const avgViewsPerArticle = publishedArticles.length > 0
@@ -306,7 +306,7 @@
       });
 
       articleCounts.push(dayArticles.length);
-      const dayViews = dayArticles.reduce((sum, a) => sum + (Number(a.view_count || a.views) || 0), 0);
+      const dayViews = dayArticles.reduce((sum, a) => sum + getArticleViews(a), 0);
       viewCounts.push(dayViews);
     }
 
@@ -494,7 +494,7 @@
     if (!tbody) return;
 
     const published = articles.filter(a => a.status === "published");
-    published.sort((a, b) => (Number(b.view_count || b.views) || 0) - (Number(a.view_count || a.views) || 0));
+    published.sort((a, b) => getArticleViews(b) - getArticleViews(a));
     const top5 = published.slice(0, 5);
 
     if (top5.length === 0) {
@@ -508,7 +508,7 @@
 
       const catName = cat ? cat.name : "Thời sự";
       const authorName = author ? (author.full_name || author.username) : "Phóng viên";
-      const views = Number(art.view_count || art.views) || 0;
+      const views = getArticleViews(art);
 
       const coverImg = extractThumbnail(art, cat);
       const thumbHtml = renderTableCoverThumb(coverImg, art.title);
@@ -562,7 +562,7 @@
       const repArticles = articles.filter(a => Number(a.author_id) === Number(rep.id));
       const published = repArticles.filter(a => a.status === "published");
       const pending = repArticles.filter(a => a.status === "pending");
-      const totalViews = published.reduce((sum, a) => sum + (Number(a.view_count || a.views) || 0), 0);
+      const totalViews = published.reduce((sum, a) => sum + getArticleViews(a), 0);
 
       return {
         id: rep.id,
