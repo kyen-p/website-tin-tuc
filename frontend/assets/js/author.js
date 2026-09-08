@@ -110,10 +110,10 @@ async function initAuthorPage() {
     if (emailLink) emailLink.href = `mailto:${author.email}`;
   }
 
-  // 5. Bio lấy đúng từ mock data
+  // 5. Bio tác giả / người dùng
   const bioEl = document.getElementById("author-bio");
   if (bioEl) {
-    bioEl.textContent = author.bio ? author.bio : (author.role === "user" ? "Độc giả tích cực của tòa soạn Mạch Tin." : "Phóng viên chuyên trách tòa soạn Mạch Tin.");
+    bioEl.textContent = (author.bio && author.bio.trim()) ? author.bio : "Chưa cập nhật tiểu sử.";
   }
 
   // 6. Số đếm thống kê (với Độc giả sẽ là 0)

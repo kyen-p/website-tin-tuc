@@ -2,7 +2,6 @@
 require_once '../../config/database.php';
 require_once '../../helpers/response.php';
 require_once '../../helpers/auth.php';
-require_once '../../helpers/file.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -17,7 +16,7 @@ if ($method === 'PUT') {
     requireRole(['admin']);
     $input = json_decode(file_get_contents('php://input'), true);
     $userId = isset($input['user_id']) ? (int)$input['user_id'] : 0;
-    $currentAdminId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : 0;
+    $currentAdminId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 
     if ($userId <= 0) {
         jsonResponse(false, null, "ID người dùng không hợp lệ");

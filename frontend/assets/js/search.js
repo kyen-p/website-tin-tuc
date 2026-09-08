@@ -46,8 +46,6 @@ async function initSearchPage() {
   const sortFilter = document.getElementById("sortFilter");
   const searchResultsList = document.getElementById("searchResultsList");
   const hotTagsMount = document.getElementById("hotTagsMount");
-  const sidebarAllTagsMount = document.getElementById("sidebarAllTagsMount");
-  const topViewsMount = document.getElementById("topViewsMount");
   const breadcrumbCurrent = document.getElementById("breadcrumb-current");
 
   // Điền sẵn từ khóa vào ô search input
@@ -233,8 +231,7 @@ async function initSearchPage() {
         const highlightedSummary = highlightKeyword(rawSummary, keyword);
 
         // Lấy danh sách tag của bài viết này
-        const thisArticleTagIds = articleTags.filter((at) => at.article_id === article.id).map((at) => at.tag_id);
-        const thisTags = tags.filter((t) => thisArticleTagIds.includes(t.id));
+        const thisTags = Array.isArray(article.tags) ? article.tags : [];
         const tagsHtml = thisTags.length > 0
           ? `<div class="search-article-card__tags">
               ${thisTags.map((t) => `<a href="search.html?tag=${t.slug}" class="tag-chip" style="font-size: 11.5px; padding: 2px 7px;">#${escapeHtml(t.name)}</a>`).join("")}

@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
+require_once __DIR__ . '/../../helpers/string.php';
 
 // Chỉ Reporter mới được tạo/sửa bài viết
 requireRole(['reporter']);
@@ -98,27 +99,6 @@ if ($status === 'pending') {
     }
 }
 
-function createSlug($text)
-{
-    $text = trim($text);
-    $text = mb_strtolower($text, 'UTF-8');
-    $text = str_replace('đ', 'd', $text);
-    $text = preg_replace(
-        [
-            '/[áàảãạăắằẳẵặâấầẩẫậ]/u',
-            '/[éèẻẽẹêếềểễệ]/u',
-            '/[íìỉĩị]/u',
-            '/[óòỏõọôốồổỗộơớờởỡợ]/u',
-            '/[úùủũụưứừửữự]/u',
-            '/[ýỳỷỹỵ]/u'
-        ],
-        ['a', 'e', 'i', 'o', 'u', 'y'],
-        $text
-    );
-    $text = preg_replace('/[^a-z0-9]+/u', '-', $text);
-    return trim($text, '-');
-}
-
 try {
     if ($categoryId > 0) {
         $stmt = $pdo->prepare("SELECT id FROM categories WHERE id = ? LIMIT 1");
@@ -142,9 +122,6 @@ try {
         }
 
         $slug = $existing['slug'];
-        if (empty($slug)) {
-            $slug = createSlug($title) . '-' . $targetId;
-        }
 
         $stmt = $pdo->prepare("
             UPDATE articles SET

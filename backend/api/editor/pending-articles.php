@@ -107,42 +107,24 @@ if ($method === 'PUT') {
         /* Duyệt bài */
         if ($action === 'approve') {
             $editorId = $_SESSION['user_id'];
+            $isNotableEvent = !empty($input['is_notable_event']) ? 1 : 0;
 
-            if (isset($input['is_notable_event'])) {
-                $isNotableEvent = $input['is_notable_event'] ? 1 : 0;
+            $updateStmt = $pdo->prepare("
+                UPDATE articles
+                SET status = 'published',
+                    approved_by = ?,
+                    published_at = NOW(),
+                    is_notable_event = ?,
+                    rejection_reason = NULL,
+                    updated_at = NOW()
+                WHERE id = ?
+            ");
 
-                $updateStmt = $pdo->prepare("
-                    UPDATE articles
-                    SET status = 'published',
-                        approved_by = ?,
-                        published_at = NOW(),
-                        is_notable_event = ?,
-                        rejection_reason = NULL,
-                        updated_at = NOW()
-                    WHERE id = ?
-                ");
-
-                $updateStmt->execute([
-                    $editorId,
-                    $isNotableEvent,
-                    $articleId
-                ]);
-            } else {
-                $updateStmt = $pdo->prepare("
-                    UPDATE articles
-                    SET status = 'published',
-                        approved_by = ?,
-                        published_at = NOW(),
-                        rejection_reason = NULL,
-                        updated_at = NOW()
-                    WHERE id = ?
-                ");
-
-                $updateStmt->execute([
-                    $editorId,
-                    $articleId
-                ]);
-            }
+            $updateStmt->execute([
+                $editorId,
+                $isNotableEvent,
+                $articleId
+            ]);
 
             $resultStmt = $pdo->prepare("
                 SELECT id, title, status, approved_by, published_at,
@@ -203,7 +185,7 @@ if ($method === 'PUT') {
         jsonResponse(
             false,
             null,
-            "Không thể cập nhật bài viết: " . $e->getMessage()
+            "Lỗi hệ thống, vui lòng thử lại sau"
         );
     }
 }

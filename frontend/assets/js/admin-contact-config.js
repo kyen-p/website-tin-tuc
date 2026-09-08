@@ -320,7 +320,7 @@
             short_description: shortDesc,
             social_links: { facebook: fb, youtube: yt, tiktok: tt }
           };
-          showToast("Cập nhật thành công");
+          showToast(isReset ? "Khôi phục cấu hình mặc định thành công!" : "Cập nhật thông tin tòa soạn thành công!", "success");
         }
       });
   }

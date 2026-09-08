@@ -89,7 +89,7 @@ try {
     jsonResponse(
         false,
         null,
-        $e->getMessage()
+        "Lỗi hệ thống, vui lòng thử lại sau"
     );
 
 }

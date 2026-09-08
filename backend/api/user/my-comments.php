@@ -149,8 +149,8 @@ try {
             jsonResponse(false, null, "Bạn không có quyền xóa bình luận này");
         }
 
-        // Xóa bình luận
-        $stmt = $pdo->prepare("DELETE FROM comments WHERE id = ?");
+        // Xóa mềm bình luận (đồng bộ với Admin)
+        $stmt = $pdo->prepare("UPDATE comments SET is_deleted = 1, updated_at = NOW() WHERE id = ?");
         $stmt->execute([$commentId]);
 
         jsonResponse(true, null, "Xóa bình luận thành công");

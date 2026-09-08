@@ -33,12 +33,6 @@ async function initProfilePage() {
 
   const emailInput = document.getElementById("emailInput");
 
-  const roleDisplayInput = document.getElementById("roleDisplayInput");
-
-  const createdAtDisplayInput = document.getElementById(
-    "createdAtDisplayInput",
-  );
-
   const bioInput = document.getElementById("bioInput");
 
   const btnResetForm = document.getElementById("btnResetForm");
@@ -141,17 +135,6 @@ async function initProfilePage() {
 
     if (emailInput) {
       emailInput.value = user.email || "";
-    }
-
-    if (roleDisplayInput) {
-      roleDisplayInput.value = roleMap[user.role] || "Độc giả";
-    }
-
-    if (createdAtDisplayInput) {
-      createdAtDisplayInput.value =
-        typeof formatDate === "function"
-          ? formatDate(user.created_at)
-          : user.created_at || "";
     }
 
     if (bioInput) {
@@ -408,16 +391,7 @@ async function initProfilePage() {
         originalUserData = result.data;
         populateUserData(result.data);
 
-        // Đồng bộ dữ liệu người dùng vào localStorage và sessionStorage
-        try {
-          const cachedUser = JSON.parse(localStorage.getItem("user") || "{}");
-          const updatedUser = Object.assign({}, cachedUser, result.data);
-          localStorage.setItem("user", JSON.stringify(updatedUser));
-          sessionStorage.setItem("user", JSON.stringify(updatedUser));
-        } catch (e) {
-          console.warn("Không thể lưu cache user:", e);
-        }
-
+        // Cập nhật bộ nhớ phiên làm việc cho header và các hàm liên quan
         if (typeof setCurrentUser === "function") {
           setCurrentUser(result.data);
         }

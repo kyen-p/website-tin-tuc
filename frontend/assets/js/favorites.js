@@ -226,11 +226,26 @@ function renderFavoritesList(favoriteArticles) {
               </div>
 
 
-              <!-- Thời gian yêu thích -->
-              <div class="search-article-card__meta">
+              <!-- Thời gian yêu thích & nút Bỏ lưu -->
+              <div class="search-article-card__meta" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
                 <span>
                   Đã lưu: ${safeDate}
                 </span>
+                <button
+                  type="button"
+                  class="btn-remove-favorite"
+                  title="Bỏ lưu bài viết khỏi danh sách yêu thích"
+                  style="background: transparent; border: 1px solid #fca5a5; color: #dc2626; border-radius: 4px; padding: 4px 10px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;"
+                  onmouseover="this.style.background='#fee2e2'"
+                  onmouseout="this.style.background='transparent'"
+                  onclick="event.stopPropagation(); removeFavorite(${article.id});"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  Bỏ lưu
+                </button>
               </div>
 
             </div>
@@ -334,3 +349,7 @@ if (document.readyState === "loading") {
 } else {
   initFavoritesPage();
 }
+
+// Gắn các hàm tiện ích vào window để có thể gọi từ giao diện hoặc các module khác
+window.addFavorite = addFavorite;
+window.removeFavorite = removeFavorite;

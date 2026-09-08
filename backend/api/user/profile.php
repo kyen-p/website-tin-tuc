@@ -173,15 +173,6 @@ try {
         $stmt->execute([$userId]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Cập nhật lại session
-        if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
-            $_SESSION['user']['username'] = $user['username'];
-            $_SESSION['user']['email'] = $user['email'];
-            $_SESSION['user']['full_name'] = $user['full_name'];
-            $_SESSION['user']['avatar'] = $user['avatar'];
-            $_SESSION['user']['bio'] = $user['bio'];
-        }
-
         jsonResponse(
             true,
             $user,

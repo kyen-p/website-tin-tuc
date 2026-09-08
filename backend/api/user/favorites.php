@@ -32,7 +32,7 @@ try {
             FROM favorites
             INNER JOIN articles
                 ON favorites.article_id = articles.id
-            WHERE favorites.user_id = ?
+            WHERE favorites.user_id = ? AND articles.status = 'published'
             ORDER BY favorites.created_at DESC
         ");
 
@@ -90,11 +90,11 @@ try {
 
 
 
-        // Kiểm tra bài viết tồn tại
+        // Kiểm tra bài viết tồn tại và đã xuất bản
         $stmt = $pdo->prepare("
             SELECT id
             FROM articles
-            WHERE id = ?
+            WHERE id = ? AND status = 'published'
             LIMIT 1
         ");
 

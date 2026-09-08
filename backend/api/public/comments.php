@@ -25,5 +25,5 @@ try {
 
     jsonResponse(true, $comments);
 } catch (PDOException $e) {
-    jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
+    jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");
 }

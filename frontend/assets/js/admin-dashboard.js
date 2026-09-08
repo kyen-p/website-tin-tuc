@@ -452,41 +452,6 @@
   }
 
   /**
-   * Trích xuất thumbnail thông minh
-   */
-  function extractThumbnail(article, category) {
-    if (article.cover_image && article.cover_image.trim()) {
-      return article.cover_image;
-    }
-    if (article.image && article.image.trim()) {
-      return article.image;
-    }
-    if (article.content) {
-      const match = article.content.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-    const catSlug = category ? category.slug : "thoi-su";
-    return `../assets/images/categories/${catSlug}.jpg`;
-  }
-
-  function renderTableCoverThumb(imagePath, title) {
-    const safeAlt = escapeHtml(title || "Ảnh bài viết");
-    const raw = imagePath ? String(imagePath).trim() : "";
-    const resolvedUrl = raw && typeof resolveAssetPath === "function" ? resolveAssetPath(raw) : raw;
-
-    if (!resolvedUrl) {
-      return `<div class="admin-article-thumb-ph" title="Chưa có ảnh bìa"></div>`;
-    }
-    return `
-      <div class="admin-article-thumb-ph">
-        <img src="${escapeHtml(resolvedUrl)}" alt="${safeAlt}" loading="lazy" onerror="this.remove()">
-      </div>
-    `;
-  }
-
-  /**
    * Render Top 5 Bài viết xem nhiều nhất (Đồng bộ với Editor/Reporter table row)
    */
   function renderTopArticles(articles, categories, users) {

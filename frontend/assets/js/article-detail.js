@@ -3,12 +3,14 @@ async function initArticleDetailPage() {
   const articleId = Number(urlParams.get("id")) || 0;
   const articleSlug = (urlParams.get("slug") || "").trim();
 
-  // 1. Lấy bài viết từ backend (PHP + MySQL). Gọi đúng 1 lần cho mỗi lần tải trang -
-  //    khớp với yêu cầu "mỗi lần gọi API phải tăng view_count" của public/article-detail.php.
+  // 1. Lấy bài viết từ backend (PHP + MySQL). Gửi kèm credentials: "include"
+  //    để đồng bộ session cookie, giúp backend nhận diện phiên và chống spam lượt xem khi F5 / reload.
   let article = null;
   try {
     const params = articleSlug ? `slug=${encodeURIComponent(articleSlug)}` : `id=${encodeURIComponent(articleId)}`;
-    const res = await fetch(resolveApiUrl(`public/article-detail.php?${params}`));
+    const res = await fetch(resolveApiUrl(`public/article-detail.php?${params}`), {
+      credentials: "include",
+    });
     const result = await res.json();
     if (result && result.success && result.data) {
       article = result.data;
@@ -38,7 +40,7 @@ async function initArticleDetailPage() {
   const currentUser = getCurrentUser();
 
   const category = article.category || { name: "Thời sự", slug: "thoi-su" };
-  const author = article.author || { full_name: "Ban Biên Tập", bio: "Đội ngũ phóng viên Mạch Tin", id: 1 };
+  const author = article.author || { full_name: "Ban Biên Tập", bio: "", id: 1 };
 
   const currentTags = Array.isArray(article.tags) ? article.tags : [];
 
@@ -143,7 +145,7 @@ async function initArticleDetailPage() {
   }
 
   document.getElementById("author-name-bottom").textContent = author.full_name;
-  document.getElementById("author-bio-bottom").textContent = author.bio || "Phóng viên chuyên trách tòa soạn Mạch Tin.";
+  document.getElementById("author-bio-bottom").textContent = (author.bio && author.bio.trim()) ? author.bio : "Chưa cập nhật tiểu sử.";
   document.getElementById("author-link-bottom").href = authorProfileUrl;
   const authorRoleBottom = document.getElementById("author-role-bottom");
   if (authorRoleBottom) {
@@ -437,38 +439,6 @@ if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initArticleDetailPage);
 } else {
   initArticleDetailPage();
-}
-
-let activeReportCommentId = null;
-
-function openReportCommentModal(commentId) {
-  const currentUser = getCurrentUser();
-  if (!currentUser) {
-    showToast("Vui lòng đăng nhập để báo cáo vi phạm!", "warning");
-    return;
-  }
-  activeReportCommentId = commentId;
-  const modal = document.getElementById("reportModal");
-  if (modal) {
-    document.getElementById("reportReasonDetail").value = "";
-    const defaultRadio = modal.querySelector('input[name="reportReason"][value="spam"]');
-    if (defaultRadio) defaultRadio.checked = true;
-    modal.classList.add("is-open");
-  }
-}
-
-function closeReportCommentModal() {
-  activeReportCommentId = null;
-  const modal = document.getElementById("reportModal");
-  if (modal) modal.classList.remove("is-open");
-}
-
-function submitReportComment() {
-  const currentUser = getCurrentUser();
-  if (!currentUser || !activeReportCommentId) return;
-
-  closeReportCommentModal();
-  showToast("Đã gửi phản hồi báo cáo vi phạm đến ban biên tập!", "success");
 }
 
 /**

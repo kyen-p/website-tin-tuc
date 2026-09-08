@@ -18,13 +18,13 @@ if ($idParam === '' && $slugParam === '') {
 
 try {
     if ($slugParam !== '') {
-        $stmt = $pdo->prepare("SELECT id FROM articles WHERE slug = ? AND status = 'published' LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id, author_id FROM articles WHERE slug = ? AND status = 'published' LIMIT 1");
         $stmt->execute([$slugParam]);
     } else {
         if (!ctype_digit($idParam)) {
             jsonResponse(false, null, "ID bài viết không hợp lệ");
         }
-        $stmt = $pdo->prepare("SELECT id FROM articles WHERE id = ? AND status = 'published' LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id, author_id FROM articles WHERE id = ? AND status = 'published' LIMIT 1");
         $stmt->execute([$idParam]);
     }
 
@@ -34,10 +34,29 @@ try {
     }
 
     $articleId = (int) $found['id'];
+    $authorId = $found['author_id'] !== null ? (int) $found['author_id'] : null;
 
-    // Tăng lượt xem đúng 1 lần cho request này
-    $updateStmt = $pdo->prepare("UPDATE articles SET view_count = view_count + 1 WHERE id = ?");
-    $updateStmt->execute([$articleId]);
+    // Khởi tạo phiên làm việc (Session) để theo dõi các bài viết đã đọc
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (!isset($_SESSION['viewed_articles']) || !is_array($_SESSION['viewed_articles'])) {
+        $_SESSION['viewed_articles'] = [];
+    }
+
+    // Kiểm tra nếu người đang xem là chính tác giả bài viết (chống tác giả tự tăng view bài mình)
+    $isAuthor = isset($_SESSION['user_id']) && $authorId !== null && ((int) $_SESSION['user_id'] === $authorId);
+
+    // Chỉ tăng lượt xem vào CSDL nếu người đọc chưa từng xem bài này trong phiên làm việc hiện tại
+    // Chống spam khi F5 / reload lại trang cho cả khách (guest) và thành viên (user)
+    if (!in_array($articleId, $_SESSION['viewed_articles'], true)) {
+        if (!$isAuthor) {
+            $updateStmt = $pdo->prepare("UPDATE articles SET view_count = view_count + 1 WHERE id = ?");
+            $updateStmt->execute([$articleId]);
+        }
+        $_SESSION['viewed_articles'][] = $articleId;
+    }
 
     $stmt = $pdo->prepare(
         "SELECT

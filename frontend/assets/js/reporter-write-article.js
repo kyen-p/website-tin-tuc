@@ -146,67 +146,6 @@
     }
 
     /**
-     * Xử lý chèn ảnh minh họa trực tiếp vào nội dung bài viết
-     */
-    async function handleContentImageUpload(e) {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-
-      if (!file.type.startsWith("image/")) {
-        showToast("Vui lòng chọn tệp hình ảnh hợp lệ!", "warning");
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("image", file);
-      formData.append("type", "article");
-
-      try {
-        const uploadUrl = typeof resolveApiUrl === "function" ? resolveApiUrl("upload.php") : "../../backend/api/upload.php";
-        const response = await fetch(uploadUrl, {
-          method: "POST",
-          credentials: "include",
-          body: formData
-        });
-
-        const result = await response.json();
-
-        if (!result.success) {
-          showToast(result.message || "Tải ảnh thất bại!", "error");
-          return;
-        }
-
-        const imageUrl = result.data.url;
-        const displayUrl = typeof resolveAssetPath === "function" ? resolveAssetPath(imageUrl) : imageUrl;
-
-        if (editorInstance) {
-          const imageHtml = `<figure class="image" style="text-align: center; margin: 18px 0;">
-        <img src="${displayUrl}" alt="Hình ảnh minh họa" style="max-width: 100%; height: auto; border-radius: 6px;">
-        <figcaption style="font-size: 13px; color: #666; font-style: italic; margin-top: 6px;">
-          Chú thích: Hình ảnh minh họa bài viết
-        </figcaption>
-      </figure><p></p>`;
-
-          const currentData = editorInstance.getData();
-          editorInstance.setData(currentData + imageHtml);
-
-          showToast("Đã chèn hình ảnh vào nội dung bài viết!", "success");
-        }
-
-      } catch (error) {
-        console.error(error);
-        showToast("Không thể tải ảnh lên máy chủ!", "error");
-      } finally {
-        e.target.value = "";
-      }
-    }
-
-    /**
      * Adapter tải ảnh lên máy chủ PHP cho CKEditor 5
      */
     class CustomServerUploadAdapter {

@@ -258,3 +258,90 @@ function initAdminLayout(currentRole, activeKey) {
   return currentUser;
 }
 
+/**
+ * Trích xuất thumbnail thông minh cho các bảng quản trị
+ */
+function extractThumbnail(article, category) {
+  if (!article) return "../assets/images/categories/thoi-su.jpg";
+  if (article.cover_image && article.cover_image.trim()) {
+    return article.cover_image;
+  }
+  if (article.image && article.image.trim()) {
+    return article.image;
+  }
+  if (article.content) {
+    const match = article.content.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+  const catSlug = (category && category.slug) || (article.category && article.category.slug) || "thoi-su";
+  return `../assets/images/categories/${catSlug}.jpg`;
+}
+window.extractThumbnail = extractThumbnail;
+
+/**
+ * Render ảnh thu nhỏ cho các hàng của bảng dữ liệu quản trị
+ */
+function renderTableCoverThumb(imagePath, title) {
+  const safeAlt = typeof escapeHtml === "function" ? escapeHtml(title || "Ảnh bài viết") : "Ảnh bài viết";
+  const raw = imagePath ? String(imagePath).trim() : "";
+  const resolvedUrl = raw && typeof resolveAssetPath === "function" ? resolveAssetPath(raw) : raw;
+
+  if (!resolvedUrl) {
+    return `<div class="admin-article-thumb-ph" title="Chưa có ảnh bìa"></div>`;
+  }
+  return `
+    <div class="admin-article-thumb-ph">
+      <img src="${typeof escapeHtml === "function" ? escapeHtml(resolvedUrl) : resolvedUrl}" alt="${safeAlt}" loading="lazy" onerror="this.remove()">
+    </div>
+  `;
+}
+window.renderTableCoverThumb = renderTableCoverThumb;
+
+/**
+ * Tạo ký hiệu mũi tên sắp xếp đồng nhất cho bảng quản trị
+ */
+function getAdminSortIcon(field, activeField, activeOrder) {
+  if (activeField !== field) return "▲▼";
+  return activeOrder === "asc" ? "▲" : "▼";
+}
+window.getAdminSortIcon = getAdminSortIcon;
+
+/**
+ * Tự động cuộn đến hàng trong bảng và làm nổi màu (Highlight) khi có tham số ?id= hoặc ?article_id= trên URL
+ */
+function checkAndHighlightArticle(idPrefix = "article-row-") {
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetArticleId = urlParams.get("id") || urlParams.get("article_id");
+  if (!targetArticleId) return;
+
+  setTimeout(() => {
+    const targetElement = document.getElementById(`${idPrefix}${targetArticleId}`);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
+      targetElement.classList.add("admin-row-highlight-flash");
+      setTimeout(() => {
+        targetElement.classList.remove("admin-row-highlight-flash");
+      }, 2800);
+    }
+  }, 250);
+}
+window.checkAndHighlightArticle = checkAndHighlightArticle;
+
+/**
+ * Định dạng ngày giờ bảng quản trị đồng nhất với font monospace
+ */
+function formatAdminDateTime(dateStr, fallback = "Chưa có") {
+  if (!dateStr) return `<span style="color: var(--muted); font-size: 11.5px;">${fallback}</span>`;
+  try {
+    const formatted = typeof formatDateTime === "function" ? formatDateTime(dateStr) : dateStr;
+    return `<span style="font-family: var(--f-mono); font-size: 12px; color: var(--muted); white-space: nowrap;">${typeof escapeHtml === "function" ? escapeHtml(formatted) : formatted}</span>`;
+  } catch (e) {
+    return `<span style="font-family: var(--f-mono); font-size: 12px; color: var(--muted);">${typeof escapeHtml === "function" ? escapeHtml(dateStr) : dateStr}</span>`;
+  }
+}
+window.formatAdminDateTime = formatAdminDateTime;
+
+
+

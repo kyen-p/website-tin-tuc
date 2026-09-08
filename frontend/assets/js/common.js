@@ -120,7 +120,9 @@ window.getCurrentUser = getCurrentUser;
  * đó. Cặp 1 không tự ý sửa các file đó nên giữ hàm rỗng để đảm bảo tương thích.
  */
 function setCurrentUser(user) {
-  // Không làm gì cả — session thật nằm ở PHP, không còn ở localStorage.
+  // Cập nhật bộ nhớ cache người dùng hiện tại để các hàm như getCurrentUser() và initPublicHeader()
+  // phản ánh ngay lập tức dữ liệu mới mà không cần tải lại trang.
+  __machtinCurrentUserCache = user !== undefined ? user : undefined;
 }
 window.setCurrentUser = setCurrentUser;
 
@@ -277,6 +279,31 @@ function getArticleViews(article) {
   return Number(article.view_count || 0);
 }
 window.getArticleViews = getArticleViews;
+
+/**
+ * Helper lấy đối tượng chuyên mục của bài viết chuẩn hóa
+ */
+function getArticleCategory(article, categories = []) {
+  if (!article) return { name: "Tin tức", slug: "tin-tuc" };
+  if (article.category && typeof article.category === "object") return article.category;
+  const cat = Array.isArray(categories) ? categories.find((c) => String(c.id) === String(article.category_id)) : null;
+  return cat || { name: article.category_name || "Tin tức", slug: article.category_slug || "tin-tuc" };
+}
+window.getArticleCategory = getArticleCategory;
+
+/**
+ * Helper lấy thông tin tác giả bài viết chuẩn hóa
+ */
+function getArticleAuthor(article) {
+  if (!article) return { full_name: "Ban Biên Tập", username: "banbientap" };
+  if (article.author && typeof article.author === "object") return article.author;
+  return {
+    full_name: article.author_name || article.author || "Ban Biên Tập",
+    username: article.author_username || "banbientap",
+    avatar: article.author_avatar || ""
+  };
+}
+window.getArticleAuthor = getArticleAuthor;
 
 /**
  * Định dạng ngày đăng bài chuẩn toàn hệ thống Mạch Tin:
@@ -766,32 +793,6 @@ async function initPublicHeader(activeCategorySlug = "") {
 }
 
 /**
- * Chuẩn hóa URL điều hướng dựa trên thư mục hiện tại của trang
- */
-function resolveAppRelativeUrl(rawLink) {
-  if (!rawLink) return "";
-  const currentPath = window.location.pathname;
-  // Kiểm tra nếu đang ở thư mục gốc (index.html hoặc /)
-  const isRoot =
-    !currentPath.includes("/public/") &&
-    !currentPath.includes("/user/") &&
-    !currentPath.includes("/reporter/") &&
-    !currentPath.includes("/editor/") &&
-    !currentPath.includes("/admin/");
-
-  if (isRoot) {
-    // Chuyển "../folder/page.html" thành "./folder/page.html"
-    return rawLink.replace(/^\.\.\//, "./");
-  }
-
-  // Nếu đang ở thư mục con (/public/ hay /user/), link bắt đầu bằng "../" hoạt động tự nhiên
-  if (!rawLink.startsWith("../") && !rawLink.startsWith("http") && !rawLink.startsWith("/")) {
-    return "../" + rawLink;
-  }
-  return rawLink;
-}
-
-/**
  * Tự động render Footer 3 cột thông tin tòa soạn
  */
 async function initPublicFooter() {
@@ -875,7 +876,7 @@ async function initPublicSidebar(options = {}) {
         .map((a, index) => {
           const isLast = index === Math.min(topArticles.length, 5) - 1 ? "no-border" : "";
           const views = getArticleViews(a);
-          const detailUrl = `${publicPrefix}article-detail.html?id=${encodeURIComponent(a.id)}`;
+          const detailUrl = getArticleDetailUrl(a, publicPrefix);
 
           return `
             <div class="rank-item ${isLast}">

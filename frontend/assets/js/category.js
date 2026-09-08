@@ -15,7 +15,6 @@ async function initCategoryPage() {
   const categorySlug = urlParams.get("slug") || "";
   const filterType = urlParams.get("filter") || ""; // 'latest' hoặc 'notable'
   let currentTagSlug = urlParams.get("tag") || "";
-  let currentSort = "newest";
 
   // 1. Khởi tạo Header và Footer
 if (typeof initPublicHeader === "function") {
@@ -64,7 +63,6 @@ if (typeof initPublicFooter === "function") {
   const breadcrumbCategory = document.getElementById("breadcrumb-category");
   const categoryTitle = document.getElementById("category-title");
   const categoryDesc = document.getElementById("category-description");
-  const categoryMetaCount = document.getElementById("category-meta-count");
 
   let titleName = "Tất cả bài viết";
   let descText = "Dòng chảy tin tức tổng hợp 24/7 từ tất cả các lĩnh vực đời sống, kinh tế, xã hội.";
@@ -135,18 +133,7 @@ if (typeof initPublicFooter === "function") {
   }
 
   // ============================================================================
-  // C. SẮP XẾP BÀI VIẾT
-  // ============================================================================
-  const sortSelect = document.getElementById("sort-select");
-  if (sortSelect) {
-    sortSelect.addEventListener("change", function () {
-      currentSort = this.value;
-      renderArticlesList();
-    });
-  }
-
-  // ============================================================================
-  // D. RENDER DANH SÁCH BÀI VIẾT
+  // C. RENDER DANH SÁCH BÀI VIẾT
   // ============================================================================
   function renderArticlesList() {
     let filtered = allArticles.filter((a) => a.status === "published");
@@ -172,16 +159,8 @@ if (typeof initPublicFooter === "function") {
       filtered = filtered.filter((a) => Array.isArray(a.tags) && a.tags.some(t => t.slug === currentTagSlug));
     }
 
-    // Sắp xếp
-    if (currentSort === "views") {
-      filtered.sort((a, b) => getViews(b) - getViews(a));
-    } else {
-      filtered.sort((a, b) => new Date(String(b.published_at || b.created_at).replace(" ", "T")) - new Date(String(a.published_at || a.created_at).replace(" ", "T")));
-    }
-
-    if (categoryMetaCount) {
-      categoryMetaCount.textContent = `${filtered.length} bài viết`;
-    }
+    // Sắp xếp bài viết mới nhất lên đầu
+    filtered.sort((a, b) => new Date(String(b.published_at || b.created_at).replace(" ", "T")) - new Date(String(a.published_at || a.created_at).replace(" ", "T")));
 
     const featuredMount = document.getElementById("category-featured-mount");
     const gridMount = document.getElementById("category-grid-mount");

@@ -19,8 +19,6 @@
 
   let allCategories = [];
   let allTags = [];
-  let allArticles = [];
-  let allArticleTags = [];
 
   let currentCategorySearch = "";
   let currentTagSearch = "";
@@ -451,12 +449,6 @@
         handleDeleteTag(tagId, tagName, count);
       }
     });
-
-    // 12. Nút dọn tag 0 bài viết 1-click
-    const btnCleanZeroTags = document.getElementById("btn-quick-clean-tags");
-    if (btnCleanZeroTags) {
-      btnCleanZeroTags.addEventListener("click", handleCleanZeroArticleTags);
-    }
   }
 
   /**
@@ -618,42 +610,5 @@ async function handleSaveTag() {
         showToast("Lỗi kết nối khi xóa thẻ!", "error");
       }
     }
-  }
-
-  /**
-   * Dọn dẹp tất cả các tag rác có 0 bài viết
-   */
-  async function handleCleanZeroArticleTags() {
-    const zeroTags = allTags.filter((t) => Number(t.article_count) === 0);
-
-    if (zeroTags.length === 0) {
-      if (typeof showToast === "function") showToast("Hệ thống không có thẻ tag rác (0 bài viết) nào cần dọn dẹp!", "info");
-      return;
-    }
-
-    if (!confirm(`Hệ thống tìm thấy ${zeroTags.length} thẻ tag chưa có bài viết nào gắn. Bạn có muốn dọn dẹp và xóa sạch tất cả không?`)) {
-      return;
-    }
-
-    for (const tag of zeroTags) {
-      await fetch(resolveApiUrl(`editor/categories-tags.php?type=tags&id=${tag.id}`), {
-        method: "DELETE",
-        credentials: "include"
-      });
-    }
-
-    if (typeof showToast === "function") showToast(`Đã dọn dẹp thành công ${zeroTags.length} thẻ tag rác!`, "success");
-    await loadData();
-    renderTagsSection();
-  }
-
-  function escapeHtml(str) {
-    if (!str) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
   }
 })();

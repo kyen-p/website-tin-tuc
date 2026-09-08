@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
+require_once __DIR__ . '/../../helpers/file.php';
 
 // Chỉ Reporter mới được truy cập
 requireRole(['reporter']);
@@ -53,7 +54,7 @@ try {
             jsonResponse(false, null, "Thiếu article_id");
         }
 
-        $stmt = $pdo->prepare("SELECT id, status FROM articles WHERE id = ? AND author_id = ?");
+        $stmt = $pdo->prepare("SELECT id, status, title, content, category_id FROM articles WHERE id = ? AND author_id = ?");
         $stmt->execute([$articleId, $userId]);
         $art = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -65,6 +66,9 @@ try {
             $pdo->prepare("UPDATE articles SET status = 'draft', updated_at = NOW() WHERE id = ?")->execute([$articleId]);
             jsonResponse(true, null, "Đã thu hồi bài viết về bản nháp");
         } else if ($action === 'submit') {
+            if (empty(trim($art['title'] ?? '')) || empty(trim($art['content'] ?? '')) || empty($art['category_id'])) {
+                jsonResponse(false, null, "Bài viết chưa đầy đủ tiêu đề, nội dung hoặc chuyên mục để gửi duyệt");
+            }
             $pdo->prepare("UPDATE articles SET status = 'pending', updated_at = NOW() WHERE id = ?")->execute([$articleId]);
             jsonResponse(true, null, "Đã gửi bài viết lên Ban Biên tập để thẩm định");
         } else {
@@ -80,7 +84,7 @@ try {
             jsonResponse(false, null, "Thiếu article_id");
         }
 
-        $stmt = $pdo->prepare("SELECT id, status FROM articles WHERE id = ? AND author_id = ?");
+        $stmt = $pdo->prepare("SELECT id, status, cover_image, content FROM articles WHERE id = ? AND author_id = ?");
         $stmt->execute([$articleId, $userId]);
         $art = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -88,10 +92,26 @@ try {
             jsonResponse(false, null, "Không tìm thấy bài viết hoặc bạn không có quyền");
         }
 
-        // Xóa liên kết tags trước
-        $pdo->prepare("DELETE FROM article_tags WHERE article_id = ?")->execute([$articleId]);
-        $pdo->prepare("DELETE FROM comments WHERE article_id = ?")->execute([$articleId]);
-        $pdo->prepare("DELETE FROM favorites WHERE article_id = ?")->execute([$articleId]);
+        // Dọn dẹp tệp ảnh vật lý trên đĩa cứng (ảnh bìa + ảnh minh họa trong nội dung)
+        if (!empty($art['cover_image'])) {
+            deleteUploadedFile($art['cover_image']);
+        }
+
+        if (!empty($art['content'])) {
+            preg_match_all('/src=["\']([^"\']+)["\']/i', $art['content'], $matches);
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $imgSrc) {
+                    if (strpos($imgSrc, 'backend/api/upload/') !== false) {
+                        $pos = strpos($imgSrc, 'backend/api/upload/');
+                        $cleanImgPath = substr($imgSrc, $pos);
+                        deleteUploadedFile($cleanImgPath);
+                    }
+                }
+            }
+        }
+
+        // Nhờ ON DELETE CASCADE trong database, xóa articles sẽ tự động xóa
+        // các liên kết trong article_tags, comments và favorites
         $pdo->prepare("DELETE FROM articles WHERE id = ?")->execute([$articleId]);
 
         jsonResponse(true, null, "Đã xóa bài viết thành công");
@@ -100,5 +120,5 @@ try {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 
 } catch (PDOException $e) {
-    jsonResponse(false, null, $e->getMessage());
+    jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");
 }

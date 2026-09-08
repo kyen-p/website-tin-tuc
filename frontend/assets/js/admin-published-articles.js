@@ -61,10 +61,7 @@
    * Biểu tượng mũi tên sắp xếp đồng bộ chuẩn với trang Thống kê Phóng viên
    */
   function getSortIcon(field) {
-    if (sortField !== field) {
-      return "▲▼";
-    }
-    return sortOrder === "asc" ? "▲" : "▼";
+    return getAdminSortIcon(field, sortField, sortOrder);
   }
 
   function renderPageStructure() {
@@ -308,60 +305,6 @@
     renderTableRows();
   };
 
-  /**
-   * Format ngày hiển thị trong bảng
-   */
-  function formatTableDate(dateStr) {
-    if (!dateStr) return '<span style="color: var(--muted); font-size: 11.5px;">Chưa có</span>';
-    try {
-      const d = new Date(String(dateStr).replace(" ", "T"));
-      if (isNaN(d.getTime())) return `<span style="font-family: var(--f-mono); font-size: 12px; color: var(--muted);">${escapeHtml(dateStr)}</span>`;
-      const day = String(d.getDate()).padStart(2, "0");
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const year = d.getFullYear();
-      const hours = String(d.getHours()).padStart(2, "0");
-      const mins = String(d.getMinutes()).padStart(2, "0");
-      return `<span style="font-family: var(--f-mono); font-size: 12px; color: var(--muted); white-space: nowrap;">${hours}:${mins} ${day}/${month}/${year}</span>`;
-    } catch (e) {
-      return escapeHtml(dateStr);
-    }
-  }
-
-  /**
-   * Trích xuất thumbnail thông minh
-   */
-  function extractThumbnail(article, category) {
-    if (article.cover_image && article.cover_image.trim()) {
-      return article.cover_image;
-    }
-    if (article.image && article.image.trim()) {
-      return article.image;
-    }
-    if (article.content) {
-      const match = article.content.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-    const catSlug = category ? category.slug : "thoi-su";
-    return `../assets/images/categories/${catSlug}.jpg`;
-  }
-
-  function renderTableCoverThumb(imagePath, title) {
-    const safeAlt = escapeHtml(title || "Ảnh bài viết");
-    const raw = imagePath ? String(imagePath).trim() : "";
-    const resolvedUrl = raw && typeof resolveAssetPath === "function" ? resolveAssetPath(raw) : raw;
-
-    if (!resolvedUrl) {
-      return `<div class="admin-article-thumb-ph" title="Chưa có ảnh bìa"></div>`;
-    }
-    return `
-      <div class="admin-article-thumb-ph">
-        <img src="${escapeHtml(resolvedUrl)}" alt="${safeAlt}" loading="lazy" onerror="this.remove()">
-      </div>
-    `;
-  }
-
   function renderTableRows() {
     const tbody = document.getElementById("articles-tbody");
     const countBadge = document.getElementById("list-count-badge");
@@ -424,7 +367,6 @@
     }
 
     tbody.innerHTML = filtered.map(art => {
-      const cat = allCategories.find(c => String(c.id) === String(art.category_id)) || { name: "Thời sự", slug: "thoi-su" };
       const author = allUsers.find(u => String(u.id) === String(art.author_id)) || { full_name: art.author || "Phóng viên", username: "reporter" };
       const approver = allUsers.find(u => String(u.id) === String(art.approved_by));
 
@@ -433,8 +375,6 @@
       const approverName = approver ? (approver.full_name || approver.username) : (art.approved_by ? `BTV #${art.approved_by}` : "Chưa ghi nhận");
       const approverUser = approver && approver.username ? `@${approver.username}` : "";
 
-      const coverImg = extractThumbnail(art, cat);
-      const thumbHtml = renderTableCoverThumb(coverImg, art.title);
       const desc = art.short_description || art.sapo || art.summary || "";
       const detailUrl = typeof getArticleDetailUrl === "function" ? getArticleDetailUrl(art, "../public/") : `../public/article-detail.html?slug=${encodeURIComponent(art.slug || art.id)}`;
 
@@ -483,7 +423,7 @@
             </div>
           </td>
           <td style="text-align: center;">
-            ${formatTableDate(art.published_at || art.created_at)}
+            ${formatAdminDateTime(art.published_at || art.created_at)}
           </td>
           <td class="admin-col-num">
             <div class="admin-num-badge admin-num-badge--views">
@@ -742,16 +682,6 @@
     renderPageStructure();
     bindEvents();
     renderTableRows();
-  }
-
-  function escapeHtml(str) {
-    if (!str) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
   }
 
 })();

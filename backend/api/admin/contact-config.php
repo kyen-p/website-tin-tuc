@@ -28,14 +28,19 @@ if ($method === 'PUT') {
         'tiktok'   => $input['tiktok'] ?? '',
     ]);
 
+    $contactEmail = $input['contact_email'] ?? null;
+    $contactPhone = $input['contact_phone'] ?? null;
+    $address      = $input['address'] ?? null;
+    $shortDesc    = $input['short_description'] ?? null;
+
     $check = $pdo->query("SELECT id FROM site_settings LIMIT 1")->fetch();
 
     if ($check) {
         $stmt = $pdo->prepare("UPDATE site_settings SET contact_email=?, contact_phone=?, address=?, social_links=?, short_description=? WHERE id=?");
-        $stmt->execute([$input['contact_email'], $input['contact_phone'], $input['address'], $social_links, $input['short_description'], $check['id']]);
+        $stmt->execute([$contactEmail, $contactPhone, $address, $social_links, $shortDesc, $check['id']]);
     } else {
         $stmt = $pdo->prepare("INSERT INTO site_settings (contact_email, contact_phone, address, social_links, short_description) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$input['contact_email'], $input['contact_phone'], $input['address'], $social_links, $input['short_description']]);
+        $stmt->execute([$contactEmail, $contactPhone, $address, $social_links, $shortDesc]);
     }
 
     jsonResponse(true, null, "Cập nhật thành công");

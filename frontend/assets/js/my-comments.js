@@ -7,7 +7,7 @@
  * ==============================================================================
  */
 
-const COMMENTS_API = "../../backend/api/user/my-comments.php";
+const COMMENTS_API = typeof resolveApiUrl === "function" ? resolveApiUrl("user/my-comments.php") : "/backend/api/user/my-comments.php";
 let activeDeleteCommentId = null;
 
 async function initMyCommentsPage() {
@@ -21,7 +21,7 @@ async function initMyCommentsPage() {
     await initPublicFooter();
   }
 
-    try {
+  try {
     const response = await fetch(COMMENTS_API, { credentials: "include" });
     const result = await response.json();
     if (result.success) {
@@ -44,8 +44,6 @@ async function initMyCommentsPage() {
         });
     }
   });
-
-  renderCommentsApiNotAvailable();
 }
 
 function renderCommentsApiNotAvailable() {
