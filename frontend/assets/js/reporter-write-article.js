@@ -40,13 +40,16 @@
       const file = e.target.files && e.target.files[0];
       if (!file) return;
 
-      if (!file.type.startsWith("image/")) {
-        showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WebP)!", "warning");
+      const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedMimes.includes(file.type)) {
+        showToast("Chỉ hỗ trợ ảnh định dạng JPG, JPEG, PNG hoặc WebP!", "warning");
+        e.target.value = "";
         return;
       }
 
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("Dung lượng ảnh tối đa là 5MB!", "warning");
+      if (file.size > 2 * 1024 * 1024) {
+        showToast("Dung lượng ảnh bìa tối đa là 2MB!", "warning");
+        e.target.value = "";
         return;
       }
 
@@ -155,6 +158,19 @@
 
       upload() {
         return this.loader.file.then(async (file) => {
+          const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
+          if (!allowedMimes.includes(file.type)) {
+            const msg = "Chỉ hỗ trợ ảnh JPG, JPEG, PNG hoặc WebP!";
+            if (typeof showToast === "function") showToast(msg, "warning");
+            throw new Error(msg);
+          }
+
+          if (file.size > 2 * 1024 * 1024) {
+            const msg = "Dung lượng ảnh chèn vào bài viết không được vượt quá 2MB!";
+            if (typeof showToast === "function") showToast(msg, "warning");
+            throw new Error(msg);
+          }
+
           const formData = new FormData();
 
           formData.append("image", file);

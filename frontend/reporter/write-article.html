@@ -121,7 +121,7 @@
                       </div>
                       <div style="font-size: 13px; font-weight: 600; color: var(--ink);">Bấm để tải ảnh bìa lên</div>
                       <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Hỗ trợ JPG, PNG, WebP (Tối
-                        đa 5MB)</div>
+                        đa 2MB)</div>
                     </div>
 
                     <!-- Khi đã có ảnh -->
@@ -129,7 +129,7 @@
                       style="display: none; width: 100%; height: 100%; object-fit: cover;">
                   </div>
 
-                  <input type="file" id="cover-file-input" accept="image/*" style="display: none;"
+                  <input type="file" id="cover-file-input" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" style="display: none;"
                     onchange="handleCoverFileChange(event)">
 
                   <!-- Nút thao tác ảnh bìa -->

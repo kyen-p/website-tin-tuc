@@ -52,11 +52,11 @@ if (!in_array($type, ['avatar', 'article'], true)) {
     jsonResponse(false, null, "Loại ảnh không hợp lệ");
 }
 
-// Kiểm tra dung lượng tối đa 5MB
-$maxFileSize = 5 * 1024 * 1024;
+// Kiểm tra dung lượng tối đa 2MB
+$maxFileSize = 2 * 1024 * 1024;
 
 if ($file['size'] > $maxFileSize) {
-    jsonResponse(false, null, "Ảnh không được vượt quá 5MB");
+    jsonResponse(false, null, "Ảnh không được vượt quá 2MB");
 }
 
 // Kiểm tra file có phải ảnh thật không
