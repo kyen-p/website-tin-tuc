@@ -192,22 +192,31 @@
     }
 
     /**
-     * Khởi tạo CKEditor 5 Classic
+     * Khởi tạo CKEditor 5 với đầy đủ chức năng căn lề (Alignment) & định dạng
      */
     async function initCKEditor() {
       try {
-        editorInstance = await ClassicEditor.create(document.querySelector("#editor"), {
+        const EditorConstructor = (window.CKEDITOR && window.CKEDITOR.ClassicEditor) || window.ClassicEditor;
+        if (!EditorConstructor) {
+          throw new Error("Không tìm thấy CKEditor 5 library!");
+        }
+
+        editorInstance = await EditorConstructor.create(document.querySelector("#editor"), {
           extraPlugins: [CustomUploadAdapterPlugin],
           mediaEmbed: {
             previewsInData: true
           },
           toolbar: [
             'heading', '|',
-            'bold', 'italic', 'link', '|',
+            'bold', 'italic', 'underline', 'link', '|',
+            'alignment', '|',
             'bulletedList', 'numberedList', '|',
             'imageUpload', 'mediaEmbed', 'insertTable', 'blockQuote', 'horizontalLine', '|',
             'undo', 'redo'
           ],
+          alignment: {
+            options: ['left', 'center', 'right', 'justify']
+          },
           image: {
             toolbar: [
               'imageTextAlternative',
@@ -224,39 +233,34 @@
               'mergeTableCells'
             ]
           },
+          // Loại bỏ các plugin cloud/thương mại không cần thiết nhằm tối ưu hiệu năng và tránh request dư thừa
+          removePlugins: [
+            'CKBox',
+            'CKFinder',
+            'EasyImage',
+            'RealTimeCollaborativeComments',
+            'RealTimeCollaborativeTrackChanges',
+            'RealTimeCollaborativeRevisionHistory',
+            'PresenceList',
+            'Comments',
+            'TrackChanges',
+            'TrackChangesData',
+            'RevisionHistory',
+            'Pagination',
+            'WProofreader',
+            'MathType',
+            'SlashCommand',
+            'Template',
+            'DocumentOutline',
+            'FormatPainter',
+            'TableOfContents',
+            'PasteFromOfficeEnhanced'
+          ],
           placeholder: 'Bắt đầu viết nội dung bài báo tại đây (hỗ trợ kéo thả ảnh, dán link YouTube/video)...'
         });
-
-        // Cập nhật thống kê từ & thời gian đọc trong thời gian thực
-        editorInstance.model.document.on('change:data', () => {
-          updateWordStats();
-        });
-
       } catch (error) {
         console.error("Lỗi khởi tạo CKEditor 5:", error);
       }
-    }
-
-    /**
-     * Tính toán số từ và số ký tự
-     */
-    function updateWordStats() {
-      if (!editorInstance) return;
-      const data = editorInstance.getData() || "";
-
-      // Dùng phần tử ảo để bóc tách văn bản thuần không kèm thẻ HTML
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = data;
-      const pureText = (tempDiv.textContent || tempDiv.innerText || "").trim();
-
-      const words = pureText ? pureText.split(/\s+/).filter(Boolean).length : 0;
-      const chars = pureText.length;
-
-      const statWords = document.getElementById("stat-words");
-      const statChars = document.getElementById("stat-chars");
-
-      if (statWords) statWords.textContent = words.toLocaleString("vi-VN");
-      if (statChars) statChars.textContent = chars.toLocaleString("vi-VN");
     }
 
     /**
@@ -318,6 +322,29 @@
         document.getElementById("page-main-subtitle").textContent = `Đang cập nhật bài viết: "${art.title || ''}"`;
         document.getElementById("save-status-hint").innerHTML = `Trạng thái hiện tại: <strong>${art.status === 'rejected' ? 'Bị từ chối (Cần sửa)' : 'Bản nháp'}</strong>`;
 
+        // Hiển thị phản hồi từ Ban Biên tập nếu bài bị từ chối
+        const oldBanner = document.getElementById("rejection-alert-banner");
+        if (oldBanner) oldBanner.remove();
+
+        if (art.status === "rejected" && (art.rejection_reason || "").trim()) {
+          const banner = document.createElement("div");
+          banner.id = "rejection-alert-banner";
+          banner.style.cssText = "margin-bottom: 20px; padding: 14px 18px; background: #FEF2F2; border: 1px solid #FCA5A5; border-left: 4px solid #EF4444; border-radius: 6px; display: flex; align-items: flex-start; gap: 12px; font-size: 13.5px; color: #991B1B; box-shadow: 0 1px 3px rgba(0,0,0,0.05);";
+          banner.innerHTML = `
+            <svg style="width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; color: #EF4444;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div style="flex: 1;">
+              <div style="font-weight: 700; margin-bottom: 3px; font-size: 14px;">Ban Biên tập yêu cầu chỉnh sửa:</div>
+              <div style="color: #7F1D1D; line-height: 1.5;">${escapeHtml(art.rejection_reason)}</div>
+            </div>
+          `;
+          const formEl = document.getElementById("article-form");
+          if (formEl && formEl.parentNode) formEl.parentNode.insertBefore(banner, formEl);
+        }
+
         // Điền thông tin
         document.getElementById("article-title").value = art.title || "";
         document.getElementById("article-sapo").value = art.short_description || art.sapo || "";
@@ -333,7 +360,6 @@
         // Đặt nội dung CKEditor
         if (editorInstance) {
           editorInstance.setData(art.content || "");
-          updateWordStats();
         }
 
         selectedTags = [];

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 28, 2026 lúc 10:41 AM
+-- Thời gian đã tạo: Th9 09, 2026 lúc 04:27 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -38,7 +38,8 @@ CREATE TABLE `articles` (
   `approved_by` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
   `is_notable_event` tinyint(1) DEFAULT 0,
-  `status` enum('draft','pending','published','rejected','hidden') DEFAULT 'draft',  `rejection_reason` text DEFAULT NULL,
+  `status` enum('draft','pending','published','rejected','hidden') DEFAULT 'draft',
+  `rejection_reason` text DEFAULT NULL,
   `view_count` int(11) DEFAULT 0,
   `published_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
@@ -81,7 +82,6 @@ CREATE TABLE `comments` (
   `article_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `content` text NOT NULL,
-  `is_deleted` tinyint(1) DEFAULT 0,
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -219,37 +219,37 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `articles`
 --
 ALTER TABLE `articles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT cho bảng `site_settings`
 --
 ALTER TABLE `site_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT cho bảng `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

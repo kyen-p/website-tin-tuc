@@ -16,11 +16,11 @@ try {
     // =========================================================
     if ($method === 'GET') {
         $stmt = $pdo->prepare("
-            SELECT c.id, c.article_id, c.content, c.is_deleted, c.created_at,
+            SELECT c.id, c.article_id, c.content, c.created_at,
                    a.title AS article_title, a.slug AS article_slug, a.cover_image AS article_cover_image
             FROM comments c
             LEFT JOIN articles a ON c.article_id = a.id
-            WHERE c.user_id = ? AND c.is_deleted = 0
+            WHERE c.user_id = ?
             ORDER BY c.created_at DESC
         ");
         $stmt->execute([$userId]);
@@ -149,9 +149,9 @@ try {
             jsonResponse(false, null, "Bạn không có quyền xóa bình luận này");
         }
 
-        // Xóa mềm bình luận (đồng bộ với Admin)
-        $stmt = $pdo->prepare("UPDATE comments SET is_deleted = 1, updated_at = NOW() WHERE id = ?");
-        $stmt->execute([$commentId]);
+        // Xóa vĩnh viễn bình luận khỏi CSDL
+        $stmt = $pdo->prepare("DELETE FROM comments WHERE id = ? AND user_id = ?");
+        $stmt->execute([$commentId, $userId]);
 
         jsonResponse(true, null, "Xóa bình luận thành công");
     }

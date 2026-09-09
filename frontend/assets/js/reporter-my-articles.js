@@ -12,6 +12,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       const currentUser = initAdminLayout("reporter", "my-articles");
+      initDeleteDraftModal();
       if (currentUser) {
         loadReporterArticles(currentUser);
       }
@@ -219,7 +220,7 @@
         return;
       }
 
-      // 4. Render các dòng bài viết (Giao diện bảng gọn gàng, không nhét box lý do cồng kềnh ra ngoài)
+      // 4. Render các dòng bài viết (Giao diện bảng gọn gàng, tinh tế)
       tbody.innerHTML = filtered.map(art => {
         const catName = categoriesMap[art.category_id] || "Tổng hợp";
         const coverImg = art.cover_image || art.image || art.thumbnail || "";
@@ -229,16 +230,24 @@
         const actionButtons = renderActionButtons(art);
         const thumbHtml = renderTableCoverThumb(coverImg, art.title);
 
+        const rejectionHtml = (art.status === "rejected" && (art.rejection_reason || "").trim())
+          ? `<div style="margin-top: 7px; display: inline-flex; align-items: flex-start; gap: 6px; padding: 5px 10px; background: #FEF2F2; border-left: 3px solid #EF4444; border-radius: 4px; font-size: 12px; color: #991B1B; line-height: 1.4;">
+              <svg style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <span><strong>Ban Biên tập phản hồi:</strong> ${escapeHtml(art.rejection_reason)}</span>
+            </div>`
+          : "";
+
         return `
           <tr id="article-row-${art.id}" data-id="${art.id}">
             <td>
-              <div class="admin-article-cell" style="cursor: pointer;" onclick="openArticleDetailModal(${art.id})">
+              <div class="admin-article-cell">
                 ${thumbHtml}
                 <div class="admin-article-info">
-                  <div class="admin-article-title-text" title="Bấm để xem chi tiết bài viết" style="color: var(--ink); font-weight: 700; transition: color 0.15s ease;">
+                  <div class="admin-article-title-text" style="color: var(--ink); font-weight: 700;">
                     ${escapeHtml(art.title || "Chưa đặt tiêu đề")}
                   </div>
                   ${desc ? `<div class="admin-article-sapo-text" title="${escapeHtml(desc)}">${escapeHtml(desc)}</div>` : ''}
+                  ${rejectionHtml}
                 </div>
               </div>
             </td>
@@ -292,23 +301,11 @@
     }
 
     /**
-     * Render các nút hành động theo đúng quy tắc nghiệp vụ UC-RP02 & nút Chi tiết mở Modal
+     * Render các nút hành động tinh gọn theo đúng quy tắc nghiệp vụ
      */
     function renderActionButtons(art) {
-      const detailBtn = `
-        <button type="button" class="admin-btn admin-btn--view" onclick="openArticleDetailModal(${art.id})" title="Xem chi tiết nội dung & phản hồi">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-          Chi tiết
-        </button>
-      `;
-
       if (art.status === "draft") {
         return `
-          ${detailBtn}
           <a href="write-article.html?id=${art.id}" class="admin-btn admin-btn--edit" title="Sửa bản nháp">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -316,7 +313,7 @@
             </svg>
             Sửa
           </a>
-          <button type="button" class="admin-btn admin-btn--danger" onclick="confirmDeleteDraft(${art.id}, '${escapeHtml(art.title || '')}')" title="Xóa bản nháp">
+          <button type="button" class="admin-btn admin-btn--danger" onclick="confirmDeleteArticle(${art.id})" title="Xóa bản nháp">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -328,7 +325,6 @@
 
       if (art.status === "pending") {
         return `
-          ${detailBtn}
           <button type="button" class="admin-btn admin-btn--edit" onclick="handleEditPending(${art.id})" title="Chuyển về bản nháp để chỉnh sửa">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -341,7 +337,6 @@
 
       if (art.status === "rejected") {
         return `
-          ${detailBtn}
           <a href="write-article.html?id=${art.id}" class="admin-btn admin-btn--edit" title="Sửa nội dung bài viết">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -358,6 +353,13 @@
             </svg>
             Gửi lại
           </button>
+          <button type="button" class="admin-btn admin-btn--danger" onclick="confirmDeleteArticle(${art.id})" title="Xóa bài viết">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Xóa
+          </button>
         `;
       }
 
@@ -365,7 +367,6 @@
         const articleSlug = art.slug || (typeof slugify === "function" ? slugify(art.title) : "") || art.id;
         const detailUrl = `../public/article-detail.html?slug=${encodeURIComponent(articleSlug)}`;
         return `
-          ${detailBtn}
           <a href="${detailUrl}" target="_blank" class="admin-btn admin-btn--view" title="Xem bài viết đã xuất bản">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -376,7 +377,7 @@
         `;
       }
 
-      return detailBtn;
+      return "";
     }
 
     /**
@@ -451,16 +452,163 @@
       }
     }
 
-    // Cung cấp API tương tác cho reporter-my-articles-modal.js
-    window.ReporterMyArticles = {
-      getAllArticles: () => reporterArticles,
-      getCategoriesMap: () => categoriesMap,
-      renderStatusBadge: renderStatusBadge,
-      handleResubmit: handleResubmit,
-      handleEditPending: handleEditPending,
-      reloadArticles: () => {
-        const u = getCurrentUser();
-        if (u) loadReporterArticles(u);
+    /**
+     * ==============================================================================
+     * QUẢN LÝ XÓA BÀI VIẾT (BẢN NHÁP / BÀI BỊ TỪ CHỐI)
+     * ==============================================================================
+     */
+    let deletingArticleId = null;
+
+    /**
+     * Khởi tạo Modal xác nhận xóa bài viết vào DOM container
+     */
+    function initDeleteDraftModal() {
+      const container = document.getElementById("delete-modal-container");
+      if (!container) return;
+
+      container.innerHTML = `
+        <div id="deleteDraftModal" class="admin-modal-overlay" style="display: none;">
+          <div class="admin-modal" style="max-width: 440px;">
+            <div class="admin-modal__header">
+              <div class="admin-modal__title" style="color: #DC2626;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span id="deleteModalHeaderTitle">Xóa bài viết</span>
+              </div>
+              <button type="button" class="admin-btn--icon" id="btnCloseDeleteDraftModal" style="background:none; border:none; cursor:pointer; font-size:22px; line-height:1; color:var(--muted); padding:4px;" title="Đóng">&times;</button>
+            </div>
+            <div class="admin-modal__body">
+              <p style="margin: 0 0 10px 0; color: var(--ink);">Bạn có chắc chắn muốn xóa bài viết này không?</p>
+              <div id="deleteDraftTitle" style="font-weight: 700; color: var(--ink); background: #FAF8F4; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--line-soft); word-break: break-word; font-size: 13.5px;"></div>
+              <p style="margin: 10px 0 0 0; font-size: 12.5px; color: #DC2626;">
+                Lưu ý: Dữ liệu và các tệp đính kèm sẽ bị xóa vĩnh viễn khỏi hệ thống và không thể khôi phục.
+              </p>
+            </div>
+            <div class="admin-modal__footer">
+              <button type="button" class="admin-btn admin-btn--default" id="btnCancelDeleteDraft">Hủy bỏ</button>
+              <button type="button" class="admin-btn admin-btn--danger" id="btnConfirmDeleteDraft" style="background: #DC2626; color: #FFF; border: none; font-weight: 600;">Xác nhận xóa</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const modal = document.getElementById("deleteDraftModal");
+      const btnClose = document.getElementById("btnCloseDeleteDraftModal");
+      const btnCancel = document.getElementById("btnCancelDeleteDraft");
+      const btnConfirm = document.getElementById("btnConfirmDeleteDraft");
+
+      if (btnClose) btnClose.onclick = closeDeleteDraftModal;
+      if (btnCancel) btnCancel.onclick = closeDeleteDraftModal;
+      if (btnConfirm) btnConfirm.onclick = executeDeleteDraft;
+
+      if (modal) {
+        modal.onclick = (e) => {
+          if (e.target === modal) closeDeleteDraftModal();
+        };
       }
-    };
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal && modal.style.display !== "none") {
+          closeDeleteDraftModal();
+        }
+      });
+    }
+
+    /**
+     * Mở modal xác nhận xóa bài viết
+     */
+    function confirmDeleteArticle(id) {
+      const article = reporterArticles.find(a => Number(a.id) === Number(id));
+      if (!article) return;
+
+      deletingArticleId = id;
+
+      const headerTitle = document.getElementById("deleteModalHeaderTitle");
+      if (headerTitle) {
+        headerTitle.textContent = article.status === "rejected" ? "Xóa bài viết bị từ chối" : "Xóa bản nháp";
+      }
+
+      const titleEl = document.getElementById("deleteDraftTitle");
+      if (titleEl) {
+        titleEl.textContent = article.title || "Chưa đặt tiêu đề";
+      }
+
+      const modal = document.getElementById("deleteDraftModal");
+      if (modal) {
+        modal.style.display = "flex";
+      }
+    }
+    window.confirmDeleteArticle = confirmDeleteArticle;
+    window.confirmDeleteDraft = confirmDeleteArticle; // Alias tương thích ngược
+
+    /**
+     * Đóng modal xóa
+     */
+    function closeDeleteDraftModal() {
+      deletingArticleId = null;
+      const modal = document.getElementById("deleteDraftModal");
+      if (modal) {
+        modal.style.display = "none";
+      }
+      const btnConfirm = document.getElementById("btnConfirmDeleteDraft");
+      if (btnConfirm) {
+        btnConfirm.disabled = false;
+        btnConfirm.textContent = "Xác nhận xóa";
+      }
+    }
+    window.closeDeleteDraftModal = closeDeleteDraftModal;
+
+    /**
+     * Thực thi gọi API DELETE bài viết
+     */
+    async function executeDeleteDraft() {
+      if (!deletingArticleId) return;
+
+      const btnConfirm = document.getElementById("btnConfirmDeleteDraft");
+      if (btnConfirm) {
+        btnConfirm.disabled = true;
+        btnConfirm.textContent = "Đang xóa...";
+      }
+
+      try {
+        const res = await fetch(resolveApiUrl("reporter/my-articles.php"), {
+          method: "DELETE",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ article_id: deletingArticleId })
+        });
+
+        const text = await res.text();
+        const data = (typeof safeJsonParse === "function" ? safeJsonParse(text) : null) || (res.ok ? { success: true, message: "Đã xóa bài viết thành công" } : { success: false, message: "Lỗi phản hồi từ máy chủ" });
+
+        if (!data.success) {
+          showToast(data.message || "Không thể xóa bài viết", "error");
+          if (btnConfirm) {
+            btnConfirm.disabled = false;
+            btnConfirm.textContent = "Xác nhận xóa";
+          }
+          return;
+        }
+
+        showToast(data.message || "Đã xóa bài viết thành công!", "success");
+        closeDeleteDraftModal();
+
+        const currentUser = getCurrentUser();
+        if (currentUser) {
+          loadReporterArticles(currentUser);
+        }
+      } catch (err) {
+        console.error("Lỗi khi xóa bài viết:", err);
+        showToast("Lỗi kết nối khi xóa bài viết!", "error");
+        if (btnConfirm) {
+          btnConfirm.disabled = false;
+          btnConfirm.textContent = "Xác nhận xóa";
+        }
+      }
+    }
+    window.executeDeleteDraft = executeDeleteDraft;
+
+
 

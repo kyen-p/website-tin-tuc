@@ -49,14 +49,12 @@
     const container = document.getElementById("workspace-content");
     if (!container) return;
 
-    const activeComments = allComments.filter((c) => !c.is_deleted);
-
     container.innerHTML = `
       <div class="admin-card">
         <div class="admin-card__header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div>
             <h2 class="admin-card__title" style="margin: 0; font-size: 17px; font-weight: 700; color: var(--ink);">
-              Danh sách bình luận <span class="tab-badge" id="commentTotalBadge" style="margin-left: 6px;">${activeComments.length}</span>
+              Danh sách bình luận <span class="tab-badge" id="commentTotalBadge" style="margin-left: 6px;">${allComments.length}</span>
             </h2>
             <p class="admin-card__subtitle" style="margin: 4px 0 0; font-size: 13px; color: var(--muted);">Tất cả bình luận của độc giả trên toàn hệ thống bài viết.</p>
           </div>
@@ -199,7 +197,7 @@
     const tbody = document.getElementById("commentTableBody");
     if (!tbody) return;
 
-    let filtered = allComments.filter((c) => !c.is_deleted);
+    let filtered = [...allComments];
 
     // Lọc theo bài viết
     if (articleFilter !== "all") {

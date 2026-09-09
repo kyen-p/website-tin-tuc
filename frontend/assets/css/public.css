@@ -443,6 +443,11 @@
   margin: 0 0 18px;
 }
 
+.body-text .text-left { text-align: left; }
+.body-text .text-center { text-align: center; }
+.body-text .text-right { text-align: right; }
+.body-text .text-justify { text-align: justify; }
+
 .body-text figure,
 .body-text figure.image {
   margin: 24px 0;

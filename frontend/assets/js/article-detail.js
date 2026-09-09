@@ -67,20 +67,12 @@ async function initArticleDetailPage() {
     authorAvatarTop.innerHTML = renderUserAvatar(author, "avatar-badge avatar-badge--sm");
   }
 
+  // Ảnh bìa (Cover image) chỉ phục vụ hiển thị ngoài danh sách bài viết (Trang chủ, Chuyên mục, Tìm kiếm, Đọc nhiều).
+  // Trong trang đọc chi tiết, toàn bộ nội dung & hình ảnh chỉ hiển thị đúng những gì tác giả soạn trong bài viết.
   const coverMount = document.getElementById("article-cover-mount");
   if (coverMount) {
-    // Ảnh bìa (Cover image / Thumbnail) phục vụ hiển thị ngoài danh sách bài viết (Trang chủ, Chuyên mục, Tìm kiếm).
-    // Trong trang chi tiết bài viết, toàn bộ nội dung & hình ảnh hiển thị theo đúng những gì tác giả soạn trong CKEditor.
-    // Đối với các bài viết văn bản thuần không có hình ảnh minh họa bên trong, chỉ hiển thị ảnh bìa nếu bài viết chưa từng chứa thẻ ảnh nào.
-    const hasImageInContent = article.content && /<img|<figure/i.test(article.content);
-    
-    if (article.cover_image && !hasImageInContent && !article.content?.includes("<img")) {
-      coverMount.innerHTML = renderCoverImage(article.cover_image, article.title, "ph--wide");
-      coverMount.style.display = "block";
-    } else {
-      coverMount.innerHTML = "";
-      coverMount.style.display = "none";
-    }
+    coverMount.innerHTML = "";
+    coverMount.style.display = "none";
   }
 
   const contentContainer = document.getElementById("article-content-body");

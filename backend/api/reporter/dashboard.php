@@ -38,7 +38,7 @@ try {
             a.id, a.title, a.slug, a.cover_image, a.category_id, a.status,
             a.view_count, a.published_at, a.created_at, a.updated_at, a.rejection_reason,
             c.name AS category_name,
-            (SELECT COUNT(*) FROM comments cm WHERE cm.article_id = a.id AND cm.is_deleted = 0) AS comment_count,
+            (SELECT COUNT(*) FROM comments cm WHERE cm.article_id = a.id) AS comment_count,
             (SELECT COUNT(*) FROM favorites fav WHERE fav.article_id = a.id) AS favorite_count
         FROM articles a
         LEFT JOIN categories c ON a.category_id = c.id

@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="../assets/css/admin-layout.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-  <!-- CKEditor 5 Classic CDN -->
-  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+  <!-- CKEditor 5 Super-build CDN (Đầy đủ tính năng căn lề Alignment, font, bảng biểu) -->
+  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>
 </head>
 
 <body>
@@ -79,17 +79,9 @@
 
                   <!-- Trình soạn thảo CKEditor 5 -->
                   <div class="admin-form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-                      <label class="admin-form-label" style="margin: 0;">
-                        Nội dung chi tiết <span class="required-mark">*</span>
-                      </label>
-                      <!-- Thống kê chữ cho phóng viên -->
-                      <div id="editor-word-stats" style="font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; font-family: var(--f-sans); background: var(--paper-alt); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line);">
-                        <span><strong id="stat-words" style="color: var(--brass-dark); font-weight: 600;">0</strong> từ</span>
-                        <span style="opacity: 0.5;">•</span>
-                        <span><strong id="stat-chars" style="font-weight: 600;">0</strong> ký tự</span>
-                      </div>
-                    </div>
+                    <label class="admin-form-label" for="editor">
+                      Nội dung chi tiết <span class="required-mark">*</span>
+                    </label>
                     <div id="editor-container">
                       <textarea id="editor"></textarea>
                     </div>

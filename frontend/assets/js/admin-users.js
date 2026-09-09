@@ -312,7 +312,7 @@
           </div>
         `;
       } else {
-        const commentsCount = allComments.filter(c => String(c.user_id) === String(user.id) && !c.is_deleted).length;
+        const commentsCount = allComments.filter(c => String(c.user_id) === String(user.id)).length;
         contributionHtml = `
           <div style="font-size: 12.5px; color: var(--ink);">
             <strong>${commentsCount}</strong> bình luận

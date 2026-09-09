@@ -65,7 +65,6 @@
     const totalPublishedAndHidden = publishedCount + hiddenCount;
     const totalArticles = articles.length;
 
-    const activeComments = comments.filter(c => !c.is_deleted);
     const totalComments = comments.length;
 
     return {
@@ -81,7 +80,7 @@
       totalPublishedAndHidden,
       totalArticles,
       totalComments,
-      activeCommentsCount: activeComments.length
+      activeCommentsCount: totalComments
     };
   }
 

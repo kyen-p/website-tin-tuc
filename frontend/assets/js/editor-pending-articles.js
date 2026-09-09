@@ -56,27 +56,6 @@
   }
 
   /**
-   * Trích xuất thumbnail thông minh (ảnh bìa hoặc ảnh đầu tiên trong nội dung)
-   */
-  function extractThumbnail(article, category) {
-    if (article.cover_image && article.cover_image.trim()) {
-      return article.cover_image;
-    }
-    if (article.image && article.image.trim()) {
-      return article.image;
-    }
-    if (article.content) {
-      const match = article.content.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-    // Fallback theo chuyên mục
-    const catSlug = category ? category.slug : "thoi-su";
-    return `../assets/images/categories/${catSlug}.jpg`;
-  }
-
-  /**
    * Render khung sườn giao diện
    */
   function renderLayout() {
@@ -104,12 +83,11 @@
                 class="admin-search-input" 
                 placeholder="Tìm theo tiêu đề, phóng viên..."
                 value="${escapeHtml(currentSearchQuery)}"
-                oninput="window.handleSearchArticles(this.value)"
               >
             </div>
 
             <!-- Lọc Chuyên mục -->
-            <select id="filter-category-select" class="admin-form-select" style="max-width: 175px; font-size: 12.5px; height: 38px;" onchange="window.handleFilterCategory(this.value)">
+            <select id="filter-category-select" class="admin-form-select" style="max-width: 175px; font-size: 12.5px; height: 38px;">
               <option value="all">Tất cả Chuyên mục</option>
               ${allCategories.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("")}
             </select>
@@ -138,11 +116,13 @@
   }
 
   function renderHeaderStats() {
-    loadData();
     const pendingArticles = allArticles.filter((a) => a.status === "pending");
     const countBadge = document.getElementById("list-count-badge");
     if (countBadge) {
       countBadge.textContent = `${pendingArticles.length} bài`;
+    }
+    if (typeof updateSidebarBadge === "function") {
+      updateSidebarBadge("pending-articles", pendingArticles.length, "warning");
     }
   }
 
@@ -151,10 +131,7 @@
    */
   function renderArticlesList() {
     const tbody = document.getElementById("articles-tbody");
-    const countBadge = document.getElementById("list-count-badge");
     if (!tbody) return;
-
-    loadData();
 
     // CHỈ LỌC CÁC BÀI VIẾT ĐANG CHỜ DUYỆT (pending)
     let filtered = allArticles.filter((a) => a.status === "pending");
@@ -183,6 +160,7 @@
     });
 
     // Cập nhật số lượng
+    const countBadge = document.getElementById("list-count-badge");
     if (countBadge) {
       countBadge.textContent = `${filtered.length} bài`;
     }

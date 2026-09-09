@@ -92,6 +92,14 @@ try {
             jsonResponse(false, null, "Không tìm thấy bài viết hoặc bạn không có quyền");
         }
 
+        // Chặn nghiệp vụ: Phóng viên không được xóa bài đã xuất bản hoặc đang chờ biên tập viên duyệt
+        if ($art['status'] === 'published') {
+            jsonResponse(false, null, "Không thể xóa bài viết đã được xuất bản");
+        }
+        if ($art['status'] === 'pending') {
+            jsonResponse(false, null, "Bài viết đang trong hàng đợi duyệt. Vui lòng thu hồi về Bản nháp trước khi xóa.");
+        }
+
         // Dọn dẹp tệp ảnh vật lý trên đĩa cứng (ảnh bìa + ảnh minh họa trong nội dung)
         if (!empty($art['cover_image'])) {
             deleteUploadedFile($art['cover_image']);

@@ -110,6 +110,27 @@ function getSidebarBadge(key, currentRole, currentUser) {
 }
 
 /**
+ * Cập nhật số lượng huy hiệu (Badge Count) trên Sidebar theo key
+ */
+function updateSidebarBadge(key, count, type = "warning") {
+  const link = document.getElementById(`sidebar-nav-${key}`);
+  if (!link) return;
+  let badge = link.querySelector(".admin-sidebar__badge");
+  const num = Number(count) || 0;
+  if (num > 0) {
+    if (!badge) {
+      badge = document.createElement("span");
+      link.appendChild(badge);
+    }
+    badge.className = `admin-sidebar__badge admin-sidebar__badge--${type}`;
+    badge.textContent = num;
+  } else if (badge) {
+    badge.remove();
+  }
+}
+window.updateSidebarBadge = updateSidebarBadge;
+
+/**
  * Render Avatar đồng bộ cho Sidebar & Topbar (hỗ trợ ảnh hoặc chữ cái đầu viết tắt)
  */
 function renderWorkspaceAvatar(user, customClass) {
@@ -178,7 +199,7 @@ function initAdminLayout(currentRole, activeKey) {
           : "";
 
         return `
-          <a href="${item.url}" class="admin-sidebar__link ${isActive ? 'is-active' : ''}">
+          <a href="${item.url}" id="sidebar-nav-${item.key}" class="admin-sidebar__link ${isActive ? 'is-active' : ''}">
             <div class="admin-sidebar__link-content">
               ${item.icon}
               <span class="admin-sidebar__link-title">${item.title}</span>
@@ -253,6 +274,22 @@ function initAdminLayout(currentRole, activeKey) {
   if (topbarMount) {
     topbarMount.style.display = "none";
     topbarMount.innerHTML = "";
+  }
+
+  // 4. Tự động tải số lượng huy hiệu cho Biên tập viên (Bài chờ duyệt)
+  if (currentRole === "editor") {
+    const pendingApi = typeof resolveApiUrl === "function" 
+      ? resolveApiUrl("editor/pending-articles.php") 
+      : "../backend/api/editor/pending-articles.php";
+    fetch(pendingApi, { credentials: "include" })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res && res.success && Array.isArray(res.data)) {
+          const pendingCount = res.data.filter((a) => a.status === "pending").length;
+          updateSidebarBadge("pending-articles", pendingCount, "warning");
+        }
+      })
+      .catch(() => {});
   }
 
   return currentUser;

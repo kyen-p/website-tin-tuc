@@ -13,11 +13,11 @@ if ($articleId <= 0) {
 
 try {
     $stmt = $pdo->prepare("
-        SELECT c.id, c.article_id, c.user_id, c.content, c.is_deleted, c.created_at,
+        SELECT c.id, c.article_id, c.user_id, c.content, c.created_at,
                u.full_name, u.username, u.avatar, u.role
         FROM comments c
         LEFT JOIN users u ON c.user_id = u.id
-        WHERE c.article_id = ? AND c.is_deleted = 0
+        WHERE c.article_id = ?
         ORDER BY c.created_at DESC
     ");
     $stmt->execute([$articleId]);
