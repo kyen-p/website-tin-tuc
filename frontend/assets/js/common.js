@@ -469,20 +469,11 @@ function renderUserAvatar(user, customClass) {
  * @param {number} [duration=3500] - Thời gian hiển thị (ms)
  */
 function showToast(message, type = "info", title = null, duration = 3500) {
-  // Đảm bảo container đã tồn tại trong DOM
-  let container = document.getElementById("mach-toast-container");
-  if (!container) {
-    container = document.createElement("div");
-    container.id = "mach-toast-container";
-    container.className = "mach-toast-container";
-    document.body.appendChild(container);
-  }
-
   // Chuẩn hóa loại trạng thái
   const validTypes = ["success", "info", "warning", "error"];
   const finalType = validTypes.includes(type) ? type : "info";
 
-  // Tiêu đề mặc định theo ảnh mẫu
+  // Tiêu đề mặc định
   const defaultTitles = {
     success: "Success",
     info: "Info",
@@ -492,30 +483,44 @@ function showToast(message, type = "info", title = null, duration = 3500) {
 
   const finalTitle = title || defaultTitles[finalType];
 
+  // Bảng màu Pastel chuẩn Mạch Tin
+  const bgColors = {
+    success: "#C3ECD0",
+    info: "#BAE2F8",
+    warning: "#F8E5BD",
+    error: "#F6BCB8"
+  };
+  const textColors = {
+    success: "#142814",
+    info: "#0E2435",
+    warning: "#32250E",
+    error: "#351313"
+  };
+
   // SVG Icon tròn chuẩn mực theo từng loại
   const icons = {
     success: `
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <path d="m9 12 2 2 4-4"></path>
       </svg>
     `,
     info: `
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <line x1="12" y1="16" x2="12" y2="12"></line>
         <line x1="12" y1="8" x2="12.01" y2="8"></line>
       </svg>
     `,
     warning: `
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <line x1="12" y1="8" x2="12" y2="12"></line>
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
       </svg>
     `,
     error: `
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <line x1="15" y1="9" x2="9" y2="15"></line>
         <line x1="9" y1="9" x2="15" y2="15"></line>
@@ -523,11 +528,7 @@ function showToast(message, type = "info", title = null, duration = 3500) {
     `
   };
 
-  // Tạo phần tử Toast
-  const toast = document.createElement("div");
-  toast.className = `mach-toast mach-toast--${finalType}`;
-  toast.setAttribute("role", "alert");
-  toast.innerHTML = `
+  const toastHtml = `
     <div class="mach-toast__icon">
       ${icons[finalType]}
     </div>
@@ -535,45 +536,34 @@ function showToast(message, type = "info", title = null, duration = 3500) {
       <div class="mach-toast__title">${escapeHtml(finalTitle)}</div>
       <div class="mach-toast__desc">${escapeHtml(message)}</div>
     </div>
-    <button type="button" class="mach-toast__close" aria-label="Đóng thông báo">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
   `;
 
-  // Hàm ẩn và xóa Toast với hiệu ứng mượt
-  let hideTimeout = null;
-  const dismissToast = () => {
-    if (hideTimeout) clearTimeout(hideTimeout);
-    toast.classList.remove("is-show");
-    toast.classList.add("is-hiding");
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
+  // Sử dụng thư viện Toastify JS chính thức
+  if (typeof Toastify === "function") {
+    Toastify({
+      text: toastHtml,
+      escapeMarkup: false,
+      duration: duration,
+      gravity: "top",
+      position: "right",
+      close: true,
+      stopOnFocus: true,
+      className: `mach-toast mach-toast--${finalType}`,
+      style: {
+        background: bgColors[finalType],
+        color: textColors[finalType]
+      },
+      offset: {
+        x: 20,
+        y: 15
       }
-    }, 350);
-  };
-
-  // Gắn sự kiện nút Đóng
-  const closeBtn = toast.querySelector(".mach-toast__close");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      dismissToast();
-    });
+    }).showToast();
+  } else {
+    // Fallback an toàn nếu script CDN chưa tải xong
+    console.warn(`[Toast ${finalType}] ${finalTitle}: ${message}`);
   }
-
-  // Thêm vào Container và kích hoạt hiệu ứng hiển thị
-  container.appendChild(toast);
-  requestAnimationFrame(() => {
-    toast.classList.add("is-show");
-  });
-
-  // Tự động tắt sau thời gian duration
-  hideTimeout = setTimeout(dismissToast, duration);
 }
+window.showToast = showToast;
 
 // ==============================================================================
 // 5. PUBLIC CHROME RENDERERS (HEADER & FOOTER)

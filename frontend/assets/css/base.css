@@ -875,68 +875,42 @@ a:hover .ph img {
 .ph--tall { aspect-ratio: 3/4; }
 
 /* ==============================================================================
-   TOAST NOTIFICATION (PASTEL CARDS THEME - GỌN GÀNG, VỪA VẶN CHỮ)
+   TOAST NOTIFICATION (TOASTIFY JS - MẠCH TIN PASTEL THEME)
    ============================================================================== */
-.mach-toast-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 999999;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  pointer-events: none;
-  max-width: 380px;
-  width: auto;
-}
-
-.mach-toast {
-  pointer-events: auto;
+.toastify.mach-toast {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   padding: 9px 13px;
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
-  transform: translateX(120%);
-  opacity: 0;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   box-sizing: border-box;
   width: fit-content;
-  max-width: 340px;
+  max-width: 380px;
+  cursor: default;
+  text-decoration: none;
 }
 
-.mach-toast.is-show {
-  transform: translateX(0);
-  opacity: 1;
+/* Biến thể 4 màu Pastel Mạch Tin */
+.toastify.mach-toast--success {
+  background: #C3ECD0 !important;
+  color: #142814 !important;
 }
 
-.mach-toast.is-hiding {
-  transform: translateX(120%);
-  opacity: 0;
+.toastify.mach-toast--info {
+  background: #BAE2F8 !important;
+  color: #0E2435 !important;
 }
 
-/* Biến thể 4 màu Pastel */
-.mach-toast--success {
-  background-color: #C3ECD0;
-  color: #142814;
+.toastify.mach-toast--warning {
+  background: #F8E5BD !important;
+  color: #32250E !important;
 }
 
-.mach-toast--info {
-  background-color: #BAE2F8;
-  color: #0E2435;
-}
-
-.mach-toast--warning {
-  background-color: #F8E5BD;
-  color: #32250E;
-}
-
-.mach-toast--error {
-  background-color: #F6BCB8;
-  color: #351313;
+.toastify.mach-toast--error {
+  background: #F6BCB8 !important;
+  color: #351313 !important;
 }
 
 .mach-toast__icon {
@@ -975,15 +949,18 @@ a:hover .ph img {
   word-break: break-word;
 }
 
-.mach-toast__close {
+/* Nút đóng của Toastify (.toast-close) */
+.toastify.mach-toast .toast-close {
   flex-shrink: 0;
   background: transparent;
   border: none;
-  padding: 2px;
-  margin-left: 2px;
+  padding: 2px 4px;
+  margin-left: 4px;
   cursor: pointer;
   color: inherit;
-  opacity: 0.65;
+  opacity: 0.6;
+  font-size: 13px;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -991,7 +968,7 @@ a:hover .ph img {
   transition: opacity 0.15s ease, background-color 0.15s ease;
 }
 
-.mach-toast__close:hover {
+.toastify.mach-toast .toast-close:hover {
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.08);
 }

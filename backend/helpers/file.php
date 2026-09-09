@@ -16,7 +16,8 @@ function deleteUploadedFile($relativePath)
 
     // Chỉ cho phép xóa các file nằm trong thư mục upload an toàn của hệ thống
     // Ngăn chặn tấn công Path Traversal (vd: ../../config/database.php)
-    if (!str_starts_with($cleanPath, 'backend/api/upload/')) {
+    // Dùng strpos !== 0 để tương thích cả PHP 7.x lẫn PHP 8.x
+    if (strpos($cleanPath, 'backend/api/upload/') !== 0) {
         return false;
     }
 
