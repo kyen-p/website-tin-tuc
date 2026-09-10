@@ -1,3 +1,17 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/public/register.html
+PHÂN HỆ: Xác Thực Người Dùng - Đăng Ký Tài Khoản (Public Authentication - Register View)
+MÔ TẢ: Khung giao diện đăng ký tài khoản độc giả mới cho tòa soạn Mạch Tin:
+       - Logo Mạch Tin chuyển hướng về trang chủ.
+       - Form đăng ký đúng 5 trường cốt lõi (#registerForm): họ và tên, username, email, mật khẩu, xác nhận mật khẩu.
+       - Các nút bật/tắt hiển thị mật khẩu độc lập (#togglePasswordBtn, #toggleConfirmPasswordBtn).
+       - Nút submit đăng ký tài khoản (#registerSubmitBtn) và liên kết dẫn đến trang đăng nhập (login.html).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, auth.css
+       - frontend/assets/js/common.js, register.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -23,7 +37,9 @@
 
 <body class="auth-page">
 
-    <!-- 1. Logo Mạch Tin đặt trên đầu Card -->
+    <!-- ============================================================================== -->
+    <!-- KHỐI 1: LOGO THƯƠNG HIỆU & ĐIỀU HƯỚNG TRANG CHỦ                                -->
+    <!-- ============================================================================== -->
     <a href="index.html" class="auth-top-logo" aria-label="Về trang chủ Mạch Tin">
         <svg class="pulse-mark" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
             <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="var(--crimson, #A6362C)" stroke-width="2.2"
@@ -32,7 +48,9 @@
         <span class="logo__word">MẠCH <em>TIN</em></span>
     </a>
 
-    <!-- 2. Khung Card Tạo tài khoản trắng -->
+    <!-- ============================================================================== -->
+    <!-- KHỐI 2: KHUNG CARD FORM ĐĂNG KÝ TÀI KHOẢN (5 TRƯỜNG CỐT LÕI)                    -->
+    <!-- ============================================================================== -->
     <div class="auth-card">
         <div class="auth-card__header">
             <h1 class="auth-card__title">Tạo tài khoản</h1>
@@ -106,7 +124,9 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- ============================================================================== -->
+    <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+    <!-- ============================================================================== -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="../assets/js/common.js"></script>
     <script src="../assets/js/register.js"></script>

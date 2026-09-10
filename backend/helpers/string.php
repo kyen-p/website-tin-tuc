@@ -1,8 +1,26 @@
 <?php
 /**
- * Chuỗi tiện ích xử lý văn bản tiếng Việt & tạo Slug
+ * ==============================================================================
+ * TÊN FILE: backend/helpers/string.php
+ * PHÂN HỆ: Trợ giúp Xử lý Chuỗi (Backend String Helper)
+ * MÔ TẢ: Cung cấp các tiện ích xử lý chuỗi ký tự, chuyển đổi tiếng Việt có dấu sang slug URL.
+ * PHẠM VI SỬ DỤNG:
+ *   - [TẬP TIN DÙNG CHUNG CỐT LÕI]
+ *   - Được require_once bởi: backend/api/reporter/write-article.php, backend/api/editor/categories-tags.php
+ * ==============================================================================
  */
 
+/**
+ * [HÀM DÙNG CHUNG TOÀN HỆ THỐNG] createSlug
+ * - Chức năng: Chuyển đổi chuỗi tiêu đề tiếng Việt có dấu thành dạng slug URL chuẩn
+ *   (chữ thường không dấu, phân tách bằng dấu gạch ngang, loại bỏ ký tự đặc biệt).
+ * - Được gọi bởi:
+ *   + backend/api/reporter/write-article.php (khi tạo hoặc cập nhật slug bài viết)
+ *   + backend/api/editor/categories-tags.php (khi tạo hoặc sửa slug chuyên mục / tag)
+ * 
+ * @param string $text Chuỗi tiêu đề gốc (tiếng Việt UTF-8)
+ * @return string Chuỗi slug thân thiện URL (VD: "kinh-te-viet-nam-2026")
+ */
 if (!function_exists('createSlug')) {
     function createSlug($text)
     {
@@ -32,3 +50,4 @@ if (!function_exists('createSlug')) {
         return trim($text, '-');
     }
 }
+

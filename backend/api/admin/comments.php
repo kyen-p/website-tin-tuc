@@ -1,10 +1,36 @@
 <?php
-require_once '../../config/database.php';
-require_once '../../helpers/response.php';
-require_once '../../helpers/auth.php';
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/admin/comments.php
+ * PHÂN HỆ: API Quản trị Bình luận Toàn trang (Global Comments Service)
+ * MÔ TẢ: Cung cấp các thao tác kiểm duyệt bình luận cấp cao cho Quản trị viên:
+ *        - GET: Lấy danh sách toàn bộ bình luận của độc giả trên tất cả bài viết kèm thông tin người đăng.
+ *        - DELETE: Xóa vĩnh viễn bình luận vi phạm chính sách nội dung khỏi cơ sở dữ liệu.
+ * PHẠM VI SỬ DỤNG:
+ *   - [KHU VỰC QUẢN TRỊ TỐI CAO - ADMIN]
+ *   - Phân quyền: role = 'admin'
+ *   - Phương thức: GET, DELETE
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireRole)
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/admin-comments.js (Bảng quản trị bình luận)
+ * TRẢ VỀ (JSON):
+ *   - GET: Danh sách bình luận
+ *   - DELETE: Thông báo kết quả xóa
+ * ==============================================================================
+ */
+
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/response.php';
+require_once __DIR__ . '/../../helpers/auth.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// ==============================================================================
+// NGHIỆP VỤ 1: GET - LẤY TOÀN BỘ BÌNH LUẬN TRONG HỆ THỐNG KÈM BÀI VIẾT & TÁC GIẢ
+// ==============================================================================
 if ($method === 'GET') {
     requireRole(['admin']);
     $stmt = $pdo->query("SELECT c.*, u.full_name, u.username, u.avatar, a.title AS article_title, a.slug AS article_slug 
@@ -16,6 +42,9 @@ if ($method === 'GET') {
     jsonResponse(true, $comments);
 }
 
+// ==============================================================================
+// NGHIỆP VỤ 2: DELETE - XÓA BÌNH LUẬN VI PHẠM
+// ==============================================================================
 if ($method === 'DELETE') {
     requireRole(['admin']);
     $input = json_decode(file_get_contents('php://input'), true);

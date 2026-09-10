@@ -1,8 +1,24 @@
 /**
  * ==============================================================================
- * MẠCH TIN - REGISTER.JS (Xử lý Đăng ký tài khoản độc giả)
+ * TÊN FILE: frontend/assets/js/register.js
+ * PHÂN HỆ: Xác thực & Đăng ký Độc giả (Reader Registration Module)
+ * MÔ TẢ: Xử lý giao diện và nghiệp vụ đăng ký tài khoản độc giả mới:
+ *        1. Quản lý trạng thái form: Ẩn/hiện mật khẩu và xác nhận mật khẩu.
+ *        2. Kiểm tra tính hợp lệ dữ liệu nhập (Client-side Validation): Họ tên, username, email, mật khẩu tối thiểu 8 ký tự.
+ *        3. Gửi thông tin đăng ký đến API backend/api/auth/register.php.
+ *        4. Hiển thị thông báo kết quả (thành công hoặc lỗi chi tiết theo từng ô nhập).
+ *        5. Tự động chuyển hướng sang trang đăng nhập (login.html) khi tạo tài khoản thành công.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/public/register.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (resolveApiUrl, showToast)
+ *   - backend/api/auth/register.php
  * ==============================================================================
  */
+
+// ==============================================================================
+// KHỐI 1: HÀM HỖ TRỢ ẨN/HIỆN MẬT KHẨU (PASSWORD TOGGLE)
+// ==============================================================================
 function setupToggle(btnId, inputId) {
     const btn = document.getElementById(btnId);
     const input = document.getElementById(inputId);
@@ -18,6 +34,9 @@ function setupToggle(btnId, inputId) {
     });
 }
 
+// ==============================================================================
+// KHỐI 2: KHỞI TẠO BIỂU MẪU & XỬ LÝ SUBMIT ĐĂNG KÝ
+// ==============================================================================
 document.addEventListener("DOMContentLoaded", () => {
   setupToggle("togglePasswordBtn", "passwordInput");
   setupToggle("toggleConfirmPasswordBtn", "confirmPasswordInput");
@@ -166,6 +185,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// ==============================================================================
+// KHỐI 3: HÀM TIỆN ÍCH GÁN TRẠNG THÁI LỖI CHO TRƯỜNG DỮ LIỆU
+// ==============================================================================
 function setError(fieldElem, errorElem, message) {
   if (fieldElem) fieldElem.classList.add("has-error");
   if (errorElem) errorElem.textContent = message;

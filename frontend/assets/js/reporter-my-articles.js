@@ -1,9 +1,26 @@
 /**
  * ==============================================================================
- * REPORTER MY ARTICLES - QUẢN LÝ BÀI VIẾT CỦA PHÓNG VIÊN
+ * TÊN FILE: frontend/assets/js/reporter-my-articles.js
+ * PHÂN HỆ: Danh sách Bài viết Phóng viên (Reporter My Articles Module)
+ * MÔ TẢ: Quản lý vòng đời bài viết của phóng viên:
+ *        1. Tải danh sách bài viết và danh mục qua backend/api/reporter/my-articles.php và backend/api/public/categories.php.
+ *        2. Lọc theo trạng thái bài viết: Tất cả (all), Bản nháp (draft), Chờ duyệt (pending), Bị từ chối (rejected), Đã đăng (published).
+ *        3. Tìm kiếm theo từ khóa tiêu đề bài viết và tự động đếm số lượng theo trạng thái.
+ *        4. Hiển thị lý do từ chối kiểm duyệt (rejection_reason) trực tiếp dưới dạng cảnh báo phản hồi.
+ *        5. Mở modal xác nhận và gọi DELETE tới backend/api/reporter/my-articles.php để xóa bản nháp/bài bị từ chối.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/reporter/my-articles.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/admin-layout.js (initAdminLayout, getCurrentUser, etc.)
+ *   - frontend/assets/js/common.js (resolveApiUrl, escapeHtml, showToast, extractThumbnail, etc.)
+ *   - backend/api/reporter/my-articles.php
+ *   - backend/api/public/categories.php
  * ==============================================================================
  */
 
+// ==============================================================================
+// KHỐI 1: KHỞI TẠO TRANG, MODAL VÀ TRẠNG THÁI DANH SÁCH BÀI VIẾT
+// ==============================================================================
 // Biến toàn cục quản lý trạng thái màn hình
     let currentTab = "all"; // all | draft | pending | rejected | published
     let searchQuery = "";
@@ -18,6 +35,9 @@
       }
     });
 
+    // ==============================================================================
+    // KHỐI 2: TẢI DANH SÁCH BÀI VIẾT VÀ DANH MỤC QUA API
+    // ==============================================================================
     /**
      * Tải danh sách bài viết của phóng viên từ Backend PHP API
      */
@@ -63,6 +83,9 @@
       }
     }
 
+    // ==============================================================================
+    // KHỐI 3: RENDER GIAO DIỆN BẢNG BÀI VIẾT, TAB LỌC TRẠNG THÁI & TÌM KIẾM
+    // ==============================================================================
     /**
      * Render giao diện Tab + Search + Table
      */
@@ -452,11 +475,9 @@
       }
     }
 
-    /**
-     * ==============================================================================
-     * QUẢN LÝ XÓA BÀI VIẾT (BẢN NHÁP / BÀI BỊ TỪ CHỐI)
-     * ==============================================================================
-     */
+    // ==============================================================================
+    // KHỐI 4: QUẢN LÝ MODAL & THỰC THI XÓA BÀI VIẾT (BẢN NHÁP / BỊ TỪ CHỐI) QUA API
+    // ==============================================================================
     let deletingArticleId = null;
 
     /**

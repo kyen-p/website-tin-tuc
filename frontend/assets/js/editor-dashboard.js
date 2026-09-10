@@ -1,14 +1,28 @@
 /**
- * editor-dashboard.js - Controller xử lý tính toán & hiển thị số liệu thống kê cho Dashboard Biên tập viên (Editor)
- * Kết nối 100% với Backend PHP & Cơ sở dữ liệu MySQL (backend/api/editor/dashboard.php)
- * 1. Tương quan Chuyên mục (Biểu đồ Cột nhóm: Tổng lượt view vs Số bài viết)
- * 2. Bảng theo dõi năng suất Phóng viên (Đã đăng, Tổng view, Chờ duyệt)
- * 3. Xu hướng Thẻ Tag (Biểu đồ Cột ngang: Top 10 Thẻ Tag)
+ * ==============================================================================
+ * TÊN FILE: frontend/assets/js/editor-dashboard.js
+ * PHÂN HỆ: Bảng điều khiển Biên tập viên (Editor Dashboard Module)
+ * MÔ TẢ: Thống kê & trực quan hóa số liệu toàn tòa soạn cho Biên tập viên:
+ *        1. Tải số liệu từ backend/api/editor/dashboard.php (category_stats, reporter_stats, top_tags).
+ *        2. Bảng theo dõi năng suất phóng viên (bài đã đăng, tổng lượt xem, bài đang chờ duyệt).
+ *        3. Biểu đồ Cột nhóm (Grouped Bar Chart qua Chart.js): tương quan giữa lượt view và số bài theo chuyên mục.
+ *        4. Biểu đồ Cột ngang (Horizontal Bar Chart qua Chart.js): Top 10 thẻ tag có bài viết nhiều nhất.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/editor/dashboard.html
+ * PHỤ THUỘC:
+ *   - Chart.js (thư viện biểu đồ)
+ *   - frontend/assets/js/admin-layout.js
+ *   - frontend/assets/js/common.js (resolveApiUrl, etc.)
+ *   - backend/api/editor/dashboard.php
+ * ==============================================================================
  */
 
 (function () {
   "use strict";
 
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO BẢNG ĐIỀU KHIỂN & LƯU TRỮ INSTANCE BIỂU ĐỒ
+  // ==============================================================================
   // Biến lưu trữ biểu đồ để hủy (destroy) khi re-render
   let categoryChartInstance = null;
   let topTagsChartInstance = null;
@@ -50,9 +64,9 @@
     initTopTagsChart(data.top_tags || []);
   }
 
-  /**
-   * PHẦN 2: BẢNG THEO DÕI NĂNG SUẤT PHÓNG VIÊN
-   */
+  // ==============================================================================
+  // KHỐI 2: BẢNG THEO DÕI HIỆU SUẤT & NĂNG SUẤT PHÓNG VIÊN
+  // ==============================================================================
   function renderReporterSection(reporterStats) {
     const tbody = document.getElementById("reporter-table-body");
     if (!tbody) return;
@@ -93,9 +107,9 @@
       .join("");
   }
 
-  /**
-   * BIỂU ĐỒ 1: GROUPED BAR CHART (CỘT NHÓM) - TƯƠNG QUAN CHUYÊN MỤC
-   */
+  // ==============================================================================
+  // KHỐI 3: BIỂU ĐỒ CỘT NHÓM (GROUPED BAR CHART) - TƯƠNG QUAN LƯỢT XEM VÀ BÀI VIẾT
+  // ==============================================================================
   function initCategoryChart(catStats) {
     const canvas = document.getElementById("categoryChart");
     if (!canvas || typeof Chart === "undefined") return;
@@ -248,9 +262,9 @@
     });
   }
 
-  /**
-   * BIỂU ĐỒ 2: HORIZONTAL BAR CHART (CỘT NGANG) - TOP 10 THẺ TAG
-   */
+  // ==============================================================================
+  // KHỐI 4: BIỂU ĐỒ CỘT NGANG (HORIZONTAL BAR CHART) - TOP 10 THẺ TAG
+  // ==============================================================================
   function initTopTagsChart(topTagsStats) {
     const canvas = document.getElementById("topTagsChart");
     if (!canvas || typeof Chart === "undefined") return;
@@ -341,6 +355,9 @@
     });
   }
 
+  // ==============================================================================
+  // KHỐI 5: HÀM HỖ TRỢ XỬ LÝ CHUỖI AN TOÀN (HELPER FUNCTIONS)
+  // ==============================================================================
   function escapeHTML(str) {
     if (!str) return "";
     return String(str)

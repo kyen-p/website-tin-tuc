@@ -1,3 +1,17 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/user/favorites.html
+PHÂN HỆ: Không Gian Độc Giả - Bài Viết Yêu Thích (User Space - Saved Articles View)
+MÔ TẢ: Khung giao diện xem danh sách các bài viết đã được lưu yêu thích (Bookmark):
+       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường.
+       - Tiêu đề trang và phần mô tả trang bài viết yêu thích.
+       - Vùng gắn danh sách thẻ bài viết yêu thích (#favorites-mount) kèm nút bỏ lưu tức thì.
+       - Vùng gắn Footer trang tự động (#site-footer).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, public-layout.css, public.css
+       - frontend/assets/js/common.js, favorites.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -15,10 +29,14 @@
 </head>
 <body>
 
-  <!-- 1. HEADER & TICKER CÔNG KHAI -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
+  <!-- ============================================================================== -->
   <div id="site-header"></div>
 
-  <!-- 2. NỘI DUNG CHÍNH TRANG BÀI VIẾT YÊU THÍCH -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 2: NỘI DUNG CHÍNH KHÔNG GIAN BÀI VIẾT YÊU THÍCH                            -->
+  <!-- ============================================================================== -->
   <main>
     <div class="wrap">
       
@@ -50,10 +68,14 @@
     </div>
   </main>
 
-  <!-- 3. FOOTER CÔNG KHAI -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
+  <!-- ============================================================================== -->
   <div id="site-footer"></div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/favorites.js"></script>

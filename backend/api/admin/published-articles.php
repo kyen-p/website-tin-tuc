@@ -1,13 +1,42 @@
 <?php
-require_once '../../config/database.php';
-require_once '../../helpers/response.php';
-require_once '../../helpers/auth.php';
-require_once '../../helpers/file.php';
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/admin/published-articles.php
+ * PHÂN HỆ: API Quản lý Bài viết Toàn hệ thống (Global Articles Service)
+ * MÔ TẢ: Cung cấp quyền giám sát tối cao đối với các bài viết đã qua kiểm duyệt:
+ *        - GET: Lấy danh sách bài viết đã xuất bản hoặc bị ẩn (status: published, hidden).
+ *        - PUT: Bật/tắt trạng thái hiển thị (toggle Ẩn/Hiện) hoặc chỉnh sửa nội dung bài viết.
+ *        - DELETE: Xóa vĩnh viễn bài viết khỏi hệ thống (đồng thời quét dọn ảnh bìa và các ảnh
+ *          minh họa upload cục bộ trong bài; CSDL tự động cascade các comment, tag, favorite).
+ * PHẠM VI SỬ DỤNG:
+ *   - [KHU VỰC QUẢN TRỊ TỐI CAO - ADMIN]
+ *   - Phân quyền: role = 'admin'
+ *   - Phương thức: GET, PUT, DELETE
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireRole)
+ *   - backend/helpers/file.php (deleteUploadedFile)
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/admin-articles.js (Bảng quản lý tin bài hệ thống)
+ * TRẢ VỀ (JSON):
+ *   - Theo từng nghiệp vụ tương ứng
+ * ==============================================================================
+ */
 
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/response.php';
+require_once __DIR__ . '/../../helpers/auth.php';
+require_once __DIR__ . '/../../helpers/file.php';
+
+// Kiểm tra quyền hạn: Chỉ Quản trị viên (admin) mới được truy cập
 requireRole(['admin']);
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// ==============================================================================
+// NGHIỆP VỤ 1: GET - TRUY VẤN DANH SÁCH BÀI VIẾT ĐÃ XUẤT BẢN / ĐANG BỊ ẨN
+// ==============================================================================
 if ($method === 'GET') {
     $stmt = $pdo->query("SELECT a.*, u.full_name AS author_name, u.username AS author_username,
             approver.full_name AS approver_name, approver.username AS approver_username,
@@ -22,12 +51,15 @@ if ($method === 'GET') {
     jsonResponse(true, $articles);
 }
 
+// ==============================================================================
+// NGHIỆP VỤ 2: PUT - CHỈNH SỬA NỘI DUNG HOẶC BẬT/TẮT ẨN HIỆN BÀI VIẾT
+// ==============================================================================
 if ($method === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true);
     $id = $input['id'] ?? null;
     if (!$id) jsonResponse(false, null, "Thiếu id bài viết");
 
-    // Trường hợp 1: chỉ đổi trạng thái (Ẩn/Hiện)
+    // Nhánh 2.1: Chuyển đổi trạng thái Ẩn / Hiện (toggle_status)
     if (isset($input['toggle_status']) && $input['toggle_status'] === true) {
         $stmt = $pdo->prepare("SELECT status FROM articles WHERE id = ?");
         $stmt->execute([$id]);
@@ -39,7 +71,7 @@ if ($method === 'PUT') {
         jsonResponse(true, ['status' => $newStatus], "Cập nhật trạng thái thành công");
     }
 
-    // Trường hợp 2: sửa đè toàn bộ nội dung
+    // Nhánh 2.2: Cập nhật toàn bộ thông tin chi tiết bài viết
     $stmt = $pdo->prepare(
         "UPDATE articles SET title=?, category_id=?, status=?, is_notable_event=?, short_description=?, content=?, updated_at=NOW()
          WHERE id=?"
@@ -51,6 +83,9 @@ if ($method === 'PUT') {
     jsonResponse(true, null, "Cập nhật bài viết thành công");
 }
 
+// ==============================================================================
+// NGHIỆP VỤ 3: DELETE - XÓA VĨNH VIỄN BÀI VIẾT & DỌN DẸP TỆP TIN VẬT LÝ LIÊN QUAN
+// ==============================================================================
 if ($method === 'DELETE') {
     $input = json_decode(file_get_contents('php://input'), true);
     $id = $input['id'] ?? null;

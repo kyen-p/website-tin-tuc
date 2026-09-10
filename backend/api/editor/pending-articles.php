@@ -1,12 +1,40 @@
 <?php
-require_once '../../config/database.php';
-require_once '../../helpers/response.php';
-require_once '../../helpers/auth.php';
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/editor/pending-articles.php
+ * PHÂN HỆ: API Duyệt Bài viết (Editorial Review Service)
+ * MÔ TẢ: Cung cấp chức năng kiểm duyệt bài viết cho ban biên tập:
+ *        - GET: Lấy danh sách toàn bộ bài viết đang trong hàng đợi chờ duyệt (status = 'pending').
+ *        - PUT: Phê duyệt xuất bản bài viết (action='approve', gán approved_by, published_at, sự kiện nổi bật)
+ *          hoặc từ chối bài viết (action='reject', ghi rõ lý do từ chối để phóng viên chỉnh sửa lại).
+ * PHẠM VI SỬ DỤNG:
+ *   - [KHU VỰC TÒA SOẠN - BAN BIÊN TẬP]
+ *   - Phân quyền: role = 'editor'
+ *   - Phương thức: GET, PUT
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireRole, $_SESSION['user_id'])
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/pending-articles.js (Danh sách và modal phê duyệt bài viết)
+ * TRẢ VỀ (JSON):
+ *   - GET: Danh sách bài viết chờ duyệt kèm thông tin tác giả và chuyên mục
+ *   - PUT: Kết quả duyệt bài hoặc từ chối bài viết
+ * ==============================================================================
+ */
 
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/response.php';
+require_once __DIR__ . '/../../helpers/auth.php';
+
+// Kiểm tra quyền hạn: Chỉ Biên tập viên (editor) mới được thẩm định bài viết
 requireRole(['editor']);
 
 $method = $_SERVER['REQUEST_METHOD'];
-/* GET - Lấy danh sách bài viết chờ duyệt */
+
+// ==============================================================================
+// NGHIỆP VỤ 1: GET - LẤY DANH SÁCH BÀI VIẾT CHỜ DUYỆT KÈM TAGS VÀ TÁC GIẢ
+// ==============================================================================
 if ($method === 'GET') {
     $sql = "
         SELECT
@@ -33,6 +61,7 @@ if ($method === 'GET') {
         $stmt->execute();
         $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        // Nạp danh sách thẻ (tags) đính kèm cho từng bài viết
         foreach ($articles as &$article) {
             $tagSql = "
                 SELECT t.id, t.name, t.slug
@@ -62,7 +91,9 @@ if ($method === 'GET') {
     }
 }
 
-/* PUT - Duyệt hoặc từ chối bài viết */
+// ==============================================================================
+// NGHIỆP VỤ 2: PUT - PHÊ DUYỆT XUẤT BẢN HOẶC TỪ CHỐI BÀI VIẾT
+// ==============================================================================
 if ($method === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -83,7 +114,7 @@ if ($method === 'PUT') {
     }
 
     try {
-        /* Kiểm tra bài viết */
+        // Kiểm tra tính hợp lệ và trạng thái bài viết
         $checkStmt = $pdo->prepare("
             SELECT id, title, status
             FROM articles
@@ -104,7 +135,7 @@ if ($method === 'PUT') {
             );
         }
 
-        /* Duyệt bài */
+        // Nhánh 2.1: Phê duyệt và công bố bài viết lên trang chủ
         if ($action === 'approve') {
             $editorId = $_SESSION['user_id'];
             $isNotableEvent = !empty($input['is_notable_event']) ? 1 : 0;
@@ -143,7 +174,7 @@ if ($method === 'PUT') {
             );
         }
 
-        /* Từ chối bài */
+        // Nhánh 2.2: Từ chối bài viết kèm lý do phản hồi cho phóng viên
         if ($action === 'reject') {
             if ($rejectionReason === '') {
                 jsonResponse(
@@ -190,9 +221,10 @@ if ($method === 'PUT') {
     }
 }
 
-/* Method không được hỗ trợ */
+// Phản hồi khi client gọi sai phương thức HTTP
 jsonResponse(
     false,
     null,
     "Phương thức HTTP không được hỗ trợ"
 );
+

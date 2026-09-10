@@ -1,14 +1,35 @@
 /**
- * editor-pending-articles-modal.js
- * Quản lý giao diện và xử lý tương tác Modal Thẩm định, Duyệt & Từ chối bài viết cho Biên tập viên
+ * ==============================================================================
+ * TÊN FILE: frontend/assets/js/editor-pending-articles-modal.js
+ * PHÂN HỆ: Hộp thoại Thẩm định & Duyệt Bài viết Biên tập viên (Editor Pending Articles Modal)
+ * MÔ TẢ: Cung cấp giao diện cửa sổ Modal tương tác thẩm định bài viết:
+ *        1. Tự động sinh cấu trúc HTML Modal vào DOM (Modal đọc nội dung, Modal xác nhận xuất bản, Modal nhập lý do từ chối).
+ *        2. Hiển thị chế độ Read-only toàn bộ nội dung bài viết, tóm tắt sapo, tác giả, thời gian nộp, chuyên mục và thẻ tag.
+ *        3. Cho phép đánh dấu cờ "Sự kiện đáng chú ý" (is_notable_event) khi xuất bản.
+ *        4. Duyệt & Xuất bản ngay qua PUT backend/api/editor/pending-articles.php (action: 'approve').
+ *        5. Từ chối bài viết kèm lý do phản hồi qua PUT backend/api/editor/pending-articles.php (action: 'reject').
+ *        6. Tự động gọi window.EditorPendingArticles.reloadAndRender() để cập nhật lại danh sách và huy hiệu thanh bên.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/editor/pending-articles.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/editor-pending-articles.js (window.EditorPendingArticles)
+ *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, formatDateTime, etc.)
+ *   - backend/api/editor/pending-articles.php
+ * ==============================================================================
  */
 
 (function () {
   "use strict";
 
+  // ==============================================================================
+  // KHỐI 1: TRẠNG THÁI BÀI VIẾT ĐANG THẨM ĐỊNH
+  // ==============================================================================
   let reviewingArticle = null;
   let modalSelectedTags = [];
 
+  // ==============================================================================
+  // KHỐI 2: KHỞI TẠO CẤU TRÚC DOM CHO CÁC MODAL THẨM ĐỊNH VÀ HỘP THOẠI XÁC NHẬN
+  // ==============================================================================
   /**
    * Tạo cấu trúc HTML các modal thẩm định và chèn vào DOM nếu chưa tồn tại
    */
@@ -225,6 +246,9 @@
     bindModalInternalEvents();
   }
 
+  // ==============================================================================
+  // KHỐI 3: MỞ / ĐÓNG MODAL THẨM ĐỊNH & HIỂN THỊ DỮ LIỆU BÀI VIẾT READ-ONLY
+  // ==============================================================================
   /**
    * Mở Modal Xem & Thẩm định bài viết
    */
@@ -367,6 +391,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 4: XỬ LÝ DUYỆT XUẤT BẢN HOẶC TỪ CHỐI BÀI VIẾT QUA BACKEND API
+  // ==============================================================================
   /**
    * XỬ LÝ: DUYỆT & XUẤT BẢN BÀI VIẾT QUA BACKEND API
    */
@@ -469,6 +496,9 @@
     if (rejectModal) rejectModal.style.display = "none";
   }
 
+  // ==============================================================================
+  // KHỐI 5: GẮN SỰ KIỆN NỘI BỘ CHO CÁC MODAL & XUẤT HÀM TOÀN CỤC
+  // ==============================================================================
   /**
    * Gắn sự kiện nội bộ cho các nút bấm trong Modal
    */

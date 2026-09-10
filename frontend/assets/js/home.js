@@ -1,23 +1,30 @@
 /**
  * ==============================================================================
- * MẠCH TIN - HOME.JS (Logic hiển thị Trang chủ)
- * ==============================================================================
- * 1. Lấy danh sách bài viết đã xuất bản (status === 'published')
- * 2. Tính điểm "Nóng" = Views / (Giờ trôi qua + 1) để chọn 5 bài Tiêu điểm Khối 1
- * 3. Render Khối bài viết nổi bật (Hero Grid: 2 bài đinh trái, 3 bài nhỏ phải, chuyên mục đỏ)
- * 4. Render Khối bài viết mới cập nhật (Latest Grid: lấy theo thời gian thực)
- * 5. Render Cột bài viết theo dòng sự kiện nổi bật (Notable Event Stream: do BTV tuyển chọn)
- * 6. Render Bảng xếp hạng bài viết đọc nhiều nhất trong tuần (Top 5 tuần qua)
- * 7. Render Khối chủ đề thịnh hành (Tag Cloud)
+ * TÊN FILE: frontend/assets/js/home.js
+ * PHÂN HỆ: Trang chủ Công khai (Public Homepage Module)
+ * MÔ TẢ: Khởi tạo dữ liệu và render toàn bộ các phân vùng giao diện Trang chủ Báo Mạch Tin:
+ *        1. Tải dữ liệu bài viết đã xuất bản và danh sách thẻ tag từ Backend API.
+ *        2. Phân vùng Hero Grid: Tính điểm "Nóng" = Lượt xem / (Giờ trôi qua + 1) để chọn 5 bài tiêu điểm (2 bài đinh lớn bên trái, 3 bài nhỏ bên phải).
+ *        3. Phân vùng Mới cập nhật (Latest Grid): Lọc và hiển thị các bài đăng trong vòng 48 giờ gần nhất.
+ *        4. Phân vùng Dòng sự kiện nổi bật (Notable Events Stream): Danh sách bài viết do Ban Biên tập chọn lọc.
+ *        5. Phân vùng Sidebar chung: Đọc nhiều nhất trong tuần và Đám mây thẻ Tag nổi bật (qua initPublicSidebar).
+ *        6. Tự động đồng bộ số lượt đọc khi người dùng quay lại (pageshow event).
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/public/index.html (hoặc gốc /)
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, initPublicSidebar, resolveApiUrl, getArticleDetailUrl, renderCoverImage, etc.)
+ *   - backend/api/public/articles.php
+ *   - backend/api/public/tags.php
  * ==============================================================================
  */
 
 async function initHomePage() {
-  // 1. Khởi tạo Header và Footer chung
-await initPublicHeader("");
-await initPublicFooter();
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO KHUNG TRANG (HEADER & FOOTER) VÀ TẢI DỮ LIỆU TỪ BACKEND
+  // ==============================================================================
+  await initPublicHeader("");
+  await initPublicFooter();
 
-  // 2. Lấy dữ liệu bài viết đã xuất bản và danh sách thẻ từ backend (PHP + MySQL)
   let tags = [];
   let allArticles = [];
   try {
@@ -32,6 +39,9 @@ await initPublicFooter();
     tags = [];
   }
 
+  // ==============================================================================
+  // KHỐI 2: CÁC TIỆN ÍCH DỰNG THẺ BÀI VIẾT (CARD HELPERS & FORMATTERS)
+  // ==============================================================================
   // Helper lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong a.category)
   function getCategory(a) {
     return a.category || { name: "Tin tức", slug: "" };
@@ -68,10 +78,10 @@ await initPublicFooter();
     `;
   }
 
-  // ============================================================================
-  // A. TÍNH ĐỘ "NÓNG" CHO KHỐI 1 (HERO GRID - 5 BÀI TIÊU ĐIỂM)
+  // ==============================================================================
+  // KHỐI 3: PHÂN VÙNG HERO GRID (5 BÀI TIÊU ĐIỂM NÓNG NHẤT)
   // Điểm Nóng = Views / (Số giờ trôi qua + 1)
-  // ============================================================================
+  // ==============================================================================
   const scoredArticles = publishedArticles.map((a) => {
     const pubDate = typeof parseSystemDate === "function" ? parseSystemDate(a.published_at) : new Date(String(a.published_at).replace(" ", "T"));
     const hoursDiff = Math.max(0, (now.getTime() - (pubDate ? pubDate.getTime() : now.getTime())) / (1000 * 60 * 60));
@@ -158,10 +168,9 @@ await initPublicFooter();
     }
   }
 
-  // ============================================================================
-  // B. RENDER KHỐI MỚI CẬP NHẬT (LATEST SECTION - 2 NGÀY GẦN NHẤT)
-  // Sắp xếp bài mới xuất bản nhất trong 48 giờ qua
-  // ============================================================================
+  // ==============================================================================
+  // KHỐI 4: PHÂN VÙNG MỚI CẬP NHẬT (LATEST SECTION - 48 GIỜ GẦN NHẤT)
+  // ==============================================================================
   const latestSection = document.getElementById("latest-section");
   const latestMount = document.getElementById("latest-mount");
   if (latestSection && latestMount) {
@@ -205,10 +214,10 @@ await initPublicFooter();
     }
   }
 
-  // ============================================================================
-  // C. RENDER SỰ KIỆN ĐÁNG CHÚ Ý (NOTABLE EVENTS SELECTED BY EDITOR)
+  // ==============================================================================
+  // KHỐI 5: PHÂN VÙNG SỰ KIỆN ĐÁNG CHÚ Ý (NOTABLE EVENTS STREAM)
   // Lọc các bài viết được Editor đánh dấu đáng chú ý (is_notable_event === true)
-  // ============================================================================
+  // ==============================================================================
   const streamMount = document.getElementById("stream-mount");
   if (streamMount) {
     // Lấy các bài được Editor chọn đưa vào sự kiện đáng chú ý
@@ -253,16 +262,18 @@ await initPublicFooter();
     }
   }
 
-  // ============================================================================
-  // D. RENDER SIDEBAR: "ĐỌC NHIỀU NHẤT TRONG TUẦN" & "TAG NỔI BẬT"
-  // Sử dụng hàm chung initPublicSidebar từ common.js để đồng nhất tiêu chí
-  // ============================================================================
+  // ==============================================================================
+  // KHỐI 6: PHÂN VÙNG SIDEBAR ("ĐỌC NHIỀU NHẤT TRONG TUẦN" & "TAG NỔI BẬT")
+  // ==============================================================================
   await initPublicSidebar({
     rankMountId: "rank-mount",
     tagMountId: "tag-mount"
   });
 }
 
+// ==============================================================================
+// KHỐI 7: KHỞI CHẠY VÀ ĐỒNG BỘ KHI QUAY LẠI TRANG (PAGESHOW)
+// ==============================================================================
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initHomePage);
 } else {

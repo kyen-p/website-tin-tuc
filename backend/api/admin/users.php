@@ -1,10 +1,37 @@
 <?php
-require_once '../../config/database.php';
-require_once '../../helpers/response.php';
-require_once '../../helpers/auth.php';
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/admin/users.php
+ * PHÂN HỆ: API Quản trị Tài khoản Người dùng (User Administration Service)
+ * MÔ TẢ: Cung cấp các công cụ quản lý thành viên cho Quản trị viên (Admin):
+ *        - GET: Lấy danh sách toàn bộ tài khoản người dùng trong hệ thống kèm trạng thái khóa.
+ *        - PUT: Phân quyền vai trò người dùng (user, reporter, editor) hoặc Khóa/Mở khóa tài khoản kèm lý do.
+ *        - Cơ chế bảo vệ: Nghiêm cấm tự khóa tài khoản của chính mình hoặc can thiệp tài khoản Admin.
+ * PHẠM VI SỬ DỤNG:
+ *   - [KHU VỰC QUẢN TRỊ TỐI CAO - ADMIN]
+ *   - Phân quyền: role = 'admin'
+ *   - Phương thức: GET, PUT
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireRole, $_SESSION['user_id'])
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/admin-users.js (Bảng quản lý tài khoản thành viên)
+ * TRẢ VỀ (JSON):
+ *   - GET: Danh sách người dùng
+ *   - PUT: Kết quả cập nhật vai trò hoặc trạng thái khóa
+ * ==============================================================================
+ */
+
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/response.php';
+require_once __DIR__ . '/../../helpers/auth.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// ==============================================================================
+// NGHIỆP VỤ 1: GET - LẤY DANH SÁCH TOÀN BỘ NGƯỜI DÙNG TRONG HỆ THỐNG
+// ==============================================================================
 if ($method === 'GET') {
     requireRole(['admin']);
     $stmt = $pdo->query("SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, created_at FROM users ORDER BY created_at DESC");
@@ -12,6 +39,9 @@ if ($method === 'GET') {
     jsonResponse(true, $users);
 }
 
+// ==============================================================================
+// NGHIỆP VỤ 2: PUT - PHÂN VAI TRÒ HOẶC KHÓA/MỞ KHÓA TÀI KHOẢN
+// ==============================================================================
 if ($method === 'PUT') {
     requireRole(['admin']);
     $input = json_decode(file_get_contents('php://input'), true);
@@ -51,6 +81,7 @@ if ($method === 'PUT') {
         $stmt->execute([$input['role'], $userId]);
     }
 
+    // Cập nhật trạng thái khóa hoặc mở khóa tài khoản
     if (isset($input['status'])) {
         if ($input['status'] === 'locked') {
             $stmt = $pdo->prepare("UPDATE users SET status='locked', lock_reason=?, locked_at=NOW() WHERE id=?");

@@ -1,17 +1,45 @@
 <?php
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/editor/dashboard.php
+ * PHÂN HỆ: API Bảng điều khiển Biên tập viên (Editor Dashboard Service)
+ * MÔ TẢ: Cung cấp các số liệu phân tích tổng quan cho ban biên tập:
+ *        - Thống kê bài viết xuất bản và tổng lượt xem theo từng chuyên mục.
+ *        - Báo cáo hiệu suất công việc của đội ngũ phóng viên (số bài xuất bản, đang chờ duyệt, lượt xem).
+ *        - Top 10 Thẻ Tag được gắn nhiều nhất trong các bài viết đã xuất bản.
+ * PHẠM VI SỬ DỤNG:
+ *   - [KHU VỰC TÒA SOẠN - BAN BIÊN TẬP]
+ *   - Phân quyền: role = 'editor'
+ *   - Phương thức: GET
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireRole)
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/editor-dashboard.js (Giao diện bảng điều khiển biên tập viên)
+ * TRẢ VỀ (JSON):
+ *   - { success: true, data: { category_stats: [...], reporter_stats: [...], top_tags: [...] } }
+ * ==============================================================================
+ */
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 
+// Kiểm tra quyền hạn: Chỉ Biên tập viên (editor) mới được truy cập
 requireRole(['editor']);
 
+// ==============================================================================
+// KHỐI 1: KIỂM TRA PHƯƠNG THỨC HTTP
+// ==============================================================================
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 }
 
 try {
-    // 1. Thống kê theo chuyên mục
+    // ==============================================================================
+    // KHỐI 2: THỐNG KÊ SỐ LƯỢNG BÀI XUẤT BẢN & LƯỢT XEM THEO CHUYÊN MỤC
+    // ==============================================================================
     $catStmt = $pdo->query("
         SELECT c.id, c.name, c.slug,
                COUNT(CASE WHEN a.status = 'published' THEN a.id END) AS articleCount,
@@ -28,7 +56,9 @@ try {
     }
     unset($cat);
 
-    // 2. Năng suất phóng viên
+    // ==============================================================================
+    // KHỐI 3: THỐNG KÊ NĂNG SUẤT & HIỆU QUẢ CÔNG TÁC CỦA ĐỘI NGŨ PHÓNG VIÊN
+    // ==============================================================================
     $repStmt = $pdo->query("
         SELECT u.id, u.full_name AS name, u.username, u.email,
                COUNT(CASE WHEN a.status = 'published' THEN a.id END) AS publishedCount,
@@ -48,7 +78,9 @@ try {
     }
     unset($rep);
 
-    // 3. Top 10 Thẻ Tag của các bài đã xuất bản
+    // ==============================================================================
+    // KHỐI 4: TOP 10 THẺ TAG ĐƯỢC GẮN NHIỀU NHẤT TRÊN CÁC BÀI VIẾT ĐÃ XUẤT BẢN
+    // ==============================================================================
     $tagStmt = $pdo->query("
         SELECT t.id, t.name, t.slug,
                COUNT(at.article_id) AS count
@@ -65,6 +97,9 @@ try {
     }
     unset($tag);
 
+    // ==============================================================================
+    // KHỐI 5: PHẢN HỒI KẾT QUẢ CHO CLIENT
+    // ==============================================================================
     jsonResponse(true, [
         'category_stats' => $catStats,
         'reporter_stats' => $reporterStats,
@@ -74,3 +109,4 @@ try {
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
 }
+

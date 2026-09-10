@@ -1,14 +1,27 @@
 /**
- * ============================================================================
- * LAYOUT JS DÙNG CHUNG CHO KHU VỰC TÒA SOẠN (Reporter, Editor, Admin)
- * Phục vụ: Kiểm tra quyền (Route Guard), Render Sidebar động theo vai trò,
- * Hiển thị Badge đếm số lượng, Profile Card và Topbar User Badge.
- * ============================================================================
+ * ==============================================================================
+ * TÊN FILE: frontend/assets/js/admin-layout.js
+ * PHÂN HỆ: Khung Giao diện & Điều hướng Tòa soạn (Editorial Workspace Layout & Navigation)
+ * MÔ TẢ: Cung cấp layout dùng chung cho 3 phân hệ nội bộ của Tòa soạn Báo Mạch Tin:
+ *        - Phân hệ Phóng viên (Reporter): Dashboard, Bài viết của tôi, Soạn bài viết.
+ *        - Phân hệ Biên tập viên (Editor): Dashboard, Bài chờ duyệt, Danh mục & Thẻ Tag.
+ *        - Phân hệ Quản trị viên (Admin): Dashboard, Quản lý bài đăng, Người dùng, Bình luận, Cấu hình liên hệ.
+ *        Bao gồm:
+ *        1. Route Guard: Kiểm tra phân quyền truy cập trang, chuyển hướng người dùng trái phép.
+ *        2. Dynamic Sidebar Renderer: Tự động dựng cây Menu, hiển thị Role Badge, huy hiệu số lượng (Badge Count).
+ *        3. Profile Card & Actions: Hiển thị avatar, tên người dùng, nút xem Trang chủ và Đăng xuất.
+ *        4. Table Helper Utilities: Trích xuất thumbnail, render ảnh thu nhỏ cho table, highlight bài viết theo URL param (?id=).
+ * PHẠM VI SỬ DỤNG:
+ *   - Các trang thuộc frontend/reporter/*.html, frontend/editor/*.html, frontend/admin/*.html.
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (getCurrentUser, logout, escapeHtml, getInitials, resolveAssetPath, resolveApiUrl)
+ *   - backend/api/editor/pending-articles.php (đếm số bài chờ duyệt cho Editor)
+ * ==============================================================================
  */
 
-/**
- * Cấu hình danh mục Menu cho từng vai trò
- */
+// ==============================================================================
+// KHỐI 1: CẤU HÌNH DANH MỤC MENU THEO VAI TRÒ (WORKSPACE_MENUS)
+// ==============================================================================
 const WORKSPACE_MENUS = {
   reporter: {
     roleTitle: "Ban Phóng viên",
@@ -102,6 +115,10 @@ const WORKSPACE_MENUS = {
   }
 };
 
+// ==============================================================================
+// KHỐI 2: XỬ LÝ BADGE ĐẾM SỐ LƯỢNG TRÊN SIDEBAR
+// ==============================================================================
+
 /**
  * Tính toán số lượng huy hiệu (Badge Count)
  */
@@ -130,6 +147,10 @@ function updateSidebarBadge(key, count, type = "warning") {
 }
 window.updateSidebarBadge = updateSidebarBadge;
 
+// ==============================================================================
+// KHỐI 3: AVATAR VÀ KHỞI TẠO KHUNG GIAO DIỆN TÒA SOẠN (INIT ADMIN LAYOUT)
+// ==============================================================================
+
 /**
  * Render Avatar đồng bộ cho Sidebar & Topbar (hỗ trợ ảnh hoặc chữ cái đầu viết tắt)
  */
@@ -157,7 +178,7 @@ function renderWorkspaceAvatar(user, customClass) {
 }
 
 /**
- * Khởi tạo Layout cho khu vực Tòa soạn
+ * Khởi tạo Layout cho khu vực Tòa soạn (Kiểm tra Route Guard + Render Sidebar)
  * @param {string} currentRole - 'reporter' | 'editor' | 'admin'
  * @param {string} activeKey - Key của menu item đang active
  */
@@ -295,6 +316,10 @@ function initAdminLayout(currentRole, activeKey) {
   return currentUser;
 }
 
+// ==============================================================================
+// KHỐI 4: CÁC TIỆN ÍCH HỖ TRỢ BẢNG DỮ LIỆU QUẢN TRỊ (TABLE & MEDIA HELPERS)
+// ==============================================================================
+
 /**
  * Trích xuất thumbnail thông minh cho các bảng quản trị
  */
@@ -378,6 +403,3 @@ function formatAdminDateTime(dateStr, fallback = "Chưa có") {
   }
 }
 window.formatAdminDateTime = formatAdminDateTime;
-
-
-

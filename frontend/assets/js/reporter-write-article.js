@@ -1,9 +1,29 @@
 /**
  * ==============================================================================
- * REPORTER WRITE ARTICLE - SOẠN THẢO VÀ GỬI DUYỆT BÀI VIẾT
+ * TÊN FILE: frontend/assets/js/reporter-write-article.js
+ * PHÂN HỆ: Soạn thảo & Gửi duyệt Bài viết Phóng viên (Reporter Write Article Module)
+ * MÔ TẢ: Cung cấp môi trường soạn thảo bài viết chuyên nghiệp cho phóng viên:
+ *        1. Tích hợp CKEditor 5 hỗ trợ định dạng phong phú, nhúng video YouTube/media và căn lề.
+ *        2. Quản lý tải lên ảnh bìa và ảnh chèn trong nội dung bài báo qua Custom Server Upload Adapter (POST backend/api/upload.php).
+ *        3. Quản lý chuyên mục và hệ thống gắn thẻ (Tag) thông minh (tìm kiếm không dấu, gợi ý tag, tối đa 5 tag).
+ *        4. Tải và chỉnh sửa bài viết cũ (bản nháp hoặc bài bị từ chối kèm phản hồi của Ban Biên tập).
+ *        5. Lưu bản nháp (draft) hoặc Gửi duyệt xuất bản (pending) qua POST backend/api/reporter/write-article.php.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/reporter/write-article.html
+ * PHỤ THUỘC:
+ *   - CKEditor 5 (ClassicEditor)
+ *   - frontend/assets/js/admin-layout.js (initAdminLayout, getCurrentUser, etc.)
+ *   - frontend/assets/js/common.js (resolveApiUrl, resolveAssetPath, showToast, escapeHtml, etc.)
+ *   - backend/api/upload.php
+ *   - backend/api/public/categories.php
+ *   - backend/api/public/tags.php
+ *   - backend/api/reporter/write-article.php
  * ==============================================================================
  */
 
+// ==============================================================================
+// KHỐI 1: KHỞI TẠO KHUNG SOẠN THẢO & TRẠNG THÁI FORM
+// ==============================================================================
 // Trạng thái Form
     let editorInstance = null;
     let currentArticleId = null;
@@ -33,6 +53,9 @@
       }
     });
 
+    // ==============================================================================
+    // KHỐI 2: QUẢN LÝ ẢNH BÌA BÀI VIẾT (TẢI LÊN, XEM TRƯỚC & GỠ BỎ)
+    // ==============================================================================
     /**
      * Xử lý tải ảnh bìa lên
      */
@@ -163,6 +186,9 @@
       }
     }
 
+    // ==============================================================================
+    // KHỐI 3: TÍCH HỢP TRÌNH SOẠN THẢO CKEDITOR 5 & ADAPTER TẢI ẢNH NỘI DUNG
+    // ==============================================================================
     /**
      * Adapter tải ảnh lên máy chủ PHP cho CKEditor 5
      */
@@ -294,6 +320,9 @@
       }
     }
 
+    // ==============================================================================
+    // KHỐI 4: QUẢN LÝ CHUYÊN MỤC & HỆ THỐNG GẮN THẺ THÔNG MINH (TAGS)
+    // ==============================================================================
     /**
      * Đổ danh sách chuyên mục vào dropdown từ API Backend
      */
@@ -333,6 +362,9 @@
       }
     }
 
+    // ==============================================================================
+    // KHỐI 5: TẢI BÀI VIẾT CŨ ĐỂ SỬA & HIỂN THỊ PHẢN HỒI BAN BIÊN TẬP
+    // ==============================================================================
     /**
      * Tải thông tin bài viết cũ khi Sửa từ Backend API
      */
@@ -585,6 +617,9 @@
       }).join("");
     }
 
+    // ==============================================================================
+    // KHỐI 6: KIỂM TRA HỢP LỆ VÀ GỬI YÊU CẦU LƯU BÀI / GỬI DUYỆT QUA API
+    // ==============================================================================
     /**
      * Lưu bài viết: 'draft' (Lưu nháp) hoặc 'pending' (Gửi duyệt)
      */

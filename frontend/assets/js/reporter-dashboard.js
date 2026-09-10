@@ -1,9 +1,24 @@
 /**
  * ==============================================================================
- * REPORTER DASHBOARD - BẢNG ĐIỀU KHIỂN & HIỆU SUẤT PHÓNG VIÊN
+ * TÊN FILE: frontend/assets/js/reporter-dashboard.js
+ * PHÂN HỆ: Bảng điều khiển Phóng viên (Reporter Dashboard Module)
+ * MÔ TẢ: Thống kê hiệu suất bài viết cá nhân của phóng viên:
+ *        1. Tải dữ liệu tổng quan qua GET backend/api/reporter/dashboard.php.
+ *        2. Tổng hợp các chỉ số KPI: bài đã đăng, tổng lượt xem, tổng bình luận, tổng lượt lưu bài.
+ *        3. Render lưới thẻ thống kê KPI và bảng chi tiết hiệu quả từng bài viết.
+ *        4. Hỗ trợ tìm kiếm bài viết theo từ khóa, sắp xếp đa chiều (lượt xem, ngày đăng, bình luận, lưu bài).
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/reporter/dashboard.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/admin-layout.js (initAdminLayout, getCurrentUser, etc.)
+ *   - frontend/assets/js/common.js (resolveApiUrl, escapeHtml, formatDate, getArticleViews, etc.)
+ *   - backend/api/reporter/dashboard.php
  * ==============================================================================
  */
 
+// ==============================================================================
+// KHỐI 1: KHỞI TẠO BẢNG ĐIỀU KHIỂN & TRẠNG THÁI TÌM KIẾM/SẮP XẾP
+// ==============================================================================
 document.addEventListener("DOMContentLoaded", () => {
       const currentUser = initAdminLayout("reporter", "dashboard");
       if (currentUser) {
@@ -17,8 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let searchQuery = "";
     let reporterArticlesData = [];
 
+    // ==============================================================================
+    // KHỐI 2: TẢI DỮ LIỆU THỐNG KÊ KPI & DỰNG KHUNG BẢNG ĐIỀU KHIỂN
+    // ==============================================================================
     /**
-     * Tải và tính toán dữ liệu thống kê cho Phóng viên từ LocalStorage
+     * Tải và tính toán dữ liệu thống kê cho Phóng viên từ LocalStorage / API
      */
     async function renderReporterDashboard(currentUser) {
       const mount = document.getElementById("workspace-content");
@@ -270,6 +288,9 @@ document.addEventListener("DOMContentLoaded", () => {
       renderTableRows();
     }
 
+    // ==============================================================================
+    // KHỐI 3: LỌC TÌM KIẾM, SẮP XẾP DỮ LIỆU & RENDER DANH SÁCH BÀI VIẾT
+    // ==============================================================================
     /**
      * Render các hàng dữ liệu sau khi lọc và sắp xếp
      */

@@ -1,20 +1,29 @@
 /**
  * ==============================================================================
- * ADMIN PUBLISHED ARTICLES - QUẢN LÝ BÀI VIẾT ĐÃ ĐĂNG
- * Đồng bộ 100% Layout với Reporter My-Articles & Dashboard Thống kê
- * 
- * Tính năng & Nghiệp vụ cốt lõi:
- * 1. Bấm trực tiếp vào Tiêu đề / Ảnh để xem chi tiết bài viết (mở tab mới)
- * 2. Sắp xếp trực tiếp trên tiêu đề các cột với mũi tên ▲▼ chuẩn như trang Thống kê Phóng viên
- * 3. Bỏ cột chuyên mục và bộ lọc chuyên mục theo yêu cầu để giao diện thoáng, tinh gọn
- * 4. Menu thao tác gọn gàng dạng 3 chấm (•••): Sửa bài viết, Ẩn/Hiện bài, Xóa vĩnh viễn
- * 5. Sửa đè nội dung (Admin Override) & Xóa với modal xác nhận an toàn
+ * TÊN FILE: frontend/assets/js/admin-published-articles.js
+ * PHÂN HỆ: Quản lý Bài viết Đã đăng Quản trị viên (Admin Published Articles Module)
+ * MÔ TẢ: Quản trị danh sách toàn bộ các bài viết đã được duyệt xuất bản trên hệ thống:
+ *        1. Tải dữ liệu qua admin/published-articles.php, public/categories.php, admin/users.php.
+ *        2. Lọc trạng thái xuất bản qua 3 tab: Đang hiển thị (published), Đã tạm ẩn (hidden), Tất cả (all).
+ *        3. Tìm kiếm theo tiêu đề bài viết, tóm tắt sapo hoặc tên tác giả.
+ *        4. Sắp xếp trực tiếp trên tiêu đề các cột (Ngày xuất bản, Lượt xem ▲▼).
+ *        5. Menu thao tác dạng 3 chấm (•••): Sửa nội dung đè (Admin Override), Ẩn/Hiện bài viết, Xóa vĩnh viễn với modal xác nhận.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/admin/published-articles.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, formatDate, getArticleViews, getAdminSortIcon, etc.)
+ *   - backend/api/admin/published-articles.php
+ *   - backend/api/public/categories.php
+ *   - backend/api/admin/users.php
  * ==============================================================================
  */
 
 (function () {
   "use strict";
 
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI BỘ LỌC / SẮP XẾP
+  // ==============================================================================
   let allArticles = [];
   let allCategories = [];
   let allUsers = [];
@@ -40,6 +49,10 @@
     bindEvents();
     renderTableRows();
   }
+
+  // ==============================================================================
+  // KHỐI 2: TẢI DỮ LIỆU BÀI VIẾT ĐÃ ĐĂNG, DANH MỤC & NGƯỜI DÙNG TỪ API
+  // ==============================================================================
   async function loadData() {
     try {
       const [articlesRes, categoriesRes, usersRes] = await Promise.all([
@@ -64,6 +77,9 @@
     return getAdminSortIcon(field, sortField, sortOrder);
   }
 
+  // ==============================================================================
+  // KHỐI 3: RENDER KHUNG BỐ CỤC, CÁC TAB TRẠNG THÁI & GẮN SỰ KIỆN TÌM KIẾM
+  // ==============================================================================
   function renderPageStructure() {
     const container = document.getElementById("workspace-content");
     if (!container) return;
@@ -305,6 +321,9 @@
     renderTableRows();
   };
 
+  // ==============================================================================
+  // KHỐI 4: RENDER BẢNG BÀI VIẾT, SẮP XẾP CỘT & PHÂN LOẠI THEO TAB / TỪ KHÓA
+  // ==============================================================================
   function renderTableRows() {
     const tbody = document.getElementById("articles-tbody");
     const countBadge = document.getElementById("list-count-badge");
@@ -493,9 +512,9 @@
     }).join("");
   }
 
-  // ============================================================================
-  // QUẢN LÝ MENU THAO TÁC 3 CHẤM (ACTION DROPDOWN)
-  // ============================================================================
+  // ==============================================================================
+  // KHỐI 5: MENU THAO TÁC BA CHẤM & CÁC NGHIỆP VỤ QUẢN TRỊ VIÊN (ẨN/HIỆN, SỬA ĐÈ, XÓA)
+  // ==============================================================================
 
   function closeAllActionMenus() {
     document.querySelectorAll(".admin-action-dropdown-menu").forEach(menu => {

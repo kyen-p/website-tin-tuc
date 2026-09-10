@@ -1,16 +1,30 @@
 /**
- * editor-pending-articles.js - Quản lý & Thẩm định duyệt bài viết cho Biên tập viên
- * 1. Bảng danh sách bài chờ duyệt tinh gọn chuẩn Editorial
- * 2. Bộ lọc tinh gọn: Tìm kiếm tiêu đề/phóng viên + Lọc Chuyên mục
- * 3. Modal thẩm định toàn diện (Read-only):
- *    - Đọc toàn bộ nội dung, sapo, chuyên mục, thẻ tag do phóng viên gắn
- *    - Xem lý do từ chối chi tiết nếu bài đã từng bị trả về
- *    - Thao tác: "Duyệt & Xuất bản ngay" HOẶC "Từ chối bài viết" (kèm lý do gửi lại phóng viên)
+ * ==============================================================================
+ * TÊN FILE: frontend/assets/js/editor-pending-articles.js
+ * PHÂN HỆ: Danh sách Bài viết Chờ duyệt Biên tập viên (Editor Pending Articles Module)
+ * MÔ TẢ: Quản lý danh sách và luồng thẩm định các bài viết chờ duyệt:
+ *        1. Tải danh sách bài chờ duyệt qua GET backend/api/editor/pending-articles.php và danh mục qua backend/api/public/categories.php.
+ *        2. Lọc nhanh theo chuyên mục, tìm kiếm theo tiêu đề bài viết hoặc tên phóng viên.
+ *        3. Render bảng bài viết chờ duyệt kèm huy hiệu trạng thái, ảnh đại diện, sapo và thông tin tác giả.
+ *        4. Tích hợp kích hoạt Modal Thẩm định toàn diện (phối hợp với editor-pending-articles-modal.js).
+ *        5. Cung cấp API nội bộ window.EditorPendingArticles để modal có thể kích hoạt reload dữ liệu sau khi duyệt/từ chối.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/editor/pending-articles.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/admin-layout.js (getCurrentUser, updateSidebarBadge, etc.)
+ *   - frontend/assets/js/common.js (resolveApiUrl, escapeHtml, formatDate, extractThumbnail, etc.)
+ *   - frontend/assets/js/editor-pending-articles-modal.js (openReviewModal, etc.)
+ *   - backend/api/editor/pending-articles.php
+ *   - backend/api/public/categories.php
+ * ==============================================================================
  */
 
 (function () {
   "use strict";
 
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI LỌC/TÌM KIẾM BÀI CHỜ DUYỆT
+  // ==============================================================================
   let allArticles = [];
   let allCategories = [];
   let currentUser = null;
@@ -40,6 +54,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 2: TẢI DỮ LIỆU BÀI VIẾT CHỜ DUYỆT & CHUYÊN MỤC TỪ BACKEND
+  // ==============================================================================
   async function loadData() {
     try {
       const [artRes, catRes] = await Promise.all([
@@ -55,6 +72,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 3: RENDER KHUNG BẢNG & ĐẾM THỐNG KÊ SỐ LƯỢNG CHỜ DUYỆT
+  // ==============================================================================
   /**
    * Render khung sườn giao diện
    */
@@ -126,6 +146,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 4: LỌC TRẠNG THÁI PENDING, TÌM KIẾM & RENDER DÒNG BÀI VIẾT
+  // ==============================================================================
   /**
    * Render Danh sách bài viết dạng Bảng (Table) - Chỉ hiển thị các bài status === 'pending'
    */
@@ -295,6 +318,9 @@
     `;
   }
 
+  // ==============================================================================
+  // KHỐI 5: GẮN SỰ KIỆN TƯƠNG TÁC & XUẤT API CHO MODAL THẨM ĐỊNH
+  // ==============================================================================
   /**
    * Gắn sự kiện tương tác
    */

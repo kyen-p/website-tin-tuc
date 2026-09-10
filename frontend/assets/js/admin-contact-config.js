@@ -1,23 +1,27 @@
 /**
  * ==============================================================================
- * ADMIN CONTACT CONFIG - CẤU HÌNH THÔNG TIN LIÊN HỆ TÒA SOẠN
- * ==============================================================================
- * Phạm vi dữ liệu chính xác:
- * 1. Email liên hệ (contact_email)
- * 2. Số điện thoại hotline (contact_phone)
- * 3. Địa chỉ tòa soạn / văn phòng (address)
- * 4. Đường dẫn mạng xã hội:
- *    - Facebook URL (social_links.facebook)
- *    - YouTube URL (social_links.youtube)
- *    - TikTok URL (social_links.tiktok)
- * 
- * Có chức năng Xem trước trực tiếp (Live Preview) & Khôi phục mặc định (Reset).
+ * TÊN FILE: frontend/assets/js/admin-contact-config.js
+ * PHÂN HỆ: Cấu hình Thông tin Liên hệ Tòa soạn (Admin Contact Config Module)
+ * MÔ TẢ: Quản trị và cập nhật các thông tin liên hệ và nhận diện thương hiệu của tòa soạn:
+ *        1. Quản lý email tòa soạn (contact_email), hotline (contact_phone), địa chỉ trụ sở (address),
+ *           đoạn giới thiệu ngắn (short_description), và các liên kết mạng xã hội (Facebook, YouTube, TikTok).
+ *        2. Tải cấu hình hiện tại từ backend qua admin/contact-config.php.
+ *        3. Cho phép cập nhật lưu dữ liệu thông qua API PUT admin/contact-config.php.
+ *        4. Hỗ trợ khôi phục về cấu hình mặc định ban đầu (Reset to Default).
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/admin/contact-config.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml)
+ *   - backend/api/admin/contact-config.php
  * ==============================================================================
  */
 
 (function () {
   "use strict";
 
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO CẤU HÌNH MẶC ĐỊNH & TRẠNG THÁI HIỆN TẠI
+  // ==============================================================================
   // Dữ liệu mặc định gốc của tòa soạn
   const DEFAULT_SETTINGS = {
     contact_email: "lienhe@machtin.vn",
@@ -41,6 +45,10 @@
     renderPageStructure();
     bindEvents();
   }
+
+  // ==============================================================================
+  // KHỐI 2: TẢI CẤU HÌNH LIÊN HỆ TỪ BACKEND QUA API
+  // ==============================================================================
   /**
    * Tải cấu hình từ LocalStorage (key: 'site_settings')
    */
@@ -70,6 +78,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 3: RENDER GIAO DIỆN FORM CẤU HÌNH LIÊN HỆ & MẠNG XÃ HỘI
+  // ==============================================================================
   /**
    * Render giao diện Form cấu hình liên hệ tinh gọn, chuẩn hệ thống Admin
    */
@@ -259,6 +270,9 @@
     `;
   }
 
+  // ==============================================================================
+  // KHỐI 4: GẮN SỰ KIỆN LƯU FORM VÀ KHÔI PHỤC MẶC ĐỊNH
+  // ==============================================================================
   function bindEvents() {
     const form = document.getElementById("contactConfigForm");
     const btnReset = document.getElementById("btnResetConfig");
@@ -284,6 +298,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 5: GỬI DỮ LIỆU CẬP NHẬT CẤU HÌNH LÊN BACKEND (API PUT)
+  // ==============================================================================
   /**
    * Lưu cấu hình 
    */

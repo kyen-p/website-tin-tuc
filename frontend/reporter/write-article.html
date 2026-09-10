@@ -1,3 +1,18 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/reporter/write-article.html
+PHÂN HỆ: Bàn Làm Việc Phóng Viên - Soạn Bài Viết Mới / Chỉnh Sửa (Reporter Write Article View)
+MÔ TẢ: Khung giao diện biên tập bài viết đầy đủ cho phóng viên:
+       - Sidebar điều hướng phóng viên (#admin-sidebar) và thanh Topbar tối giản (#admin-topbar).
+       - Cột trái: tiêu đề (#article-title), sapo tóm tắt (#article-sapo), bộ soạn thảo siêu văn bản CKEditor 5 (#editor).
+       - Cột phải: khung tải & xem trước ảnh bìa (#cover-preview-container), chọn chuyên mục (#article-category), bộ gắn thẻ Tag thông minh (#tags-container).
+       - Thanh hành động cố định dưới đáy (.admin-sticky-actions): nút Hủy, nút Lưu nháp, nút Gửi duyệt bài.
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, admin-layout.css
+       - CKEditor 5 Super-build CDN
+       - frontend/assets/js/common.js, admin-layout.js, reporter-write-article.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -17,16 +32,20 @@
 
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH)            -->
+  <!-- ============================================================================== -->
   <div class="admin-workspace">
-    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
-    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
     <div class="admin-main">
       <!-- Topbar tối giản: Tên & Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- Nội dung chính -->
+      <!-- ============================================================================== -->
+      <!-- KHỐI 2: VÙNG NỘI DUNG FORM SOẠN THẢO BÀI VIẾT (2 CỘT) VÀ THANH HÀNH ĐỘNG DÍNH -->
+      <!-- ============================================================================== -->
       <main class="admin-content">
         <div class="admin-page-header">
           <div>
@@ -256,7 +275,9 @@
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

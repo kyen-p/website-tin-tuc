@@ -1,3 +1,19 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/public/search.html
+PHÂN HỆ: Tra Cứu Tin Tức & Thẻ Tag (Public Search & Tag View)
+MÔ TẢ: Khung giao diện tìm kiếm nội dung bài viết và lọc theo nhãn thẻ:
+       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường.
+       - Thanh tìm kiếm trung tâm (#searchForm) và danh sách gợi ý Tag thịnh hành (#hotTagsMount).
+       - Thanh công cụ lọc: tóm tắt kết quả (#searchSummaryText), lọc chuyên mục (#categoryFilter), sắp xếp (#sortFilter).
+       - Lưới hiển thị danh sách kết quả bài viết (#searchResultsList).
+       - Cột phụ: Bảng xếp hạng đọc nhiều nhất trong tuần (#topViewsMount) và Tag Cloud (#sidebarAllTagsMount).
+       - Vùng gắn Footer trang tự động (#site-footer).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, public-layout.css, public.css
+       - frontend/assets/js/common.js, search.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -15,10 +31,14 @@
 </head>
 <body>
 
-  <!-- 1. HEADER & TICKER CÔNG KHAI (Tự động render bởi common.js) -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
+  <!-- ============================================================================== -->
   <div id="site-header"></div>
 
-  <!-- 2. NỘI DUNG CHÍNH TRANG TÌM KIẾM & THẺ TAG -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 2: NỘI DUNG TÌM KIẾM (THANH TÌM KIẾM, BỘ LỌC, KẾT QUẢ & SIDEBAR)           -->
+  <!-- ============================================================================== -->
   <main>
     <div class="wrap">
       
@@ -105,10 +125,14 @@
     </div>
   </main>
 
-  <!-- 4. FOOTER CÔNG KHAI (Tự động render bởi common.js) -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
+  <!-- ============================================================================== -->
   <div id="site-footer"></div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/search.js"></script>

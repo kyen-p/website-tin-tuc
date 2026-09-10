@@ -1,3 +1,17 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/reporter/my-articles.html
+PHÂN HỆ: Bàn Làm Việc Phóng Viên - Quản Lý Bài Viết Của Tôi (Reporter My Articles View)
+MÔ TẢ: Khung giao diện quản lý danh sách toàn bộ bài viết của phóng viên:
+       - Sidebar điều hướng phóng viên (#admin-sidebar) được render tự động bởi admin-layout.js.
+       - Thanh tiêu đề trên cùng (#admin-topbar) chứa thông tin tài khoản đăng nhập.
+       - Vùng gắn nội dung (#workspace-content): các tab trạng thái (tất cả, nháp, chờ duyệt, đã duyệt, từ chối), bộ lọc tìm kiếm, bảng dữ liệu bài viết.
+       - Hộp thoại xác nhận xóa bài viết nháp (#delete-modal-container).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, admin-layout.css
+       - frontend/assets/js/common.js, admin-layout.js, reporter-my-articles.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,16 +26,20 @@
 </head>
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH)            -->
+  <!-- ============================================================================== -->
   <div class="admin-workspace">
-    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
-    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
     <div class="admin-main">
       <!-- Topbar tối giản: Tên & Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- Nội dung chính -->
+      <!-- ============================================================================== -->
+      <!-- KHỐI 2: VÙNG NỘI DUNG QUẢN LÝ BÀI VIẾT VÀ TIẾN ĐỘ KIỂM DUYỆT                   -->
+      <!-- ============================================================================== -->
       <main class="admin-content">
         <div class="admin-page-header">
           <div>
@@ -39,7 +57,9 @@
   <!-- Modal xác nhận xóa bài nháp -->
   <div id="delete-modal-container"></div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

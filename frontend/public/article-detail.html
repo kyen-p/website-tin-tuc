@@ -1,3 +1,21 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/public/article-detail.html
+PHÂN HỆ: Chi Tiết Bài Viết & Thảo Luận Công Khai (Public Article Detail View)
+MÔ TẢ: Khung giao diện xem chi tiết nội dung bài viết và bình luận độc giả:
+       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường.
+       - Khu vực tiêu đề, tóm tắt bài, byline tác giả, lượt xem, nút bookmark & copy link.
+       - Ảnh đại diện bài viết (#article-cover-mount) và thân bài viết (#article-content-body).
+       - Hộp hồ sơ tác giả bài viết (.author-box) và danh sách thẻ liên quan (#article-tags-mount).
+       - Khối bình luận: form gửi bình luận (#comment-form-mount), prompt đăng nhập và danh sách bình luận (#comment-list-mount).
+       - Cột phải: Bài viết liên quan cùng chuyên mục (#related-articles-mount) và Tag Cloud nổi bật.
+       - Modal xác nhận xóa bình luận (#deleteDetailCommentModal).
+       - Vùng gắn Footer (#site-footer).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, public-layout.css, public.css
+       - frontend/assets/js/common.js, article-detail.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,8 +30,14 @@
 </head>
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
+  <!-- ============================================================================== -->
   <div id="site-header"></div>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 2: NỘI DUNG CHÍNH BÀI BÁO (BREADCRUMB, HEADER, NỘI DUNG, BÌNH LUẬN, SIDEBAR)-->
+  <!-- ============================================================================== -->
   <main>
     <div class="wrap">
       <nav class="breadcrumb" aria-label="Đường dẫn">
@@ -120,7 +144,7 @@
 
               <div id="comment-login-prompt" class="login-prompt" style="margin-bottom: 28px;">
                 <p style="margin-bottom: 12px; font-size: 14px;">Bạn cần đăng nhập để tham gia thảo luận cùng cộng đồng độc giả.</p>
-                <a href="../public/login.html" class="btn btn-primary btn-sm">Đăng nhập ngay</a>
+                <a href="../user/login.html" class="btn btn-primary btn-sm">Đăng nhập ngay</a>
               </div>
 
               <div id="comment-list-mount" class="comment-list"></div>
@@ -143,7 +167,9 @@
     </div>
   </main>
 
-  <!-- Modal xác nhận xóa bình luận trên trang chi tiết -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: MODAL XÁC NHẬN XÓA BÌNH LUẬN TRÊN TRANG CHI TIẾT                       -->
+  <!-- ============================================================================== -->
   <div id="deleteDetailCommentModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="deleteDetailCommentModalTitle" onclick="if(event.target === this) closeDeleteDetailCommentModal()">
     <div class="modal-box" style="max-width: 480px;">
       <div class="modal-box__head">
@@ -162,8 +188,14 @@
     </div>
   </div>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 4: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
+  <!-- ============================================================================== -->
   <div id="site-footer"></div>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 5: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/article-detail.js"></script>

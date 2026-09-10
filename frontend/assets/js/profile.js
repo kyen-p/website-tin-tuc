@@ -1,10 +1,19 @@
 /**
  * ==============================================================================
- * MẠCH TIN - PROFILE.JS
- *
- * API:
- * GET / PUT  : ../../backend/api/user/profile.php
- * POST upload: ../../backend/api/upload.php
+ * TÊN FILE: frontend/assets/js/profile.js
+ * PHÂN HỆ: Quản lý Hồ sơ cá nhân (User Profile Module)
+ * MÔ TẢ: Xử lý giao diện và cập nhật thông tin tài khoản người dùng:
+ *        1. Tải dữ liệu hồ sơ cá nhân qua GET backend/api/user/profile.php.
+ *        2. Quản lý tải lên (upload) và xóa ảnh đại diện (POST backend/api/upload.php).
+ *        3. Xem trước avatar động hoặc hiển thị ký tự viết tắt (initials fallback).
+ *        4. Cập nhật thông tin họ tên, bio, avatar qua PUT backend/api/user/profile.php.
+ *        5. Đồng bộ dữ liệu phiên làm việc với header (setCurrentUser, initPublicHeader).
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/user/profile.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, showToast, escapeHtml, getInitials, resolveAssetPath, etc.)
+ *   - backend/api/user/profile.php
+ *   - backend/api/upload.php
  * ==============================================================================
  */
 
@@ -15,6 +24,9 @@ const UPLOAD_API = "../../backend/api/upload.php";
 let originalUserData = null;
 let currentAvatarValue = null;
 
+// ==============================================================================
+// KHỐI 1: KHỞI TẠO TRANG, RENDER AVATAR & ĐIỀN DỮ LIỆU VÀO BIỂU MẪU
+// ==============================================================================
 async function initProfilePage() {
   // DOM Elements
   const userRoleBadge = document.getElementById("userRoleBadge");
@@ -151,6 +163,9 @@ async function initProfilePage() {
     }
   }
 
+  // ==============================================================================
+  // KHỐI 2: TẢI HỒ SƠ & UPLOAD AVATAR QUA API
+  // ==============================================================================
   /**
    * GET: Lấy thông tin profile
    */
@@ -210,6 +225,9 @@ async function initProfilePage() {
     return result.data.url;
   }
 
+  // ==============================================================================
+  // KHỐI 3: LẮNG NGHE SỰ KIỆN TƯƠNG TÁC (CHỌN/XÓA ẢNH, RESET FORM, CẬP NHẬT HỒ SƠ)
+  // ==============================================================================
   /**
    * Chọn ảnh avatar
    */

@@ -1,19 +1,43 @@
 <?php
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/reporter/write-article.php
+ * PHÂN HỆ: API Soạn thảo Bài viết Phóng viên (Article Editor Service)
+ * MÔ TẢ: Tiếp nhận dữ liệu viết bài, tạo mới hoặc cập nhật bài viết cho phóng viên:
+ *        - GET: Lấy dữ liệu chi tiết bài viết (bao gồm tags, chuyên mục) để nạp vào form chỉnh sửa.
+ *        - POST/PUT: Lưu bài viết ở trạng thái bản nháp (draft) hoặc gửi thẩm định (pending).
+ *        - Tự động sinh slug duy nhất (URL friendly) và đồng bộ danh sách Tags liên quan.
+ * PHẠM VI SỬ DỤNG:
+ *   - [KHU VỰC TÒA SOẠN - PHÓNG VIÊN]
+ *   - Phân quyền: role = 'reporter'
+ *   - Phương thức: GET, POST, PUT
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireRole, $_SESSION['user_id'])
+ *   - backend/helpers/string.php (createSlug)
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/write-article.js (Trang biên tập bài viết của phóng viên)
+ * TRẢ VỀ (JSON):
+ *   - GET: { success: true, data: { id, title, slug, content, tags: [...] } }
+ *   - POST/PUT: { success: true, data: { id, title, slug, status }, message: "..." }
+ * ==============================================================================
+ */
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 require_once __DIR__ . '/../../helpers/string.php';
 
-// Chỉ Reporter mới được tạo/sửa bài viết
+// Chỉ phóng viên (reporter) mới được tạo/sửa bài viết
 requireRole(['reporter']);
 
 $method = $_SERVER['REQUEST_METHOD'];
 $authorId = (int) $_SESSION['user_id'];
 
-// =========================================================
-// GET: Lấy thông tin bài viết cũ để sửa (theo id)
-// =========================================================
+// ==============================================================================
+// NGHIỆP VỤ 1: GET - LẤY THÔNG TIN BÀI VIẾT ĐỂ NẠP VÀO FORM CHỈNH SỬA
+// ==============================================================================
 if ($method === 'GET') {
     $articleId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     if ($articleId <= 0) {
@@ -35,7 +59,7 @@ if ($method === 'GET') {
             jsonResponse(false, null, "Không tìm thấy bài viết hoặc bạn không có quyền");
         }
 
-        // Lấy tags
+        // Lấy danh sách thẻ (tags) đính kèm bài viết
         $tagStmt = $pdo->prepare("
             SELECT t.id, t.name, t.slug
             FROM article_tags at
@@ -51,9 +75,9 @@ if ($method === 'GET') {
     }
 }
 
-// =========================================================
-// POST hoặc PUT: Lưu nháp hoặc Gửi duyệt (Tạo mới hoặc Sửa)
-// =========================================================
+// ==============================================================================
+// NGHIỆP VỤ 2: POST/PUT - LƯU BẢN NHÁP HOẶC GỬI THẨM ĐỊNH (TẠO MỚI HOẶC SỬA)
+// ==============================================================================
 if ($method !== 'POST' && $method !== 'PUT') {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 }
@@ -74,7 +98,10 @@ $status = isset($input['status']) ? trim($input['status']) : 'draft';
 $tags = isset($input['tags']) && is_array($input['tags']) ? $input['tags'] : [];
 
 /**
- * Tự động chuẩn hóa ảnh bìa hoặc trích xuất ảnh đầu tiên từ nội dung bài viết HTML
+ * Hàm hỗ trợ: Chuẩn hóa đường dẫn tương đối của ảnh bìa
+ *
+ * @param string|null $cover Đường dẫn thô từ client
+ * @return string|null Đường dẫn chuẩn hóa hoặc null
  */
 function sanitizeCoverImagePath($cover)
 {
@@ -96,11 +123,13 @@ function sanitizeCoverImagePath($cover)
 
 $coverImage = sanitizeCoverImagePath($rawCoverImage);
 
+// Kiểm tra trạng thái cho phép của phóng viên
 $allowedStatuses = ['draft', 'pending'];
 if (!in_array($status, $allowedStatuses, true)) {
     jsonResponse(false, null, "Trạng thái bài viết không hợp lệ");
 }
 
+// Kiểm tra tính toàn vẹn theo từng trạng thái
 if ($status === 'draft') {
     if ($title === '') {
         jsonResponse(false, null, "Tiêu đề không được để trống khi lưu bản nháp");
@@ -126,6 +155,7 @@ if ($status === 'pending') {
 }
 
 try {
+    // Kiểm tra chuyên mục có tồn tại không
     if ($categoryId > 0) {
         $stmt = $pdo->prepare("SELECT id FROM categories WHERE id = ? LIMIT 1");
         $stmt->execute([$categoryId]);
@@ -173,10 +203,10 @@ try {
 
         $articleId = $targetId;
 
-        // Xóa tags cũ để gắn lại
+        // Xóa tags cũ để đồng bộ lại
         $pdo->prepare("DELETE FROM article_tags WHERE article_id = ?")->execute([$articleId]);
     } else {
-        // Tạo mới bài viết
+        // Tạo mới bài viết: sinh slug duy nhất tránh trùng lặp
         $baseSlug = createSlug($title);
         if ($baseSlug === '') {
             $baseSlug = 'bai-viet';
@@ -212,7 +242,7 @@ try {
         $articleId = (int)$pdo->lastInsertId();
     }
 
-    // Xử lý Tags
+    // Xử lý và đồng bộ danh sách Tags
     $uniqueTagNames = array_unique(array_map('trim', $tags));
     foreach ($uniqueTagNames as $tagName) {
         if ($tagName === '') continue;
@@ -255,3 +285,4 @@ try {
     }
     jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
 }
+

@@ -1,3 +1,18 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/public/index.html
+PHÂN HỆ: Trang Chủ Công Khai (Public Homepage View)
+MÔ TẢ: Khung giao diện trang chủ Báo Điện Tử Mạch Tin:
+       - Vùng gắn Header & Ticker tự động (#site-header).
+       - Khối Hero Grid: Tin bài tiêu điểm trang nhất (#hero-mount).
+       - Khối Tin mới cập nhật (#latest-mount).
+       - Khối Sự kiện đáng chú ý (#stream-mount) & Cột đọc nhiều / Tag nổi bật (#rank-mount, #tag-mount).
+       - Vùng gắn Footer trang tự động (#site-footer).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, public-layout.css, public.css
+       - frontend/assets/js/common.js, home.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -15,10 +30,14 @@
 </head>
 <body>
 
-  <!-- 1. HEADER & TICKER CÔNG KHAI (Tự động render bởi common.js) -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
+  <!-- ============================================================================== -->
   <div id="site-header"></div>
 
-  <!-- 2. NỘI DUNG CHÍNH TRANG CHỦ -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 2: NỘI DUNG CHÍNH TRANG CHỦ (HERO, TIN MỚI, SỰ KIỆN ĐÁNG CHÚ Ý, TAGS)     -->
+  <!-- ============================================================================== -->
   <main>
     <div class="wrap">
       <!-- A. Khối bài viết nổi bật (1 bài to + 3 bài nhỏ) -->
@@ -62,10 +81,14 @@
     </div>
   </main>
 
-  <!-- 4. FOOTER CÔNG KHAI (Tự động render bởi common.js) -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
+  <!-- ============================================================================== -->
   <div id="site-footer"></div>
 
-  <!-- SCRIPTS -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/home.js"></script>

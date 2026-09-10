@@ -1,9 +1,28 @@
 /**
  * ==============================================================================
- * MẠCH TIN - LOGIN.JS (Xử lý Đăng nhập & Điều hướng 4 Vai trò)
+ * TÊN FILE: frontend/assets/js/login.js
+ * PHÂN HỆ: Xác thực & Điều hướng (Authentication & Role-based Redirection)
+ * MÔ TẢ: Xử lý tương tác form đăng nhập tài khoản vào hệ thống Tòa soạn Báo Mạch Tin:
+ *        1. Quản lý trạng thái form: Ẩn/hiện mật khẩu, kiểm tra hợp lệ dữ liệu nhập (Validation).
+ *        2. Xử lý gửi biểu mẫu qua API backend/api/auth/login.php.
+ *        3. Hiển thị cảnh báo tài khoản bị khóa (kèm lý do do Quản trị viên chỉ định).
+ *        4. Điều hướng sau đăng nhập dựa theo vai trò (Role):
+ *           - admin -> ../admin/dashboard.html
+ *           - editor -> ../editor/dashboard.html
+ *           - reporter -> ../reporter/dashboard.html
+ *           - user / độc giả -> index.html (hoặc URL redirect được chỉ định)
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/public/login.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (resolveApiUrl, getCurrentUser, showToast)
+ *   - backend/api/auth/login.php
  * ==============================================================================
  */
+
 document.addEventListener("DOMContentLoaded", () => {
+    // ==============================================================================
+    // KHỐI 1: KHỞI TẠO BIẾN GIAO DIỆN & BẮT SỰ KIỆN ẨN/HIỆN MẬT KHẨU
+    // ==============================================================================
     const loginForm = document.getElementById("loginForm");
     const accountInput = document.getElementById("accountInput");
     const passwordInput = document.getElementById("passwordInput");
@@ -26,7 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Nếu đã đăng nhập, tự động điều hướng đúng vai trò
+    // ==============================================================================
+    // KHỐI 2: TỰ ĐỘNG CHUYỂN HƯỚNG NẾU ĐÃ ĐĂNG NHẬP SẴN
+    // ==============================================================================
     const currentUser = getCurrentUser();
     if (currentUser) {
         redirectByRole(currentUser.role);
@@ -43,6 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
         lockedAlert?.classList.remove("is-show");
     });
 
+    // ==============================================================================
+    // KHỐI 3: XỬ LÝ SUBMIT FORM ĐĂNG NHẬP & GỌI API BACKEND
+    // ==============================================================================
     loginForm?.addEventListener("submit", (e) => {
         e.preventDefault();
 
@@ -127,6 +151,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// ==============================================================================
+// KHỐI 4: HÀM ĐIỀU HƯỚNG THEO VAI TRÒ (REDIRECT BY ROLE)
+// ==============================================================================
 function redirectByRole(role) {
     if (role === "admin") {
         window.location.href = "../admin/dashboard.html";

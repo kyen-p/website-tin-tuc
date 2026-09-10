@@ -1,12 +1,25 @@
 /**
  * ==============================================================================
- * MẠCH TIN - CHANGE-PASSWORD.JS
- * Kết nối PHP API: backend/api/user/change-password.php
+ * TÊN FILE: frontend/assets/js/change-password.js
+ * PHÂN HỆ: Đổi Mật khẩu Tài khoản (User Change Password Module)
+ * MÔ TẢ: Quản lý quy trình đổi mật khẩu của tài khoản hiện tại:
+ *        1. Kiểm tra tính hợp lệ của mật khẩu mới (độ dài tối thiểu 8 ký tự, không trùng mật khẩu cũ, khớp mật khẩu xác nhận).
+ *        2. Ẩn/hiện mật khẩu bằng icon mắt linh hoạt trên từng trường nhập liệu.
+ *        3. Gửi yêu cầu cập nhật mật khẩu an toàn qua PUT backend/api/user/change-password.php.
+ *        4. Hiển thị thông báo kết quả (Toast) và tự động reset form khi đổi mật khẩu thành công.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/user/change-password.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, showToast)
+ *   - backend/api/user/change-password.php
  * ==============================================================================
  */
 
 const CHANGE_PASSWORD_API = "../../backend/api/user/change-password.php";
 
+// ==============================================================================
+// KHỐI 1: KHỞI TẠO KHUNG TRANG & ĐĂNG KÝ CÁC PHẦN TỬ GIAO DIỆN
+// ==============================================================================
 async function initChangePasswordPage() {
   if (typeof initPublicHeader === "function") {
     await initPublicHeader("change-password");
@@ -22,6 +35,9 @@ async function initChangePasswordPage() {
   const btnResetPasswordForm = document.getElementById("btnResetPasswordForm");
   const toggleButtons = document.querySelectorAll(".btn-toggle-password");
 
+  // ==============================================================================
+  // KHỐI 2: TÙY CHỌN ẨN / HIỆN MẬT KHẨU & ĐẶT LẠI BIỂU MẪU
+  // ==============================================================================
   // Icon mắt mở
   const eyeOpenSvg = `
     <svg
@@ -101,6 +117,9 @@ async function initChangePasswordPage() {
     });
   }
 
+  // ==============================================================================
+  // KHỐI 3: KIỂM TRA TÍNH HỢP LỆ VÀ GỬI YÊU CẦU ĐỔI MẬT KHẨU QUA API
+  // ==============================================================================
   // Submit đổi mật khẩu
   if (changePasswordForm) {
     changePasswordForm.addEventListener("submit", async (e) => {

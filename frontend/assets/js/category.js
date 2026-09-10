@@ -1,12 +1,21 @@
 /**
  * ==============================================================================
- * MẠCH TIN - CATEGORY.JS (Logic hiển thị Trang chuyên mục & lọc theo tag)
- * ==============================================================================
- * 1. Đọc tham số URL: ?slug=... & ?tag=... & ?filter=...
- * 2. Lọc danh sách bài viết theo chuyên mục & tag (status === 'published')
- * 3. Hỗ trợ sắp xếp: Mới nhất / Xem nhiều nhất
- * 4. Render tiêu điểm chuyên mục + lưới bài viết
- * 5. Render Sidebar bài đọc nhiều
+ * TÊN FILE: frontend/assets/js/category.js
+ * PHÂN HỆ: Trang Chuyên mục & Lọc theo Thẻ Tag (Category & Tag Filter Module)
+ * MÔ TẢ: Quản lý hiển thị danh sách bài viết theo chuyên mục, thẻ chủ đề hoặc các bộ lọc đặc biệt:
+ *        1. Phân tích tham số URL: ?slug= (chuyên mục), ?tag= (thẻ tag), ?filter= (latest: 48h qua, notable: sự kiện nổi bật).
+ *        2. Tải dữ liệu bài viết, chuyên mục, danh sách thẻ từ Backend API.
+ *        3. Cập nhật tiêu đề trang (Document Title), Breadcrumb và Mô tả chuyên mục động.
+ *        4. Hiển thị thanh cuộn thẻ tag liên quan (Tag Chips Bar) và xử lý sự kiện lọc nhanh.
+ *        5. Render bố cục danh sách: 1 bài tiêu điểm lớn (Featured Article) phía trên và lưới bài viết phía dưới.
+ *        6. Tích hợp Sidebar Đọc nhiều nhất trong tuần & Đám mây thẻ Tag qua initPublicSidebar.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/public/category.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, initPublicSidebar, resolveApiUrl, getArticleDetailUrl, etc.)
+ *   - backend/api/public/articles.php
+ *   - backend/api/public/categories.php
+ *   - backend/api/public/tags.php
  * ==============================================================================
  */
 
@@ -16,15 +25,16 @@ async function initCategoryPage() {
   const filterType = urlParams.get("filter") || ""; // 'latest' hoặc 'notable'
   let currentTagSlug = urlParams.get("tag") || "";
 
-  // 1. Khởi tạo Header và Footer
-if (typeof initPublicHeader === "function") {
-  await initPublicHeader(categorySlug);
-}
-if (typeof initPublicFooter === "function") {
-  await initPublicFooter();
-}
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DỮ LIỆU TỪ BACKEND
+  // ==============================================================================
+  if (typeof initPublicHeader === "function") {
+    await initPublicHeader(categorySlug);
+  }
+  if (typeof initPublicFooter === "function") {
+    await initPublicFooter();
+  }
 
-  // 2. Lấy dữ liệu từ backend (PHP + MySQL) cho bài viết, chuyên mục & thẻ tag
   let tags = [];
   let allArticles = [];
   let categories = [];
@@ -44,7 +54,9 @@ if (typeof initPublicFooter === "function") {
   // Tìm chuyên mục hiện tại
   const currentCategory = categorySlug ? categories.find((c) => c.slug === categorySlug) || null : null;
 
-  // Helpers
+  // ==============================================================================
+  // KHỐI 2: CÁC TIỆN ÍCH HỖ TRỢ TRÍCH XUẤT THÔNG TIN BÀI VIẾT
+  // ==============================================================================
   function getCategory(catId) {
     return categories.find((c) => c.id === catId) || { name: "Tin tức", slug: "" };
   }
@@ -57,9 +69,9 @@ if (typeof initPublicFooter === "function") {
     return typeof getArticleViews === "function" ? getArticleViews(article) : Number(article?.view_count || 0);
   }
 
-  // ============================================================================
-  // A. RENDER TIÊU ĐỀ CHUYÊN MỤC, BREADCRUMB & DOCUMENT.TITLE ĐỘNG
-  // ============================================================================
+  // ==============================================================================
+  // KHỐI 3: RENDER TIÊU ĐỀ CHUYÊN MỤC, BREADCRUMB & DOCUMENT.TITLE ĐỘNG
+  // ==============================================================================
   const breadcrumbCategory = document.getElementById("breadcrumb-category");
   const categoryTitle = document.getElementById("category-title");
   const categoryDesc = document.getElementById("category-description");
@@ -90,9 +102,9 @@ if (typeof initPublicFooter === "function") {
   if (categoryTitle) categoryTitle.textContent = titleName;
   if (categoryDesc) categoryDesc.textContent = descText;
 
-  // ============================================================================
-  // B. RENDER CÁC CHIP THẺ TAG
-  // ============================================================================
+  // ==============================================================================
+  // KHỐI 4: RENDER BĂNG CHIP THẺ TAG (TAG CHIPS BAR)
+  // ==============================================================================
   const tagChipsMount = document.getElementById("category-tags-mount");
   if (tagChipsMount) {
     let relevantTags = tags;
@@ -132,9 +144,9 @@ if (typeof initPublicFooter === "function") {
     });
   }
 
-  // ============================================================================
-  // C. RENDER DANH SÁCH BÀI VIẾT
-  // ============================================================================
+  // ==============================================================================
+  // KHỐI 5: LỌC VÀ RENDER DANH SÁCH BÀI VIẾT (TIÊU ĐIỂM + LƯỚI BÀI VIẾT)
+  // ==============================================================================
   function renderArticlesList() {
     let filtered = allArticles.filter((a) => a.status === "published");
 
@@ -256,20 +268,21 @@ if (typeof initPublicFooter === "function") {
     }
   }
 
-  // ============================================================================
-  // E. RENDER SIDEBAR: "ĐỌC NHIỀU NHẤT TRONG TUẦN" & "TAG NỔI BẬT"
-  // Sử dụng hàm chung initPublicSidebar từ common.js để đồng nhất tiêu chí
-  // ============================================================================
+  // ==============================================================================
+  // KHỐI 6: RENDER SIDEBAR CHUNG (ĐỌC NHIỀU NHẤT & ĐÁM MÂY THẺ TAG)
+  // ==============================================================================
   await initPublicSidebar({
     rankMountId: "category-rank-mount",
     tagMountId: "category-tag-cloud-mount"
   });
 
-  // Render lần đầu
+  // Render danh sách bài viết lần đầu
   renderArticlesList();
 }
 
-// Khởi chạy an toàn khi trang đã sẵn sàng
+// ==============================================================================
+// KHỐI 7: KHỞI CHẠY AN TOÀN TRANG CHUYÊN MỤC
+// ==============================================================================
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initCategoryPage);
 } else {

@@ -1,10 +1,28 @@
 /**
  * ==============================================================================
- * MẠCH TIN - SEARCH.JS (Xử lý Tìm kiếm, Lọc thẻ Tag, Chuyên mục & Highlight từ khóa)
+ * TÊN FILE: frontend/assets/js/search.js
+ * PHÂN HỆ: Tìm kiếm & Lọc bài viết (Public Search & Tag Discovery Module)
+ * MÔ TẢ: Khởi tạo và xử lý toàn bộ logic tìm kiếm nội dung trên trang công khai:
+ *        1. Đọc và đồng bộ tham số URL (?q=, ?tag=, ?cat=, ?sort=).
+ *        2. Tải toàn bộ dữ liệu bài viết đã xuất bản, chuyên mục và danh sách tag.
+ *        3. Lọc đa điều kiện: Tag, từ khóa tìm kiếm (bỏ dấu tiếng Việt, tìm theo tiêu đề/mô tả/nội dung), chuyên mục.
+ *        4. Sắp xếp kết quả: Mới nhất (newest), cũ nhất (oldest), lượt đọc nhiều nhất (views).
+ *        5. Highlight từ khóa tìm kiếm (thẻ <mark>) trong tiêu đề và tóm tắt kết quả.
+ *        6. Tích hợp sidebar tin đọc nhiều và danh mục hashtag thịnh hành.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/public/search.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, initPublicSidebar, resolveApiUrl, getArticleDetailUrl, etc.)
+ *   - backend/api/public/articles.php
+ *   - backend/api/public/categories.php
+ *   - backend/api/public/tags.php
  * ==============================================================================
  */
 
 async function initSearchPage() {
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO KHUNG TRANG, ĐỌC THAM SỐ URL & TẢI DỮ LIỆU TÌM KIẾM
+  // ==============================================================================
   // 1. Khởi tạo Header và Footer dùng chung
   if (typeof initPublicHeader === "function") await initPublicHeader("search");
   if (typeof initPublicFooter === "function") await initPublicFooter();
@@ -63,7 +81,9 @@ async function initSearchPage() {
     tagMountId: "sidebarAllTagsMount"
   });
 
-  // 5. Lắng nghe sự kiện Lọc & Sắp xếp
+  // ==============================================================================
+  // KHỐI 2: LẮNG NGHE SỰ KIỆN TÌM KIẾM, LỌC CHUYÊN MỤC & SẮP XẾP
+  // ==============================================================================
   if (categoryFilter) {
     categoryFilter.addEventListener("change", (e) => {
       selectedCategory = e.target.value;
@@ -99,9 +119,9 @@ async function initSearchPage() {
   // 6. Thực thi tìm kiếm lần đầu khi tải trang
   executeSearch();
 
-  // ==========================================================================
-  // HÀM XỬ LÝ TÌM KIẾM & LỌC CHÍNH
-  // ==========================================================================
+  // ==============================================================================
+  // KHỐI 3: THUẬT TOÁN TÌM KIẾM, LỌC ĐA ĐIỀU KIỆN & SẮP XẾP BÀI VIẾT
+  // ==============================================================================
   function executeSearch() {
     let publishedArticles = articles.filter((a) => a.status === "published");
 
@@ -184,9 +204,9 @@ async function initSearchPage() {
     renderArticleCards(publishedArticles, queryParam);
   }
 
-  // ==========================================================================
-  // HÀM RENDER KẾT QUẢ VÀ HIGHLIGHT TỪ KHÓA
-  // ==========================================================================
+  // ==============================================================================
+  // KHỐI 4: RENDER DANH SÁCH KẾT QUẢ & HIGHLIGHT TỪ KHÓA TÌM KIẾM
+  // ==============================================================================
   function renderArticleCards(list, keyword) {
     if (!searchResultsList) return;
 
@@ -274,9 +294,9 @@ async function initSearchPage() {
       .join("");
   }
 
-  // ==========================================================================
-  // CÁC HÀM TIỆN ÍCH
-  // ==========================================================================
+  // ==============================================================================
+  // KHỐI 5: CÁC HÀM TIỆN ÍCH HỖ TRỢ TÌM KIẾM (XỬ LÝ DẤU, REGEX & DOM OPTIONS)
+  // ==============================================================================
   function highlightKeyword(text, keyword) {
     if (!text) return "";
     if (!keyword) return escapeHtml(text);

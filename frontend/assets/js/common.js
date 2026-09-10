@@ -1,11 +1,22 @@
 /**
  * ==============================================================================
- * MẠCH TIN - COMMON.JS (Tiện ích & Hàm dùng chung toàn hệ thống)
- * ==============================================================================
- * 1. Auth & Session Helper (getCurrentUser, logout, checkAuth - kết nối PHP / MySQL)
- * 2. Formatting & Security Utilities (formatDate, timeAgo, escapeHtml, getInitials)
- * 3. Toast Notification (Toastify JS wrapper)
- * 4. Public Chrome Renderers (Header & Footer dùng chung)
+ * TÊN FILE: frontend/assets/js/common.js
+ * PHÂN HỆ: Thư viện Tiện ích & Khung Giao diện dùng chung (Shared Frontend Core & Chrome Utilities)
+ * MÔ TẢ: Cung cấp toàn bộ các tiện ích nền tảng và hàm dùng chung cho toàn bộ giao diện:
+ *        1. Auth & Session Helper: Quản lý phiên PHP Session, lấy user hiện tại, đăng xuất, kiểm tra quyền truy cập.
+ *        2. API URL Resolver & Safe Fetch: Chuẩn hóa đường dẫn tương đối gọi API backend và phân tích JSON an toàn.
+ *        3. Formatting & Security Utilities: Tạo slug SEO, URL bài viết/tác giả, chống XSS, định dạng ngày tháng tiếng Việt, số liệu.
+ *        4. Asset & Media Resolvers: Chuẩn hóa đường dẫn hình ảnh, render ảnh bìa bài viết với fallback placeholder, avatar người dùng.
+ *        5. Toast Notification: Trình bao bọc hiển thị thông báo Toast chuẩn màu sắc Pastel (Thành công, Thông tin, Cảnh báo, Lỗi).
+ *        6. Public Chrome Renderers: Tự động khởi tạo Header, Ticker tin tức nóng, Footer thông tin tòa soạn và Sidebar đọc nhiều / Tags nổi bật.
+ * PHẠM VI SỬ DỤNG:
+ *   - [DÙNG CHUNG TOÀN HỆ THỐNG] Tất cả các trang HTML thuộc phân hệ Public, User, Reporter, Editor, Admin.
+ * PHỤ THUỘC (APIs):
+ *   - backend/api/auth/me.php
+ *   - backend/api/auth/logout.php
+ *   - backend/api/public/categories.php
+ *   - backend/api/public/articles.php
+ *   - backend/api/admin/contact-config.php
  * ==============================================================================
  */
 
@@ -17,7 +28,7 @@ function getSystemTime() {
 }
 
 // ==============================================================================
-// 1. AUTH & SESSION HELPER (Kết nối PHP Session + MySQL Backend)
+// PHẦN 1: AUTH & SESSION HELPER (KẾT NỐI PHP SESSION & PHÂN QUYỀN TRUY CẬP)
 // ==============================================================================
 
 /**

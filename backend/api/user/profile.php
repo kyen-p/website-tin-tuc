@@ -1,4 +1,26 @@
 <?php
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/user/profile.php
+ * PHÂN HỆ: API Hồ sơ Cá nhân (User Profile Service)
+ * MÔ TẢ: Lấy và cập nhật thông tin tài khoản cá nhân:
+ *        - GET: Lấy thông tin chi tiết của người dùng đang đăng nhập.
+ *        - PUT: Cập nhật họ tên, username, email, tiểu sử (bio), avatar (tự động xóa ảnh cũ khỏi server).
+ * PHẠM VI SỬ DỤNG:
+ *   - [API THÀNH VIÊN ĐĂNG NHẬP]
+ *   - Phương thức: GET, PUT
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireLogin, $_SESSION['user_id'])
+ *   - backend/helpers/file.php (deleteUploadedFile khi thay đổi avatar)
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/profile.js (Tải và cập nhật thông tin cá nhân)
+ *   - frontend/assets/js/admin-layout.js (Đồng bộ thông tin hiển thị trên Topbar)
+ * TRẢ VỀ (JSON):
+ *   - { success: true, data: { id, username, email, full_name, avatar, bio, role, status, created_at }, message: "..." }
+ * ==============================================================================
+ */
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -12,12 +34,10 @@ $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-
-    // =========================================================
-    // GET: Lấy thông tin cá nhân của người dùng đang đăng nhập
-    // =========================================================
+    // ==============================================================================
+    // NGHIỆP VỤ 1: GET - LẤY THÔNG TIN CÁ NHÂN CỦA NGƯỜI DÙNG HIỆN TẠI
+    // ==============================================================================
     if ($method === 'GET') {
-
         $stmt = $pdo->prepare("
             SELECT
                 id,
@@ -48,14 +68,11 @@ try {
         );
     }
 
-
-    // =========================================================
-    // PUT: Cập nhật thông tin cá nhân
-    // Chỉ cho phép sửa: full_name, bio, avatar
-    // =========================================================
+    // ==============================================================================
+    // NGHIỆP VỤ 2: PUT - CẬP NHẬT THÔNG TIN HỒ SƠ CÁ NHÂN
+    // ==============================================================================
     if ($method === 'PUT') {
-
-        // Đọc dữ liệu JSON từ frontend
+        // Đọc dữ liệu JSON từ request body
         $input = json_decode(
             file_get_contents('php://input'),
             true
@@ -65,7 +82,7 @@ try {
             jsonResponse(false, null, "Dữ liệu gửi lên không hợp lệ");
         }
 
-        // Lấy dữ liệu
+        // Tiếp nhận và cắt bỏ khoảng trắng thừa
         $fullName = isset($input['full_name'])
             ? trim($input['full_name'])
             : '';
@@ -86,12 +103,12 @@ try {
             ? trim($input['avatar'])
             : '';
 
-        // Kiểm tra họ tên
+        // Kiểm tra hợp lệ họ tên
         if ($fullName === '') {
             jsonResponse(false, null, "Họ và tên không được để trống");
         }
 
-        // Kiểm tra tên đăng nhập
+        // Kiểm tra hợp lệ tên đăng nhập
         if ($username === '') {
             jsonResponse(false, null, "Tên đăng nhập không được để trống");
         }
@@ -100,7 +117,7 @@ try {
             jsonResponse(false, null, "Tên đăng nhập từ 3 - 30 ký tự, không chứa dấu cách hoặc ký tự đặc biệt");
         }
 
-        // Kiểm tra email
+        // Kiểm tra hợp lệ địa chỉ email
         if ($email === '') {
             jsonResponse(false, null, "Email không được để trống");
         }
@@ -109,14 +126,14 @@ try {
             jsonResponse(false, null, "Định dạng email không hợp lệ");
         }
 
-        // Kiểm tra trùng lặp username
+        // Kiểm tra trùng lặp username với người dùng khác
         $stmtCheckUser = $pdo->prepare("SELECT id FROM users WHERE username = ? AND id != ? LIMIT 1");
         $stmtCheckUser->execute([$username, $userId]);
         if ($stmtCheckUser->fetch()) {
             jsonResponse(false, null, "Tên đăng nhập này đã có người sử dụng. Vui lòng chọn tên khác!");
         }
 
-        // Kiểm tra trùng lặp email
+        // Kiểm tra trùng lặp email với người dùng khác
         $stmtCheckEmail = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1");
         $stmtCheckEmail->execute([$email, $userId]);
         if ($stmtCheckEmail->fetch()) {
@@ -132,7 +149,7 @@ try {
             deleteUploadedFile($currentAvatar);
         }
 
-        // Cập nhật đúng user đang đăng nhập
+        // Cập nhật thông tin vào cơ sở dữ liệu
         $stmt = $pdo->prepare("
             UPDATE users
             SET
@@ -153,7 +170,7 @@ try {
             $userId
         ]);
 
-        // Lấy lại thông tin mới nhất
+        // Lấy lại thông tin mới nhất sau khi cập nhật
         $stmt = $pdo->prepare("
             SELECT
                 id,
@@ -180,12 +197,10 @@ try {
         );
     }
 
-
-    // =========================================================
-    // Các phương thức khác
-    // =========================================================
+    // Phản hồi khi client gọi sai phương thức HTTP
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
 }
+

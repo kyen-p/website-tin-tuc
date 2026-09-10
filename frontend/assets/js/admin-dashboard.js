@@ -1,13 +1,32 @@
 /**
  * ==============================================================================
- * ADMIN DASHBOARD - GIÁM SÁT HỆ THỐNG TOÀN DIỆN
- * Đồng bộ 100% Layout & Visual Language với Editor/Reporter Dashboard
+ * TÊN FILE: frontend/assets/js/admin-dashboard.js
+ * PHÂN HỆ: Tổng quan Giám sát Hệ thống Quản trị viên (Admin Dashboard Module)
+ * MÔ TẢ: Thu thập dữ liệu và biểu diễn các chỉ số KPI toàn hệ thống:
+ *        1. Tải song song dữ liệu qua admin/users.php, admin/published-articles.php, public/categories.php, admin/comments.php.
+ *        2. Tính toán các chỉ số: Tổng tài khoản (phân tách admin, editor, reporter, reader), tổng bài viết xuất bản/ẩn,
+ *           lượt xem trung bình và tổng bình luận.
+ *        3. Render lưới thẻ chỉ số KPI tổng quan đồng bộ chuẩn Editorial.
+ *        4. Biểu đồ Chart.js: Xu hướng bài đăng & lượt xem 7 ngày gần nhất; Cơ cấu bài viết theo chuyên mục.
+ *        5. Bảng Top 5 bài viết có lượt xem cao nhất và Bảng Năng suất Phóng viên (số bài xuất bản, số bài chờ duyệt, tổng view).
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/admin/dashboard.html
+ * PHỤ THUỘC:
+ *   - Chart.js (thư viện biểu đồ)
+ *   - frontend/assets/js/common.js (resolveApiUrl, getSystemTime, getArticleViews, etc.)
+ *   - backend/api/admin/users.php
+ *   - backend/api/admin/published-articles.php
+ *   - backend/api/public/categories.php
+ *   - backend/api/admin/comments.php
  * ==============================================================================
  */
 
 (function () {
   "use strict";
 
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO DASHBOARD & TẢI DỮ LIỆU TỔNG HỢP QUA API
+  // ==============================================================================
   let trendChartInstance = null;
   let categoryChartInstance = null;
 
@@ -43,6 +62,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 2: TÍNH TOÁN CÁC CHỈ SỐ KPI VÀ RENDER KHUNG BỐ CỤC DASHBOARD
+  // ==============================================================================
   /**
    * Tính toán các chỉ số KPI
    */
@@ -263,6 +285,9 @@
     `;
   }
 
+  // ==============================================================================
+  // KHỐI 3: KHỞI TẠO BIỂU ĐỒ TRỰC QUAN CHART.JS (XU HƯỚNG & CƠ CẤU CHUYÊN MỤC)
+  // ==============================================================================
   /**
    * Khởi tạo Biểu đồ Xu hướng 7 ngày qua (Chart.js)
    */
@@ -450,6 +475,9 @@
     });
   }
 
+  // ==============================================================================
+  // KHỐI 4: RENDER BẢNG TOP BÀI VIẾT XEM NHIỀU & BẢNG NĂNG SUẤT PHÓNG VIÊN
+  // ==============================================================================
   /**
    * Render Top 5 Bài viết xem nhiều nhất (Đồng bộ với Editor/Reporter table row)
    */

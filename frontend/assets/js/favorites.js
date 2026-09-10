@@ -1,16 +1,24 @@
 /**
  * ==============================================================================
- * MẠCH TIN - FAVORITES.JS
- *
- * API:
- * GET    ../../backend/api/user/favorites.php
- * POST   ../../backend/api/user/favorites.php
- * DELETE ../../backend/api/user/favorites.php
+ * TÊN FILE: frontend/assets/js/favorites.js
+ * PHÂN HỆ: Danh sách Bài viết Yêu thích (User Favorites Module)
+ * MÔ TẢ: Quản lý danh sách bài báo độc giả đã đánh dấu lưu trữ/yêu thích:
+ *        1. Tải danh sách bài viết yêu thích của tài khoản hiện tại qua GET backend/api/user/favorites.php.
+ *        2. Render danh sách thẻ bài viết yêu thích (kèm ảnh bìa, tóm tắt, ngày lưu, link chi tiết).
+ *        3. Bỏ lưu bài viết trực tiếp khỏi danh sách (DELETE) hoặc thêm mới bài viết (POST).
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/user/favorites.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, showToast, renderCoverImage, etc.)
+ *   - backend/api/user/favorites.php
  * ==============================================================================
  */
 
 const FAVORITES_API = "../../backend/api/user/favorites.php";
 
+// ==============================================================================
+// KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DANH SÁCH YÊU THÍCH TỪ BACKEND
+// ==============================================================================
 async function initFavoritesPage() {
   // Khởi tạo Header / Footer
   if (typeof initPublicHeader === "function") {
@@ -101,6 +109,9 @@ async function loadFavorites() {
   }
 }
 
+// ==============================================================================
+// KHỐI 2: RENDER GIAO DIỆN DANH SÁCH BÀI VIẾT ĐÃ LƯU
+// ==============================================================================
 /**
  * Render danh sách từ dữ liệu PHP
  */
@@ -258,6 +269,9 @@ function renderFavoritesList(favoriteArticles) {
   `;
 }
 
+// ==============================================================================
+// KHỐI 3: CÁC THAO TÁC API (THÊM / XÓA BÀI VIẾT YÊU THÍCH)
+// ==============================================================================
 /**
  * POST: Thêm bài viết yêu thích
  * Có thể được gọi từ các trang bài viết khác.

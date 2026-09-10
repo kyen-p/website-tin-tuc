@@ -1,16 +1,27 @@
 /**
  * ==============================================================================
- * ADMIN COMMENTS MANAGEMENT - QUẢN LÝ BÌNH LUẬN ĐƠN GIẢN HÓA
- * ==============================================================================
- * 1. Bảng danh sách bình luận tập trung, không phân mảnh tab báo cáo phức tạp.
- * 2. Tìm kiếm theo nội dung, người bình luận, lọc theo bài viết.
- * 3. Thao tác xóa trực tiếp bình luận vi phạm với modal xác nhận chuẩn hệ thống.
+ * TÊN FILE: frontend/assets/js/admin-comments.js
+ * PHÂN HỆ: Quản trị Bình luận Hệ thống (Admin Comments Management Module)
+ * MÔ TẢ: Kiểm duyệt và giám sát các phản hồi, bình luận của độc giả trên toàn hệ thống bài viết:
+ *        1. Tải danh sách bình luận qua admin/comments.php và danh sách bài viết đã xuất bản qua admin/published-articles.php.
+ *        2. Lọc bình luận theo bài viết cụ thể, sắp xếp theo thời gian (mới nhất / cũ nhất).
+ *        3. Tìm kiếm theo nội dung bình luận, tên độc giả (@username) hoặc tiêu đề bài viết.
+ *        4. Xóa vĩnh viễn các bình luận vi phạm chính sách qua API DELETE admin/comments.php với modal xác nhận an toàn.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/admin/comments.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, renderUserAvatar, timeAgo, getArticleDetailUrl)
+ *   - backend/api/admin/comments.php
+ *   - backend/api/admin/published-articles.php
  * ==============================================================================
  */
 
 (function () {
   "use strict";
 
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI BỘ LỌC BÌNH LUẬN
+  // ==============================================================================
   let allComments = [];
   let allArticles = [];
 
@@ -30,6 +41,9 @@
     renderCommentsTable();
   }
 
+  // ==============================================================================
+  // KHỐI 2: TẢI DỮ LIỆU BÌNH LUẬN & BÀI VIẾT TỪ API
+  // ==============================================================================
   async function loadData() {
     try {
       const [commentsRes, articlesRes] = await Promise.all([
@@ -45,6 +59,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 3: RENDER BỐ CỤC KHUNG THẺ, BẢNG BÌNH LUẬN & MODAL XÓA
+  // ==============================================================================
   function renderPageStructure() {
     const container = document.getElementById("workspace-content");
     if (!container) return;
@@ -127,6 +144,9 @@
     `;
   }
 
+  // ==============================================================================
+  // KHỐI 4: GẮN SỰ KIỆN TÌM KIẾM, BỘ LỌC & THAO TÁC XÓA BÌNH LUẬN (API DELETE)
+  // ==============================================================================
   function bindEvents() {
     const searchInput = document.getElementById("commentSearchInput");
     if (searchInput) {
@@ -193,6 +213,9 @@
     };
   }
 
+  // ==============================================================================
+  // KHỐI 5: LỌC DỮ LIỆU, SẮP XẾP & RENDER CÁC HÀNG BẢNG BÌNH LUẬN
+  // ==============================================================================
   function renderCommentsTable() {
     const tbody = document.getElementById("commentTableBody");
     if (!tbody) return;

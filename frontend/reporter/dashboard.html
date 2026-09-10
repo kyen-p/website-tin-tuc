@@ -1,3 +1,16 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/reporter/dashboard.html
+PHÂN HỆ: Bàn Làm Việc Phóng Viên - Bảng Thống Kê (Reporter Dashboard View)
+MÔ TẢ: Khung giao diện trung tâm theo dõi thống kê bài viết dành cho phóng viên:
+       - Sidebar điều hướng phóng viên (#admin-sidebar) được render tự động bởi admin-layout.js.
+       - Thanh tiêu đề trên cùng (#admin-topbar) chứa tên tài khoản và avatar.
+       - Vùng gắn nội dung thống kê (#workspace-content): các thẻ chỉ số (bài viết, lượt đọc, bình luận), bộ lọc thời gian và bảng bài viết.
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, admin-layout.css
+       - frontend/assets/js/common.js, admin-layout.js, reporter-dashboard.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,16 +25,20 @@
 </head>
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH)            -->
+  <!-- ============================================================================== -->
   <div class="admin-workspace">
-    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
-    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
     <div class="admin-main">
       <!-- Topbar tối giản: Tên & Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- Nội dung chính -->
+      <!-- ============================================================================== -->
+      <!-- KHỐI 2: VÙNG NỘI DUNG HIỂN THỊ CÁC CHỈ SỐ THỐNG KÊ CỦA BÀI VIẾT                -->
+      <!-- ============================================================================== -->
       <main class="admin-content">
         <div class="admin-page-header">
           <h1 class="admin-page-title">Thống kê bài viết</h1>
@@ -29,13 +46,15 @@
         </div>
 
         <div id="workspace-content">
-          <!-- Sẽ được render tự động bởi JavaScript -->
+          <!-- Sẽ được render tự động bởi reporter-dashboard.js -->
         </div>
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

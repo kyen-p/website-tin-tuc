@@ -1,15 +1,26 @@
 /**
  * ==============================================================================
- * MẠCH TIN - MY-COMMENTS.JS
- * API theo yêu cầu:
- * POST   ../../backend/api/user/comments.php
- * DELETE ../../backend/api/user/comments.php
+ * TÊN FILE: frontend/assets/js/my-comments.js
+ * PHÂN HỆ: Quản lý Bình luận cá nhân (User My-Comments Module)
+ * MÔ TẢ: Hiển thị và quản lý tất cả bình luận do người dùng hiện tại đã đăng:
+ *        1. Tải danh sách bình luận cá nhân từ backend/api/user/my-comments.php.
+ *        2. Render danh sách kèm ngữ cảnh bài viết (tên bài, liên kết nhảy tới vị trí bình luận).
+ *        3. Hỗ trợ menu hành động (xem chi tiết, mở modal xác nhận xóa bình luận).
+ *        4. Thực thi xóa bình luận qua phương thức DELETE tới backend/api/user/my-comments.php.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/user/my-comments.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, resolveApiUrl, showToast, escapeHtml, etc.)
+ *   - backend/api/user/my-comments.php
  * ==============================================================================
  */
 
 const COMMENTS_API = typeof resolveApiUrl === "function" ? resolveApiUrl("user/my-comments.php") : "/backend/api/user/my-comments.php";
 let activeDeleteCommentId = null;
 
+// ==============================================================================
+// KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DANH SÁCH BÀI BÌNH LUẬN CỦA BẢN THÂN
+// ==============================================================================
 async function initMyCommentsPage() {
   // Header
   if (typeof initPublicHeader === "function") {
@@ -46,6 +57,9 @@ async function initMyCommentsPage() {
   });
 }
 
+// ==============================================================================
+// KHỐI 2: RENDER GIAO DIỆN DANH SÁCH BÌNH LUẬN & TRẠNG THÁI RỖNG
+// ==============================================================================
 function renderCommentsApiNotAvailable() {
   const mount = document.getElementById("my-comments-mount");
 
@@ -312,6 +326,9 @@ function renderMyCommentsList(comments) {
   `;
 }
 
+// ==============================================================================
+// KHỐI 3: THAO TÁC MENU TÙY CHỌN, MODAL VÀ XÓA BÌNH LUẬN QUA API
+// ==============================================================================
 /**
  * Đóng / mở menu ba chấm
  */

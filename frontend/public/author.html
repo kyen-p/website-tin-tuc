@@ -1,3 +1,19 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/public/author.html
+PHÂN HỆ: Trang Hồ Sơ Tác Giả & Phóng Viên (Public Author Profile View)
+MÔ TẢ: Khung giao diện xem hồ sơ cá nhân và các bài viết của phóng viên / tác giả:
+       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường.
+       - Khối thông tin tác giả: ảnh đại diện, họ tên, vai trò, email liên hệ, tiểu sử.
+       - Thống kê bài viết đã đăng & tổng lượt đọc của tác giả.
+       - Bộ lọc chuyên mục dành riêng cho tác giả (#author-cat-filter).
+       - Lưới danh sách các bài viết đã xuất bản của tác giả (#author-articles-mount).
+       - Vùng gắn Footer trang tự động (#site-footer).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, public-layout.css, public.css
+       - frontend/assets/js/common.js, author.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,10 +28,14 @@
 </head>
 <body>
 
-  <!-- 1. HEADER & TICKER CÔNG KHAI (Tự động render bởi common.js) -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
+  <!-- ============================================================================== -->
   <div id="site-header"></div>
 
-  <!-- 2. NỘI DUNG TRANG TÁC GIẢ -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 2: NỘI DUNG HỒ SƠ TÁC GIẢ & DANH SÁCH BÀI VIẾT ĐÃ XUẤT BẢN                -->
+  <!-- ============================================================================== -->
   <main>
     <div class="wrap">
       <!-- Breadcrumb -->
@@ -93,10 +113,14 @@
     </div>
   </main>
 
-  <!-- 3. FOOTER CÔNG KHAI (Tự động render bởi common.js) -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
+  <!-- ============================================================================== -->
   <div id="site-footer"></div>
 
-  <!-- SCRIPTS -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/author.js"></script>
 </body>

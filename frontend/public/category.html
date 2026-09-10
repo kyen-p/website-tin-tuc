@@ -1,3 +1,18 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/public/category.html
+PHÂN HỆ: Trang Chuyên Mục & Lọc Tin Công Khai (Public Category View)
+MÔ TẢ: Khung giao diện hiển thị bài viết theo chuyên mục hoặc bộ lọc:
+       - Đường dẫn Breadcrumb (#breadcrumb-category).
+       - Tiêu đề, mô tả và danh sách tag con thuộc chuyên mục (#category-tags-mount).
+       - Khối bài tiêu điểm của chuyên mục (#category-featured-mount).
+       - Lưới danh sách bài viết (#category-grid-mount) và thanh thông báo cuối trang (#category-end-notice).
+       - Cột phụ: Bảng xếp hạng đọc nhiều nhất trong tuần (#category-rank-mount) và Tag Cloud (#category-tag-cloud-mount).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, public-layout.css, public.css
+       - frontend/assets/js/common.js, category.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -15,10 +30,14 @@
 </head>
 <body>
 
-  <!-- 1. HEADER & TICKER CÔNG KHAI (Tự động render bởi common.js) -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
+  <!-- ============================================================================== -->
   <div id="site-header"></div>
 
-  <!-- 2. NỘI DUNG CHÍNH TRANG CHUYÊN MỤC -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 2: NỘI DUNG CHÍNH CHUYÊN MỤC (TIÊU ĐIỂM, LƯỚI BÀI VIẾT, SIDEBAR XẾP HẠNG) -->
+  <!-- ============================================================================== -->
   <main>
     <div class="wrap">
       <!-- Breadcrumb -->
@@ -80,10 +99,14 @@
     </div>
   </main>
 
-  <!-- 4. FOOTER CÔNG KHAI (Tự động render bởi common.js) -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
+  <!-- ============================================================================== -->
   <div id="site-footer"></div>
 
-  <!-- SCRIPTS -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/category.js"></script>

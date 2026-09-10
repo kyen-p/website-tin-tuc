@@ -1,19 +1,42 @@
 <?php
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/user/my-comments.php
+ * PHÂN HỆ: API Quản lý Bình luận Người dùng (User Comments Service)
+ * MÔ TẢ: Cung cấp đầy đủ các thao tác CRUD bình luận cho người dùng đăng nhập:
+ *        - GET: Lấy danh sách lịch sử bình luận của chính người dùng.
+ *        - POST: Đăng bình luận mới cho một bài viết (kiểm tra tài khoản không bị khóa).
+ *        - PUT: Chỉnh sửa nội dung bình luận thuộc quyền sở hữu của chính mình.
+ *        - DELETE: Xóa bình luận thuộc quyền sở hữu của chính mình.
+ * PHẠM VI SỬ DỤNG:
+ *   - [API THÀNH VIÊN ĐĂNG NHẬP]
+ *   - Phương thức: GET, POST, PUT, DELETE
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireLogin, $_SESSION['user_id'])
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/article-detail.js (Đăng bình luận mới dưới bài viết)
+ *   - frontend/assets/js/profile.js (Quản lý tab lịch sử bình luận cá nhân, sửa/xóa bình luận)
+ * TRẢ VỀ (JSON):
+ *   - Theo từng nghiệp vụ CRUD tương ứng
+ * ==============================================================================
+ */
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 
-// Bắt buộc đăng nhập
+// Bắt buộc đăng nhập trước khi thực hiện bất kỳ thao tác bình luận nào
 requireLogin();
 
 $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    // =========================================================
-    // GET: Lấy danh sách bình luận của user đang đăng nhập
-    // =========================================================
+    // ==============================================================================
+    // NGHIỆP VỤ 1: GET - LẤY DANH SÁCH BÌNH LUẬN CỦA USER ĐANG ĐĂNG NHẬP
+    // ==============================================================================
     if ($method === 'GET') {
         $stmt = $pdo->prepare("
             SELECT c.id, c.article_id, c.content, c.created_at,
@@ -29,9 +52,9 @@ try {
         jsonResponse(true, $comments, "Lấy danh sách bình luận thành công");
     }
 
-    // =========================================================
-    // POST: Thêm bình luận
-    // =========================================================
+    // ==============================================================================
+    // NGHIỆP VỤ 2: POST - ĐĂNG BÌNH LUẬN MỚI
+    // ==============================================================================
     if ($method === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -46,7 +69,7 @@ try {
             jsonResponse(false, null, "Vui lòng nhập đầy đủ thông tin");
         }
 
-        // Kiểm tra quyền của user (tài khoản có bị khóa không)
+        // Kiểm tra trạng thái hoạt động của tài khoản (tài khoản bị khóa không được bình luận)
         $stmt = $pdo->prepare("SELECT status, lock_reason FROM users WHERE id = ?");
         $stmt->execute([$userId]);
         $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -55,7 +78,7 @@ try {
             jsonResponse(false, null, "Tài khoản của bạn đã bị khóa: " . ($userRow['lock_reason'] ?: "Vi phạm tiêu chuẩn cộng đồng"));
         }
 
-        // Kiểm tra bài viết tồn tại và đã xuất bản
+        // Kiểm tra bài viết mục tiêu có tồn tại và đã xuất bản không
         $stmt = $pdo->prepare("SELECT id FROM articles WHERE id = ? AND status = 'published' LIMIT 1");
         $stmt->execute([$articleId]);
 
@@ -63,7 +86,7 @@ try {
             jsonResponse(false, null, "Không tìm thấy bài viết");
         }
 
-        // Thêm bình luận vào MySQL
+        // Thêm bình luận mới vào cơ sở dữ liệu
         $stmt = $pdo->prepare("
             INSERT INTO comments (article_id, user_id, content, created_at)
             VALUES (?, ?, ?, NOW())
@@ -71,7 +94,7 @@ try {
         $stmt->execute([$articleId, $userId, $content]);
         $newCommentId = $pdo->lastInsertId();
 
-        // Lấy thông tin bình luận vừa tạo kèm user
+        // Lấy lại đầy đủ bản ghi vừa tạo kèm thông tin người gửi để phản hồi ngay cho giao diện
         $fetchStmt = $pdo->prepare("
             SELECT c.id, c.article_id, c.user_id, c.content, c.created_at,
                    u.full_name, u.username, u.avatar, u.role
@@ -85,9 +108,9 @@ try {
         jsonResponse(true, $newComment, "Bình luận thành công");
     }
 
-    // =========================================================
-    // PUT: Chỉnh sửa nội dung bình luận của chính mình
-    // =========================================================
+    // ==============================================================================
+    // NGHIỆP VỤ 3: PUT - CHỈNH SỬA NỘI DUNG BÌNH LUẬN CHÍNH CHỦ
+    // ==============================================================================
     if ($method === 'PUT') {
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -102,6 +125,7 @@ try {
             jsonResponse(false, null, "Vui lòng nhập đầy đủ thông tin");
         }
 
+        // Kiểm tra quyền sở hữu bình luận
         $stmt = $pdo->prepare("SELECT id, user_id FROM comments WHERE id = ? LIMIT 1");
         $stmt->execute([$commentId]);
         $comment = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -114,15 +138,16 @@ try {
             jsonResponse(false, null, "Bạn không có quyền chỉnh sửa bình luận này");
         }
 
+        // Cập nhật nội dung bình luận
         $stmt = $pdo->prepare("UPDATE comments SET content = ? WHERE id = ?");
         $stmt->execute([$content, $commentId]);
 
         jsonResponse(true, null, "Chỉnh sửa bình luận thành công");
     }
 
-    // =========================================================
-    // DELETE: Xóa bình luận của chính mình
-    // =========================================================
+    // ==============================================================================
+    // NGHIỆP VỤ 4: DELETE - XÓA BÌNH LUẬN CHÍNH CHỦ
+    // ==============================================================================
     if ($method === 'DELETE') {
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -136,7 +161,7 @@ try {
             jsonResponse(false, null, "Thiếu comment_id");
         }
 
-        // Kiểm tra comment thuộc user đang đăng nhập
+        // Kiểm tra quyền sở hữu bình luận trước khi xóa
         $stmt = $pdo->prepare("SELECT user_id FROM comments WHERE id = ? LIMIT 1");
         $stmt->execute([$commentId]);
         $comment = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -156,8 +181,10 @@ try {
         jsonResponse(true, null, "Xóa bình luận thành công");
     }
 
+    // Phản hồi khi client gọi sai phương thức HTTP
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
 }
+

@@ -1,3 +1,17 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/public/login.html
+PHÂN HỆ: Xác Thực Người Dùng - Đăng Nhập (Public Authentication - Login View)
+MÔ TẢ: Khung giao diện đăng nhập dành cho độc giả và đội ngũ tòa soạn:
+       - Logo Mạch Tin chuyển hướng về trang chủ.
+       - Hộp thông báo tài khoản bị khóa (#lockedAlert, #lockedReasonText).
+       - Form đăng nhập tinh gọn (#loginForm): tài khoản (email/username), mật khẩu (có nút bật/tắt hiển thị).
+       - Nút submit đăng nhập và liên kết chuyển tiếp tới trang đăng ký (register.html).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, auth.css
+       - frontend/assets/js/common.js, login.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -23,7 +37,9 @@
 
 <body class="auth-page">
 
-    <!-- 1. Logo Mạch Tin đặt trên đầu Card -->
+    <!-- ============================================================================== -->
+    <!-- KHỐI 1: LOGO THƯƠNG HIỆU & ĐIỀU HƯỚNG TRANG CHỦ                                -->
+    <!-- ============================================================================== -->
     <a href="index.html" class="auth-top-logo" aria-label="Về trang chủ Mạch Tin">
         <svg class="pulse-mark" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
             <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="var(--crimson, #A6362C)" stroke-width="2.2"
@@ -32,7 +48,9 @@
         <span class="logo__word">MẠCH <em>TIN</em></span>
     </a>
 
-    <!-- 2. Khung Card Đăng nhập trắng -->
+    <!-- ============================================================================== -->
+    <!-- KHỐI 2: KHUNG CARD FORM ĐĂNG NHẬP VÀ CẢNH BÁO KHÓA TÀI KHOẢN                   -->
+    <!-- ============================================================================== -->
     <div class="auth-card">
         <div class="auth-card__header">
             <h1 class="auth-card__title">Đăng nhập</h1>
@@ -80,7 +98,9 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- ============================================================================== -->
+    <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+    <!-- ============================================================================== -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="../assets/js/common.js"></script>
     <script src="../assets/js/login.js"></script>

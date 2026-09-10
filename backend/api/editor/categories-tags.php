@@ -1,12 +1,36 @@
 <?php
+/**
+ * ==============================================================================
+ * TÊN FILE: backend/api/editor/categories-tags.php
+ * PHÂN HỆ: API Quản lý Chuyên mục và Thẻ Tag (Taxonomy Management Service)
+ * MÔ TẢ: Cung cấp đầy đủ các thao tác CRUD danh mục phân loại bài viết cho ban biên tập:
+ *        - GET: Lấy danh sách chuyên mục (categories) hoặc thẻ tag (tags) kèm số lượng bài viết liên kết.
+ *        - POST: Thêm mới chuyên mục hoặc thẻ tag (tự động tạo slug).
+ *        - PUT: Chỉnh sửa tên, slug, mô tả của chuyên mục / tag; hỗ trợ thuật toán gộp thẻ tag trùng lặp thông minh.
+ *        - DELETE: Xóa chuyên mục (nếu chưa có bài viết) hoặc xóa thẻ tag (tự động dọn dẹp liên kết).
+ * PHẠM VI SỬ DỤNG:
+ *   - [KHU VỰC TÒA SOẠN - BAN BIÊN TẬP]
+ *   - Phân quyền: role = 'editor'
+ *   - Tham số truy vấn: type = 'categories' | 'tags'
+ *   - Phương thức: GET, POST, PUT, DELETE
+ * PHỤ THUỘC (HELPERS):
+ *   - backend/config/database.php ($pdo)
+ *   - backend/helpers/response.php (jsonResponse)
+ *   - backend/helpers/auth.php (requireRole)
+ *   - backend/helpers/string.php (createSlug)
+ * ĐƯỢC GỌI BỞI (FRONTEND):
+ *   - frontend/assets/js/categories-tags.js (Giao diện quản lý danh mục và thẻ tag)
+ * TRẢ VỀ (JSON):
+ *   - Theo từng nghiệp vụ CRUD tương ứng
+ * ==============================================================================
+ */
 
-/* MẠCH TIN - EDITOR | API QUẢN LÝ CHUYÊN MỤC VÀ TAG */
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../helpers/response.php';
+require_once __DIR__ . '/../../helpers/auth.php';
+require_once __DIR__ . '/../../helpers/string.php';
 
-require_once '../../config/database.php';
-require_once '../../helpers/response.php';
-require_once '../../helpers/auth.php';
-require_once '../../helpers/string.php';
-
+// Kiểm tra quyền hạn: Chỉ Biên tập viên (editor) mới được quản lý chuyên mục và tag
 requireRole(['editor']);
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -16,7 +40,9 @@ if ($type !== 'categories' && $type !== 'tags') {
     jsonResponse(false, null, "type phải là categories hoặc tags");
 }
 
-/* GET - LẤY DANH SÁCH */
+// ==============================================================================
+// NGHIỆP VỤ 1: GET - LẤY DANH SÁCH CHUYÊN MỤC HOẶC THẺ TAG
+// ==============================================================================
 if ($method === 'GET') {
     try {
         if ($type === 'categories') {
@@ -67,7 +93,9 @@ if ($method === 'GET') {
     }
 }
 
-/* POST - THÊM CATEGORY / TAG */
+// ==============================================================================
+// NGHIỆP VỤ 2: POST - TẠO MỚI CHUYÊN MỤC HOẶC THẺ TAG
+// ==============================================================================
 if ($method === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -173,7 +201,9 @@ if ($method === 'POST') {
     }
 }
 
-/* PUT - CẬP NHẬT CATEGORY / TAG */
+// ==============================================================================
+// NGHIỆP VỤ 3: PUT - CẬP NHẬT CHUYÊN MỤC HOẶC TAG (HỖ TRỢ GỘP TAG TRÙNG LẶP)
+// ==============================================================================
 if ($method === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -276,7 +306,7 @@ if ($method === 'PUT') {
             $targetTag = $checkTarget->fetch(PDO::FETCH_ASSOC);
 
             // =========================================================================
-            // TRƯỜNG HỢP 1: TÊN / SLUG ĐÃ TỒN TẠI -> THỰC HIỆN GỘP THẺ TAG THÔNG MINH
+            // TRƯỜNG HỢP 3.1: TÊN / SLUG ĐÃ TỒN TẠI -> THỰC HIỆN GỘP THẺ TAG THÔNG MINH
             // =========================================================================
             if ($targetTag) {
                 $targetId = (int)$targetTag['id'];
@@ -317,7 +347,7 @@ if ($method === 'PUT') {
             }
 
             // =========================================================================
-            // TRƯỜNG HỢP 2: TÊN TAG MỚI HOÀN TOÀN -> CẬP NHẬT TÊN VÀ SLUG BÌNH THƯỜNG
+            // TRƯỜNG HỢP 3.2: TÊN TAG MỚI HOÀN TOÀN -> CẬP NHẬT TÊN VÀ SLUG BÌNH THƯỜNG
             // =========================================================================
             $stmt = $pdo->prepare("
                 UPDATE tags
@@ -341,7 +371,9 @@ if ($method === 'PUT') {
     }
 }
 
-/* DELETE - XÓA CATEGORY / TAG */
+// ==============================================================================
+// NGHIỆP VỤ 4: DELETE - XÓA CHUYÊN MỤC HOẶC THẺ TAG
+// ==============================================================================
 if ($method === 'DELETE') {
     $id = $_GET['id'] ?? null;
 
@@ -419,6 +451,8 @@ if ($method === 'DELETE') {
     }
 }
 
+// Phản hồi khi client gọi sai phương thức HTTP
 jsonResponse(false, null, "Phương thức HTTP không được hỗ trợ");
+
 
 

@@ -1,23 +1,28 @@
 /**
  * ==============================================================================
- * ADMIN USERS MANAGEMENT - QUẢN LÝ NGƯỜI DÙNG & PHÂN QUYỀN
- * Mạch Tin - Báo Điện Tử
- * 
- * Tính năng & Nghiệp vụ cốt lõi:
- * 1. Phân loại vai trò: Độc giả (user), Phóng viên (reporter), Biên tập viên (editor), Quản trị viên (admin)
- * 2. Cấu trúc Tabs: Tất cả tài khoản | Đội ngũ tòa soạn | Độc giả | Tài khoản bị khóa / Hạn chế
- * 3. Bộ lọc vai trò, trạng thái và tìm kiếm thời gian thực theo tên, username, email
- * 4. Thêm mới tài khoản nhân viên / độc giả với form chuẩn xác
- * 5. Phân quyền / Đổi vai trò linh hoạt kèm thông báo tự động
- * 6. Khóa / Mở khóa tài khoản (khóa đăng nhập) & Khóa / Mở khóa quyền bình luận độc lập
- * 7. Xem chi tiết hồ sơ & đóng góp (bài viết, bình luận, tương tác)
- * 8. Bảo vệ an toàn tài khoản Quản trị viên và duy trì toàn vẹn dữ liệu (sử dụng Khóa/Mở khóa)
+ * TÊN FILE: frontend/assets/js/admin-users.js
+ * PHÂN HỆ: Quản lý Người dùng & Phân quyền Quản trị viên (Admin Users Management Module)
+ * MÔ TẢ: Quản lý toàn bộ danh sách tài khoản người dùng, nhân sự tòa soạn và độc giả:
+ *        1. Tải danh sách người dùng qua admin/users.php và dữ liệu đóng góp qua admin/published-articles.php, admin/comments.php.
+ *        2. Phân loại theo 4 tab: Tất cả tài khoản, Đội ngũ tòa soạn (admin/editor/reporter), Độc giả (user), Tài khoản bị khóa.
+ *        3. Bộ lọc vai trò và trạng thái; Tìm kiếm thời gian thực theo họ tên, @username hoặc email.
+ *        4. Hiển thị thông số đóng góp (số bài viết xuất bản, số bình luận).
+ *        5. Thao tác quản trị: Phân quyền đổi vai trò, Khóa/Mở khóa tài khoản có nhập lý do, Xem lý do khóa tài khoản.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/admin/users.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/js/admin-users-modal.js (window.AdminUsersModals)
+ *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, formatDate, renderUserAvatar, getAdminSortIcon, etc.)
+ *   - backend/api/admin/users.php
  * ==============================================================================
  */
 
 (function () {
   "use strict";
 
+  // ==============================================================================
+  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI BỘ LỌC NGƯỜI DÙNG
+  // ==============================================================================
   let allUsers = [];
   let allArticles = [];
   let allComments = [];
@@ -44,6 +49,9 @@
     renderTableRows();
   }
 
+  // ==============================================================================
+  // KHỐI 2: TẢI DỮ LIỆU NGƯỜI DÙNG & ĐÓNG GÓP TỪ CÁC API HỆ THỐNG
+  // ==============================================================================
   async function loadData() {
     try {
       const [usersRes, articlesRes, commentsRes, categoriesRes] = await Promise.all([
@@ -78,6 +86,9 @@
     return { total, staff, readers, locked };
   }
 
+  // ==============================================================================
+  // KHỐI 3: RENDER KHUNG BỐ CỤC, CÁC TAB ĐIỀU HƯỚNG & THANH CÔNG CỤ LỌC
+  // ==============================================================================
   /**
    * Render khung cấu trúc trang quản lý người dùng
    */
@@ -191,6 +202,9 @@
     return getAdminSortIcon(field, sortField, sortOrder);
   }
 
+  // ==============================================================================
+  // KHỐI 4: RENDER DANH SÁCH HÀNG BẢNG NGƯỜI DÙNG & TÍNH TOÁN ĐÓNG GÓP
+  // ==============================================================================
   /**
    * Render các hàng dữ liệu của Bảng
    */
@@ -462,6 +476,9 @@
     }
   }
 
+  // ==============================================================================
+  // KHỐI 5: GẮN SỰ KIỆN TƯƠNG TÁC, BỘ LỌC & MENU THAO TÁC NGƯỜI DÙNG
+  // ==============================================================================
   /**
    * Đăng ký các sự kiện và hàm xử lý
    */
