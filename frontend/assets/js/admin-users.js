@@ -389,7 +389,7 @@
           <!-- CỘT 6: THAO TÁC 3 CHẤM -->
           <td style="text-align: center; position: relative;">
             ${isSelf || user.role === "admin" ? `
-              <span style="color: var(--muted); font-size: 13px; font-weight: 500;" title="${isSelf ? 'Không thể thao tác trên tài khoản của chính bạn' : 'Tài khoản Quản trị viên được bảo vệ cố định'}">—</span>
+              <span style="color: var(--muted); font-size: 13px; font-weight: 500;" title="${isSelf ? 'Không thể thao tác trên tài khoản của chính bạn' : 'Tài khoản Quản trị viên được bảo vệ cố định'}">-</span>
             ` : `
               <div class="admin-action-dropdown-wrapper" style="position: relative; display: inline-block;">
                 <button 

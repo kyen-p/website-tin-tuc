@@ -127,7 +127,7 @@ window.getCurrentUser = getCurrentUser;
  *
  * Hàm này được GIỮ LẠI dưới dạng no-op (thay vì xóa hẳn) chỉ vì một số màn hình
  * thuộc phạm vi Cặp 2/Cặp 3 (vd: admin-layout.js, profile.js) hiện vẫn gọi trực
- * tiếp setCurrentUser(...) ngoài luồng auth thật — xóa hẳn sẽ làm crash các trang
+ * tiếp setCurrentUser(...) ngoài luồng auth thật - xóa hẳn sẽ làm crash các trang
  * đó. Cặp 1 không tự ý sửa các file đó nên giữ hàm rỗng để đảm bảo tương thích.
  */
 function setCurrentUser(user) {

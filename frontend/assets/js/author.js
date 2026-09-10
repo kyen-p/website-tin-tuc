@@ -34,7 +34,7 @@ async function initAuthorPage() {
   const notFound = document.getElementById("author-not-found");
 
   // 2. Lấy dữ liệu tác giả + danh sách bài viết đã xuất bản từ backend (PHP + MySQL).
-  //    public/authors.php nhận "id" (số) hoặc "username" — trang author.html hiện tại
+  //    public/authors.php nhận "id" (số) hoặc "username" - trang author.html hiện tại
   //    điều hướng chủ yếu bằng ?username=..., nên ưu tiên username khi rawKey không phải số.
   let author = null;
   let authorArticles = [];

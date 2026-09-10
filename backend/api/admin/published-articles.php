@@ -120,7 +120,7 @@ if ($method === 'DELETE') {
     }
 
     // Nhờ đã khai báo ON DELETE CASCADE trong database, xóa articles sẽ tự xóa luôn
-    // comments, article_tags, favorites liên quan — không cần code PHP dọn từng bảng
+    // comments, article_tags, favorites liên quan - không cần code PHP dọn từng bảng
     $stmt = $pdo->prepare("DELETE FROM articles WHERE id = ?");
     $stmt->execute([$id]);
     jsonResponse(true, null, "Đã xóa vĩnh viễn bài viết và các tệp ảnh liên quan");
