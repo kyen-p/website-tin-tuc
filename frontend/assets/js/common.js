@@ -388,8 +388,21 @@ function resolveAssetPath(path) {
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("data:") || trimmed.startsWith("//")) {
     return trimmed;
   }
-  // Loại bỏ dấu / ở đầu nếu có
-  const cleanPath = trimmed.startsWith("/") ? trimmed.substring(1) : trimmed;
+  // Loại bỏ các đường dẫn placeholder không có thực trên máy chủ
+  if (trimmed.includes("placeholder")) {
+    return "";
+  }
+
+  // Chuẩn hóa đường dẫn: nếu trỏ tới backend/api/upload/, loại bỏ các tiền tố relative thừa
+  let cleanPath = trimmed;
+  const backendIndex = cleanPath.indexOf("backend/api/upload/");
+  if (backendIndex !== -1) {
+    cleanPath = cleanPath.substring(backendIndex);
+  } else {
+    while (cleanPath.startsWith("../") || cleanPath.startsWith("./") || cleanPath.startsWith("/")) {
+      cleanPath = cleanPath.replace(/^(\.\.\/|\.\/|\/)/, "");
+    }
+  }
 
   // Kiểm tra nếu trang hiện tại nằm trong thư mục con (ví dụ /public/, /admin/, /user/, /reporter/, /editor/)
   const currentPath = window.location.pathname;
@@ -418,7 +431,11 @@ function resolveAssetPath(path) {
 function renderCoverImage(imagePath, altText, aspectRatioClass) {
   const aspectClass = aspectRatioClass || "ph--16x9";
   const safeAlt = escapeHtml(altText || "Ảnh bài viết");
-  const resolvedUrl = resolveAssetPath(imagePath);
+  const raw = imagePath ? String(imagePath).trim() : "";
+  if (!raw || raw.includes("placeholder")) {
+    return `<div class="ph ${aspectClass}"><span class="ph__label">${safeAlt}</span></div>`;
+  }
+  const resolvedUrl = resolveAssetPath(raw);
 
   if (!resolvedUrl) {
     return `<div class="ph ${aspectClass}"><span class="ph__label">${safeAlt}</span></div>`;

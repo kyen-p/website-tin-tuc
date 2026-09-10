@@ -47,8 +47,8 @@
         return;
       }
 
-      if (file.size > 2 * 1024 * 1024) {
-        showToast("Dung lượng ảnh bìa tối đa là 2MB!", "warning");
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("Dung lượng ảnh bìa tối đa là 5MB!", "warning");
         e.target.value = "";
         return;
       }
@@ -86,7 +86,7 @@
           }).catch(console.error);
         }
 
-        setCoverPreview(imageUrl);
+        setCoverPreview(imageUrl, true);
         showToast("Đã tải ảnh bìa thành công!", "success");
 
       } catch (error) {
@@ -96,21 +96,29 @@
     }
 
     function setCoverPreview(src) {
-      if (!src) {
+      if (!src || src.includes("placeholder")) {
         removeCoverImage();
         return;
       }
+
       currentCoverDataUrl = src;
+
       const previewImg = document.getElementById("cover-image-preview");
       const placeholder = document.getElementById("cover-empty-placeholder");
       const btnRemove = document.getElementById("btn-remove-cover");
+      const labelUpload = document.getElementById("label-upload-cover");
+      const hint = document.getElementById("cover-auto-hint");
 
-      if (previewImg && placeholder && btnRemove) {
+      if (previewImg && placeholder) {
         const displaySrc = typeof resolveAssetPath === "function" ? resolveAssetPath(src) : src;
         previewImg.src = displaySrc;
         previewImg.style.display = "block";
         placeholder.style.display = "none";
-        btnRemove.style.display = "inline-flex";
+        if (btnRemove) btnRemove.style.display = "inline-flex";
+        if (labelUpload) labelUpload.textContent = "Thay đổi ảnh";
+        if (hint) {
+          hint.innerHTML = `<span style="color: #16A34A; font-weight: 600;">✓ Đã chọn ảnh bìa đại diện cho bài viết</span>`;
+        }
       }
     }
 
@@ -123,16 +131,23 @@
       const previewImg = document.getElementById("cover-image-preview");
       const placeholder = document.getElementById("cover-empty-placeholder");
       const btnRemove = document.getElementById("btn-remove-cover");
+      const labelUpload = document.getElementById("label-upload-cover");
+      const hint = document.getElementById("cover-auto-hint");
 
-      if (previewImg && placeholder && btnRemove) {
+      if (previewImg && placeholder) {
         previewImg.src = "";
         previewImg.style.display = "none";
         placeholder.style.display = "block";
-        btnRemove.style.display = "none";
+        if (btnRemove) btnRemove.style.display = "none";
+        if (labelUpload) labelUpload.textContent = "Tải ảnh bìa";
+        if (hint) {
+          hint.innerHTML = `* <strong>Quy định:</strong> Bắt buộc tải ảnh bìa đại diện khi <strong>Gửi duyệt xuất bản</strong>. Bạn có thể tạm để trống khi lưu bản nháp.`;
+        }
       }
 
-      // Xóa file vật lý trên server nếu là ảnh đã upload
-      if (oldUrl && oldUrl.includes("backend/api/upload/")) {
+      // Xóa file vật lý trên server nếu là ảnh đã upload riêng và không nằm trong nội dung bài viết
+      const content = editorInstance ? editorInstance.getData() : "";
+      if (oldUrl && oldUrl.includes("backend/api/upload/") && !content.includes(oldUrl)) {
         try {
           const uploadUrl = typeof resolveApiUrl === "function" ? resolveApiUrl("upload.php") : "../../backend/api/upload.php";
           await fetch(uploadUrl, {
@@ -165,8 +180,8 @@
             throw new Error(msg);
           }
 
-          if (file.size > 2 * 1024 * 1024) {
-            const msg = "Dung lượng ảnh chèn vào bài viết không được vượt quá 2MB!";
+          if (file.size > 5 * 1024 * 1024) {
+            const msg = "Dung lượng ảnh chèn vào bài viết không được vượt quá 5MB!";
             if (typeof showToast === "function") showToast(msg, "warning");
             throw new Error(msg);
           }
@@ -366,16 +381,19 @@
         document.getElementById("article-sapo").value = art.short_description || art.sapo || "";
         document.getElementById("article-category").value = art.category_id || "";
 
-        // Hiển thị ảnh bìa nếu có
-        if (art.cover_image || art.image) {
-          setCoverPreview(art.cover_image || art.image);
-        } else {
-          removeCoverImage();
-        }
-
-        // Đặt nội dung CKEditor
+        // Đặt nội dung CKEditor trước để sẵn sàng kiểm tra ảnh
         if (editorInstance) {
           editorInstance.setData(art.content || "");
+        }
+
+        // Hiển thị ảnh bìa nếu có
+        const rawCover = art.cover_image || art.image || "";
+        const cleanCover = (rawCover && !rawCover.includes("placeholder")) ? rawCover.trim() : "";
+
+        if (cleanCover) {
+          setCoverPreview(cleanCover);
+        } else {
+          removeCoverImage();
         }
 
         selectedTags = [];
@@ -582,37 +600,55 @@
       const categoryId = document.getElementById("article-category").value;
       const content = editorInstance ? editorInstance.getData().trim() : "";
 
-      // Bắt buộc nhập đầy đủ tất cả các trường bắt buộc (*) trước khi lưu nháp hoặc gửi duyệt
+      // Kiểm tra tính hợp lệ tùy theo trạng thái lưu nháp hay gửi duyệt
       if (!title) {
-        showToast("Vui lòng nhập tiêu đề bài viết!", "warning");
+        showToast(targetStatus === "draft" ? "Vui lòng nhập tiêu đề bài viết để lưu bản nháp!" : "Vui lòng nhập tiêu đề bài viết!", "warning");
         document.getElementById("article-title").focus();
         return;
       }
-      if (!sapo) {
-        showToast("Vui lòng nhập đoạn mở đầu / Sapo bài viết!", "warning");
-        document.getElementById("article-sapo").focus();
-        return;
-      }
-      if (!categoryId) {
-        showToast("Vui lòng chọn chuyên mục cho bài viết!", "warning");
-        document.getElementById("article-category").focus();
-        return;
-      }
-      // 1. Xác định ảnh bìa bài viết (Ưu tiên: Ảnh tải lên riêng -> Ảnh đầu tiên trong nội dung -> Ảnh mặc định chuyên mục)
-      let finalCover = currentCoverDataUrl || "";
-      if (!finalCover && content) {
-        const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-        if (imgMatch && imgMatch[1]) {
-          finalCover = imgMatch[1];
+
+      if (targetStatus === "pending") {
+        if (!sapo) {
+          showToast("Vui lòng nhập đoạn mở đầu / Sapo bài viết trước khi gửi duyệt!", "warning");
+          document.getElementById("article-sapo").focus();
+          return;
+        }
+        if (!categoryId) {
+          showToast("Vui lòng chọn chuyên mục cho bài viết trước khi gửi duyệt!", "warning");
+          document.getElementById("article-category").focus();
+          return;
+        }
+        // Bắt buộc ảnh bìa đại diện khi gửi duyệt
+        if (!currentCoverDataUrl) {
+          showToast("Bài viết gửi duyệt bắt buộc phải có ảnh bìa đại diện. Vui lòng tải ảnh bìa lên!", "warning");
+          const coverContainer = document.getElementById("cover-preview-container");
+          if (coverContainer) {
+            coverContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+            coverContainer.style.borderColor = "#DC2626";
+            coverContainer.style.boxShadow = "0 0 0 3px rgba(220, 38, 38, 0.15)";
+            setTimeout(() => {
+              coverContainer.style.borderColor = "";
+              coverContainer.style.boxShadow = "";
+            }, 2500);
+          }
+          return;
+        }
+        if (!content || content === "<p></p>" || content === "<p><br data-cke-filler=\"true\"></p>") {
+          showToast("Vui lòng nhập nội dung chi tiết bài viết trong trình soạn thảo!", "warning");
+          return;
         }
       }
-      if (!finalCover) {
-        finalCover = "../assets/images/placeholder.jpg";
-      }
 
-      if (!content || content === "<p></p>" || content === "<p><br data-cke-filler=\"true\"></p>") {
-        showToast("Vui lòng nhập nội dung chi tiết bài viết trong trình soạn thảo!", "warning");
-        return;
+      // Xác định và chuẩn hóa ảnh bìa
+      let finalCover = currentCoverDataUrl ? currentCoverDataUrl.trim() : "";
+      if (finalCover && finalCover.includes("placeholder")) {
+        finalCover = "";
+      }
+      if (finalCover) {
+        const uploadIdx = finalCover.indexOf("backend/api/upload/");
+        if (uploadIdx !== -1) {
+          finalCover = finalCover.substring(uploadIdx);
+        }
       }
 
       const payload = {

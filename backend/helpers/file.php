@@ -11,12 +11,16 @@ function deleteUploadedFile($relativePath)
         return false;
     }
 
-    // Chuẩn hóa đường dẫn, bỏ dấu / ở đầu nếu có
-    $cleanPath = ltrim(trim($relativePath), '/');
+    $cleanPath = trim($relativePath);
+    $pos = strpos($cleanPath, 'backend/api/upload/');
+    if ($pos !== false) {
+        $cleanPath = substr($cleanPath, $pos);
+    } else {
+        $cleanPath = ltrim($cleanPath, '/');
+    }
 
     // Chỉ cho phép xóa các file nằm trong thư mục upload an toàn của hệ thống
     // Ngăn chặn tấn công Path Traversal (vd: ../../config/database.php)
-    // Dùng strpos !== 0 để tương thích cả PHP 7.x lẫn PHP 8.x
     if (strpos($cleanPath, 'backend/api/upload/') !== 0) {
         return false;
     }

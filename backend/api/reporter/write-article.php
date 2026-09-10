@@ -68,10 +68,33 @@ $targetId = isset($input['id']) && (int)$input['id'] > 0 ? (int)$input['id'] : 0
 $title = isset($input['title']) ? trim($input['title']) : '';
 $shortDescription = isset($input['short_description']) ? trim($input['short_description']) : '';
 $content = isset($input['content']) ? trim($input['content']) : '';
-$coverImage = isset($input['cover_image']) ? trim($input['cover_image']) : '';
+$rawCoverImage = isset($input['cover_image']) ? trim($input['cover_image']) : '';
 $categoryId = isset($input['category_id']) ? (int) $input['category_id'] : 0;
 $status = isset($input['status']) ? trim($input['status']) : 'draft';
 $tags = isset($input['tags']) && is_array($input['tags']) ? $input['tags'] : [];
+
+/**
+ * Tự động chuẩn hóa ảnh bìa hoặc trích xuất ảnh đầu tiên từ nội dung bài viết HTML
+ */
+function sanitizeCoverImagePath($cover)
+{
+    if (empty($cover) || !is_string($cover)) {
+        return null;
+    }
+    $trimmed = trim($cover);
+    if ($trimmed === '' || strpos($trimmed, 'placeholder') !== false) {
+        return null;
+    }
+    $pos = strpos($trimmed, 'backend/api/upload/');
+    if ($pos !== false) {
+        return substr($trimmed, $pos);
+    }
+    $cleaned = preg_replace('#^(\.\./)+#', '', $trimmed);
+    $cleaned = ltrim($cleaned, '/');
+    return $cleaned !== '' ? $cleaned : null;
+}
+
+$coverImage = sanitizeCoverImagePath($rawCoverImage);
 
 $allowedStatuses = ['draft', 'pending'];
 if (!in_array($status, $allowedStatuses, true)) {
@@ -96,6 +119,9 @@ if ($status === 'pending') {
     }
     if ($categoryId <= 0) {
         jsonResponse(false, null, "Vui lòng chọn chuyên mục trước khi gửi duyệt");
+    }
+    if (empty($coverImage)) {
+        jsonResponse(false, null, "Bài viết gửi duyệt bắt buộc phải có ảnh bìa đại diện");
     }
 }
 

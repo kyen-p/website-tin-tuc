@@ -41,6 +41,9 @@ $file = $_FILES['image'];
 
 // Kiểm tra lỗi upload
 if ($file['error'] !== UPLOAD_ERR_OK) {
+    if ($file['error'] === UPLOAD_ERR_INI_SIZE || $file['error'] === UPLOAD_ERR_FORM_SIZE) {
+        jsonResponse(false, null, "Ảnh không được vượt quá 5MB");
+    }
     jsonResponse(false, null, "Upload ảnh thất bại");
 }
 
@@ -52,11 +55,11 @@ if (!in_array($type, ['avatar', 'article'], true)) {
     jsonResponse(false, null, "Loại ảnh không hợp lệ");
 }
 
-// Kiểm tra dung lượng tối đa 2MB
-$maxFileSize = 2 * 1024 * 1024;
+// Kiểm tra dung lượng tối đa 5MB
+$maxFileSize = 5 * 1024 * 1024;
 
 if ($file['size'] > $maxFileSize) {
-    jsonResponse(false, null, "Ảnh không được vượt quá 2MB");
+    jsonResponse(false, null, "Ảnh không được vượt quá 5MB");
 }
 
 // Kiểm tra file có phải ảnh thật không

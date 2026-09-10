@@ -75,13 +75,15 @@ try {
     $stmt->execute([$articleId]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    $coverImage = (!empty($row['cover_image']) && strpos($row['cover_image'], 'placeholder') === false) ? $row['cover_image'] : null;
+
     $article = [
         "id" => (int) $row['id'],
         "title" => $row['title'],
         "slug" => $row['slug'],
         "short_description" => $row['short_description'],
         "content" => $row['content'],
-        "cover_image" => $row['cover_image'],
+        "cover_image" => $coverImage,
         "author_id" => $row['author_id'] !== null ? (int) $row['author_id'] : null,
         "category_id" => $row['category_id'] !== null ? (int) $row['category_id'] : null,
         "is_notable_event" => (bool) $row['is_notable_event'],

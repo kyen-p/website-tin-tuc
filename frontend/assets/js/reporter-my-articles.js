@@ -223,7 +223,7 @@
       // 4. Render các dòng bài viết (Giao diện bảng gọn gàng, tinh tế)
       tbody.innerHTML = filtered.map(art => {
         const catName = categoriesMap[art.category_id] || "Tổng hợp";
-        const coverImg = art.cover_image || art.image || art.thumbnail || "";
+        const coverImg = typeof extractThumbnail === "function" ? extractThumbnail(art, { id: art.category_id, name: catName }) : (art.cover_image || art.image || art.thumbnail || "");
         const desc = art.sapo || art.short_description || art.summary || art.description || "";
         const timeDisplay = formatTime(art);
         const statusBadge = renderStatusBadge(art.status);

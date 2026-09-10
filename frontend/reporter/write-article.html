@@ -101,7 +101,7 @@
                       <circle cx="8.5" cy="8.5" r="1.5"></circle>
                       <polyline points="21 15 16 10 5 21"></polyline>
                     </svg>
-                    Ảnh bìa bài viết
+                    Ảnh bìa bài viết <span style="color: #DC2626; font-size: 15px;" title="Bắt buộc khi gửi duyệt">*</span>
                   </h3>
 
                   <!-- Khung Preview Ảnh bìa -->
@@ -120,8 +120,7 @@
                         </svg>
                       </div>
                       <div style="font-size: 13px; font-weight: 600; color: var(--ink);">Bấm để tải ảnh bìa lên</div>
-                      <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Hỗ trợ JPG, PNG, WebP (Tối
-                        đa 2MB)</div>
+                      <div style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">Hỗ trợ JPG, PNG, WebP (Tối đa 5MB)</div>
                     </div>
 
                     <!-- Khi đã có ảnh -->
@@ -134,7 +133,7 @@
 
                   <!-- Nút thao tác ảnh bìa -->
                   <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button type="button" class="admin-btn admin-btn--sm admin-btn--default"
+                    <button type="button" id="btn-upload-cover" class="admin-btn admin-btn--sm admin-btn--default"
                       style="flex: 1; font-size: 12.5px;" onclick="document.getElementById('cover-file-input').click()">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -142,7 +141,7 @@
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                       </svg>
-                      Tải ảnh khác
+                      <span id="label-upload-cover">Tải ảnh bìa</span>
                     </button>
                     <button type="button" id="btn-remove-cover" class="admin-btn admin-btn--sm admin-btn--danger"
                       style="display: none; font-size: 12.5px;" onclick="removeCoverImage()">
@@ -154,9 +153,8 @@
                       Xóa ảnh
                     </button>
                   </div>
-                  <div class="admin-form-hint" style="margin-top: 8px;">
-                    * Lưu ý: Nếu bạn không tải ảnh bìa riêng, hệ thống sẽ tự động lấy ảnh đầu tiên trong nội dung bài
-                    viết làm ảnh bìa.
+                  <div id="cover-auto-hint" class="admin-form-hint" style="margin-top: 8px; line-height: 1.45;">
+                    * <strong>Quy định:</strong> Bắt buộc tải ảnh bìa đại diện khi <strong>Gửi duyệt xuất bản</strong>. Bạn có thể tạm để trống khi lưu bản nháp.
                   </div>
                 </div>
 

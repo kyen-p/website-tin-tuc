@@ -298,22 +298,18 @@ function initAdminLayout(currentRole, activeKey) {
 /**
  * Trích xuất thumbnail thông minh cho các bảng quản trị
  */
-function extractThumbnail(article, category) {
-  if (!article) return "../assets/images/categories/thoi-su.jpg";
-  if (article.cover_image && article.cover_image.trim()) {
-    return article.cover_image;
+function extractThumbnail(article) {
+  if (!article) return "";
+  if (article.cover_image && article.cover_image.trim() && !article.cover_image.includes("placeholder")) {
+    return article.cover_image.trim();
   }
-  if (article.image && article.image.trim()) {
-    return article.image;
+  if (article.image && article.image.trim() && !article.image.includes("placeholder")) {
+    return article.image.trim();
   }
-  if (article.content) {
-    const match = article.content.match(/<img[^>]+src=["']([^"']+)["']/i);
-    if (match && match[1]) {
-      return match[1];
-    }
+  if (article.thumbnail && article.thumbnail.trim() && !article.thumbnail.includes("placeholder")) {
+    return article.thumbnail.trim();
   }
-  const catSlug = (category && category.slug) || (article.category && article.category.slug) || "thoi-su";
-  return `../assets/images/categories/${catSlug}.jpg`;
+  return "";
 }
 window.extractThumbnail = extractThumbnail;
 
@@ -323,10 +319,13 @@ window.extractThumbnail = extractThumbnail;
 function renderTableCoverThumb(imagePath, title) {
   const safeAlt = typeof escapeHtml === "function" ? escapeHtml(title || "Ảnh bài viết") : "Ảnh bài viết";
   const raw = imagePath ? String(imagePath).trim() : "";
-  const resolvedUrl = raw && typeof resolveAssetPath === "function" ? resolveAssetPath(raw) : raw;
+  if (!raw || raw.includes("placeholder")) {
+    return `<div class="admin-article-thumb-ph" title="Chưa có ảnh bìa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--muted); opacity:0.65;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>`;
+  }
+  const resolvedUrl = typeof resolveAssetPath === "function" ? resolveAssetPath(raw) : raw;
 
   if (!resolvedUrl) {
-    return `<div class="admin-article-thumb-ph" title="Chưa có ảnh bìa"></div>`;
+    return `<div class="admin-article-thumb-ph" title="Chưa có ảnh bìa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--muted); opacity:0.65;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>`;
   }
   return `
     <div class="admin-article-thumb-ph">
