@@ -1,3 +1,17 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/admin/users.html
+PHÂN HỆ: Bàn Quản Trị Hệ Thống - Quản Lý Người Dùng & Phân Quyền (Admin Users View)
+MÔ TẢ: Khung giao diện quản lý tài khoản và phân quyền người dùng của tòa soạn:
+       - Sidebar điều hướng Admin (#admin-sidebar) được render tự động bởi admin-layout.js.
+       - Thanh tiêu đề trên cùng (#admin-topbar) chứa thông tin tài khoản Admin.
+       - Vùng gắn nội dung quản trị (#workspace-content): tìm kiếm theo tên/username/email, lọc vai trò, bảng danh sách tài khoản.
+       - Modal phân quyền vai trò (Role), gán chuyên mục quản lý cho Biên tập viên, khóa/mở khóa tài khoản kèm lý do.
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, admin-layout.css
+       - frontend/assets/js/common.js, admin-layout.js, admin-users-modal.js, admin-users.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,16 +26,20 @@
 </head>
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH ADMIN)      -->
+  <!-- ============================================================================== -->
   <div class="admin-workspace">
-    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
-    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
     <div class="admin-main">
       <!-- Topbar tối giản: Tên & Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- Nội dung chính -->
+      <!-- ============================================================================== -->
+      <!-- KHỐI 2: VÙNG NỘI DUNG QUẢN LÝ TÀI KHOẢN, PHÂN QUYỀN & KHÓA TÀI KHOẢN           -->
+      <!-- ============================================================================== -->
       <main class="admin-content">
         <div class="admin-page-header">
           <h1 class="admin-page-title">Quản lý người dùng</h1>
@@ -29,13 +47,15 @@
         </div>
 
         <div id="workspace-content">
-          <!-- Sẽ phát triển chi tiết ở các bước sau -->
+          <!-- Render tự động bởi admin-users.js -->
         </div>
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

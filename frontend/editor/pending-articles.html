@@ -1,3 +1,17 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/editor/pending-articles.html
+PHÂN HỆ: Bàn Làm Việc Biên Tập Viên - Xử Lý Bài Viết Chờ Duyệt (Editor Pending Articles View)
+MÔ TẢ: Khung giao diện thẩm định và kiểm duyệt bài viết phóng viên gửi lên:
+       - Sidebar điều hướng BTV (#admin-sidebar) được render tự động bởi admin-layout.js.
+       - Thanh tiêu đề trên cùng (#admin-topbar) chứa thông tin tài khoản.
+       - Vùng gắn nội dung thẩm định (#workspace-content): bộ lọc chuyên mục/tìm kiếm, danh sách bài chờ duyệt.
+       - Modal xem trước chi tiết bài viết, đổi chuyên mục, thêm tag, duyệt xuất bản hoặc từ chối kèm lý do.
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, admin-layout.css
+       - frontend/assets/js/common.js, admin-layout.js, editor-pending-articles-modal.js, editor-pending-articles.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,16 +26,20 @@
 </head>
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH BTV)        -->
+  <!-- ============================================================================== -->
   <div class="admin-workspace">
-    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
-    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
     <div class="admin-main">
       <!-- Topbar tối giản: Tên & Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- Nội dung chính -->
+      <!-- ============================================================================== -->
+      <!-- KHỐI 2: VÙNG NỘI DUNG QUẢN LÝ BÀI CHỜ DUYỆT & MODAL THẨM ĐỊNH NỘI DUNG         -->
+      <!-- ============================================================================== -->
       <main class="admin-content">
         <div class="admin-page-header">
           <h1 class="admin-page-title">Xử lý bài viết chờ duyệt</h1>
@@ -29,13 +47,15 @@
         </div>
 
         <div id="workspace-content">
-          <!-- Sẽ phát triển chi tiết ở các bước sau -->
+          <!-- Sẽ được render tự động bởi editor-pending-articles.js -->
         </div>
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

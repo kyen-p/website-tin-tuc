@@ -1,3 +1,19 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/editor/dashboard.html
+PHÂN HỆ: Bàn Làm Việc Biên Tập Viên - Thống Kê Nội Dung (Editor Content Analytics View)
+MÔ TẢ: Khung giao diện trung tâm theo dõi thống kê hiệu suất nội dung của ban biên tập:
+       - Sidebar điều hướng BTV (#admin-sidebar) được render tự động bởi admin-layout.js.
+       - Thanh tiêu đề trên cùng (#admin-topbar) chứa thông tin tài khoản.
+       - Biểu đồ tương quan chuyên mục (#categoryChart): so sánh lượt xem và số bài viết.
+       - Bảng năng suất phóng viên (#reporter-table-body): số bài đã đăng, tổng view, bài chờ duyệt.
+       - Biểu đồ Top 10 thẻ tag nổi bật (#topTagsChart) toàn hệ thống.
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, admin-layout.css
+       - Chart.js CDN
+       - frontend/assets/js/common.js, admin-layout.js, editor-dashboard.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -14,16 +30,20 @@
 </head>
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH BTV)        -->
+  <!-- ============================================================================== -->
   <div class="admin-workspace">
-    <!-- 1. SIDEBAR CỐ ĐỊNH (Tự động render bởi admin-layout.js) -->
+    <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
-    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
     <div class="admin-main">
       <!-- Topbar tối giản: Tên & Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- Nội dung chính -->
+      <!-- ============================================================================== -->
+      <!-- KHỐI 2: VÙNG NỘI DUNG THỐNG KÊ NỘI DUNG, NĂNG SUẤT PHÓNG VIÊN & TOP TAGS       -->
+      <!-- ============================================================================== -->
       <main class="admin-content">
         <div class="admin-page-header">
           <h1 class="admin-page-title">Thống kê nội dung</h1>
@@ -107,13 +127,13 @@
           </div>
 
         </div>
-
-        </div>
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

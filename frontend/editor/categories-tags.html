@@ -1,3 +1,16 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/editor/categories-tags.html
+PHÂN HỆ: Bàn Làm Việc Biên Tập Viên - Quản Lý Chuyên Mục & Thẻ Tag (Editor Categories & Tags View)
+MÔ TẢ: Khung giao diện quản trị cơ cấu phân loại tin tức cho Biên tập viên:
+       - Sidebar điều hướng BTV (#admin-sidebar) được render tự động bởi admin-layout.js.
+       - Thanh tiêu đề trên cùng (#admin-topbar) chứa thông tin tài khoản.
+       - Vùng gắn nội dung quản trị (#workspace-content): tab Chuyên mục (thêm, sửa, đổi slug, danh mục cha) và tab Thẻ Tag (quản lý từ khóa).
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, admin-layout.css
+       - frontend/assets/js/common.js, admin-layout.js, editor-categories-tags.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,16 +25,20 @@
 </head>
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH BTV)        -->
+  <!-- ============================================================================== -->
   <div class="admin-workspace">
-    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
-    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
     <div class="admin-main">
       <!-- Topbar tối giản: Tên & Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- Nội dung chính -->
+      <!-- ============================================================================== -->
+      <!-- KHỐI 2: VÙNG NỘI DUNG QUẢN LÝ CHUYÊN MỤC VÀ HỆ THỐNG THẺ TAG                   -->
+      <!-- ============================================================================== -->
       <main class="admin-content">
         <div class="admin-page-header">
           <h1 class="admin-page-title">Quản lý Chuyên mục & Tag</h1>
@@ -29,13 +46,15 @@
         </div>
 
         <div id="workspace-content">
-          <!-- Sẽ phát triển chi tiết ở các bước sau -->
+          <!-- Sẽ được render tự động bởi editor-categories-tags.js -->
         </div>
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

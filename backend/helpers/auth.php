@@ -32,7 +32,7 @@ function requireLogin() {
 /**
  * [HÀM DÙNG CHUNG] requireRole
  * - Chức năng: Kiểm tra quyền truy cập dựa trên danh sách các vai trò (roles) được phép.
- * - Các vai trò trong hệ thống: 'admin', 'editor', 'reporter', 'reader' (user).
+ * - Các vai trò trong hệ thống: 'admin', 'editor', 'reporter', 'user'.
  * - Hành vi: Tự động gọi requireLogin() trước, sau đó nếu vai trò hiện tại không nằm trong
  *   mảng $roles thì trả về lỗi { success: false, message: "Không có quyền truy cập" } và dừng thực thi.
  * - Được gọi bởi: 

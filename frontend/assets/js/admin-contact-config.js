@@ -29,9 +29,9 @@
     address: "02 Võ Oanh, phường Thạnh Mỹ Tây, TP. Hồ Chí Minh",
     short_description: "Bắt mạch dòng chảy tin tức Việt Nam - cập nhật liên tục, xác thực trước khi đăng tải.",
     social_links: {
-      facebook: "https://facebook.com/machtin",
-      youtube: "https://youtube.com/machtin",
-      tiktok: "https://tiktok.com/machtin"
+      facebook: "https://www.facebook.com/profile.php?id=61594146516957",
+      youtube: "https://www.youtube.com/channel/UCkywEeJ0k_g-jMWnBp-qhqQ",
+      tiktok: "https://www.tiktok.com/@machtin.24h"
     }
   };
   let currentSettings = {};

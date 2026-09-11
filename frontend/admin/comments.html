@@ -1,3 +1,16 @@
+<!--
+==============================================================================
+TÊN FILE: frontend/admin/comments.html
+PHÂN HỆ: Bàn Quản Trị Hệ Thống - Quản Lý Bình Luận & Kiểm Duyệt (Admin Comments View)
+MÔ TẢ: Khung giao diện giám sát và kiểm duyệt tương tác bình luận của độc giả:
+       - Sidebar điều hướng Admin (#admin-sidebar) được render tự động bởi admin-layout.js.
+       - Thanh tiêu đề trên cùng (#admin-topbar) chứa thông tin tài khoản Admin.
+       - Vùng gắn nội dung quản trị (#workspace-content): bộ lọc trạng thái (chờ duyệt, đã duyệt, vi phạm), tìm kiếm từ khóa, danh sách bình luận kèm bài viết gốc và nút phê duyệt/xóa trực tiếp.
+PHỤ THUỘC:
+       - frontend/assets/css/base.css, admin-layout.css
+       - frontend/assets/js/common.js, admin-layout.js, admin-comments.js
+==============================================================================
+-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,16 +25,20 @@
 </head>
 <body>
 
+  <!-- ============================================================================== -->
+  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH ADMIN)      -->
+  <!-- ============================================================================== -->
   <div class="admin-workspace">
-    <!-- 1. SIDEBAR CỐ ĐỊNH -->
+    <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
-    <!-- 2. VÙNG LÀM VIỆC CHÍNH -->
     <div class="admin-main">
       <!-- Topbar tối giản: Tên & Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- Nội dung chính -->
+      <!-- ============================================================================== -->
+      <!-- KHỐI 2: VÙNG NỘI DUNG QUẢN LÝ BÌNH LUẬN VÀ KIỂM DUYỆT TƯƠNG TÁC ĐỘC GIẢ       -->
+      <!-- ============================================================================== -->
       <main class="admin-content">
         <div class="admin-page-header">
           <h1 class="admin-page-title">Quản lý bình luận</h1>
@@ -29,12 +46,15 @@
         </div>
 
         <div id="workspace-content">
+          <!-- Render tự động bởi admin-comments.js -->
         </div>
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ============================================================================== -->
+  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
+  <!-- ============================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>
