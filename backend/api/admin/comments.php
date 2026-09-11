@@ -4,7 +4,8 @@
  * TÊN FILE: backend/api/admin/comments.php
  * PHÂN HỆ: API Quản trị Bình luận Toàn trang (Global Comments Service)
  * MÔ TẢ: Cung cấp các thao tác kiểm duyệt bình luận cấp cao cho Quản trị viên:
- *        - GET: Lấy danh sách toàn bộ bình luận của độc giả trên tất cả bài viết kèm thông tin người đăng.
+ *        - GET: Lấy danh sách toàn bộ bình luận của độc giả trên tất cả bài viết kèm thông tin người đăng,
+ *               tiêu đề và slug bài viết (hỗ trợ Admin điều hướng cuộn lướt chính xác tới vị trí bình luận và chớp sáng viền).
  *        - DELETE: Xóa vĩnh viễn bình luận vi phạm chính sách nội dung khỏi cơ sở dữ liệu.
  * PHẠM VI SỬ DỤNG:
  *   - [KHU VỰC QUẢN TRỊ TỐI CAO - ADMIN]

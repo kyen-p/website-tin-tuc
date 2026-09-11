@@ -113,7 +113,7 @@ async function initHomePage() {
               ${renderCoverImage(leadArticle.cover_image, leadArticle.title, "ph--16x9")}
               <span class="eyebrow is-crimson">${escapeHtml(leadCat.name)}</span>
               <h1 class="headline-xl">${escapeHtml(leadArticle.title)}</h1>
-              <p class="dek">${escapeHtml(leadArticle.short_description || leadArticle.summary || "")}</p>
+              <p class="dek">${escapeHtml(leadArticle.short_description || "")}</p>
             </a>
             ${renderCardMeta(leadArticle, leadAuthor)}
           </article>
@@ -129,7 +129,7 @@ async function initHomePage() {
               ${renderCoverImage(subLeadArticle.cover_image, subLeadArticle.title, "ph--16x9")}
               <span class="eyebrow is-crimson">${escapeHtml(subCat.name)}</span>
               <h2 class="headline-xl">${escapeHtml(subLeadArticle.title)}</h2>
-              <p class="dek">${escapeHtml(subLeadArticle.short_description || subLeadArticle.summary || "")}</p>
+              <p class="dek">${escapeHtml(subLeadArticle.short_description || "")}</p>
             </a>
             ${renderCardMeta(subLeadArticle, subAuthor)}
           </article>
@@ -153,7 +153,7 @@ async function initHomePage() {
                       ${renderCoverImage(a.cover_image, a.title, "ph--16x9")}
                       <span class="eyebrow is-crimson">${escapeHtml(cat.name)}</span>
                       <h2 class="headline-md">${escapeHtml(a.title)}</h2>
-                      <p class="dek--sm">${escapeHtml(a.short_description || a.summary || "")}</p>
+                      <p class="dek--sm">${escapeHtml(a.short_description || "")}</p>
                     </a>
                     ${renderCardMeta(a, author)}
                   </article>
@@ -202,7 +202,7 @@ async function initHomePage() {
                 ${renderCoverImage(a.cover_image, a.title, "ph--4x3")}
                 <span class="eyebrow">${escapeHtml(cat.name)}</span>
                 <h3 class="headline-md">${escapeHtml(a.title)}</h3>
-                <p class="dek--sm">${escapeHtml(a.short_description || a.summary || "")}</p>
+                <p class="dek--sm">${escapeHtml(a.short_description || "")}</p>
               </a>
               ${renderCardMeta(a, author)}
             </article>
@@ -252,7 +252,7 @@ async function initHomePage() {
                 <h3 class="headline-md">
                   <a href="${getArticleDetailUrl(a)}">${escapeHtml(a.title)}</a>
                 </h3>
-                <p class="dek--sm">${escapeHtml(a.short_description || a.summary || "")}</p>
+                <p class="dek--sm">${escapeHtml(a.short_description || "")}</p>
                 ${renderCardMeta(a, author)}
               </div>
             </article>

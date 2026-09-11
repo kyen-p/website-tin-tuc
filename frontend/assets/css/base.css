@@ -972,3 +972,204 @@ a:hover .ph img {
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.08);
 }
+
+/* ============================================================================== */
+/* KHỐI: QUY CHUẨN ĐỊNH DẠNG NỘI DUNG SIÊU VĂN BẢN (RICH TEXT / CKEDITOR 5)       */
+/* Áp dụng chung cho: Chi tiết bài báo (.body-text), Modal Thẩm định Editor,      */
+/* Modal Xem & Thẩm định Admin (.ck-content).                                     */
+/* Khắc phục triệt để: Mất số thứ tự 1, 2, 3... (<ol>), mất viền bảng (<table>),   */
+/* căn lề CK5, hình ảnh, khối trích dẫn blockquote, video media embed.            */
+/* ============================================================================== */
+.body-text,
+.ck-content {
+  color: var(--ink, #1B2A4A);
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.body-text p,
+.ck-content p {
+  margin: 0 0 14px 0;
+  line-height: 1.7;
+}
+
+/* 1. Danh sách có thứ tự (Numbered List 1, 2, 3...) */
+.body-text ol,
+.ck-content ol {
+  list-style-type: decimal !important;
+  margin: 12px 0 16px 28px !important;
+  padding-left: 6px !important;
+}
+
+.body-text ol > li,
+.ck-content ol > li {
+  list-style-type: decimal !important;
+  display: list-item !important;
+  margin-bottom: 6px !important;
+  line-height: 1.65 !important;
+  padding-left: 4px;
+}
+
+/* 2. Danh sách không thứ tự (Bulleted List •) */
+.body-text ul,
+.ck-content ul {
+  list-style-type: disc !important;
+  margin: 12px 0 16px 28px !important;
+  padding-left: 6px !important;
+}
+
+.body-text ul > li,
+.ck-content ul > li {
+  list-style-type: disc !important;
+  display: list-item !important;
+  margin-bottom: 6px !important;
+  line-height: 1.65 !important;
+  padding-left: 4px;
+}
+
+/* Danh sách con lồng nhau */
+.body-text ol ol, .ck-content ol ol { list-style-type: lower-alpha !important; }
+.body-text ul ul, .ck-content ul ul { list-style-type: circle !important; }
+
+/* 3. Khối Bảng biểu siêu văn bản (Table & Figure Table) */
+.body-text figure.table,
+.ck-content figure.table {
+  margin: 18px 0 !important;
+  width: 100% !important;
+  overflow-x: auto !important;
+  display: block !important;
+}
+
+.body-text table,
+.ck-content table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 14px 0 !important;
+  font-size: 13.5px !important;
+  background: #FFF;
+  border: 1px solid var(--line, #E2E8F0) !important;
+}
+
+.body-text table th,
+.body-text table td,
+.ck-content table th,
+.ck-content table td {
+  border: 1px solid var(--line, #E2E8F0) !important;
+  padding: 10px 14px !important;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.body-text table th,
+.ck-content table th {
+  background: var(--paper-alt, #FAF8F5) !important;
+  color: var(--ink, #1B2A4A) !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid var(--line, #CBD5E1) !important;
+}
+
+.body-text table tr:nth-child(even) td,
+.ck-content table tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+/* 4. Căn lề của CKEditor 5 (Alignment classes) */
+.body-text .text-align-left, .ck-content .text-align-left,
+.body-text .text-left, .ck-content .text-left { text-align: left !important; }
+
+.body-text .text-align-center, .ck-content .text-align-center,
+.body-text .text-center, .ck-content .text-center { text-align: center !important; }
+
+.body-text .text-align-right, .ck-content .text-align-right,
+.body-text .text-right, .ck-content .text-right { text-align: right !important; }
+
+.body-text .text-align-justify, .ck-content .text-align-justify,
+.body-text .text-justify, .ck-content .text-justify { text-align: justify !important; }
+
+/* 5. Khối trích dẫn (Blockquote) chuẩn báo chí */
+.body-text blockquote,
+.ck-content blockquote {
+  border-left: 3px solid var(--brass, #B8894F) !important;
+  margin: 20px 0 !important;
+  padding: 10px 18px !important;
+  font-family: var(--f-serif, serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-soft, #334155);
+  background: var(--paper-alt, #FAF8F5);
+  border-radius: 0 var(--radius, 4px) var(--radius, 4px) 0;
+  line-height: 1.65;
+}
+
+/* 6. Tiêu đề phân đoạn trong bài viết */
+.body-text h2, .ck-content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 24px 0 10px;
+  color: var(--ink, #1B2A4A);
+  line-height: 1.35;
+}
+
+.body-text h3, .ck-content h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 20px 0 8px;
+  color: var(--ink, #1B2A4A);
+  line-height: 1.35;
+}
+
+.body-text h4, .ck-content h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 16px 0 6px;
+  color: var(--ink, #1B2A4A);
+}
+
+/* 7. Hình ảnh & Chú thích ảnh */
+.body-text figure, .ck-content figure,
+.body-text figure.image, .ck-content figure.image {
+  margin: 20px auto !important;
+  text-align: center;
+  max-width: 100%;
+}
+
+.body-text figure img, .ck-content figure img,
+.body-text img, .ck-content img {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: var(--radius, 4px);
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.body-text figcaption, .ck-content figcaption {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--muted, #64748B);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 8. Đường phân cách và Media nhúng (YouTube / video) */
+.body-text hr, .ck-content hr {
+  border: none;
+  border-top: 1.5px solid var(--line, #E2E8F0);
+  margin: 28px 0;
+}
+
+.body-text figure.media, .ck-content figure.media {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.body-text figure.media iframe, .ck-content figure.media iframe,
+.body-text iframe, .ck-content iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  border: 1px solid var(--line, #E2E8F0);
+  display: block;
+}

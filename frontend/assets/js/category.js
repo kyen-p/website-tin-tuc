@@ -6,7 +6,7 @@
  *        1. Phân tích tham số URL: ?slug= (chuyên mục), ?tag= (thẻ tag), ?filter= (latest: 48h qua, notable: sự kiện nổi bật).
  *        2. Tải dữ liệu bài viết, chuyên mục, danh sách thẻ từ Backend API.
  *        3. Cập nhật tiêu đề trang (Document Title), Breadcrumb và Mô tả chuyên mục động.
- *        4. Hiển thị thanh cuộn thẻ tag liên quan (Tag Chips Bar) và xử lý sự kiện lọc nhanh.
+ *        4. Hiển thị thanh cuộn thẻ tag ngang (Tag Chips Bar), điều khiển cuộn qua 2 nút trượt và xử lý sự kiện lọc nhanh.
  *        5. Render bố cục danh sách: 1 bài tiêu điểm lớn (Featured Article) phía trên và lưới bài viết phía dưới.
  *        6. Tích hợp Sidebar Đọc nhiều nhất trong tuần & Đám mây thẻ Tag qua initPublicSidebar.
  * PHẠM VI SỬ DỤNG:
@@ -142,6 +142,59 @@ async function initCategoryPage() {
         renderArticlesList();
       });
     });
+
+    // Thiết lập 2 nút điều hướng cuộn ngang (< >)
+    const prevBtn = document.getElementById("category-tag-prev");
+    const nextBtn = document.getElementById("category-tag-next");
+
+    function updateTagScrollButtons() {
+      if (!tagChipsMount || !prevBtn || !nextBtn) return;
+      const isOverflowing = tagChipsMount.scrollWidth > tagChipsMount.clientWidth + 2;
+      if (!isOverflowing) {
+        prevBtn.style.display = "none";
+        nextBtn.style.display = "none";
+        return;
+      }
+      prevBtn.style.display = "inline-flex";
+      nextBtn.style.display = "inline-flex";
+
+      const atStart = tagChipsMount.scrollLeft <= 2;
+      const atEnd = tagChipsMount.scrollLeft + tagChipsMount.clientWidth >= tagChipsMount.scrollWidth - 2;
+
+      prevBtn.disabled = atStart;
+      prevBtn.style.opacity = atStart ? "0.35" : "1";
+      prevBtn.style.cursor = atStart ? "default" : "pointer";
+
+      nextBtn.disabled = atEnd;
+      nextBtn.style.opacity = atEnd ? "0.35" : "1";
+      nextBtn.style.cursor = atEnd ? "default" : "pointer";
+    }
+
+    if (prevBtn) {
+      prevBtn.onclick = () => {
+        tagChipsMount.scrollBy({ left: -220, behavior: "smooth" });
+      };
+    }
+
+    if (nextBtn) {
+      nextBtn.onclick = () => {
+        tagChipsMount.scrollBy({ left: 220, behavior: "smooth" });
+      };
+    }
+
+    tagChipsMount.addEventListener("scroll", updateTagScrollButtons, { passive: true });
+    window.addEventListener("resize", updateTagScrollButtons);
+
+    // Tự động cuộn chip đang kích hoạt vào giữa tầm nhìn nếu có
+    const activeChip = tagChipsMount.querySelector(".tag-chip--active");
+    if (activeChip && activeChip.dataset.tag) {
+      setTimeout(() => {
+        activeChip.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }, 100);
+    }
+
+    // Cập nhật trạng thái hiển thị của 2 nút trượt ban đầu
+    setTimeout(updateTagScrollButtons, 60);
   }
 
   // ==============================================================================
@@ -204,7 +257,7 @@ async function initCategoryPage() {
               <div>
                 <span class="eyebrow is-crimson">${escapeHtml(featCat.name)}</span>
                 <h2 class="headline-lg" style="margin-top: 8px;">${escapeHtml(featuredArticle.title)}</h2>
-                <p class="dek">${escapeHtml(featuredArticle.short_description || featuredArticle.summary || "")}</p>
+                <p class="dek">${escapeHtml(featuredArticle.short_description || "")}</p>
                 <div class="meta">
                   <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(featAuthor) : 'author.html?username=' + encodeURIComponent(featAuthor.username || featAuthor.id)}">${escapeHtml(featAuthor.full_name)}</a>
                   <span class="dot-sep">·</span>
@@ -236,7 +289,7 @@ async function initCategoryPage() {
                   <span class="eyebrow">${escapeHtml(cat.name)}</span>
                   <h3 class="headline-md" style="margin-top: 6px;">${escapeHtml(a.title)}</h3>
                 </a>
-                <p class="dek" style="font-size: 13.5px; margin: 4px 0 10px;">${escapeHtml(a.short_description || a.summary || "")}</p>
+                <p class="dek" style="font-size: 13.5px; margin: 4px 0 10px;">${escapeHtml(a.short_description || "")}</p>
                 <div class="meta">
                   <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(author) : 'author.html?username=' + encodeURIComponent(author.username || author.id)}">${escapeHtml(author.full_name)}</a>
                   <span class="dot-sep">·</span>

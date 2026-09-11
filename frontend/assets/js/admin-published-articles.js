@@ -27,6 +27,7 @@
   let allArticles = [];
   let allCategories = [];
   let allUsers = [];
+  let allTags = [];
 
   // Bộ lọc hiện tại
   let currentTab = "published"; // 'all' | 'published' | 'hidden'
@@ -36,13 +37,22 @@
   let sortField = "published_at"; // 'published_at' | 'views'
   let sortOrder = "desc"; // 'desc' | 'asc'
 
-  // ID bài viết đang chỉnh sửa / xóa
+  // ID bài viết đang chỉnh sửa / xóa & mảng thẻ tag đang chỉnh sửa
   let editingArticleId = null;
   let deletingArticleId = null;
+  let currentEditTags = [];
 
   document.addEventListener("DOMContentLoaded", () => {
     initPublishedArticlesPage();
   });
+
+  // Xuất dữ liệu ra toàn cục để Modal thẩm định dùng chung có thể truy cập
+  window.AdminPublishedArticles = {
+    getAllArticles: () => allArticles,
+    getAllCategories: () => allCategories,
+    getAllTags: () => allTags
+  };
+
   async function initPublishedArticlesPage() {
     await loadData();
     renderPageStructure();
@@ -51,22 +61,25 @@
   }
 
   // ==============================================================================
-  // KHỐI 2: TẢI DỮ LIỆU BÀI VIẾT ĐÃ ĐĂNG, DANH MỤC & NGƯỜI DÙNG TỪ API
+  // KHỐI 2: TẢI DỮ LIỆU BÀI VIẾT ĐÃ ĐĂNG, DANH MỤC, NGƯỜI DÙNG & TAGS TỪ API
   // ==============================================================================
   async function loadData() {
     try {
-      const [articlesRes, categoriesRes, usersRes] = await Promise.all([
+      const [articlesRes, categoriesRes, usersRes, tagsRes] = await Promise.all([
         fetch(resolveApiUrl('admin/published-articles.php')).then(r => r.json()),
         fetch(resolveApiUrl('public/categories.php')).then(r => r.json()),
-        fetch(resolveApiUrl('admin/users.php')).then(r => r.json())
+        fetch(resolveApiUrl('admin/users.php')).then(r => r.json()),
+        fetch(resolveApiUrl('public/tags.php')).then(r => r.json()).catch(() => ({ data: [] }))
       ]);
       allArticles = articlesRes.data || [];
       allCategories = categoriesRes.data || [];
       allUsers = usersRes.data || [];
+      allTags = (tagsRes && tagsRes.data) || [];
     } catch (err) {
       allArticles = [];
       allCategories = [];
       allUsers = [];
+      allTags = [];
     }
   }
 
@@ -214,6 +227,28 @@
                 <textarea id="editDescription" class="admin-form-textarea" rows="2"></textarea>
               </div>
 
+              <!-- Quản lý Thẻ bài viết (Tags) cho Admin -->
+              <div class="admin-form-group">
+                <label class="admin-form-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span>Thẻ bài viết (Tags)</span>
+                  <span style="font-size: 11.5px; color: var(--muted); font-weight: normal;">Nhập tên thẻ và bấm Enter hoặc click gợi ý để thêm</span>
+                </label>
+                <!-- Danh sách thẻ đã chọn -->
+                <div id="admin-edit-tags-container" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; min-height: 32px; padding: 6px 10px; background: #F9FAFB; border: 1px dashed var(--line-soft); border-radius: 6px; align-items: center;"></div>
+                
+                <!-- Ô nhập tìm kiếm / tạo thẻ mới -->
+                <div style="position: relative;">
+                  <input type="text" id="admin-edit-tag-input" class="admin-form-input" placeholder="Gõ tên thẻ tag (ví dụ: Kinh tế, Chuyển đổi số)..." style="font-size: 13px;">
+                  <div id="admin-edit-tag-dropdown" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1px solid var(--line-soft); border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); max-height: 180px; overflow-y: auto; z-index: 1050;"></div>
+                </div>
+
+                <!-- Thẻ gợi ý từ hệ thống -->
+                <div style="margin-top: 8px;">
+                  <span style="font-size: 11.5px; color: var(--muted); margin-right: 6px;">Gợi ý từ hệ thống:</span>
+                  <div id="admin-edit-tag-suggestions" style="display: inline-flex; flex-wrap: wrap; gap: 6px; vertical-align: middle;"></div>
+                </div>
+              </div>
+
               <div class="admin-form-group">
                 <label class="admin-form-label">Nội dung bài viết</label>
                 <textarea id="editContent" class="admin-form-textarea" rows="8"></textarea>
@@ -288,6 +323,12 @@
     document.querySelectorAll(".btn-close-edit-modal").forEach(btn => {
       btn.addEventListener("click", closeEditModal);
     });
+    const editModalEl = document.getElementById("editArticleModal");
+    if (editModalEl) {
+      editModalEl.addEventListener("click", (e) => {
+        if (e.target === editModalEl) closeEditModal();
+      });
+    }
     const saveEditBtn = document.getElementById("saveEditBtn");
     if (saveEditBtn) saveEditBtn.addEventListener("click", handleSaveEdit);
 
@@ -295,8 +336,22 @@
     document.querySelectorAll(".btn-close-delete-modal").forEach(btn => {
       btn.addEventListener("click", closeDeleteModal);
     });
+    const deleteModalEl = document.getElementById("deleteArticleModal");
+    if (deleteModalEl) {
+      deleteModalEl.addEventListener("click", (e) => {
+        if (e.target === deleteModalEl) closeDeleteModal();
+      });
+    }
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
     if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", handleConfirmDelete);
+
+    // Đóng modal khi nhấn phím Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (editModalEl && editModalEl.style.display !== "none") closeEditModal();
+        if (deleteModalEl && deleteModalEl.style.display !== "none") closeDeleteModal();
+      }
+    });
   }
 
   window.switchPublishedTab = function (tab) {
@@ -341,7 +396,7 @@
     if (searchQuery) {
       filtered = filtered.filter(art => {
         const title = (art.title || "").toLowerCase();
-        const sapo = (art.short_description || art.sapo || art.summary || "").toLowerCase();
+        const sapo = (art.short_description || "").toLowerCase();
         const author = allUsers.find(u => String(u.id) === String(art.author_id));
         const authorName = (author ? author.full_name || author.username : art.author || "").toLowerCase();
         return title.includes(searchQuery) || sapo.includes(searchQuery) || authorName.includes(searchQuery);
@@ -394,7 +449,7 @@
       const approverName = approver ? (approver.full_name || approver.username) : (art.approved_by ? `BTV #${art.approved_by}` : "Chưa ghi nhận");
       const approverUser = approver && approver.username ? `@${approver.username}` : "";
 
-      const desc = art.short_description || art.sapo || art.summary || "";
+      const desc = art.short_description || "";
       const detailUrl = typeof getArticleDetailUrl === "function" ? getArticleDetailUrl(art, "../public/") : `../public/article-detail.html?slug=${encodeURIComponent(art.slug || art.id)}`;
 
       // Badge Trạng thái
@@ -416,9 +471,18 @@
         <tr>
           <td>
             <div class="admin-article-info" style="margin: 0;">
-              <a href="${detailUrl}" target="_blank" class="admin-article-title-link" title="Bấm để xem bài viết ở tab mới">
-                ${escapeHtml(art.title || "Chưa đặt tiêu đề")}
-              </a>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <a href="javascript:void(0)" onclick="window.adminViewArticleDetail(${art.id})" class="admin-article-title-link" title="Bấm để xem chi tiết bài viết (đầy đủ định dạng bảng, danh sách, đa phương tiện)">
+                  ${escapeHtml(art.title || "Chưa đặt tiêu đề")}
+                </a>
+                <a href="${detailUrl}" target="_blank" style="color: var(--muted); display: inline-flex; align-items: center;" title="Xem bài viết trên trang công khai (Mở tab mới)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+              </div>
               ${desc ? `<div class="admin-article-sapo-text" title="${escapeHtml(desc)}">${escapeHtml(desc)}</div>` : ""}
               ${art.is_notable_event ? `
                 <div style="margin-top: 4px;">
@@ -474,6 +538,15 @@
               </button>
 
               <div id="action-menu-${art.id}" class="admin-action-dropdown-menu" style="display: none;">
+                <!-- Xem chi tiết bài (Dùng chung modal chuẩn định dạng CKEditor 5) -->
+                <button type="button" class="admin-dropdown-item" onclick="window.adminViewArticleDetail(${art.id})">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <span>Xem chi tiết bài</span>
+                </button>
+
                 <!-- Sửa đè -->
                 <button type="button" class="admin-dropdown-item" onclick="window.adminOpenEditArticle(${art.id})">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -554,8 +627,184 @@
   // CÁC HÀM XỬ LÝ NGHIỆP VỤ CỦA ADMIN
   // ============================================================================
 
+  let adminEditorInstance = null;
+
   /**
-   * 1. Ẩn / Hiện lại bài viết
+   * Khởi tạo CKEditor 5 cho Admin Edit Modal sử dụng Module dùng chung window.initArticleEditor
+   * Đảm bảo nhất quán 100% với Phóng viên: Căn lề, Bảng biểu, Nhúng video và Tải ảnh lên máy chủ (upload.php).
+   */
+  async function ensureAdminEditor() {
+    if (adminEditorInstance) return adminEditorInstance;
+    const textarea = document.querySelector("#editContent");
+    if (!textarea) return null;
+
+    if (typeof window.initArticleEditor === "function") {
+      adminEditorInstance = await window.initArticleEditor("#editContent", {
+        placeholder: "Chỉnh sửa nội dung bài viết trực quan tại đây (hỗ trợ kéo thả ảnh, chèn video, kẻ bảng biểu, trích dẫn)..."
+      });
+      return adminEditorInstance;
+    }
+
+    // Fallback dự phòng nếu chưa kịp nạp ckeditor-helper.js
+    const EditorConstructor = (window.CKEDITOR && window.CKEDITOR.ClassicEditor) || window.ClassicEditor;
+    if (!EditorConstructor) {
+      return null;
+    }
+
+    try {
+      adminEditorInstance = await EditorConstructor.create(textarea);
+      return adminEditorInstance;
+    } catch (err) {
+      console.warn("Lỗi khi tạo CKEditor 5 cho Admin:", err);
+      return null;
+    }
+  }
+
+  // ==============================================================================
+  // QUẢN LÝ THẺ BÀI VIẾT (TAGS) CHO MODAL SỬA ĐÈ CỦA ADMIN
+  // ==============================================================================
+  /**
+   * Hiển thị danh sách các thẻ tag đã chọn trong form sửa của Admin
+   */
+  function renderAdminEditTags() {
+    const container = document.getElementById("admin-edit-tags-container");
+    if (!container) return;
+
+    if (!currentEditTags || currentEditTags.length === 0) {
+      container.innerHTML = `<span style="font-size: 12.5px; color: var(--muted); font-style: italic;">Chưa gắn thẻ tag nào cho bài viết.</span>`;
+      return;
+    }
+
+    container.innerHTML = currentEditTags.map((tag, idx) => `
+      <span class="admin-badge" style="background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; font-size: 12px; padding: 4px 10px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
+        #${escapeHtml(tag)}
+        <span onclick="window.removeAdminEditTag(${idx})" style="cursor: pointer; font-size: 14px; font-weight: bold; color: #3B82F6; line-height: 1;" title="Gỡ thẻ này">&times;</span>
+      </span>
+    `).join("");
+  }
+
+  /**
+   * Thêm một thẻ tag vào danh sách bài viết đang sửa
+   */
+  window.addAdminEditTag = function (tagName) {
+    const clean = (tagName || "").trim().replace(/^#/, "");
+    if (!clean) return;
+    if (!currentEditTags.some(t => t.toLowerCase() === clean.toLowerCase())) {
+      currentEditTags.push(clean);
+      renderAdminEditTags();
+    }
+    const input = document.getElementById("admin-edit-tag-input");
+    if (input) input.value = "";
+    const dropdown = document.getElementById("admin-edit-tag-dropdown");
+    if (dropdown) dropdown.style.display = "none";
+  };
+
+  /**
+   * Xóa một thẻ tag khỏi danh sách
+   */
+  window.removeAdminEditTag = function (index) {
+    currentEditTags.splice(index, 1);
+    renderAdminEditTags();
+  };
+
+  /**
+   * Hiển thị danh sách thẻ gợi ý nhanh từ kho thẻ hệ thống
+   */
+  function renderAdminTagSuggestions() {
+    const mount = document.getElementById("admin-edit-tag-suggestions");
+    if (!mount) return;
+
+    mount.innerHTML = allTags.slice(0, 10).map(t => `
+      <span class="admin-tag-suggest-item" onclick="window.addAdminEditTag('${escapeHtml(t.name)}')" style="font-size: 11.5px; padding: 2px 8px; background: #F3F4F6; color: #374151; border-radius: 4px; cursor: pointer; border: 1px solid #E5E7EB; user-select: none;">
+        + #${escapeHtml(t.name)}
+      </span>
+    `).join("");
+  }
+
+  /**
+   * Gắn sự kiện gõ tìm kiếm và phím Enter cho ô nhập thẻ tag của Admin
+   */
+  function bindAdminTagInputEvents() {
+    const tagInput = document.getElementById("admin-edit-tag-input");
+    const dropdown = document.getElementById("admin-edit-tag-dropdown");
+    if (!tagInput || !dropdown) return;
+
+    tagInput.oninput = () => {
+      const query = tagInput.value.trim().replace(/^#/, "");
+      if (!query) {
+        dropdown.style.display = "none";
+        return;
+      }
+
+      const lowerQuery = query.toLowerCase();
+      const matched = allTags.filter(t => (t.name || "").toLowerCase().includes(lowerQuery));
+      const exactMatch = allTags.some(t => (t.name || "").toLowerCase() === lowerQuery);
+
+      let html = "";
+      if (matched.length > 0) {
+        html += matched.map(t => {
+          const isSelected = currentEditTags.some(st => st.toLowerCase() === t.name.toLowerCase());
+          return `
+            <div onclick="window.addAdminEditTag('${escapeHtml(t.name)}')" style="padding: 7px 12px; font-size: 12.5px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-bottom: 1px solid var(--line-soft); ${isSelected ? 'background: #F3F4F6; color: var(--muted);' : 'background: #fff; color: var(--ink);'}">
+              <span><strong>#${escapeHtml(t.name)}</strong></span>
+              ${isSelected ? '<span style="font-size: 11px; color: var(--muted);">Đã chọn</span>' : '<span style="font-size: 11px; color: #2563EB; font-weight: 600;">+ Chọn</span>'}
+            </div>
+          `;
+        }).join("");
+      }
+
+      if (!exactMatch) {
+        html += `
+          <div onclick="window.addAdminEditTag('${escapeHtml(query)}')" style="padding: 8px 12px; font-size: 12.5px; color: #15803D; background: #F0FDF4; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <span>+ Tạo thẻ mới: <strong>#${escapeHtml(query)}</strong></span>
+          </div>
+        `;
+      }
+
+      dropdown.innerHTML = html;
+      dropdown.style.display = "block";
+    };
+
+    tagInput.onkeydown = (e) => {
+      if (e.key === "Enter" || e.key === ",") {
+        e.preventDefault();
+        const query = tagInput.value.trim().replace(/^#/, "").replace(/,/g, "");
+        if (query) {
+          window.addAdminEditTag(query);
+        }
+      }
+    };
+  }
+
+  /**
+   * 1. Mở Modal Xem chi tiết bài viết (Dùng chung Modal thẩm định của Tòa soạn, chuẩn CKEditor 5)
+   */
+  window.adminViewArticleDetail = function (id) {
+    closeAllActionMenus();
+    const article = allArticles.find(a => Number(a.id) === Number(id));
+    if (!article) return;
+
+    const reviewModalFn = window.openArticleReviewModal || window.openReviewModal;
+    if (typeof reviewModalFn === "function") {
+      reviewModalFn(article, {
+        mode: "admin",
+        articles: allArticles,
+        categories: allCategories,
+        tags: allTags,
+        onEdit: (art) => {
+          window.adminOpenEditArticle(art.id);
+        },
+        onToggleStatus: (art) => {
+          window.adminToggleHideArticle(art.id);
+        }
+      });
+    } else {
+      console.warn("Chưa tải được openArticleReviewModal.");
+    }
+  };
+
+  /**
+   * 2. Ẩn / Hiện lại bài viết
    */
   window.adminToggleHideArticle = async function (id) {
     closeAllActionMenus();
@@ -579,9 +828,9 @@
   };
 
   /**
-   * 2. Mở Modal Sửa đè nội dung bài viết
+   * 3. Mở Modal Sửa đè nội dung bài viết
    */
-  window.adminOpenEditArticle = function (id) {
+  window.adminOpenEditArticle = async function (id) {
     closeAllActionMenus();
     const article = allArticles.find(a => Number(a.id) === Number(id));
     if (!article) return;
@@ -598,20 +847,42 @@
     if (categorySelect) categorySelect.value = article.category_id || allCategories[0]?.id || 1;
     if (statusSelect) statusSelect.value = article.status === "hidden" ? "hidden" : "published";
     if (isNotableCheckbox) isNotableCheckbox.checked = Boolean(article.is_notable_event);
-    if (descInput) descInput.value = article.short_description || article.sapo || article.summary || "";
-    if (contentInput) contentInput.value = article.content || "";
+    if (descInput) descInput.value = article.short_description || "";
+
+    // Đồng bộ thẻ tag của bài viết vào form sửa
+    currentEditTags = [];
+    if (article.tags && Array.isArray(article.tags)) {
+      currentEditTags = article.tags.map(t => (typeof t === "string" ? t : (t.name || ""))).filter(Boolean);
+    }
+    renderAdminEditTags();
+    renderAdminTagSuggestions();
+    bindAdminTagInputEvents();
 
     const modal = document.getElementById("editArticleModal");
     if (modal) {
       modal.style.display = "flex";
     }
+
+    // Tích hợp CKEditor 5 cho Admin
+    const editor = await ensureAdminEditor();
+    if (editor) {
+      editor.setData(article.content || "");
+    } else if (contentInput) {
+      contentInput.value = article.content || "";
+    }
   };
 
   function closeEditModal() {
     editingArticleId = null;
+    currentEditTags = [];
     const modal = document.getElementById("editArticleModal");
     if (modal) {
       modal.style.display = "none";
+    }
+    const dropdown = document.getElementById("admin-edit-tag-dropdown");
+    if (dropdown) dropdown.style.display = "none";
+    if (adminEditorInstance) {
+      adminEditorInstance.setData("");
     }
   }
 
@@ -623,7 +894,13 @@
     const status = document.getElementById("editStatus")?.value || "published";
     const isNotable = Boolean(document.getElementById("editIsNotable")?.checked);
     const description = (document.getElementById("editDescription")?.value || "").trim();
-    const content = (document.getElementById("editContent")?.value || "").trim();
+    
+    let content = "";
+    if (adminEditorInstance) {
+      content = adminEditorInstance.getData().trim();
+    } else {
+      content = (document.getElementById("editContent")?.value || "").trim();
+    }
 
     if (!title) {
       if (typeof showToast === "function") showToast("Vui lòng nhập tiêu đề bài viết.", "error");
@@ -636,16 +913,26 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         id: editingArticleId,
-        title, category_id: categoryId, status,
+        title,
+        category_id: categoryId,
+        status,
         is_notable_event: isNotable,
         short_description: description,
-        content
+        content,
+        tags: currentEditTags
       })
     });
     const result = await res.json();
 
-    if (result.success && typeof showToast === "function") {
-      showToast("Đã cập nhật bài viết thành công (Quyền Admin)!", "success");
+    if (result.success) {
+      if (typeof showToast === "function") {
+        showToast("Đã cập nhật bài viết và đồng bộ thẻ tag thành công (Quyền Admin)!", "success");
+      }
+    } else {
+      if (typeof showToast === "function") {
+        showToast(result.message || "Lỗi cập nhật bài viết!", "error");
+      }
+      return;
     }
 
     closeEditModal();

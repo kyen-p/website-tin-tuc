@@ -28,6 +28,7 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 require_once __DIR__ . '/../../helpers/file.php';
+require_once __DIR__ . '/../../helpers/string.php';
 
 // Kiểm tra quyền hạn: Chỉ Quản trị viên (admin) mới được truy cập
 requireRole(['admin']);
@@ -48,6 +49,21 @@ if ($method === 'GET') {
         WHERE a.status IN ('published', 'hidden')
         ORDER BY a.published_at DESC");
     $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Nạp đầy đủ danh sách Thẻ Tag (tags) cho từng bài viết để Admin xem chi tiết & sửa đè
+    $tagStmt = $pdo->prepare("
+        SELECT t.id, t.name, t.slug 
+        FROM article_tags at 
+        INNER JOIN tags t ON at.tag_id = t.id 
+        WHERE at.article_id = ?
+    ");
+
+    foreach ($articles as &$art) {
+        $tagStmt->execute([$art['id']]);
+        $art['tags'] = $tagStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    unset($art);
+
     jsonResponse(true, $articles);
 }
 
@@ -71,16 +87,60 @@ if ($method === 'PUT') {
         jsonResponse(true, ['status' => $newStatus], "Cập nhật trạng thái thành công");
     }
 
-    // Nhánh 2.2: Cập nhật toàn bộ thông tin chi tiết bài viết
-    $stmt = $pdo->prepare(
-        "UPDATE articles SET title=?, category_id=?, status=?, is_notable_event=?, short_description=?, content=?, updated_at=NOW()
-         WHERE id=?"
-    );
-    $stmt->execute([
-        $input['title'], $input['category_id'], $input['status'],
-        $input['is_notable_event'] ? 1 : 0, $input['short_description'], $input['content'], $id
-    ]);
-    jsonResponse(true, null, "Cập nhật bài viết thành công");
+    // Nhánh 2.2: Cập nhật toàn bộ thông tin chi tiết bài viết (Bao gồm Thẻ Tag)
+    $pdo->beginTransaction();
+    try {
+        $stmt = $pdo->prepare(
+            "UPDATE articles SET title=?, category_id=?, status=?, is_notable_event=?, short_description=?, content=?, updated_at=NOW()
+             WHERE id=?"
+        );
+        $stmt->execute([
+            $input['title'],
+            $input['category_id'],
+            $input['status'],
+            !empty($input['is_notable_event']) ? 1 : 0,
+            $input['short_description'] ?? '',
+            $input['content'] ?? '',
+            $id
+        ]);
+
+        // Đồng bộ danh sách Thẻ Tag nếu có trong payload
+        if (isset($input['tags']) && is_array($input['tags'])) {
+            // Xóa liên kết tags cũ của bài viết
+            $delTagsStmt = $pdo->prepare("DELETE FROM article_tags WHERE article_id = ?");
+            $delTagsStmt->execute([$id]);
+
+            $uniqueTagNames = array_unique(array_map('trim', $input['tags']));
+            foreach ($uniqueTagNames as $tagName) {
+                if ($tagName === '') continue;
+
+                // Kiểm tra tag đã tồn tại trong từ điển hệ thống chưa
+                $stmtTag = $pdo->prepare("SELECT id FROM tags WHERE LOWER(name) = LOWER(?) LIMIT 1");
+                $stmtTag->execute([$tagName]);
+                $existingTag = $stmtTag->fetch(PDO::FETCH_ASSOC);
+
+                if ($existingTag) {
+                    $tagId = (int)$existingTag['id'];
+                } else {
+                    $tagSlug = createSlug($tagName);
+                    $insertTag = $pdo->prepare("INSERT INTO tags (name, slug, created_at) VALUES (?, ?, NOW())");
+                    $insertTag->execute([$tagName, $tagSlug]);
+                    $tagId = (int)$pdo->lastInsertId();
+                }
+
+                $insertArticleTag = $pdo->prepare("INSERT INTO article_tags (article_id, tag_id) VALUES (?, ?)");
+                $insertArticleTag->execute([$id, $tagId]);
+            }
+        }
+
+        $pdo->commit();
+        jsonResponse(true, null, "Cập nhật bài viết và thẻ tag thành công");
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        jsonResponse(false, null, "Lỗi cập nhật bài viết: " . $e->getMessage());
+    }
 }
 
 // ==============================================================================

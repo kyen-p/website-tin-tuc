@@ -4,9 +4,11 @@
  * PHÂN HỆ: Quản trị Bình luận Hệ thống (Admin Comments Management Module)
  * MÔ TẢ: Kiểm duyệt và giám sát các phản hồi, bình luận của độc giả trên toàn hệ thống bài viết:
  *        1. Tải danh sách bình luận qua admin/comments.php và danh sách bài viết đã xuất bản qua admin/published-articles.php.
- *        2. Lọc bình luận theo bài viết cụ thể, sắp xếp theo thời gian (mới nhất / cũ nhất).
- *        3. Tìm kiếm theo nội dung bình luận, tên độc giả (@username) hoặc tiêu đề bài viết.
- *        4. Xóa vĩnh viễn các bình luận vi phạm chính sách qua API DELETE admin/comments.php với modal xác nhận an toàn.
+ *        2. Hỗ trợ xem nhanh ngữ cảnh bình luận trên bài viết thực tế (tự động cuộn lướt tới đúng vị trí bình luận
+ *           và chớp sáng viền qua param &comment_id=...#comment-...) thông qua liên kết tiêu đề bài viết và nút "Xem".
+ *        3. Lọc bình luận theo bài viết cụ thể, sắp xếp theo thời gian (mới nhất / cũ nhất).
+ *        4. Tìm kiếm theo nội dung bình luận, tên độc giả (@username) hoặc tiêu đề bài viết.
+ *        5. Xóa vĩnh viễn các bình luận vi phạm chính sách qua API DELETE admin/comments.php với modal xác nhận an toàn.
  * PHẠM VI SỬ DỤNG:
  *   - frontend/admin/comments.html
  * PHỤ THUỘC:
@@ -110,7 +112,7 @@
                   <th>Nội dung bình luận</th>
                   <th style="width: 250px;">Bài viết</th>
                   <th style="width: 140px;">Thời gian</th>
-                  <th style="width: 100px; text-align: center;">Thao tác</th>
+                  <th style="width: 140px; text-align: center;">Thao tác</th>
                 </tr>
               </thead>
               <tbody id="commentTableBody">
@@ -183,6 +185,24 @@
       const modal = document.getElementById("deleteCommentModal");
       if (modal) modal.style.display = "none";
     };
+
+    // Đóng modal khi bấm ra ngoài nền mờ
+    const deleteModalEl = document.getElementById("deleteCommentModal");
+    if (deleteModalEl) {
+      deleteModalEl.addEventListener("click", (e) => {
+        if (e.target === deleteModalEl) window.closeDeleteCommentModal();
+      });
+    }
+
+    // Đóng modal khi nhấn phím Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const modal = document.getElementById("deleteCommentModal");
+        if (modal && modal.style.display !== "none") {
+          window.closeDeleteCommentModal();
+        }
+      }
+    });
 
     window.confirmDeleteComment = async function () {
       if (!deleteTargetCommentId) return;
@@ -270,6 +290,11 @@
           slug: c.article_slug || c.article_id
         };
 
+        const articleBaseUrl = typeof getArticleDetailUrl === "function"
+          ? getArticleDetailUrl(article, "../public/")
+          : "../public/article-detail.html?slug=" + encodeURIComponent(article.slug);
+        const viewCommentUrl = `${articleBaseUrl}&comment_id=${c.id}#comment-${c.id}`;
+
         return `
           <tr>
             <td>
@@ -287,7 +312,7 @@
               </div>
             </td>
             <td>
-              <a href="${typeof getArticleDetailUrl === 'function' ? getArticleDetailUrl(article, '../public/') : '../public/article-detail.html?slug=' + encodeURIComponent(article.slug)}" target="_blank" class="admin-table__link" style="font-size: 13px; font-weight: 500; color: var(--brass-dark); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${escapeHtml(article.title)}">
+              <a href="${viewCommentUrl}" target="_blank" class="admin-table__link" style="font-size: 13px; font-weight: 500; color: var(--brass-dark); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="Xem bài viết tại đúng bình luận này: ${escapeHtml(article.title)}">
                 ${escapeHtml(article.title)} ↗
               </a>
             </td>
@@ -295,13 +320,22 @@
               ${timeAgo(c.created_at)}
             </td>
             <td style="text-align: center; white-space: nowrap;">
-              <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="openDeleteCommentModal(${c.id})" style="padding: 5px 10px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="3 6 5 6 21 6"></polyline>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg>
-                <span>Xóa</span>
-              </button>
+              <div style="display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                <a href="${viewCommentUrl}" target="_blank" class="admin-btn admin-btn--sm admin-btn--default" style="padding: 5px 9px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;" title="Mở trang bài viết và cuộn tới đúng bình luận này">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <span>Xem</span>
+                </a>
+                <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="openDeleteCommentModal(${c.id})" style="padding: 5px 9px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;" title="Xóa vĩnh viễn bình luận này">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  <span>Xóa</span>
+                </button>
+              </div>
             </td>
           </tr>
         `;

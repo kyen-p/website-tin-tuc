@@ -6,7 +6,7 @@
  * MÔ TẢ: Cung cấp các tiện ích xử lý chuỗi ký tự, chuyển đổi tiếng Việt có dấu sang slug URL.
  * PHẠM VI SỬ DỤNG:
  *   - [TẬP TIN DÙNG CHUNG CỐT LÕI]
- *   - Được require_once bởi: backend/api/reporter/write-article.php, backend/api/editor/categories-tags.php
+ *   - Được require_once bởi: backend/api/reporter/write-article.php, backend/api/editor/categories-tags.php, backend/api/admin/published-articles.php
  * ==============================================================================
  */
 
@@ -17,6 +17,7 @@
  * - Được gọi bởi:
  *   + backend/api/reporter/write-article.php (khi tạo hoặc cập nhật slug bài viết)
  *   + backend/api/editor/categories-tags.php (khi tạo hoặc sửa slug chuyên mục / tag)
+ *   + backend/api/admin/published-articles.php (khi admin tạo thẻ tag mới lúc sửa đè bài viết)
  * 
  * @param string $text Chuỗi tiêu đề gốc (tiếng Việt UTF-8)
  * @return string Chuỗi slug thân thiện URL (VD: "kinh-te-viet-nam-2026")

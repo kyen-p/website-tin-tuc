@@ -187,136 +187,24 @@
     }
 
     // ==============================================================================
-    // KHỐI 3: TÍCH HỢP TRÌNH SOẠN THẢO CKEDITOR 5 & ADAPTER TẢI ẢNH NỘI DUNG
+    // KHỐI 3: TÍCH HỢP TRÌNH SOẠN THẢO CKEDITOR 5 (DÙNG CHUNG MODULE HELPER TOÀN HỆ THỐNG)
     // ==============================================================================
     /**
-     * Adapter tải ảnh lên máy chủ PHP cho CKEditor 5
-     */
-    class CustomServerUploadAdapter {
-      constructor(loader) {
-        this.loader = loader;
-      }
-
-      upload() {
-        return this.loader.file.then(async (file) => {
-          const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
-          if (!allowedMimes.includes(file.type)) {
-            const msg = "Chỉ hỗ trợ ảnh JPG, JPEG, PNG hoặc WebP!";
-            if (typeof showToast === "function") showToast(msg, "warning");
-            throw new Error(msg);
-          }
-
-          if (file.size > 5 * 1024 * 1024) {
-            const msg = "Dung lượng ảnh chèn vào bài viết không được vượt quá 5MB!";
-            if (typeof showToast === "function") showToast(msg, "warning");
-            throw new Error(msg);
-          }
-
-          const formData = new FormData();
-
-          formData.append("image", file);
-          formData.append("type", "article");
-
-          const uploadUrl = typeof resolveApiUrl === "function" ? resolveApiUrl("upload.php") : "../../backend/api/upload.php";
-          const response = await fetch(uploadUrl, {
-            method: "POST",
-            credentials: "include",
-            body: formData
-          });
-
-          const result = await response.json();
-
-          if (!result.success) {
-            throw new Error(result.message || "Tải ảnh thất bại!");
-          }
-
-          const imageUrl = result.data.url;
-          const displayUrl = typeof resolveAssetPath === "function" ? resolveAssetPath(imageUrl) : imageUrl;
-
-          return {
-            default: displayUrl
-          };
-        });
-      }
-
-      abort() { }
-    }
-
-    function CustomUploadAdapterPlugin(editor) {
-      editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-        return new CustomServerUploadAdapter(loader);
-      };
-    }
-
-    /**
-     * Khởi tạo CKEditor 5 với đầy đủ chức năng căn lề (Alignment) & định dạng
+     * Khởi tạo CKEditor 5 sử dụng Module dùng chung window.initArticleEditor
+     * Đảm bảo nhất quán 100% tính năng định dạng, căn lề, chèn bảng biểu, nhúng video
+     * và upload ảnh lên máy chủ cục bộ giữa Phóng viên và Quản trị viên.
      */
     async function initCKEditor() {
       try {
-        const EditorConstructor = (window.CKEDITOR && window.CKEDITOR.ClassicEditor) || window.ClassicEditor;
-        if (!EditorConstructor) {
-          throw new Error("Không tìm thấy CKEditor 5 library!");
+        if (typeof window.initArticleEditor === "function") {
+          editorInstance = await window.initArticleEditor("#editor", {
+            placeholder: "Bắt đầu viết nội dung bài báo tại đây (hỗ trợ kéo thả ảnh, dán link YouTube/video)..."
+          });
+        } else {
+          console.warn("initCKEditor: Chưa tải được module ckeditor-helper.js");
         }
-
-        editorInstance = await EditorConstructor.create(document.querySelector("#editor"), {
-          extraPlugins: [CustomUploadAdapterPlugin],
-          mediaEmbed: {
-            previewsInData: true
-          },
-          toolbar: [
-            'heading', '|',
-            'bold', 'italic', 'underline', 'link', '|',
-            'alignment', '|',
-            'bulletedList', 'numberedList', '|',
-            'imageUpload', 'mediaEmbed', 'insertTable', 'blockQuote', 'horizontalLine', '|',
-            'undo', 'redo'
-          ],
-          alignment: {
-            options: ['left', 'center', 'right', 'justify']
-          },
-          image: {
-            toolbar: [
-              'imageTextAlternative',
-              'toggleImageCaption',
-              'imageStyle:inline',
-              'imageStyle:block',
-              'imageStyle:side'
-            ]
-          },
-          table: {
-            contentToolbar: [
-              'tableColumn',
-              'tableRow',
-              'mergeTableCells'
-            ]
-          },
-          // Loại bỏ các plugin cloud/thương mại không cần thiết nhằm tối ưu hiệu năng và tránh request dư thừa
-          removePlugins: [
-            'CKBox',
-            'CKFinder',
-            'EasyImage',
-            'RealTimeCollaborativeComments',
-            'RealTimeCollaborativeTrackChanges',
-            'RealTimeCollaborativeRevisionHistory',
-            'PresenceList',
-            'Comments',
-            'TrackChanges',
-            'TrackChangesData',
-            'RevisionHistory',
-            'Pagination',
-            'WProofreader',
-            'MathType',
-            'SlashCommand',
-            'Template',
-            'DocumentOutline',
-            'FormatPainter',
-            'TableOfContents',
-            'PasteFromOfficeEnhanced'
-          ],
-          placeholder: 'Bắt đầu viết nội dung bài báo tại đây (hỗ trợ kéo thả ảnh, dán link YouTube/video)...'
-        });
       } catch (error) {
-        console.error("Lỗi khởi tạo CKEditor 5:", error);
+        console.error("Lỗi khởi tạo CKEditor 5 cho Phóng viên:", error);
       }
     }
 
@@ -410,7 +298,7 @@
 
         // Điền thông tin
         document.getElementById("article-title").value = art.title || "";
-        document.getElementById("article-sapo").value = art.short_description || art.sapo || "";
+        document.getElementById("article-sapo").value = art.short_description || "";
         document.getElementById("article-category").value = art.category_id || "";
 
         // Đặt nội dung CKEditor trước để sẵn sàng kiểm tra ảnh
@@ -419,7 +307,7 @@
         }
 
         // Hiển thị ảnh bìa nếu có
-        const rawCover = art.cover_image || art.image || "";
+        const rawCover = art.cover_image || "";
         const cleanCover = (rawCover && !rawCover.includes("placeholder")) ? rawCover.trim() : "";
 
         if (cleanCover) {

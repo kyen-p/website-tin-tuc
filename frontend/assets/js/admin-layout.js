@@ -321,18 +321,12 @@ function initAdminLayout(currentRole, activeKey) {
 // ==============================================================================
 
 /**
- * Trích xuất thumbnail thông minh cho các bảng quản trị
+ * Trích xuất ảnh bìa (cover_image) cho các bảng quản trị
  */
 function extractThumbnail(article) {
   if (!article) return "";
   if (article.cover_image && article.cover_image.trim() && !article.cover_image.includes("placeholder")) {
     return article.cover_image.trim();
-  }
-  if (article.image && article.image.trim() && !article.image.includes("placeholder")) {
-    return article.image.trim();
-  }
-  if (article.thumbnail && article.thumbnail.trim() && !article.thumbnail.includes("placeholder")) {
-    return article.thumbnail.trim();
   }
   return "";
 }

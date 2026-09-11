@@ -224,7 +224,7 @@
     } else if (currentTab === "reader") {
       filtered = filtered.filter(u => u.role === "user");
     } else if (currentTab === "locked") {
-      filtered = filtered.filter(u => u.status === "locked" || u.status === "inactive");
+      filtered = filtered.filter(u => u.status === "locked");
     }
 
     // Lọc theo Role Dropdown

@@ -4,7 +4,7 @@ TÊN FILE: frontend/public/category.html
 PHÂN HỆ: Trang Chuyên Mục & Lọc Tin Công Khai (Public Category View)
 MÔ TẢ: Khung giao diện hiển thị bài viết theo chuyên mục hoặc bộ lọc:
        - Đường dẫn Breadcrumb (#breadcrumb-category).
-       - Tiêu đề, mô tả và danh sách tag con thuộc chuyên mục (#category-tags-mount).
+       - Tiêu đề, mô tả và thanh cuộn tag ngang (#category-tags-mount) kèm nút trượt điều hướng (#category-tag-prev, #category-tag-next).
        - Khối bài tiêu điểm của chuyên mục (#category-featured-mount).
        - Lưới danh sách bài viết (#category-grid-mount) và thanh thông báo cuối trang (#category-end-notice).
        - Cột phụ: Bảng xếp hạng đọc nhiều nhất trong tuần (#category-rank-mount) và Tag Cloud (#category-tag-cloud-mount).
@@ -55,9 +55,15 @@ PHỤ THUỘC:
         </div>
 
         <!-- Tag Chips Filter -->
-        <div style="margin-top: 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <span class="meta" style="font-weight: 600; text-transform: uppercase;">Thẻ:</span>
-          <div class="tag-cloud" id="category-tags-mount" style="display: inline-flex; flex-wrap: wrap; gap: 6px;"></div>
+        <div class="category-tags-bar">
+          <span class="meta" style="font-weight: 600; text-transform: uppercase; white-space: nowrap;">Thẻ:</span>
+          <button type="button" id="category-tag-prev" class="tag-scroll-btn" aria-label="Cuộn sang trái" style="display: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <div class="tag-scroll-container" id="category-tags-mount"></div>
+          <button type="button" id="category-tag-next" class="tag-scroll-btn" aria-label="Cuộn sang phải" style="display: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
         </div>
       </header>
 

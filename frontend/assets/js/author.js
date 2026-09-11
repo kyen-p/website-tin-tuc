@@ -189,10 +189,10 @@ async function initAuthorPage() {
       .map((a) => {
         const cat = getCategory(a);
         const safeTitle = typeof escapeHtml === "function" ? escapeHtml(a.title) : a.title;
-        const safeDesc = typeof escapeHtml === "function" ? escapeHtml(a.short_description || a.summary || "") : (a.short_description || "");
+        const safeDesc = typeof escapeHtml === "function" ? escapeHtml(a.short_description || "") : (a.short_description || "");
         const safeDate = typeof formatDate === "function" ? formatDate(a.published_at || a.created_at) : (a.published_at || a.created_at);
         const safeViews = typeof formatNumber === "function" ? formatNumber(getViews(a)) : getViews(a);
-        const coverImg = typeof renderCoverImage === "function" ? renderCoverImage(a.cover_image || a.thumbnail, a.title, "ph--4x3") : `<img src="${a.thumbnail || a.cover_image}" alt="${safeTitle}">`;
+        const coverImg = typeof renderCoverImage === "function" ? renderCoverImage(a.cover_image, a.title, "ph--4x3") : `<img src="${a.cover_image || ''}" alt="${safeTitle}">`;
 
         return `
           <article class="article-card" style="padding-bottom: 20px;">

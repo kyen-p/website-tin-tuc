@@ -7,7 +7,7 @@
  *        2. Phân tích nội dung: Render HTML bài viết, xử lý nhúng video tự động (YouTube/Vimeo oembed).
  *        3. Hiển thị thông tin tác giả, chuyên mục, thẻ tag, ngày xuất bản và lượt đọc.
  *        4. Tương tác Yêu thích (Bookmark / Favorite) có xác thực người dùng.
- *        5. Hệ thống bình luận đa tương tác: Đăng bình luận mới, sửa trực tiếp tại chỗ, xóa bình luận (kèm modal xác nhận), highlight bình luận từ thông báo.
+ *        5. Hệ thống bình luận đa tương tác: Đăng bình luận mới, sửa trực tiếp tại chỗ, xóa bình luận (kèm modal xác nhận), tự động cuộn và highlight bình luận từ Quản lý bình luận cá nhân (User) & Quản trị bình luận (Admin).
  *        6. Tải và hiển thị danh sách bài viết liên quan cùng chuyên mục.
  * PHẠM VI SỬ DỤNG:
  *   - frontend/public/article-detail.html
@@ -78,7 +78,7 @@ async function initArticleDetailPage() {
 
   document.getElementById("article-category-badge").textContent = category.name;
   document.getElementById("article-title").textContent = article.title;
-  document.getElementById("article-summary").textContent = article.short_description || article.summary || "";
+  document.getElementById("article-summary").textContent = article.short_description || "";
 
   const authorProfileUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(author) : `author.html?username=${encodeURIComponent(author.username || author.id)}`;
 
@@ -134,7 +134,7 @@ async function initArticleDetailPage() {
           .join("");
       }
     } else {
-      contentContainer.innerHTML = `<p>${escapeHtml(article.summary || "")}</p>`;
+      contentContainer.innerHTML = `<p>${escapeHtml(article.short_description || "")}</p>`;
     }
   }
 
@@ -352,7 +352,6 @@ async function initArticleDetailPage() {
                     ${escapeHtml(commentUser.full_name)}
                   </a>
                   <span class="meta">${timeAgo(c.created_at)}</span>
-                  ${c.is_edited ? `<span class="meta" style="font-size: 11px; font-style: italic;">(đã chỉnh sửa)</span>` : ""}
                 </div>
 
                 <!-- Các nút hành động: Sửa / Xóa (nếu là bình luận của mình) -->
@@ -480,7 +479,8 @@ if (document.readyState === "loading") {
 // KHỐI 8: CÁC HÀM TIỆN ÍCH TƯƠNG TÁC BÌNH LUẬN (HIGHLIGHT, SỬA & XÓA BÌNH LUẬN)
 // ==============================================================================
 /**
- * Tự động cuộn đến bình luận và làm nổi màu (Highlight) trong 2.5s khi có param comment_id
+ * Tự động cuộn đến bình luận và làm nổi màu (Highlight) trong 2.8s khi có param comment_id trên URL
+ * (Được kích hoạt khi điều hướng từ trang Quản lý bình luận User 'my-comments.js' hoặc Quản trị Admin 'admin-comments.js')
  */
 function checkAndHighlightComment() {
   const urlParams = new URLSearchParams(window.location.search);

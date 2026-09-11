@@ -4,7 +4,7 @@
  * PHÂN HỆ: Tổng quan Giám sát Hệ thống Quản trị viên (Admin Dashboard Module)
  * MÔ TẢ: Thu thập dữ liệu và biểu diễn các chỉ số KPI toàn hệ thống:
  *        1. Tải song song dữ liệu qua admin/users.php, admin/published-articles.php, public/categories.php, admin/comments.php.
- *        2. Tính toán các chỉ số: Tổng tài khoản (phân tách admin, editor, reporter, reader), tổng bài viết xuất bản/ẩn,
+ *        2. Tính toán các chỉ số: Tổng tài khoản (phân tách admin, editor, reporter, user), tổng bài viết xuất bản/ẩn,
  *           lượt xem trung bình và tổng bình luận.
  *        3. Render lưới thẻ chỉ số KPI tổng quan đồng bộ chuẩn Editorial.
  *        4. Biểu đồ Chart.js: Xu hướng bài đăng & lượt xem 7 ngày gần nhất; Cơ cấu bài viết theo chuyên mục.

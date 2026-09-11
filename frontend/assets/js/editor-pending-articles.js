@@ -169,7 +169,7 @@
       const q = currentSearchQuery.toLowerCase();
       filtered = filtered.filter((a) => {
         const title = (a.title || "").toLowerCase();
-        const sapo = (a.short_description || a.sapo || "").toLowerCase();
+        const sapo = (a.short_description || "").toLowerCase();
         const authorName = (a.author_name || a.author || a.author_username || "").toLowerCase();
         return title.includes(q) || sapo.includes(q) || authorName.includes(q);
       });
@@ -238,7 +238,7 @@
 
     const coverImg = extractThumbnail(article, category);
     const thumbHtml = renderTableCoverThumb(coverImg, article.title);
-    const desc = article.short_description || article.sapo || "";
+    const desc = article.short_description || "";
     const timeDisplay = typeof formatDate === "function" ? formatDate(article.updated_at || article.created_at) : (article.updated_at || article.created_at || "--");
 
     // Status Badge

@@ -1,18 +1,19 @@
 /**
  * ==============================================================================
  * TÊN FILE: frontend/assets/js/editor-pending-articles-modal.js
- * PHÂN HỆ: Hộp thoại Thẩm định & Duyệt Bài viết Biên tập viên (Editor Pending Articles Modal)
- * MÔ TẢ: Cung cấp giao diện cửa sổ Modal tương tác thẩm định bài viết:
+ * PHÂN HỆ: Hộp thoại Thẩm định & Xem chi tiết Bài viết DÙNG CHUNG (Shared Article Review & Inspection Modal)
+ * MÔ TẢ: Cung cấp giao diện cửa sổ Modal tương tác chuẩn 2 cột đồng bộ cho cả Editor và Admin:
  *        1. Tự động sinh cấu trúc HTML Modal vào DOM (Modal đọc nội dung, Modal xác nhận xuất bản, Modal nhập lý do từ chối).
- *        2. Hiển thị chế độ Read-only toàn bộ nội dung bài viết, tóm tắt sapo, tác giả, thời gian nộp, chuyên mục và thẻ tag.
- *        3. Cho phép đánh dấu cờ "Sự kiện đáng chú ý" (is_notable_event) khi xuất bản.
- *        4. Duyệt & Xuất bản ngay qua PUT backend/api/editor/pending-articles.php (action: 'approve').
- *        5. Từ chối bài viết kèm lý do phản hồi qua PUT backend/api/editor/pending-articles.php (action: 'reject').
- *        6. Tự động gọi window.EditorPendingArticles.reloadAndRender() để cập nhật lại danh sách và huy hiệu thanh bên.
+ *        2. Hiển thị chế độ Read-only toàn bộ nội dung bài viết với đầy đủ định dạng siêu văn bản CKEditor 5 (.body-text .ck-content):
+ *           - Giữ nguyên số thứ tự danh sách (1, 2, 3... <ol>), viền kẻ ô bảng biểu (table), trích dẫn blockquote, căn lề CK5, ảnh kèm chú thích.
+ *        3. Hỗ trợ 2 chế độ vận hành (Dual-Mode):
+ *           - Chế độ Editor (pending-articles.html): Thẩm định bài chờ duyệt, đánh dấu sự kiện đáng chú ý, Duyệt & Xuất bản hoặc Từ chối kèm lý do.
+ *           - Chế độ Admin (published-articles.html): Xem chi tiết nguyên bản bài đã đăng, nút đóng, nút chuyển sang Sửa bài viết (CK5) và Ẩn/Hiện bài.
  * PHẠM VI SỬ DỤNG:
  *   - frontend/editor/pending-articles.html
+ *   - frontend/admin/published-articles.html
  * PHỤ THUỘC:
- *   - frontend/assets/js/editor-pending-articles.js (window.EditorPendingArticles)
+ *   - frontend/assets/css/base.css (.body-text, .ck-content)
  *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, formatDateTime, etc.)
  *   - backend/api/editor/pending-articles.php
  * ==============================================================================
@@ -75,10 +76,10 @@
                   <div id="modal-article-sapo-display" style="font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); padding: 10px 12px; background: #FAF9F6; border: 1px solid var(--line-soft); border-radius: 6px; font-style: italic;"></div>
                 </div>
 
-                <!-- Nội dung chi tiết -->
+                <!-- Nội dung chi tiết (Được gán class chuẩn .body-text .ck-content để hiển thị hoàn hảo Bảng biểu, Danh sách có số, ảnh, quote) -->
                 <div class="admin-form-group">
                   <label class="admin-form-label" style="font-weight: 700; font-size: 12.5px; color: var(--muted); text-transform: uppercase;">Nội dung bài viết:</label>
-                  <div id="modal-article-content" style="border: 1px solid var(--line-soft); border-radius: 6px; padding: 16px; background: #FFF; max-height: 320px; overflow-y: auto; font-size: 13.5px; line-height: 1.65; color: var(--ink); word-break: break-word;"></div>
+                  <div id="modal-article-content" class="body-text ck-content" style="border: 1px solid var(--line-soft); border-radius: 6px; padding: 20px; background: #FFF; max-height: 400px; overflow-y: auto; font-size: 14px; line-height: 1.7; color: var(--ink); word-break: break-word;"></div>
                 </div>
 
               </div>
@@ -88,7 +89,13 @@
                 
                 <div style="font-size: 13px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--line-soft); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
                   <span>Thông tin xuất bản</span>
-                  <span style="font-size: 11px; background: rgba(30, 41, 59, 0.08); color: var(--ink); padding: 2px 6px; border-radius: 4px; font-weight: 600;">Chế độ thẩm định</span>
+                  <span id="modal-review-mode-badge" style="font-size: 11px; background: rgba(30, 41, 59, 0.08); color: var(--ink); padding: 2px 7px; border-radius: 4px; font-weight: 600;">Chế độ thẩm định</span>
+                </div>
+
+                <!-- Thông tin trạng thái hiển thị bài viết (khi ở chế độ Admin) -->
+                <div id="modal-status-row" style="display: none; font-size: 12.5px;">
+                  <div style="color: var(--muted); margin-bottom: 3px;">Trạng thái bài viết:</div>
+                  <div id="modal-status-badge"></div>
                 </div>
 
                 <!-- Thông tin tác giả phóng viên -->
@@ -99,8 +106,14 @@
 
                 <!-- Thời gian nộp / gửi -->
                 <div style="font-size: 12.5px;">
-                  <div style="color: var(--muted); margin-bottom: 3px;">Thời gian nộp bài:</div>
+                  <div id="modal-time-label" style="color: var(--muted); margin-bottom: 3px;">Thời gian nộp bài:</div>
                   <div id="modal-submitted-time" style="font-family: var(--f-mono); color: var(--ink);"></div>
+                </div>
+
+                <!-- Người duyệt bài (dành cho chế độ Admin hoặc bài đã xuất bản) -->
+                <div id="modal-reviewer-row" style="display: none; font-size: 12.5px;">
+                  <div style="color: var(--muted); margin-bottom: 3px;">Biên tập viên duyệt bài:</div>
+                  <div id="modal-reviewer-name" style="font-weight: 700; color: #1B2A4A;"></div>
                 </div>
 
                 <!-- Chuyên mục bài viết do phóng viên chọn -->
@@ -120,13 +133,13 @@
 
                   <!-- Container các tag của bài viết -->
                   <div id="modal-selected-tags-mount" style="min-height: 42px; padding: 8px 10px; background: #FFF; border: 1px solid var(--line-soft); border-radius: 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;"></div>
-                  <div style="font-size: 11px; color: var(--muted); margin-top: 5px;">
+                  <div id="modal-tag-desc-hint" style="font-size: 11px; color: var(--muted); margin-top: 5px;">
                      <em>Khi duyệt bài, nếu có tag mới do phóng viên gắn, hệ thống sẽ tự động khởi tạo vào danh mục thẻ của tòa soạn. Nếu tag không phù hợp, BTV từ chối bài và yêu cầu PV sửa.</em>
                   </div>
                 </div>
 
                 <!-- TÙY CHỌN BAN BIÊN TẬP: ĐƯA VÀO SỰ KIỆN ĐÁNG CHÚ Ý -->
-                <div class="admin-form-group" style="background: #FFFDF9; border: 1.5px solid #F3DFC1; border-radius: 6px; padding: 12px; margin-top: 2px;">
+                <div id="modal-is-notable-container" class="admin-form-group" style="background: #FFFDF9; border: 1.5px solid #F3DFC1; border-radius: 6px; padding: 12px; margin-top: 2px;">
                   <label class="admin-form-label" style="font-weight: 700; font-size: 12px; color: #8F7239; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
                     <span style="font-size: 14px;">📌</span> Luồng sự kiện:
                   </label>
@@ -146,7 +159,7 @@
                 </div>
 
                 <!-- Ghi chú thẩm định biên tập viên -->
-                <div style="background: rgba(184, 147, 79, 0.08); border: 1px solid rgba(184, 147, 79, 0.25); border-radius: 6px; padding: 10px 12px; font-size: 11.5px; color: #78350F; line-height: 1.5;">
+                <div id="modal-guideline-note" style="background: rgba(184, 147, 79, 0.08); border: 1px solid rgba(184, 147, 79, 0.25); border-radius: 6px; padding: 10px 12px; font-size: 11.5px; color: #78350F; line-height: 1.5;">
                   <strong>Quy chuẩn tòa soạn:</strong> Biên tập viên không tự ý sửa đổi văn bản hay tag của tác giả. Nếu bài chưa đạt yêu cầu, vui lòng chọn <strong>"Từ chối bài viết"</strong> và ghi rõ lý do để phóng viên tự hoàn thiện.
                 </div>
 
@@ -155,7 +168,7 @@
             </div>
           </div>
 
-          <!-- Modal Footer: Hành động -->
+          <!-- Modal Footer: Hành động (Tự động chuyển đổi giữa Editor Actions và Admin Actions) -->
           <div class="admin-modal-footer" style="padding: 14px 24px; border-top: 1px solid var(--line-soft); background: #FAF8F5; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
             <div>
               <button type="button" class="admin-btn admin-btn--secondary btn-close-review-modal" style="padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
@@ -163,13 +176,27 @@
               </button>
             </div>
 
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <!-- Nút Từ chối nếu bài đang ở trạng thái pending -->
+            <!-- KHỐI HÀNH ĐỘNG BIÊN TẬP VIÊN (EDITOR ACTIONS) -->
+            <div id="modal-editor-actions" style="display: flex; align-items: center; gap: 10px;">
               <button type="button" id="btn-trigger-reject" class="admin-btn admin-btn--danger" style="background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; font-weight: 600; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
                 Từ chối bài viết
               </button>
               <button type="button" id="btn-save-publish" class="admin-btn admin-btn--primary" style="background: #1B2A4A; color: #FFF; font-weight: 700; padding: 8px 22px; border-radius: 6px; cursor: pointer;">
                 Duyệt & Xuất bản ngay
+              </button>
+            </div>
+
+            <!-- KHỐI HÀNH ĐỘNG QUẢN TRỊ VIÊN (ADMIN ACTIONS) -->
+            <div id="modal-admin-actions" style="display: none; align-items: center; gap: 10px;">
+              <button type="button" id="btn-admin-edit-from-modal" class="admin-btn" style="background: #FFFBEB; color: #B45309; border: 1.5px solid #FCD34D; font-weight: 700; padding: 8px 18px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>Sửa bài viết này</span>
+              </button>
+              <button type="button" id="btn-admin-toggle-from-modal" class="admin-btn admin-btn--secondary" style="background: #F1F5F9; color: var(--ink); border: 1px solid var(--line-soft); font-weight: 600; padding: 8px 18px; border-radius: 6px; cursor: pointer;">
+                Tạm ẩn bài
               </button>
             </div>
           </div>
@@ -249,24 +276,47 @@
   // ==============================================================================
   // KHỐI 3: MỞ / ĐÓNG MODAL THẨM ĐỊNH & HIỂN THỊ DỮ LIỆU BÀI VIẾT READ-ONLY
   // ==============================================================================
+  let currentModalOptions = {};
+
   /**
-   * Mở Modal Xem & Thẩm định bài viết
+   * Mở Modal Xem & Thẩm định bài viết (Hỗ trợ linh hoạt cả Editor thẩm định lẫn Admin xem chi tiết)
+   * @param {string|number|object} articleOrId - ID bài viết hoặc đối tượng bài viết
+   * @param {object} options - Tùy chọn mở modal { mode: 'editor'|'admin', onEdit: fn, onToggleStatus: fn, categories: [] }
    */
-  function openReviewModal(articleId) {
+  function openReviewModal(articleOrId, options = {}) {
     ensureModalsExist();
+    currentModalOptions = options || {};
 
-    const allArticles = window.EditorPendingArticles ? window.EditorPendingArticles.getAllArticles() : [];
-    const allCategories = window.EditorPendingArticles ? window.EditorPendingArticles.getAllCategories() : [];
+    const mode = options.mode || (window.location.pathname.includes("/admin/") ? "admin" : "editor");
 
-    const article = allArticles.find((a) => String(a.id) === String(articleId));
+    // Lấy bài viết từ tham số hoặc tìm kiếm trong các danh sách toàn cục
+    let article = null;
+    if (articleOrId && typeof articleOrId === "object") {
+      article = articleOrId;
+    } else {
+      const candidates = [
+        ...(options.articles || []),
+        ...(window.EditorPendingArticles && typeof window.EditorPendingArticles.getAllArticles === "function" ? window.EditorPendingArticles.getAllArticles() : []),
+        ...(window.AdminPublishedArticles && typeof window.AdminPublishedArticles.getAllArticles === "function" ? window.AdminPublishedArticles.getAllArticles() : []),
+        ...(Array.isArray(window.allArticles) ? window.allArticles : [])
+      ];
+      article = candidates.find((a) => String(a.id) === String(articleOrId));
+    }
+
     if (!article) return;
-
     reviewingArticle = article;
 
+    // Tìm danh mục tương ứng
+    const allCategories = options.categories ||
+      (window.EditorPendingArticles && typeof window.EditorPendingArticles.getAllCategories === "function" ? window.EditorPendingArticles.getAllCategories() : []) ||
+      (window.AdminPublishedArticles && typeof window.AdminPublishedArticles.getAllCategories === "function" ? window.AdminPublishedArticles.getAllCategories() : []) ||
+      (Array.isArray(window.allCategories) ? window.allCategories : []);
+
     const category = allCategories.find((c) => String(c.id) === String(article.category_id)) || {
-      id: 1,
-      name: "Thời sự",
+      id: article.category_id || 1,
+      name: article.category_name || "Thời sự",
     };
+
     const author = {
       full_name: article.author_name || article.author || "Phóng viên",
       username: article.author_username || "reporter",
@@ -278,18 +328,29 @@
     if (titleDisplay) titleDisplay.textContent = article.title || "Chưa có tiêu đề";
 
     const sapoDisplay = document.getElementById("modal-article-sapo-display");
-    if (sapoDisplay) sapoDisplay.textContent = article.short_description || article.sapo || "Chưa có tóm tắt Sapo";
+    if (sapoDisplay) sapoDisplay.textContent = article.short_description || "Chưa có tóm tắt";
 
+    // Gán nội dung bài viết vào thẻ có class .body-text .ck-content để hiển thị định dạng CKEditor 5 chuẩn xác
     const contentEl = document.getElementById("modal-article-content");
-    if (contentEl) contentEl.innerHTML = article.content || "<p>Chưa có nội dung chi tiết.</p>";
+    if (contentEl) {
+      contentEl.innerHTML = article.content || "<p>Chưa có nội dung chi tiết.</p>";
+    }
 
     // Thiết lập Checkbox Đưa vào Sự kiện đáng chú ý
+    const isNotableContainer = document.getElementById("modal-is-notable-container");
     const isNotableCheckbox = document.getElementById("modal-is-notable-checkbox");
     if (isNotableCheckbox) {
       isNotableCheckbox.checked = Boolean(article.is_notable_event);
+      isNotableCheckbox.disabled = mode === "admin";
+    }
+    if (isNotableContainer && mode === "admin" && !article.is_notable_event) {
+      // Nếu là admin và bài không phải sự kiện đáng chú ý thì có thể ẩn bớt container để gọn gàng
+      isNotableContainer.style.display = "none";
+    } else if (isNotableContainer) {
+      isNotableContainer.style.display = "block";
     }
 
-    // Banner Từ chối
+    // Banner Từ chối (chỉ hiện khi bài có trạng thái rejected)
     const rejectBanner = document.getElementById("modal-rejection-banner");
     const rejectReasonEl = document.getElementById("modal-rejection-reason");
     if (article.status === "rejected" && article.rejection_reason) {
@@ -299,15 +360,51 @@
       if (rejectBanner) rejectBanner.style.display = "none";
     }
 
-    // Metadata cột phải
+    // Metadata cột phải: Tác giả
     const repNameEl = document.getElementById("modal-reporter-name");
     if (repNameEl) repNameEl.textContent = `${author.full_name || author.username} (@${author.username})`;
 
+    // Thời gian hiển thị (thời gian xuất bản nếu là admin / thời gian nộp nếu là editor)
+    const timeLabelEl = document.getElementById("modal-time-label");
     const subTimeEl = document.getElementById("modal-submitted-time");
     if (subTimeEl) {
-      subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.created_at) : (article.created_at || "");
+      if (mode === "admin" && article.published_at) {
+        if (timeLabelEl) timeLabelEl.textContent = "Thời gian xuất bản:";
+        subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.published_at) : article.published_at;
+      } else {
+        if (timeLabelEl) timeLabelEl.textContent = "Thời gian nộp bài:";
+        subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.created_at) : (article.created_at || "");
+      }
     }
 
+    // Người duyệt bài (dành cho chế độ Admin hoặc bài đã xuất bản)
+    const reviewerRow = document.getElementById("modal-reviewer-row");
+    const reviewerNameEl = document.getElementById("modal-reviewer-name");
+    const approverName = article.reviewed_by_name || article.reviewer_name || article.approver_name;
+    if (approverName && reviewerRow && reviewerNameEl) {
+      reviewerRow.style.display = "block";
+      reviewerNameEl.textContent = approverName;
+    } else if (reviewerRow) {
+      reviewerRow.style.display = "none";
+    }
+
+    // Trạng thái bài viết (dành cho Admin)
+    const statusRow = document.getElementById("modal-status-row");
+    const statusBadgeEl = document.getElementById("modal-status-badge");
+    if (mode === "admin" && statusRow && statusBadgeEl) {
+      statusRow.style.display = "block";
+      if (article.status === "published") {
+        statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--approved">Đang hiển thị</span>`;
+      } else if (article.status === "hidden") {
+        statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--rejected">Đã tạm ẩn</span>`;
+      } else {
+        statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--pending">${article.status}</span>`;
+      }
+    } else if (statusRow) {
+      statusRow.style.display = "none";
+    }
+
+    // Chuyên mục
     const catDisplay = document.getElementById("modal-category-display");
     if (catDisplay) {
       catDisplay.textContent = category.name || "Thời sự";
@@ -324,30 +421,90 @@
     modalSelectedTags = assignedTagNames;
     renderModalTags();
 
-    // Nút hành động ở chân Modal tùy theo status
-    const rejectBtn = document.getElementById("btn-trigger-reject");
-    const saveBtn = document.getElementById("btn-save-publish");
+    // ==============================================================================
+    // THIẾT LẬP GIAO DIỆN & HÀNH ĐỘNG THEO VAI TRÒ (EDITOR VS ADMIN)
+    // ==============================================================================
+    const headingEl = document.getElementById("modal-review-heading");
+    const subheadingEl = document.getElementById("modal-review-subheading");
+    const modeBadgeEl = document.getElementById("modal-review-mode-badge");
+    const editorActionsEl = document.getElementById("modal-editor-actions");
+    const adminActionsEl = document.getElementById("modal-admin-actions");
+    const guidelineNoteEl = document.getElementById("modal-guideline-note");
+    const tagHintEl = document.getElementById("modal-tag-desc-hint");
 
-    if (article.status === "pending") {
-      if (rejectBtn) rejectBtn.style.display = "inline-block";
-      if (saveBtn) {
-        saveBtn.textContent = "Duyệt & Xuất bản ngay";
-        saveBtn.style.background = "#1B2A4A";
-        saveBtn.disabled = false;
+    if (mode === "admin") {
+      // 1. Chế độ Quản trị viên (Admin)
+      if (headingEl) headingEl.textContent = "Xem chi tiết bài viết";
+      if (subheadingEl) subheadingEl.textContent = "Xem nguyên bản định dạng bài viết của phóng viên. Chế độ Quản trị viên.";
+      if (modeBadgeEl) modeBadgeEl.textContent = "Chế độ Quản trị";
+      if (editorActionsEl) editorActionsEl.style.display = "none";
+      if (adminActionsEl) adminActionsEl.style.display = "flex";
+      if (guidelineNoteEl) guidelineNoteEl.style.display = "none";
+      if (tagHintEl) tagHintEl.style.display = "none";
+
+      // Gắn sự kiện nút Sửa bài viết của Admin
+      const btnAdminEdit = document.getElementById("btn-admin-edit-from-modal");
+      if (btnAdminEdit) {
+        btnAdminEdit.onclick = () => {
+          const artToEdit = reviewingArticle;
+          closeReviewModal();
+          if (typeof options.onEdit === "function") {
+            options.onEdit(artToEdit);
+          } else if (typeof window.adminOpenEditArticle === "function") {
+            window.adminOpenEditArticle(artToEdit.id);
+          }
+        };
       }
-    } else if (article.status === "rejected") {
-      if (rejectBtn) rejectBtn.style.display = "none";
-      if (saveBtn) {
-        saveBtn.textContent = "Duyệt & Xuất bản ngay";
-        saveBtn.style.background = "#1B2A4A";
-        saveBtn.disabled = false;
+
+      // Gắn sự kiện nút Ẩn/Hiện bài viết của Admin
+      const btnAdminToggle = document.getElementById("btn-admin-toggle-from-modal");
+      if (btnAdminToggle) {
+        const isHidden = reviewingArticle.status === "hidden";
+        btnAdminToggle.textContent = isHidden ? "Hiển thị lại bài" : "Tạm ẩn bài";
+        btnAdminToggle.onclick = () => {
+          const artToToggle = reviewingArticle;
+          closeReviewModal();
+          if (typeof options.onToggleStatus === "function") {
+            options.onToggleStatus(artToToggle);
+          } else if (typeof window.adminToggleHideArticle === "function") {
+            window.adminToggleHideArticle(artToToggle.id);
+          }
+        };
       }
-    } else if (article.status === "published") {
-      if (rejectBtn) rejectBtn.style.display = "none";
-      if (saveBtn) {
-        saveBtn.textContent = "Đã xuất bản";
-        saveBtn.style.background = "#2E7D32";
-        saveBtn.disabled = true;
+    } else {
+      // 2. Chế độ Biên tập viên thẩm định (Editor)
+      if (headingEl) headingEl.textContent = "Thẩm định bài viết";
+      if (subheadingEl) subheadingEl.textContent = "Đọc duyệt nguyên bản bài viết của phóng viên. Biên tập viên thẩm định, duyệt xuất bản hoặc từ chối kèm lý do.";
+      if (modeBadgeEl) modeBadgeEl.textContent = "Chế độ thẩm định";
+      if (editorActionsEl) editorActionsEl.style.display = "flex";
+      if (adminActionsEl) adminActionsEl.style.display = "none";
+      if (guidelineNoteEl) guidelineNoteEl.style.display = "block";
+      if (tagHintEl) tagHintEl.style.display = "block";
+
+      const rejectBtn = document.getElementById("btn-trigger-reject");
+      const saveBtn = document.getElementById("btn-save-publish");
+
+      if (article.status === "pending") {
+        if (rejectBtn) rejectBtn.style.display = "inline-block";
+        if (saveBtn) {
+          saveBtn.textContent = "Duyệt & Xuất bản ngay";
+          saveBtn.style.background = "#1B2A4A";
+          saveBtn.disabled = false;
+        }
+      } else if (article.status === "rejected") {
+        if (rejectBtn) rejectBtn.style.display = "none";
+        if (saveBtn) {
+          saveBtn.textContent = "Duyệt & Xuất bản ngay";
+          saveBtn.style.background = "#1B2A4A";
+          saveBtn.disabled = false;
+        }
+      } else if (article.status === "published") {
+        if (rejectBtn) rejectBtn.style.display = "none";
+        if (saveBtn) {
+          saveBtn.textContent = "Đã xuất bản";
+          saveBtn.style.background = "#2E7D32";
+          saveBtn.disabled = true;
+        }
       }
     }
 
@@ -360,6 +517,7 @@
     if (reviewModal) reviewModal.style.display = "none";
     reviewingArticle = null;
     modalSelectedTags = [];
+    currentModalOptions = {};
   }
 
   /**
@@ -620,6 +778,7 @@
 
   // Xuất các hàm ra phạm vi toàn cục để HTML event handlers tương thích
   window.openReviewModal = openReviewModal;
+  window.openArticleReviewModal = openReviewModal;
   window.closeReviewModal = closeReviewModal;
   window.triggerRejectModal = triggerRejectModal;
   window.closeRejectModal = closeRejectModal;

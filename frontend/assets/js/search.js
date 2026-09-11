@@ -151,7 +151,7 @@ async function initSearchPage() {
 
       publishedArticles = publishedArticles.filter((a) => {
         const titleMatch = removeVietnameseTones((a.title || "").toLowerCase()).includes(qLower);
-        const summaryMatch = removeVietnameseTones((a.summary || a.short_description || "").toLowerCase()).includes(qLower);
+        const summaryMatch = removeVietnameseTones((a.short_description || "").toLowerCase()).includes(qLower);
         const contentMatch = removeVietnameseTones((a.content || "").toLowerCase()).includes(qLower);
         return titleMatch || summaryMatch || contentMatch;
       });
@@ -246,7 +246,7 @@ async function initSearchPage() {
 
         // Highlight từ khóa trong Tiêu đề và Tóm tắt nếu có từ khóa
         const rawTitle = article.title || "";
-        const rawSummary = article.summary || article.short_description || "";
+        const rawSummary = article.short_description || "";
         const highlightedTitle = highlightKeyword(rawTitle, keyword);
         const highlightedSummary = highlightKeyword(rawSummary, keyword);
 

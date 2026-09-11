@@ -40,6 +40,7 @@ try {
         $stmt = $pdo->prepare("
             SELECT
                 articles.id,
+                articles.id AS article_id,
                 articles.title,
                 articles.slug,
                 articles.short_description,
