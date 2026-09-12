@@ -50,11 +50,11 @@
   // KHỐI 2: TẢI CẤU HÌNH LIÊN HỆ TỪ BACKEND QUA API
   // ==============================================================================
   /**
-   * Tải cấu hình từ LocalStorage (key: 'site_settings')
+   * Tải cấu hình từ backend API (admin/contact-config.php)
    */
   async function loadSettings() {
     try {
-      const res = await fetch(resolveApiUrl('admin/contact-config.php'));
+      const res = await fetch(resolveApiUrl('admin/contact-config.php'), { credentials: "include" });
       const result = await res.json();
       const rawSettings = result.data;
 
@@ -74,6 +74,7 @@
         currentSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
       }
     } catch (err) {
+      console.warn("Không thể tải cấu hình từ backend, dùng mặc định:", err);
       currentSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
     }
   }
@@ -99,7 +100,7 @@
         </div>
 
         <div style="padding: 24px;">
-          <form id="contactConfigForm">
+          <form id="contactConfigForm" novalidate>
             <!-- PHẦN 0: GIỚI THIỆU TÒA SOẠN -->
 <div style="margin-bottom: 28px;">
   <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft);">
@@ -204,7 +205,7 @@
                   Facebook URL
                 </label>
                 <input 
-                  type="url" 
+                  type="text" 
                   id="cfgFacebook" 
                   class="admin-form-input" 
                   placeholder="https://facebook.com/machtin" 
@@ -219,7 +220,7 @@
                   YouTube URL
                 </label>
                 <input 
-                  type="url" 
+                  type="text" 
                   id="cfgYoutube" 
                   class="admin-form-input" 
                   placeholder="https://youtube.com/machtin" 
@@ -234,7 +235,7 @@
                   TikTok URL
                 </label>
                 <input 
-                  type="url" 
+                  type="text" 
                   id="cfgTiktok" 
                   class="admin-form-input" 
                   placeholder="https://tiktok.com/@machtin" 
@@ -299,46 +300,81 @@
   }
 
   // ==============================================================================
-  // KHỐI 5: GỬI DỮ LIỆU CẬP NHẬT CẤU HÌNH LÊN BACKEND (API PUT)
+  // KHỐI 5: GỬI DỮ LIỆU CẬP NHẬT CẤU HÌNH LÊN BACKEND (API POST/PUT)
   // ==============================================================================
   /**
-   * Lưu cấu hình 
+   * Lưu cấu hình tòa soạn lên cơ sở dữ liệu
    */
+  async function saveSettings(isReset = false) {
+    const saveBtn = document.getElementById("btnSaveConfig");
+    const originalBtnHtml = saveBtn ? saveBtn.innerHTML : "";
 
-  function saveSettings(isReset = false) {
-    const email = document.getElementById("cfgEmail")?.value.trim() || currentSettings.contact_email;
-    const phone = document.getElementById("cfgPhone")?.value.trim() || currentSettings.contact_phone;
-    const address = document.getElementById("cfgAddress")?.value.trim() || currentSettings.address;
-    const shortDesc = document.getElementById("cfgShortDescription")?.value.trim() || currentSettings.short_description;
-    const fb = document.getElementById("cfgFacebook")?.value.trim() || currentSettings.social_links.facebook;
-    const yt = document.getElementById("cfgYoutube")?.value.trim() || currentSettings.social_links.youtube;
-    const tt = document.getElementById("cfgTiktok")?.value.trim() || currentSettings.social_links.tiktok;
+    const email = (document.getElementById("cfgEmail")?.value || "").trim();
+    const phone = (document.getElementById("cfgPhone")?.value || "").trim();
+    const address = (document.getElementById("cfgAddress")?.value || "").trim();
+    const shortDesc = (document.getElementById("cfgShortDescription")?.value || "").trim();
+    const fb = (document.getElementById("cfgFacebook")?.value || "").trim();
+    const yt = (document.getElementById("cfgYoutube")?.value || "").trim();
+    const tt = (document.getElementById("cfgTiktok")?.value || "").trim();
 
-    fetch(resolveApiUrl('admin/contact-config.php'), {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contact_email: email,
-        contact_phone: phone,
-        address: address,
-        short_description: shortDesc,
-        facebook: fb,
-        youtube: yt,
-        tiktok: tt
-      })
-    })
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) {
-          currentSettings = {
-            contact_email: email,
-            contact_phone: phone,
-            address: address,
-            short_description: shortDesc,
-            social_links: { facebook: fb, youtube: yt, tiktok: tt }
-          };
-          showToast(isReset ? "Khôi phục cấu hình mặc định thành công!" : "Cập nhật thông tin tòa soạn thành công!", "success");
-        }
+    // Kiểm tra dữ liệu hợp lệ phía client
+    if (!email || !phone || !address) {
+      showToast("Vui lòng điền đầy đủ Email, Hotline và Địa chỉ tòa soạn!", "warning");
+      return;
+    }
+
+    // Hiển thị trạng thái đang lưu
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.style.opacity = "0.75";
+      saveBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; animation: spin 0.8s linear infinite; display: inline-block;">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+        </svg>
+        Đang lưu cấu hình...
+      `;
+    }
+
+    try {
+      const res = await fetch(resolveApiUrl('admin/contact-config.php'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          contact_email: email,
+          contact_phone: phone,
+          address: address,
+          short_description: shortDesc,
+          facebook: fb,
+          youtube: yt,
+          tiktok: tt
+        })
       });
+
+      const result = await res.json();
+
+      if (result && result.success) {
+        currentSettings = {
+          contact_email: email,
+          contact_phone: phone,
+          address: address,
+          short_description: shortDesc,
+          social_links: { facebook: fb, youtube: yt, tiktok: tt }
+        };
+        showToast(isReset ? "Khôi phục cấu hình mặc định thành công!" : "Cập nhật thông tin tòa soạn thành công!", "success");
+      } else {
+        showToast(result?.message || "Không thể cập nhật cấu hình tòa soạn.", "error");
+      }
+    } catch (err) {
+      console.error("Lỗi khi lưu cấu hình:", err);
+      showToast("Lỗi kết nối máy chủ: " + (err.message || "Vui lòng thử lại sau"), "error");
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.style.opacity = "";
+        saveBtn.innerHTML = originalBtnHtml;
+      }
+    }
   }
 })();
