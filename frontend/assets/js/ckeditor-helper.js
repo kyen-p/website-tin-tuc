@@ -107,16 +107,26 @@
       mediaEmbed: {
         previewsInData: true
       },
-      toolbar: [
-        "heading", "|",
-        "bold", "italic", "underline", "link", "|",
-        "alignment", "|",
-        "bulletedList", "numberedList", "|",
-        "imageUpload", "mediaEmbed", "insertTable", "blockQuote", "horizontalLine", "|",
-        "undo", "redo"
-      ],
+      toolbar: {
+        items: [
+          "heading", "|",
+          "bold", "italic", "underline", "link", "|",
+          "alignment", "|",
+          "bulletedList", "numberedList", "|",
+          "imageUpload", "mediaEmbed", "insertTable", "blockQuote", "horizontalLine", "|",
+          "undo", "redo"
+        ],
+        shouldNotGroupWhenFull: true
+      },
       alignment: {
         options: ["left", "center", "right", "justify"]
+      },
+      list: {
+        properties: {
+          styles: true,
+          startIndex: true,
+          reversed: true
+        }
       },
       image: {
         toolbar: [
@@ -159,7 +169,13 @@
       placeholder: customOptions.placeholder || "Soạn thảo nội dung bài viết tại đây (hỗ trợ chèn ảnh, nhúng video, kẻ bảng biểu)..."
     };
 
-    const mergedConfig = Object.assign({}, defaultConfig, customOptions);
+    const finalToolbar = customOptions.toolbar
+      ? (Array.isArray(customOptions.toolbar)
+          ? { items: customOptions.toolbar, shouldNotGroupWhenFull: true }
+          : Object.assign({ shouldNotGroupWhenFull: true }, customOptions.toolbar))
+      : defaultConfig.toolbar;
+
+    const mergedConfig = Object.assign({}, defaultConfig, customOptions, { toolbar: finalToolbar });
     if (customOptions.extraPlugins) {
       mergedConfig.extraPlugins = [...defaultConfig.extraPlugins, ...customOptions.extraPlugins];
     }

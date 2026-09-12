@@ -12,6 +12,9 @@
   background-color: var(--paper);
   color: var(--ink);
   font-family: var(--f-sans, var(--f-body));
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: clip;
 }
 
 /* 2. SIDEBAR CỐ ĐỊNH BÊN TRÁI */
@@ -308,17 +311,6 @@
   background: var(--brass);
 }
 
-.admin-sidebar__status-dot {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 9px;
-  height: 9px;
-  background-color: #2ECC71;
-  border-radius: 50%;
-  border: 1.5px solid var(--white);
-}
-
 .admin-sidebar__user-meta {
   min-width: 0;
   flex: 1;
@@ -397,6 +389,9 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 /* 3.1. Topbar (Đã ẩn để tối ưu không gian làm việc rộng thoáng) */
@@ -411,6 +406,7 @@
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .admin-page-header {
@@ -1344,14 +1340,40 @@
 /* 14. FORM STYLES & LAYOUT (Soạn bài viết) */
 .admin-form-layout {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 24px;
   align-items: start;
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-form-main-col {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-form-side-col {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .admin-form-layout {
+    grid-template-columns: minmax(0, 1fr) 310px;
+    gap: 20px;
+  }
 }
 
 @media (max-width: 1024px) {
   .admin-form-layout {
     grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .admin-content {
+    padding: 20px 16px;
   }
 }
 
@@ -1640,6 +1662,19 @@
   border-radius: 6px;
   overflow: hidden;
   border: 1px solid var(--line) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.ck.ck-editor__top {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ck.ck-editor__top .ck-sticky-panel {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .ck.ck-editor__top .ck-sticky-panel .ck-toolbar {
@@ -1648,6 +1683,19 @@
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+}
+
+.ck.ck-toolbar__items {
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+}
+
+.ck.ck-editor__main {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .ck-editor__editable_inline {
@@ -1657,6 +1705,11 @@
   line-height: 1.7 !important;
   color: var(--ink) !important;
   background-color: var(--white) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 .ck.ck-editor__editable.ck-focused:not(.ck-editor__nested-editable) {
@@ -1667,29 +1720,48 @@
 /* 19. STICKY ACTIONS BAR AT BOTTOM */
 .admin-sticky-actions {
   position: sticky;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.95);
+  bottom: 12px;
+  background-color: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
-  border-top: 1px solid var(--line);
-  padding: 14px 24px;
-  margin: 24px -24px -24px -24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin: 24px 0 0 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   z-index: 10;
-  box-shadow: 0 -4px 16px rgba(19, 27, 46, 0.04);
+  box-shadow: 0 4px 18px rgba(19, 27, 46, 0.07);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 
 .admin-sticky-actions__left {
   font-size: 13px;
   color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .admin-sticky-actions__right {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .admin-sticky-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .admin-sticky-actions__right {
+    justify-content: flex-end;
+  }
 }
 
 /* 20. ROW & CARD HIGHLIGHT FLASH ANIMATION */
@@ -1711,5 +1783,102 @@
     box-shadow: inset 0 0 0 transparent;
   }
 }
+
+/* ==============================================================================
+ * 21. PHÂN TRANG BẢNG DỮ LIỆU QUẢN TRỊ (ADMIN DATA TABLE PAGINATION)
+ * ============================================================================== */
+.admin-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-top: 1px solid var(--line-soft, #E5E7EB);
+  background: #FAF9F6;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted, #6B7280);
+}
+
+.admin-pagination-select {
+  padding: 5px 10px;
+  border: 1px solid var(--line-soft, #D1D5DB);
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  font-size: 12.5px;
+  color: var(--ink, #111827);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.admin-pagination-select:focus {
+  border-color: var(--brass-dark, #8F7239);
+}
+
+.admin-pagination-info {
+  font-weight: 500;
+  color: #374151;
+  font-size: 13px;
+}
+
+.admin-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--line-soft, #D1D5DB);
+  background: #FFFFFF;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #374151;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.admin-page-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.admin-page-btn:hover:not(:disabled):not(.is-active) {
+  background: #F3F4F6;
+  border-color: #9CA3AF;
+  color: #111827;
+}
+
+.admin-page-btn.is-active {
+  background: var(--brass-dark, #8F7239);
+  color: #FFFFFF;
+  border-color: var(--brass-dark, #8F7239);
+  cursor: default;
+}
+
+.admin-page-btn:disabled:not(.is-active) {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #F9FAFB;
+}
+
 
 

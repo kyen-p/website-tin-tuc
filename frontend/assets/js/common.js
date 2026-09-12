@@ -936,3 +936,249 @@ async function initPublicSidebar(options = {}) {
   }
 }
 
+// ==============================================================================
+// 7. HỆ THỐNG PHÂN TRANG DÙNG CHUNG TOÀN HỆ THỐNG (PAGINATION SYSTEM)
+// ==============================================================================
+
+/**
+ * [THÀNH PHẦN DÙNG CHUNG FRONTEND CÔNG KHAI] renderPublicPagination
+ * Render thanh phân trang số (Numbered Pagination) chuẩn phong cách báo chí:
+ * - Dành cho các trang công khai: category.html, search.html...
+ * - Tự động tính toán hiển thị dấu ba chấm (...) thông minh khi nhiều trang
+ * - Hỗ trợ nút Trang trước, Trang sau, bấm số trang và tự cuộn mượt (smooth scroll) lên đầu nội dung
+ * 
+ * @param {string|HTMLElement} container - ID hoặc Element chứa thanh phân trang
+ * @param {Object} options
+ * @param {number} options.currentPage - Trang hiện tại (1-based)
+ * @param {number} options.totalPages - Tổng số trang
+ * @param {number} [options.totalRecords] - Tổng số bản ghi (tùy chọn)
+ * @param {Function} options.onPageChange - Hàm callback khi chuyển trang: (newPage) => void
+ * @param {string|HTMLElement} [options.scrollTarget] - Phần tử cuộn tới khi chuyển trang (mặc định cuộn lên đầu container)
+ */
+function renderPublicPagination(container, options) {
+  const mount = typeof container === "string" ? document.getElementById(container) : container;
+  if (!mount) return;
+
+  const { currentPage = 1, totalPages = 1, onPageChange, scrollTarget } = options;
+
+  // Nếu chỉ có 1 trang hoặc không có dữ liệu, ẩn thanh phân trang
+  if (totalPages <= 1) {
+    mount.innerHTML = "";
+    mount.style.display = "none";
+    return;
+  }
+
+  mount.style.display = "";
+
+  // Thuật toán tính danh sách các nút hiển thị có dấu ba chấm
+  const pages = [];
+  const delta = 2; // Số trang hiển thị hai bên trang hiện tại
+
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    const left = currentPage - delta;
+    const right = currentPage + delta;
+
+    if (left > 2) {
+      pages.push("...");
+    }
+
+    const rangeStart = Math.max(2, left);
+    const rangeEnd = Math.min(totalPages - 1, right);
+
+    for (let i = rangeStart; i <= rangeEnd; i++) {
+      pages.push(i);
+    }
+
+    if (right < totalPages - 1) {
+      pages.push("...");
+    }
+
+    pages.push(totalPages);
+  }
+
+  let html = `<nav class="pagination-wrap" aria-label="Điều hướng phân trang tin tức">`;
+
+  // Nút Trang trước (Prev)
+  const isPrevDisabled = currentPage <= 1;
+  html += `
+    <button type="button" class="pagination-btn ${isPrevDisabled ? 'is-disabled' : ''}" 
+            data-page="${currentPage - 1}" ${isPrevDisabled ? 'disabled' : ''} 
+            title="Trang trước" aria-label="Trang trước">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span>Trước</span>
+    </button>
+  `;
+
+  // Các nút số trang & dấu ba chấm
+  pages.forEach((p) => {
+    if (p === "...") {
+      html += `<span class="pagination-ellipsis" aria-hidden="true">&hellip;</span>`;
+    } else {
+      const isActive = p === currentPage;
+      html += `
+        <button type="button" class="pagination-btn ${isActive ? 'is-active' : ''}" 
+                data-page="${p}" ${isActive ? 'aria-current="page"' : ''}
+                title="Trang ${p}">
+          ${p}
+        </button>
+      `;
+    }
+  });
+
+  // Nút Trang sau (Next)
+  const isNextDisabled = currentPage >= totalPages;
+  html += `
+    <button type="button" class="pagination-btn ${isNextDisabled ? 'is-disabled' : ''}" 
+            data-page="${currentPage + 1}" ${isNextDisabled ? 'disabled' : ''} 
+            title="Trang sau" aria-label="Trang sau">
+      <span>Sau</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  `;
+
+  html += `</nav>`;
+  mount.innerHTML = html;
+
+  // Gắn sự kiện click
+  mount.querySelectorAll(".pagination-btn:not(:disabled):not(.is-active)").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetPage = parseInt(btn.getAttribute("data-page"), 10);
+      if (targetPage && targetPage !== currentPage && typeof onPageChange === "function") {
+        onPageChange(targetPage);
+
+        // Cuộn mượt lên vị trí nội dung danh sách
+        const targetEl = scrollTarget
+          ? (typeof scrollTarget === "string" ? document.querySelector(scrollTarget) : scrollTarget)
+          : mount;
+        if (targetEl && typeof targetEl.scrollIntoView === "function") {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    });
+  });
+}
+window.renderPublicPagination = renderPublicPagination;
+
+/**
+ * [THÀNH PHẦN DÙNG CHUNG BẢNG QUẢN TRỊ ADMIN] renderTablePagination
+ * Render thanh điều hướng dữ liệu bảng quản trị (Data Table Pagination):
+ * - Dành cho các trang quản trị: published-articles.html, users.html...
+ * - Dropdown tùy chọn số lượng bản ghi trên trang: 10, 25, 50 dòng/trang
+ * - Thông tin số lượng hiển thị chi tiết: "Hiển thị 1 - 10 trên tổng số 45 bản ghi"
+ * - Nút chuyển trang trước / sau & các trang số
+ * 
+ * @param {string|HTMLElement} container - ID hoặc Element chứa thanh phân trang bảng
+ * @param {Object} options
+ * @param {number} options.currentPage - Trang hiện tại (1-based)
+ * @param {number} options.perPage - Số bản ghi trên 1 trang
+ * @param {number} options.totalRecords - Tổng số bản ghi
+ * @param {number} [options.totalPages] - Tổng số trang (nếu không truyền sẽ tự tính)
+ * @param {number[]} [options.perPageOptions] - Các mốc số lượng (mặc định [10, 25, 50])
+ * @param {Function} options.onPageChange - Hàm callback khi đổi trang: (newPage) => void
+ * @param {Function} [options.onLimitChange] - Hàm callback khi đổi perPage: (newLimit) => void
+ */
+function renderTablePagination(container, options) {
+  const mount = typeof container === "string" ? document.getElementById(container) : container;
+  if (!mount) return;
+
+  const {
+    currentPage = 1,
+    perPage = 10,
+    totalRecords = 0,
+    perPageOptions = [10, 25, 50],
+    onPageChange,
+    onLimitChange
+  } = options;
+
+  const totalPages = options.totalPages || Math.max(1, Math.ceil(totalRecords / perPage));
+
+  const fromRecord = totalRecords === 0 ? 0 : (currentPage - 1) * perPage + 1;
+  const toRecord = Math.min(totalRecords, currentPage * perPage);
+
+  // Thuật toán hiển thị các trang lân cận cho Admin
+  const pages = [];
+  if (totalPages <= 5) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (currentPage > 3) pages.push("...");
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (currentPage < totalPages - 2) pages.push("...");
+    pages.push(totalPages);
+  }
+
+  mount.className = "admin-table-pagination";
+  mount.innerHTML = `
+    <div class="admin-pagination-left">
+      <span>Hiển thị:</span>
+      <select class="admin-pagination-select" id="table-limit-select" aria-label="Số bản ghi mỗi trang">
+        ${perPageOptions.map((opt) => `<option value="${opt}" ${opt === perPage ? 'selected' : ''}>${opt} dòng/trang</option>`).join("")}
+      </select>
+      <span class="admin-pagination-info">
+        Hiển thị <strong>${fromRecord}</strong> - <strong>${toRecord}</strong> trong <strong>${totalRecords.toLocaleString("vi-VN")}</strong> bản ghi
+      </span>
+    </div>
+
+    <div class="admin-pagination-controls">
+      <button type="button" class="admin-page-btn admin-btn-prev" data-page="${currentPage - 1}" 
+              ${currentPage <= 1 ? 'disabled' : ''} title="Trang trước" aria-label="Trang trước">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Trước</span>
+      </button>
+
+      ${pages.map((p) => {
+        if (p === "...") {
+          return `<span style="padding: 0 4px; color: var(--muted); font-weight: bold;">&hellip;</span>`;
+        }
+        const isActive = p === currentPage;
+        return `
+          <button type="button" class="admin-page-btn ${isActive ? 'is-active' : ''}" 
+                  data-page="${p}" ${isActive ? 'aria-current="page"' : ''}>
+            ${p}
+          </button>
+        `;
+      }).join("")}
+
+      <button type="button" class="admin-page-btn admin-btn-next" data-page="${currentPage + 1}" 
+              ${currentPage >= totalPages ? 'disabled' : ''} title="Trang sau" aria-label="Trang sau">
+        <span>Sau</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  `;
+
+  // Bắt sự kiện đổi số lượng dòng
+  const selectEl = mount.querySelector("#table-limit-select");
+  if (selectEl && typeof onLimitChange === "function") {
+    selectEl.addEventListener("change", (e) => {
+      const newLimit = parseInt(e.target.value, 10);
+      onLimitChange(newLimit);
+    });
+  }
+
+  // Bắt sự kiện đổi trang
+  mount.querySelectorAll(".admin-page-btn:not(:disabled):not(.is-active)").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetPage = parseInt(btn.getAttribute("data-page"), 10);
+      if (targetPage && targetPage !== currentPage && typeof onPageChange === "function") {
+        onPageChange(targetPage);
+      }
+    });
+  });
+}
+window.renderTablePagination = renderTablePagination;
+
+

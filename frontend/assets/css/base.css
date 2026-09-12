@@ -49,6 +49,8 @@
 
 html {
   scroll-behavior: smooth;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 body {
@@ -61,6 +63,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 a {
@@ -993,43 +997,60 @@ a:hover .ph img {
   line-height: 1.7;
 }
 
-/* 1. Danh sách có thứ tự (Numbered List 1, 2, 3...) */
+/* 1. Danh sách có thứ tự (Numbered List) */
 .body-text ol,
 .ck-content ol {
-  list-style-type: decimal !important;
+  list-style-type: decimal;
   margin: 12px 0 16px 28px !important;
   padding-left: 6px !important;
 }
+
+/* Hỗ trợ các kiểu định dạng đánh số qua thuộc tính type hoặc inline style */
+.body-text ol[type="1"], .ck-content ol[type="1"] { list-style-type: decimal; }
+.body-text ol[type="a"], .ck-content ol[type="a"] { list-style-type: lower-latin; }
+.body-text ol[type="A"], .ck-content ol[type="A"] { list-style-type: upper-latin; }
+.body-text ol[type="i"], .ck-content ol[type="i"] { list-style-type: lower-roman; }
+.body-text ol[type="I"], .ck-content ol[type="I"] { list-style-type: upper-roman; }
 
 .body-text ol > li,
 .ck-content ol > li {
-  list-style-type: decimal !important;
+  list-style-type: inherit;
   display: list-item !important;
   margin-bottom: 6px !important;
   line-height: 1.65 !important;
   padding-left: 4px;
 }
 
-/* 2. Danh sách không thứ tự (Bulleted List •) */
+/* 2. Danh sách không thứ tự (Bulleted List) */
 .body-text ul,
 .ck-content ul {
-  list-style-type: disc !important;
+  list-style-type: disc;
   margin: 12px 0 16px 28px !important;
   padding-left: 6px !important;
 }
 
+.body-text ul[type="disc"], .ck-content ul[type="disc"] { list-style-type: disc; }
+.body-text ul[type="circle"], .ck-content ul[type="circle"] { list-style-type: circle; }
+.body-text ul[type="square"], .ck-content ul[type="square"] { list-style-type: square; }
+
 .body-text ul > li,
 .ck-content ul > li {
-  list-style-type: disc !important;
+  list-style-type: inherit;
   display: list-item !important;
   margin-bottom: 6px !important;
   line-height: 1.65 !important;
   padding-left: 4px;
 }
 
-/* Danh sách con lồng nhau */
-.body-text ol ol, .ck-content ol ol { list-style-type: lower-alpha !important; }
-.body-text ul ul, .ck-content ul ul { list-style-type: circle !important; }
+/* Danh sách con lồng nhau (áp dụng khi danh sách con không có inline style riêng) */
+.body-text ol ol:not([style*="list-style-type"]),
+.ck-content ol ol:not([style*="list-style-type"]) {
+  list-style-type: lower-alpha;
+}
+.body-text ul ul:not([style*="list-style-type"]),
+.ck-content ul ul:not([style*="list-style-type"]) {
+  list-style-type: circle;
+}
 
 /* 3. Khối Bảng biểu siêu văn bản (Table & Figure Table) */
 .body-text figure.table,

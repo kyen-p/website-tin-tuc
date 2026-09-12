@@ -1265,3 +1265,79 @@
   font-size: 22px;
   margin: 0;
 }
+
+/* ==============================================================================
+ * PHÂN TRANG CÔNG KHAI DÙNG CHUNG (PUBLIC PAGINATION COMPONENT)
+ * Thiết kế chuẩn báo chí: Đậm chất thanh lịch, viền mềm, số trang rõ ràng
+ * ============================================================================== */
+.pagination-mount {
+  width: 100%;
+}
+
+.pagination-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 36px 0 24px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  height: 40px;
+  min-width: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-soft, #E5E7EB);
+  background-color: #FFFFFF;
+  color: var(--ink, #1F2937);
+  border-radius: 6px;
+  font-family: var(--f-sans, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  text-decoration: none;
+}
+
+.pagination-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pagination-btn:hover:not(:disabled):not(.is-active) {
+  background-color: #F8F6F0;
+  border-color: var(--ink, #1F2937);
+  color: var(--ink, #1F2937);
+}
+
+.pagination-btn.is-active {
+  background-color: var(--crimson, #9E2A2B);
+  border-color: var(--crimson, #9E2A2B);
+  color: #FFFFFF;
+  cursor: default;
+}
+
+.pagination-btn:disabled:not(.is-active),
+.pagination-btn.is-disabled:not(.is-active) {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: #FAFAFA;
+}
+
+.pagination-ellipsis {
+  min-width: 32px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted, #6B7280);
+  font-weight: 700;
+  font-size: 14px;
+}
+

@@ -33,6 +33,8 @@ async function initSearchPage() {
   let tagParam = (urlParams.get("tag") || "").trim();
   let selectedCategory = urlParams.get("cat") || "all";
   let selectedSort = urlParams.get("sort") || "newest";
+  let currentPage = parseInt(urlParams.get("page") || "1", 10);
+  if (isNaN(currentPage) || currentPage < 1) currentPage = 1;
 
   // 3. Lấy dữ liệu bài viết, chuyên mục & thẻ tag từ backend (PHP + MySQL).
   let tags = [];
@@ -87,6 +89,15 @@ async function initSearchPage() {
   if (categoryFilter) {
     categoryFilter.addEventListener("change", (e) => {
       selectedCategory = e.target.value;
+      currentPage = 1;
+      const newUrl = new URL(window.location.href);
+      if (selectedCategory !== "all") {
+        newUrl.searchParams.set("cat", selectedCategory);
+      } else {
+        newUrl.searchParams.delete("cat");
+      }
+      newUrl.searchParams.set("page", "1");
+      window.history.pushState({}, "", newUrl);
       executeSearch();
     });
   }
@@ -94,6 +105,11 @@ async function initSearchPage() {
   if (sortFilter) {
     sortFilter.addEventListener("change", (e) => {
       selectedSort = e.target.value;
+      currentPage = 1;
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.set("sort", selectedSort);
+      newUrl.searchParams.set("page", "1");
+      window.history.pushState({}, "", newUrl);
       executeSearch();
     });
   }
@@ -103,6 +119,7 @@ async function initSearchPage() {
       e.preventDefault();
       if (searchInput) {
         queryParam = searchInput.value.trim();
+        currentPage = 1;
         // Cập nhật lại URL mà không cần tải lại toàn bộ trang
         const newUrl = new URL(window.location.href);
         if (queryParam) {
@@ -110,11 +127,26 @@ async function initSearchPage() {
         } else {
           newUrl.searchParams.delete("q");
         }
+        newUrl.searchParams.set("page", "1");
         window.history.pushState({}, "", newUrl);
         executeSearch();
       }
     });
   }
+
+  // Bắt sự kiện back/forward trên trình duyệt
+  window.addEventListener("popstate", () => {
+    const params = new URLSearchParams(window.location.search);
+    queryParam = (params.get("q") || "").trim();
+    tagParam = (params.get("tag") || "").trim();
+    selectedCategory = params.get("cat") || "all";
+    selectedSort = params.get("sort") || "newest";
+    currentPage = parseInt(params.get("page") || "1", 10) || 1;
+    if (searchInput) searchInput.value = queryParam;
+    if (categoryFilter) categoryFilter.value = selectedCategory;
+    if (sortFilter) sortFilter.value = selectedSort;
+    executeSearch();
+  });
 
   // 6. Thực thi tìm kiếm lần đầu khi tải trang
   executeSearch();
@@ -209,8 +241,13 @@ async function initSearchPage() {
   // ==============================================================================
   function renderArticleCards(list, keyword) {
     if (!searchResultsList) return;
+    const paginationMount = document.getElementById("search-pagination-mount");
 
     if (list.length === 0) {
+      if (paginationMount) {
+        paginationMount.style.display = "none";
+        paginationMount.innerHTML = "";
+      }
       searchResultsList.innerHTML = `
         <div class="search-empty-box">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;">
@@ -237,7 +274,18 @@ async function initSearchPage() {
       return;
     }
 
-    searchResultsList.innerHTML = list
+    // Phân trang kết quả tìm kiếm (8 bài viết / trang)
+    const PAGE_SIZE = 8;
+    const totalItems = list.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const pageItems = list.slice(startIndex, startIndex + PAGE_SIZE);
+
+    searchResultsList.innerHTML = pageItems
       .map((article) => {
         const cat = categories.find((c) => c.id === article.category_id) || { name: "Tin tức", slug: "tin-tuc" };
         const author = getAuthor(article);
@@ -292,6 +340,23 @@ async function initSearchPage() {
         `;
       })
       .join("");
+
+    // Render thanh phân trang số dùng chung
+    if (typeof renderPublicPagination === "function") {
+      renderPublicPagination("search-pagination-mount", {
+        currentPage,
+        totalPages,
+        totalRecords: totalItems,
+        scrollTarget: "#searchSummaryText",
+        onPageChange: (newPage) => {
+          currentPage = newPage;
+          const u = new URL(window.location.href);
+          u.searchParams.set("page", String(newPage));
+          window.history.pushState({}, "", u);
+          executeSearch();
+        }
+      });
+    }
   }
 
   // ==============================================================================

@@ -32,6 +32,10 @@
   let currentCategoryFilter = "all";
   let currentSearchQuery = "";
 
+  // Phân trang dữ liệu bài viết chờ duyệt (Pagination State)
+  let currentPage = 1;
+  let perPage = 10;
+
   document.addEventListener("DOMContentLoaded", () => {
     initPendingArticlesPage();
   });
@@ -50,7 +54,17 @@
     const urlParams = new URLSearchParams(window.location.search);
     const targetArticleId = urlParams.get("id");
     if (targetArticleId) {
-      openReviewModal(targetArticleId);
+      const pendingList = allArticles.filter((a) => a.status === "pending");
+      const targetIndex = pendingList.findIndex((a) => String(a.id) === String(targetArticleId));
+      if (targetIndex !== -1) {
+        currentPage = Math.floor(targetIndex / perPage) + 1;
+        renderArticlesList();
+      }
+      if (typeof handleOpenReview === "function") {
+        handleOpenReview(targetArticleId);
+      } else if (typeof window.openReviewModal === "function") {
+        window.openReviewModal(targetArticleId);
+      }
     }
   }
 
@@ -131,6 +145,9 @@
             </tbody>
           </table>
         </div>
+
+        <!-- Thanh phân trang bảng duyệt bài -->
+        <div id="editor-pending-pagination"></div>
       </div>
     `;
   }
@@ -212,11 +229,44 @@
           </td>
         </tr>
       `;
+
+      const pagEl = document.getElementById("editor-pending-pagination");
+      if (pagEl) pagEl.innerHTML = "";
       return;
     }
 
-    // Render các dòng bảng
-    tbody.innerHTML = filtered.map((article) => renderArticleRow(article)).join("");
+    // Tính toán phân trang
+    const totalRecords = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
+    const startIndex = (currentPage - 1) * perPage;
+    const pageItems = filtered.slice(startIndex, startIndex + perPage);
+
+    // Render các dòng bảng của trang hiện tại
+    tbody.innerHTML = pageItems.map((article) => renderArticleRow(article)).join("");
+
+    // Render thanh phân trang chuẩn bảng quản trị
+    if (typeof renderTablePagination === "function") {
+      renderTablePagination("editor-pending-pagination", {
+        currentPage,
+        perPage,
+        totalRecords,
+        totalPages,
+        perPageOptions: [10, 25, 50],
+        onPageChange: (newPage) => {
+          currentPage = newPage;
+          renderArticlesList();
+        },
+        onLimitChange: (newLimit) => {
+          perPage = newLimit;
+          currentPage = 1;
+          renderArticlesList();
+        }
+      });
+    }
 
     // Highlight nếu có
     checkAndHighlightArticle();
@@ -249,6 +299,8 @@
       statusBadge = `<span class="admin-status-badge admin-status-badge--rejected">Bị từ chối</span>`;
     } else if (article.status === "published") {
       statusBadge = `<span class="admin-status-badge admin-status-badge--published">Đã xuất bản</span>`;
+    } else if (article.status === "hidden") {
+      statusBadge = `<span class="admin-status-badge">Bị ẩn</span>`;
     } else {
       statusBadge = `<span class="admin-status-badge">${escapeHtml(article.status)}</span>`;
     }
@@ -263,14 +315,14 @@
         type="button" 
         class="btn-open-review-modal admin-btn admin-btn--primary" 
         data-id="${article.id}"
-        onclick="window.openReviewModal('${article.id}')"
+        onclick="window.EditorPendingArticles.handleOpenReview('${article.id}', event)"
         title="Thẩm định & Duyệt bài"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
           <circle cx="12" cy="12" r="3"></circle>
         </svg>
-        Thẩm định
+        <span>Thẩm định</span>
       </button>
     `;
 
@@ -280,8 +332,16 @@
           <div class="admin-article-cell">
             ${thumbHtml}
             <div class="admin-article-info">
-              <div class="admin-article-title-text" title="${escapeHtml(article.title)}">
-                ${escapeHtml(article.title || "Chưa đặt tiêu đề")}
+              <div>
+                <a 
+                  href="javascript:void(0)" 
+                  onclick="window.EditorPendingArticles.handleOpenReview('${article.id}', event)" 
+                  class="admin-article-title-link" 
+                  title="Bấm để xem nội dung và thẩm định bài viết"
+                  style="font-weight: 700; color: var(--ink); text-decoration: none;"
+                >
+                  ${escapeHtml(article.title || "Chưa đặt tiêu đề")}
+                </a>
               </div>
               ${desc ? `<div class="admin-article-sapo-text" title="${escapeHtml(desc)}">${escapeHtml(desc)}</div>` : ""}
               ${article.is_notable_event ? `
@@ -330,6 +390,7 @@
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
         currentSearchQuery = (e.target.value || "").trim();
+        currentPage = 1;
         renderArticlesList();
       });
     }
@@ -338,26 +399,71 @@
     if (categorySelect) {
       categorySelect.addEventListener("change", (e) => {
         currentCategoryFilter = e.target.value;
+        currentPage = 1;
         renderArticlesList();
       });
     }
 
-    // 2. Mở Modal thẩm định khi click vào nút "Thẩm định"
+    // 2. Mở Modal thẩm định khi click vào nút "Thẩm định" (nếu có phần tử không dùng onclick)
     document.addEventListener("click", (e) => {
       const openBtn = e.target.closest(".btn-open-review-modal");
-      if (openBtn && openBtn.dataset.id && typeof window.openReviewModal === "function") {
-        window.openReviewModal(openBtn.dataset.id);
+      if (openBtn && openBtn.dataset.id && !openBtn.getAttribute("onclick")) {
+        handleOpenReview(openBtn.dataset.id, e);
       }
     });
   }
 
+  /**
+   * Mở Modal thẩm định an toàn với đối tượng bài viết hoặc ID
+   */
+  function handleOpenReview(articleId, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Ưu tiên tìm bài viết trong bộ nhớ cục bộ
+    const target = allArticles.find(a => String(a.id) === String(articleId));
+
+    if (typeof window.openReviewModal === "function") {
+      window.openReviewModal(target || articleId, {
+        mode: "editor",
+        articles: allArticles,
+        categories: allCategories
+      });
+    } else if (typeof window.openArticleReviewModal === "function") {
+      window.openArticleReviewModal(target || articleId, {
+        mode: "editor",
+        articles: allArticles,
+        categories: allCategories
+      });
+    } else {
+      console.warn("Hộp thoại thẩm định chưa sẵn sàng.");
+      if (typeof showToast === "function") {
+        showToast("Đang chuẩn bị hộp thoại thẩm định, vui lòng thử lại sau giây lát.", "info");
+      }
+      if (typeof window.ensureReviewModalsExist === "function") {
+        window.ensureReviewModalsExist();
+        if (typeof window.openReviewModal === "function") {
+          window.openReviewModal(target || articleId, {
+            mode: "editor",
+            articles: allArticles,
+            categories: allCategories
+          });
+        }
+      }
+    }
+  }
+
   window.handleSearchArticles = function (query) {
     currentSearchQuery = (query || "").trim();
+    currentPage = 1;
     renderArticlesList();
   };
 
   window.handleFilterCategory = function (catId) {
     currentCategoryFilter = catId;
+    currentPage = 1;
     renderArticlesList();
   };
 
@@ -365,6 +471,7 @@
   window.EditorPendingArticles = {
     getAllArticles: () => allArticles,
     getAllCategories: () => allCategories,
+    handleOpenReview: handleOpenReview,
     loadData: loadData,
     renderHeaderStats: renderHeaderStats,
     renderArticlesList: renderArticlesList,

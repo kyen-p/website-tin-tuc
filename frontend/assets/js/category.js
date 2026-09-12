@@ -24,6 +24,8 @@ async function initCategoryPage() {
   const categorySlug = urlParams.get("slug") || "";
   const filterType = urlParams.get("filter") || ""; // 'latest' hoặc 'notable'
   let currentTagSlug = urlParams.get("tag") || "";
+  let currentPage = parseInt(urlParams.get("page") || "1", 10);
+  if (isNaN(currentPage) || currentPage < 1) currentPage = 1;
 
   // ==============================================================================
   // KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DỮ LIỆU TỪ BACKEND
@@ -139,6 +141,15 @@ async function initCategoryPage() {
         tagChipsMount.querySelectorAll(".tag-chip").forEach((b) => b.classList.remove("tag-chip--active"));
         this.classList.add("tag-chip--active");
         currentTagSlug = this.dataset.tag;
+        currentPage = 1;
+        const currentUrl = new URL(window.location);
+        if (currentTagSlug) {
+          currentUrl.searchParams.set("tag", currentTagSlug);
+        } else {
+          currentUrl.searchParams.delete("tag");
+        }
+        currentUrl.searchParams.set("page", "1");
+        window.history.pushState({}, "", currentUrl);
         renderArticlesList();
       });
     });
@@ -231,54 +242,79 @@ async function initCategoryPage() {
     const gridMount = document.getElementById("category-grid-mount");
     const emptyMount = document.getElementById("category-empty-mount");
     const endNotice = document.getElementById("category-end-notice");
+    const paginationMount = document.getElementById("category-pagination-mount");
 
     if (filtered.length === 0) {
       if (featuredMount) featuredMount.style.display = "none";
       if (gridMount) gridMount.innerHTML = "";
       if (emptyMount) emptyMount.style.display = "block";
       if (endNotice) endNotice.style.display = "none";
+      if (paginationMount) paginationMount.style.display = "none";
       return;
     }
 
     if (emptyMount) emptyMount.style.display = "none";
 
-    // Bài tiêu điểm (bài đầu tiên)
-    const featuredArticle = filtered[0];
-    const featCat = getCategory(featuredArticle.category_id);
-    const featAuthor = getAuthor(featuredArticle);
+    // Phân trang danh sách: Trang 1 gồm 1 bài Tiêu điểm + 6 bài lưới; Trang 2+ gồm 6 bài lưới
+    const PAGE_SIZE = 6;
+    const totalItems = filtered.length;
+    const totalPages = totalItems <= 7 ? 1 : 1 + Math.ceil((totalItems - 7) / PAGE_SIZE);
 
-    if (featuredMount) {
-      featuredMount.style.display = "block";
-      featuredMount.innerHTML = `
-        <article class="article-card category-feature">
-          <a href="${getArticleDetailUrl(featuredArticle)}" class="card-link" style="display: block;">
-            <div class="hero-grid" style="padding:0; border:none;">
-              ${renderCoverImage(featuredArticle.cover_image, featuredArticle.title, "ph--16x9")}
-              <div>
-                <span class="eyebrow is-crimson">${escapeHtml(featCat.name)}</span>
-                <h2 class="headline-lg" style="margin-top: 8px;">${escapeHtml(featuredArticle.title)}</h2>
-                <p class="dek">${escapeHtml(featuredArticle.short_description || "")}</p>
-                <div class="meta">
-                  <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(featAuthor) : 'author.html?username=' + encodeURIComponent(featAuthor.username || featAuthor.id)}">${escapeHtml(featAuthor.full_name)}</a>
-                  <span class="dot-sep">·</span>
-                  <span>${formatDate(featuredArticle.published_at || featuredArticle.created_at)}</span>
-                  <span class="dot-sep">·</span>
-                  <span>${formatNumber(getViews(featuredArticle))} lượt đọc</span>
-                </div>
-              </div>
-            </div>
-          </a>
-        </article>
-      `;
+    if (currentPage > totalPages) {
+      currentPage = Math.max(1, totalPages);
     }
 
-    // Các bài còn lại
-    const remainingArticles = filtered.slice(1);
+    let featuredArticle = null;
+    let gridArticles = [];
+
+    if (currentPage === 1) {
+      featuredArticle = filtered[0];
+      gridArticles = filtered.slice(1, 1 + PAGE_SIZE);
+    } else {
+      featuredArticle = null;
+      const startIndex = 7 + (currentPage - 2) * PAGE_SIZE;
+      gridArticles = filtered.slice(startIndex, startIndex + PAGE_SIZE);
+    }
+
+    // Render Bài tiêu điểm (chỉ hiển thị ở trang 1)
+    if (featuredMount) {
+      if (featuredArticle) {
+        featuredMount.style.display = "block";
+        const featCat = getCategory(featuredArticle.category_id);
+        const featAuthor = getAuthor(featuredArticle);
+        featuredMount.innerHTML = `
+          <article class="article-card category-feature">
+            <a href="${getArticleDetailUrl(featuredArticle)}" class="card-link" style="display: block;">
+              <div class="hero-grid" style="padding:0; border:none;">
+                ${renderCoverImage(featuredArticle.cover_image, featuredArticle.title, "ph--16x9")}
+                <div>
+                  <span class="eyebrow is-crimson">${escapeHtml(featCat.name)}</span>
+                  <h2 class="headline-lg" style="margin-top: 8px;">${escapeHtml(featuredArticle.title)}</h2>
+                  <p class="dek">${escapeHtml(featuredArticle.short_description || "")}</p>
+                  <div class="meta">
+                    <a href="${typeof getAuthorProfileUrl === 'function' ? getAuthorProfileUrl(featAuthor) : 'author.html?username=' + encodeURIComponent(featAuthor.username || featAuthor.id)}">${escapeHtml(featAuthor.full_name)}</a>
+                    <span class="dot-sep">·</span>
+                    <span>${formatDate(featuredArticle.published_at || featuredArticle.created_at)}</span>
+                    <span class="dot-sep">·</span>
+                    <span>${formatNumber(getViews(featuredArticle))} lượt đọc</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </article>
+        `;
+      } else {
+        featuredMount.style.display = "none";
+        featuredMount.innerHTML = "";
+      }
+    }
+
+    // Render các bài viết còn lại trong trang
     if (gridMount) {
-      if (remainingArticles.length === 0) {
+      if (gridArticles.length === 0) {
         gridMount.innerHTML = "";
       } else {
-        gridMount.innerHTML = remainingArticles
+        gridMount.innerHTML = gridArticles
           .map((a) => {
             const cat = getCategory(a.category_id);
             const author = getAuthor(a);
@@ -304,9 +340,26 @@ async function initCategoryPage() {
       }
     }
 
-    // Hiển thị thông báo khi xem hết danh sách bài mới trong 2 ngày
+    // Render thanh phân trang số dùng chung
+    if (typeof renderPublicPagination === "function") {
+      renderPublicPagination("category-pagination-mount", {
+        currentPage,
+        totalPages,
+        totalRecords: totalItems,
+        scrollTarget: "#category-title",
+        onPageChange: (newPage) => {
+          currentPage = newPage;
+          const currentUrl = new URL(window.location);
+          currentUrl.searchParams.set("page", String(newPage));
+          window.history.pushState({}, "", currentUrl);
+          renderArticlesList();
+        }
+      });
+    }
+
+    // Hiển thị thông báo khi xem hết danh sách bài mới trong 2 ngày (chỉ ở trang cuối)
     if (endNotice) {
-      if (filterType === "latest") {
+      if (filterType === "latest" && currentPage >= totalPages) {
         endNotice.style.display = "block";
         endNotice.innerHTML = `
           <div style="text-align: center; padding: 28px 0 10px; border-top: 1px solid var(--line-soft); margin-top: 24px;">
@@ -320,6 +373,19 @@ async function initCategoryPage() {
       }
     }
   }
+
+  // Bắt sự kiện back/forward trên trình duyệt để khôi phục trang
+  window.addEventListener("popstate", () => {
+    const params = new URLSearchParams(window.location.search);
+    currentPage = parseInt(params.get("page") || "1", 10) || 1;
+    currentTagSlug = params.get("tag") || "";
+    if (tagChipsMount) {
+      tagChipsMount.querySelectorAll(".tag-chip").forEach((b) => {
+        b.classList.toggle("tag-chip--active", b.dataset.tag === currentTagSlug);
+      });
+    }
+    renderArticlesList();
+  });
 
   // ==============================================================================
   // KHỐI 6: RENDER SIDEBAR CHUNG (ĐỌC NHIỀU NHẤT & ĐÁM MÂY THẺ TAG)

@@ -32,6 +32,10 @@
   let sortOrder = "newest";
   let deleteTargetCommentId = null;
 
+  // Phân trang dữ liệu bảng quản trị bình luận
+  let currentPage = 1;
+  let perPage = 10;
+
   document.addEventListener("DOMContentLoaded", () => {
     initAdminCommentsPage();
   });
@@ -121,6 +125,9 @@
             </table>
           </div>
         </div>
+
+        <!-- Thanh phân trang bảng quản trị (Data Table Pagination) -->
+        <div id="admin-comments-pagination"></div>
       </div>
 
       <!-- MODAL XÁC NHẬN XÓA BÌNH LUẬN CHUẨN ADMIN -->
@@ -154,6 +161,7 @@
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value.trim().toLowerCase();
+        currentPage = 1;
         renderCommentsTable();
       });
     }
@@ -162,6 +170,7 @@
     if (articleSelect) {
       articleSelect.addEventListener("change", (e) => {
         articleFilter = e.target.value;
+        currentPage = 1;
         renderCommentsTable();
       });
     }
@@ -170,6 +179,7 @@
     if (sortSelect) {
       sortSelect.addEventListener("change", (e) => {
         sortOrder = e.target.value;
+        currentPage = 1;
         renderCommentsTable();
       });
     }
@@ -266,6 +276,17 @@
       return sortOrder === "newest" ? timeB - timeA : timeA - timeB;
     });
 
+    const totalBadge = document.getElementById("commentTotalBadge");
+    if (totalBadge) {
+      totalBadge.textContent = filtered.length;
+    }
+
+    const totalRecords = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -274,10 +295,15 @@
           </td>
         </tr>
       `;
+      const pagEl = document.getElementById("admin-comments-pagination");
+      if (pagEl) pagEl.innerHTML = "";
       return;
     }
 
-    tbody.innerHTML = filtered
+    const startIndex = (currentPage - 1) * perPage;
+    const pageItems = filtered.slice(startIndex, startIndex + perPage);
+
+    tbody.innerHTML = pageItems
       .map((c) => {
         const user = {
           full_name: c.full_name || "Độc giả",
@@ -341,5 +367,25 @@
         `;
       })
       .join("");
+
+    // Render thanh phân trang chuẩn bảng dữ liệu quản trị
+    if (typeof renderTablePagination === "function") {
+      renderTablePagination("admin-comments-pagination", {
+        currentPage,
+        perPage,
+        totalRecords,
+        totalPages,
+        perPageOptions: [10, 25, 50],
+        onPageChange: (newPage) => {
+          currentPage = newPage;
+          renderCommentsTable();
+        },
+        onLimitChange: (newLimit) => {
+          perPage = newLimit;
+          currentPage = 1;
+          renderCommentsTable();
+        }
+      });
+    }
   }
 })();

@@ -36,44 +36,35 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 // ==============================================================================
-// KHỐI 2: TIẾP NHẬN BỘ LỌC TÌM KIẾM
+// KHỐI 2: TIẾP NHẬN BỘ LỌC TÌM KIẾM & THAM SỐ PHÂN TRANG
 // ==============================================================================
 $categorySlug = isset($_GET['category']) ? trim($_GET['category']) : '';
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $tagSlug = isset($_GET['tag']) ? trim($_GET['tag']) : '';
 $topWeekly = isset($_GET['top_weekly']) && ($_GET['top_weekly'] == '1' || $_GET['top_weekly'] === 'true');
+$isPaginated = isset($_GET['page']);
 
 // ==============================================================================
-// KHỐI 3: XÂY DỰNG TRUY VẤN SQL ĐỘNG THEO TIÊU CHÍ LỌC
+// KHỐI 3: XÂY DỰNG TRUY VẤN SQL ĐỘNG THEO TIÊU CHÍ LỌC & PHÂN TRANG
 // ==============================================================================
 try {
-    $sql = "SELECT
-                a.id, a.title, a.slug, a.short_description, a.cover_image,
-                a.author_id, a.category_id, a.is_notable_event, a.status,
-                a.view_count, a.published_at, a.created_at, a.updated_at,
-                c.name AS category_name, c.slug AS category_slug,
-                u.username AS author_username, u.full_name AS author_full_name, u.avatar AS author_avatar
-            FROM articles a
-            LEFT JOIN categories c ON c.id = a.category_id
-            LEFT JOIN users u ON u.id = a.author_id
-            WHERE a.status = 'published'";
-
+    $whereSql = " WHERE a.status = 'published'";
     $params = [];
 
     // Bộ lọc: Top 5 bài viết đọc nhiều nhất trong vòng 7 ngày gần nhất
     if ($topWeekly) {
-        $sql .= " AND a.published_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
-        $sql .= " ORDER BY a.view_count DESC, a.published_at DESC LIMIT 5";
+        $whereSql .= " AND a.published_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+        $orderBy = " ORDER BY a.view_count DESC, a.published_at DESC LIMIT 5";
     } else {
         // Bộ lọc theo chuyên mục
         if ($categorySlug !== '') {
-            $sql .= " AND c.slug = ?";
+            $whereSql .= " AND c.slug = ?";
             $params[] = $categorySlug;
         }
 
         // Bộ lọc theo thẻ tag
         if ($tagSlug !== '') {
-            $sql .= " AND a.id IN (
+            $whereSql .= " AND a.id IN (
                 SELECT at.article_id FROM article_tags at 
                 JOIN tags t ON at.tag_id = t.id 
                 WHERE t.slug = ?
@@ -83,15 +74,42 @@ try {
 
         // Bộ lọc tìm kiếm toàn văn
         if ($search !== '') {
-            $sql .= " AND (a.title LIKE ? OR a.short_description LIKE ? OR a.content LIKE ?)";
+            $whereSql .= " AND (a.title LIKE ? OR a.short_description LIKE ? OR a.content LIKE ?)";
             $likeTerm = '%' . $search . '%';
             $params[] = $likeTerm;
             $params[] = $likeTerm;
             $params[] = $likeTerm;
         }
 
-        $sql .= " ORDER BY a.published_at DESC";
+        $orderBy = " ORDER BY a.published_at DESC";
     }
+
+    // Nếu có yêu cầu phân trang (tham số page từ client)
+    $totalRecords = 0;
+    $page = 1;
+    $limit = 9;
+    if ($isPaginated && !$topWeekly) {
+        $countSql = "SELECT COUNT(DISTINCT a.id) FROM articles a
+                     LEFT JOIN categories c ON c.id = a.category_id" . $whereSql;
+        $countStmt = $pdo->prepare($countSql);
+        $countStmt->execute($params);
+        $totalRecords = (int)$countStmt->fetchColumn();
+
+        list($page, $limit, $offset) = getPaginationParams(9, 50);
+        $orderBy .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+    }
+
+    $sql = "SELECT
+                a.id, a.title, a.slug, a.short_description, a.cover_image,
+                a.author_id, a.category_id, a.is_notable_event, a.status,
+                a.view_count, a.published_at, a.created_at, a.updated_at,
+                c.name AS category_name, c.slug AS category_slug,
+                u.username AS author_username, u.full_name AS author_full_name, u.avatar AS author_avatar
+            FROM articles a
+            LEFT JOIN categories c ON c.id = a.category_id
+            LEFT JOIN users u ON u.id = a.author_id"
+            . $whereSql
+            . $orderBy;
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
@@ -129,7 +147,11 @@ try {
         return $mapped;
     }, $rows);
 
-    jsonResponse(true, $articles);
+    if ($isPaginated && !$topWeekly) {
+        jsonPaginatedResponse(true, $articles, $totalRecords, $page, $limit);
+    } else {
+        jsonResponse(true, $articles);
+    }
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");
 }

@@ -30,10 +30,32 @@ require_once __DIR__ . '/../../helpers/auth.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 // ==============================================================================
-// NGHIỆP VỤ 1: GET - LẤY TOÀN BỘ BÌNH LUẬN TRONG HỆ THỐNG KÈM BÀI VIẾT & TÁC GIẢ
+// NGHIỆP VỤ 1: GET - LẤY TOÀN BỘ BÌNH LUẬN TRONG HỆ THỐNG KÈM BÀI VIẾT & TÁC GIẢ (HỖ TRỢ PHÂN TRANG)
 // ==============================================================================
 if ($method === 'GET') {
     requireRole(['admin']);
+
+    // Hỗ trợ phân trang nếu có tham số page hoặc limit
+    if (isset($_GET['page']) || isset($_GET['limit'])) {
+        list($page, $limit, $offset) = getPaginationParams(10, 50);
+
+        $countStmt = $pdo->query("SELECT COUNT(*) FROM comments");
+        $totalRecords = (int)$countStmt->fetchColumn();
+
+        $stmt = $pdo->prepare("SELECT c.*, u.full_name, u.username, u.avatar, a.title AS article_title, a.slug AS article_slug 
+            FROM comments c 
+            JOIN users u ON c.user_id = u.id 
+            JOIN articles a ON c.article_id = a.id 
+            ORDER BY c.created_at DESC 
+            LIMIT ? OFFSET ?");
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        jsonPaginatedResponse(true, $comments, $totalRecords, $page, $limit);
+    }
+
     $stmt = $pdo->query("SELECT c.*, u.full_name, u.username, u.avatar, a.title AS article_title, a.slug AS article_slug 
         FROM comments c 
         JOIN users u ON c.user_id = u.id 

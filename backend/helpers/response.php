@@ -26,3 +26,49 @@ function jsonResponse($success, $data = null, $message = "") {
     echo json_encode(["success" => $success, "message" => $message, "data" => $data]);
     exit;
 }
+
+/**
+ * [HÀM DÙNG CHUNG TOÀN HỆ THỐNG] getPaginationParams
+ * - Chức năng: Lấy và chuẩn hóa các tham số phân trang từ $_GET (page, limit, offset).
+ * - Kiểm tra tính hợp lệ: page >= 1, limit nằm trong khoảng 1 đến $maxLimit.
+ * 
+ * @param int $defaultLimit Số bản ghi mặc định trên 1 trang (mặc định 10)
+ * @param int $maxLimit Số bản ghi tối đa cho phép trên 1 trang (mặc định 50)
+ * @return array [$page, $limit, $offset]
+ */
+function getPaginationParams($defaultLimit = 10, $maxLimit = 50) {
+    $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $limit = isset($_GET['limit']) ? min($maxLimit, max(1, (int)$_GET['limit'])) : $defaultLimit;
+    $offset = ($page - 1) * $limit;
+    return [$page, $limit, $offset];
+}
+
+/**
+ * [HÀM DÙNG CHUNG TOÀN HỆ THỐNG] jsonPaginatedResponse
+ * - Chức năng: Đóng gói phản hồi API có cấu trúc phân trang chuẩn mực:
+ *   { success, message, data, pagination: { current_page, per_page, total_records, total_pages } }
+ * 
+ * @param bool $success Trạng thái kết quả thao tác
+ * @param mixed $data Danh sách bản ghi thuộc trang hiện tại
+ * @param int $totalRecords Tổng số bản ghi thỏa điều kiện lọc trong CSDL
+ * @param int $page Trang hiện tại
+ * @param int $limit Số bản ghi mỗi trang
+ * @param string $message Thông điệp giải thích
+ * @return void
+ */
+function jsonPaginatedResponse($success, $data, $totalRecords, $page, $limit, $message = "") {
+    header('Content-Type: application/json');
+    $totalPages = $limit > 0 ? (int)ceil($totalRecords / $limit) : 1;
+    echo json_encode([
+        "success" => $success,
+        "message" => $message,
+        "data" => $data,
+        "pagination" => [
+            "current_page" => (int)$page,
+            "per_page" => (int)$limit,
+            "total_records" => (int)$totalRecords,
+            "total_pages" => $totalPages
+        ]
+    ]);
+    exit;
+}

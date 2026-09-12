@@ -32,6 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let searchQuery = "";
     let reporterArticlesData = [];
 
+    // Phân trang dữ liệu hiệu quả bài viết
+    let currentPage = 1;
+    let perPage = 10;
+
     // ==============================================================================
     // KHỐI 2: TẢI DỮ LIỆU THỐNG KÊ KPI & DỰNG KHUNG BẢNG ĐIỀU KHIỂN
     // ==============================================================================
@@ -282,6 +286,9 @@ document.addEventListener("DOMContentLoaded", () => {
               </tbody>
             </table>
           </div>
+
+          <!-- Thanh phân trang bảng thống kê hiệu quả bài viết -->
+          <div id="reporter-stats-pagination"></div>
         </div>
       `;
 
@@ -335,18 +342,31 @@ document.addEventListener("DOMContentLoaded", () => {
             </td>
           </tr>
         `;
+        const pagEl = document.getElementById("reporter-stats-pagination");
+        if (pagEl) pagEl.innerHTML = "";
         return;
       }
 
-      // Render từng hàng bài viết
-      tbody.innerHTML = filtered.map((item, index) => {
+      // 3. Phân trang dữ liệu
+      const totalRecords = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
+      const startIndex = (currentPage - 1) * perPage;
+      const pageItems = filtered.slice(startIndex, startIndex + perPage);
+
+      // Render từng hàng bài viết theo trang hiện tại
+      tbody.innerHTML = pageItems.map((item, index) => {
+        const globalIndex = startIndex + index + 1;
         const formattedDate = typeof formatDate === "function" ? formatDate(item.published_at) : (item.published_at || "--");
         const articleSlug = item.slug || (typeof slugify === "function" ? slugify(item.title) : "") || item.id;
         const detailUrl = `../public/article-detail.html?slug=${encodeURIComponent(articleSlug)}`;
 
         return `
           <tr>
-            <td class="admin-col-index">${index + 1}</td>
+            <td class="admin-col-index">${globalIndex}</td>
             <td class="admin-col-title">
               <a href="${detailUrl}" target="_blank" class="admin-article-link" title="Xem bài viết trên giao diện độc giả">
                 ${escapeHtml(item.title)}
@@ -384,6 +404,26 @@ document.addEventListener("DOMContentLoaded", () => {
           </tr>
         `;
       }).join("");
+
+      // Render thanh phân trang chuẩn bảng quản trị
+      if (typeof renderTablePagination === "function") {
+        renderTablePagination("reporter-stats-pagination", {
+          currentPage,
+          perPage,
+          totalRecords,
+          totalPages,
+          perPageOptions: [10, 25, 50],
+          onPageChange: (newPage) => {
+            currentPage = newPage;
+            renderTableRows();
+          },
+          onLimitChange: (newLimit) => {
+            perPage = newLimit;
+            currentPage = 1;
+            renderTableRows();
+          }
+        });
+      }
     }
 
     /**
@@ -397,6 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentSortDirection = (field === "published_at" || field === "views" || field === "comments_count" || field === "favorites_count") ? "desc" : "asc";
       }
 
+      currentPage = 1;
       // Cập nhật lại UI bảng
       const currentUser = getCurrentUser();
       if (currentUser) {
@@ -419,5 +460,6 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     function handleSearch(val) {
       searchQuery = val;
+      currentPage = 1;
       renderTableRows();
     }

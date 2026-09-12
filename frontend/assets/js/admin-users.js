@@ -34,6 +34,10 @@
   let statusFilter = "all"; // 'all' | 'active' | 'locked'
   let searchQuery = "";
 
+  // Phân trang bảng dữ liệu quản trị
+  let currentPage = 1;
+  let perPage = 10;
+
   // Sắp xếp
   let sortField = "created_at"; // 'created_at' | 'full_name' | 'role'
   let sortOrder = "desc"; // 'desc' | 'asc'
@@ -180,6 +184,9 @@
             </tbody>
           </table>
         </div>
+
+        <!-- Thanh phân trang bảng quản trị (Data Table Pagination) -->
+        <div id="admin-users-pagination"></div>
       </div>
 
       <!-- ==================================================================== -->
@@ -212,8 +219,6 @@
     const tbody = document.getElementById("users-table-body");
     const countBadge = document.getElementById("users-count-badge");
     if (!tbody) return;
-
-    loadData();
 
     const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
     let filtered = [...allUsers];
@@ -269,6 +274,12 @@
       countBadge.textContent = `${filtered.length} người dùng`;
     }
 
+    const totalRecords = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
     // Trạng thái trống
     if (filtered.length === 0) {
       tbody.innerHTML = `
@@ -288,10 +299,15 @@
           </td>
         </tr>
       `;
+      const pagEl = document.getElementById("admin-users-pagination");
+      if (pagEl) pagEl.innerHTML = "";
       return;
     }
 
-    tbody.innerHTML = filtered.map(user => {
+    const startIndex = (currentPage - 1) * perPage;
+    const pageItems = filtered.slice(startIndex, startIndex + perPage);
+
+    tbody.innerHTML = pageItems.map(user => {
       const isSelf = currentUser && String(currentUser.id) === String(user.id);
       const isLocked = user.status === "locked";
 
@@ -442,6 +458,26 @@
         </tr>
       `;
     }).join("");
+
+    // Render thanh phân trang chuẩn bảng dữ liệu quản trị
+    if (typeof renderTablePagination === "function") {
+      renderTablePagination("admin-users-pagination", {
+        currentPage,
+        perPage,
+        totalRecords,
+        totalPages,
+        perPageOptions: [10, 25, 50],
+        onPageChange: (newPage) => {
+          currentPage = newPage;
+          renderTableRows();
+        },
+        onLimitChange: (newLimit) => {
+          perPage = newLimit;
+          currentPage = 1;
+          renderTableRows();
+        }
+      });
+    }
   }
 
   /**
@@ -485,18 +521,20 @@
   function bindEvents() {
     window.switchUserTab = function (tab) {
       currentTab = tab;
-      loadData();
+      currentPage = 1;
       renderPageStructure();
       renderTableRows();
     };
 
     window.setUserRoleFilter = function (val) {
       roleFilter = val;
+      currentPage = 1;
       renderTableRows();
     };
 
     window.setUserStatusFilter = function (val) {
       statusFilter = val;
+      currentPage = 1;
       renderTableRows();
     };
 
@@ -507,6 +545,7 @@
         sortField = field;
         sortOrder = "desc";
       }
+      currentPage = 1;
       renderPageStructure();
       renderTableRows();
     };
@@ -516,6 +555,7 @@
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value.trim();
+        currentPage = 1;
         renderTableRows();
       });
     }

@@ -261,7 +261,6 @@ function initAdminLayout(currentRole, activeKey) {
           <div class="admin-sidebar__profile-info">
             <div class="admin-sidebar__avatar-container">
               ${renderWorkspaceAvatar(currentUser, "admin-sidebar__avatar-wrap")}
-              <span class="admin-sidebar__status-dot"></span>
             </div>
             <div class="admin-sidebar__user-meta">
               <div class="admin-sidebar__user-name" title="${escapeHtml(fullName)}">${escapeHtml(fullName)}</div>

@@ -27,6 +27,10 @@
     let reporterArticles = [];
     let categoriesMap = {};
 
+    // Phân trang danh sách bài viết phóng viên
+    let currentPage = 1;
+    let perPage = 10;
+
     document.addEventListener("DOMContentLoaded", () => {
       const currentUser = initAdminLayout("reporter", "my-articles");
       initDeleteDraftModal();
@@ -71,6 +75,11 @@
           const targetArt = reporterArticles.find(a => String(a.id) === String(targetArticleId));
           if (targetArt) {
             currentTab = targetArt.status; // Chuyển thẳng tới tab chứa bài viết
+            const tabArticles = reporterArticles.filter(a => a.status === currentTab);
+            const targetIdx = tabArticles.findIndex(a => String(a.id) === String(targetArticleId));
+            if (targetIdx !== -1) {
+              currentPage = Math.floor(targetIdx / perPage) + 1;
+            }
           }
         }
 
@@ -162,6 +171,9 @@
               </tbody>
             </table>
           </div>
+
+          <!-- Thanh phân trang bảng bài viết phóng viên -->
+          <div id="reporter-articles-pagination"></div>
         </div>
       `;
 
@@ -240,11 +252,24 @@
             </td>
           </tr>
         `;
+
+        const pagEl = document.getElementById("reporter-articles-pagination");
+        if (pagEl) pagEl.innerHTML = "";
         return;
       }
 
-      // 4. Render các dòng bài viết (Giao diện bảng gọn gàng, tinh tế)
-      tbody.innerHTML = filtered.map(art => {
+      // 4. Tính toán phân trang
+      const totalRecords = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
+      const startIndex = (currentPage - 1) * perPage;
+      const pageItems = filtered.slice(startIndex, startIndex + perPage);
+
+      // 5. Render các dòng bài viết trang hiện tại
+      tbody.innerHTML = pageItems.map(art => {
         const catName = categoriesMap[art.category_id] || "Tổng hợp";
         const coverImg = typeof extractThumbnail === "function" ? extractThumbnail(art) : (art.cover_image || "");
         const desc = art.short_description || "";
@@ -291,6 +316,26 @@
           </tr>
         `;
       }).join("");
+
+      // Render thanh điều hướng phân trang
+      if (typeof renderTablePagination === "function") {
+        renderTablePagination("reporter-articles-pagination", {
+          currentPage,
+          perPage,
+          totalRecords,
+          totalPages,
+          perPageOptions: [10, 25, 50],
+          onPageChange: (newPage) => {
+            currentPage = newPage;
+            renderTableRows();
+          },
+          onLimitChange: (newLimit) => {
+            perPage = newLimit;
+            currentPage = 1;
+            renderTableRows();
+          }
+        });
+      }
     }
 
     /**
@@ -318,6 +363,8 @@
           return `<span class="admin-status-badge admin-status-badge--rejected">Bị từ chối</span>`;
         case "published":
           return `<span class="admin-status-badge admin-status-badge--published">Đã đăng</span>`;
+        case "hidden":
+          return `<span class="admin-status-badge">Bị ẩn</span>`;
         default:
           return `<span class="admin-status-badge">${escapeHtml(status)}</span>`;
       }
@@ -408,6 +455,7 @@
      */
     function switchTab(tab) {
       currentTab = tab;
+      currentPage = 1;
       renderUI();
     }
 
@@ -416,6 +464,7 @@
      */
     function handleSearch(val) {
       searchQuery = val;
+      currentPage = 1;
       renderTableRows();
     }
 

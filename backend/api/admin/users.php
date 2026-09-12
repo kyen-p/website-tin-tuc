@@ -34,9 +34,63 @@ $method = $_SERVER['REQUEST_METHOD'];
 // ==============================================================================
 if ($method === 'GET') {
     requireRole(['admin']);
-    $stmt = $pdo->query("SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, created_at FROM users ORDER BY created_at DESC");
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    jsonResponse(true, $users);
+
+    $isPaginated = isset($_GET['page']);
+    $role = isset($_GET['role']) ? trim($_GET['role']) : '';
+    $status = isset($_GET['status']) ? trim($_GET['status']) : '';
+    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+    $whereClauses = [];
+    $params = [];
+
+    if ($role !== '' && $role !== 'all') {
+        $whereClauses[] = "role = ?";
+        $params[] = $role;
+    }
+
+    if ($status === 'active') {
+        $whereClauses[] = "status = 'active'";
+    } elseif ($status === 'locked') {
+        $whereClauses[] = "status = 'locked'";
+    }
+
+    if ($search !== '') {
+        $whereClauses[] = "(full_name LIKE ? OR username LIKE ? OR email LIKE ? OR bio LIKE ?)";
+        $like = '%' . $search . '%';
+        $params[] = $like;
+        $params[] = $like;
+        $params[] = $like;
+        $params[] = $like;
+    }
+
+    $whereSql = !empty($whereClauses) ? " WHERE " . implode(" AND ", $whereClauses) : "";
+
+    if ($isPaginated) {
+        $countStmt = $pdo->prepare("SELECT COUNT(*) FROM users" . $whereSql);
+        $countStmt->execute($params);
+        $totalRecords = (int)$countStmt->fetchColumn();
+
+        list($page, $limit, $offset) = getPaginationParams(10, 50);
+
+        $sql = "SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, created_at 
+                FROM users" . $whereSql . " 
+                ORDER BY created_at DESC 
+                LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        jsonPaginatedResponse(true, $users, $totalRecords, $page, $limit);
+    } else {
+        $sql = "SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, created_at 
+                FROM users" . $whereSql . " 
+                ORDER BY created_at DESC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        jsonResponse(true, $users);
+    }
 }
 
 // ==============================================================================

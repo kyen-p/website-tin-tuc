@@ -293,133 +293,151 @@
     let article = null;
     if (articleOrId && typeof articleOrId === "object") {
       article = articleOrId;
-    } else {
+    } else if (articleOrId !== undefined && articleOrId !== null) {
       const candidates = [
         ...(options.articles || []),
         ...(window.EditorPendingArticles && typeof window.EditorPendingArticles.getAllArticles === "function" ? window.EditorPendingArticles.getAllArticles() : []),
         ...(window.AdminPublishedArticles && typeof window.AdminPublishedArticles.getAllArticles === "function" ? window.AdminPublishedArticles.getAllArticles() : []),
         ...(Array.isArray(window.allArticles) ? window.allArticles : [])
       ];
-      article = candidates.find((a) => String(a.id) === String(articleOrId));
+      article = candidates.find((a) => a && String(a.id) === String(articleOrId));
     }
 
-    if (!article) return;
+    if (!article) {
+      console.warn("Không tìm thấy thông tin bài viết với tham số:", articleOrId);
+      if (typeof showToast === "function") {
+        showToast("Không tìm thấy thông tin chi tiết bài viết.", "warning");
+      }
+      return;
+    }
     reviewingArticle = article;
 
-    // Tìm danh mục tương ứng
-    const allCategories = options.categories ||
-      (window.EditorPendingArticles && typeof window.EditorPendingArticles.getAllCategories === "function" ? window.EditorPendingArticles.getAllCategories() : []) ||
-      (window.AdminPublishedArticles && typeof window.AdminPublishedArticles.getAllCategories === "function" ? window.AdminPublishedArticles.getAllCategories() : []) ||
-      (Array.isArray(window.allCategories) ? window.allCategories : []);
+    try {
+      // Tìm danh mục tương ứng
+      const allCategories = options.categories ||
+        (window.EditorPendingArticles && typeof window.EditorPendingArticles.getAllCategories === "function" ? window.EditorPendingArticles.getAllCategories() : []) ||
+        (window.AdminPublishedArticles && typeof window.AdminPublishedArticles.getAllCategories === "function" ? window.AdminPublishedArticles.getAllCategories() : []) ||
+        (Array.isArray(window.allCategories) ? window.allCategories : []);
 
-    const category = allCategories.find((c) => String(c.id) === String(article.category_id)) || {
-      id: article.category_id || 1,
-      name: article.category_name || "Thời sự",
-    };
+      const category = (Array.isArray(allCategories) && allCategories.find((c) => c && String(c.id) === String(article.category_id))) || {
+        id: article.category_id || 1,
+        name: article.category_name || "Thời sự",
+      };
 
-    const author = {
-      full_name: article.author_name || article.author || "Phóng viên",
-      username: article.author_username || "reporter",
-      avatar: article.author_avatar || "",
-    };
+      const author = {
+        full_name: article.author_name || article.author || "Phóng viên",
+        username: article.author_username || article.author || "reporter",
+        avatar: article.author_avatar || "",
+      };
 
-    // Điền dữ liệu vào Modal (Read-only view)
-    const titleDisplay = document.getElementById("modal-article-title-display");
-    if (titleDisplay) titleDisplay.textContent = article.title || "Chưa có tiêu đề";
+      // Điền dữ liệu vào Modal (Read-only view)
+      const titleDisplay = document.getElementById("modal-article-title-display");
+      if (titleDisplay) titleDisplay.textContent = article.title || "Chưa có tiêu đề";
 
-    const sapoDisplay = document.getElementById("modal-article-sapo-display");
-    if (sapoDisplay) sapoDisplay.textContent = article.short_description || "Chưa có tóm tắt";
+      const sapoDisplay = document.getElementById("modal-article-sapo-display");
+      if (sapoDisplay) sapoDisplay.textContent = article.short_description || "Chưa có tóm tắt";
 
-    // Gán nội dung bài viết vào thẻ có class .body-text .ck-content để hiển thị định dạng CKEditor 5 chuẩn xác
-    const contentEl = document.getElementById("modal-article-content");
-    if (contentEl) {
-      contentEl.innerHTML = article.content || "<p>Chưa có nội dung chi tiết.</p>";
-    }
-
-    // Thiết lập Checkbox Đưa vào Sự kiện đáng chú ý
-    const isNotableContainer = document.getElementById("modal-is-notable-container");
-    const isNotableCheckbox = document.getElementById("modal-is-notable-checkbox");
-    if (isNotableCheckbox) {
-      isNotableCheckbox.checked = Boolean(article.is_notable_event);
-      isNotableCheckbox.disabled = mode === "admin";
-    }
-    if (isNotableContainer && mode === "admin" && !article.is_notable_event) {
-      // Nếu là admin và bài không phải sự kiện đáng chú ý thì có thể ẩn bớt container để gọn gàng
-      isNotableContainer.style.display = "none";
-    } else if (isNotableContainer) {
-      isNotableContainer.style.display = "block";
-    }
-
-    // Banner Từ chối (chỉ hiện khi bài có trạng thái rejected)
-    const rejectBanner = document.getElementById("modal-rejection-banner");
-    const rejectReasonEl = document.getElementById("modal-rejection-reason");
-    if (article.status === "rejected" && article.rejection_reason) {
-      if (rejectBanner) rejectBanner.style.display = "block";
-      if (rejectReasonEl) rejectReasonEl.textContent = article.rejection_reason;
-    } else {
-      if (rejectBanner) rejectBanner.style.display = "none";
-    }
-
-    // Metadata cột phải: Tác giả
-    const repNameEl = document.getElementById("modal-reporter-name");
-    if (repNameEl) repNameEl.textContent = `${author.full_name || author.username} (@${author.username})`;
-
-    // Thời gian hiển thị (thời gian xuất bản nếu là admin / thời gian nộp nếu là editor)
-    const timeLabelEl = document.getElementById("modal-time-label");
-    const subTimeEl = document.getElementById("modal-submitted-time");
-    if (subTimeEl) {
-      if (mode === "admin" && article.published_at) {
-        if (timeLabelEl) timeLabelEl.textContent = "Thời gian xuất bản:";
-        subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.published_at) : article.published_at;
-      } else {
-        if (timeLabelEl) timeLabelEl.textContent = "Thời gian nộp bài:";
-        subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.created_at) : (article.created_at || "");
+      // Gán nội dung bài viết vào thẻ có class .body-text .ck-content để hiển thị định dạng CKEditor 5 chuẩn xác
+      const contentEl = document.getElementById("modal-article-content");
+      if (contentEl) {
+        contentEl.innerHTML = article.content || "<p>Chưa có nội dung chi tiết.</p>";
       }
-    }
 
-    // Người duyệt bài (dành cho chế độ Admin hoặc bài đã xuất bản)
-    const reviewerRow = document.getElementById("modal-reviewer-row");
-    const reviewerNameEl = document.getElementById("modal-reviewer-name");
-    const approverName = article.reviewed_by_name || article.reviewer_name || article.approver_name;
-    if (approverName && reviewerRow && reviewerNameEl) {
-      reviewerRow.style.display = "block";
-      reviewerNameEl.textContent = approverName;
-    } else if (reviewerRow) {
-      reviewerRow.style.display = "none";
-    }
-
-    // Trạng thái bài viết (dành cho Admin)
-    const statusRow = document.getElementById("modal-status-row");
-    const statusBadgeEl = document.getElementById("modal-status-badge");
-    if (mode === "admin" && statusRow && statusBadgeEl) {
-      statusRow.style.display = "block";
-      if (article.status === "published") {
-        statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--approved">Đang hiển thị</span>`;
-      } else if (article.status === "hidden") {
-        statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--rejected">Đã tạm ẩn</span>`;
-      } else {
-        statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--pending">${article.status}</span>`;
+      // Thiết lập Checkbox Đưa vào Sự kiện đáng chú ý
+      const isNotableContainer = document.getElementById("modal-is-notable-container");
+      const isNotableCheckbox = document.getElementById("modal-is-notable-checkbox");
+      const isNotable = Boolean(Number(article.is_notable_event) === 1 || article.is_notable_event === true || article.is_notable_event === "1");
+      if (isNotableCheckbox) {
+        isNotableCheckbox.checked = isNotable;
+        isNotableCheckbox.disabled = mode === "admin";
       }
-    } else if (statusRow) {
-      statusRow.style.display = "none";
-    }
+      if (isNotableContainer && mode === "admin" && !isNotable) {
+        isNotableContainer.style.display = "none";
+      } else if (isNotableContainer) {
+        isNotableContainer.style.display = "block";
+      }
 
-    // Chuyên mục
-    const catDisplay = document.getElementById("modal-category-display");
-    if (catDisplay) {
-      catDisplay.textContent = category.name || "Thời sự";
-    }
+      // Banner Từ chối (chỉ hiện khi bài có trạng thái rejected)
+      const rejectBanner = document.getElementById("modal-rejection-banner");
+      const rejectReasonEl = document.getElementById("modal-rejection-reason");
+      if (article.status === "rejected" && article.rejection_reason) {
+        if (rejectBanner) rejectBanner.style.display = "block";
+        if (rejectReasonEl) rejectReasonEl.textContent = article.rejection_reason;
+      } else {
+        if (rejectBanner) rejectBanner.style.display = "none";
+      }
 
-    // Nạp Tags của bài viết do phóng viên gán
-    let assignedTagNames = [];
-    if (article.tags && Array.isArray(article.tags)) {
-      assignedTagNames = article.tags.map(t => (typeof t === "string" ? t : (t.name || ""))).filter(Boolean);
-    } else if (article.tags_text && Array.isArray(article.tags_text) && article.tags_text.length > 0) {
-      assignedTagNames = [...article.tags_text];
-    }
+      // Metadata cột phải: Tác giả
+      const repNameEl = document.getElementById("modal-reporter-name");
+      if (repNameEl) repNameEl.textContent = `${author.full_name || author.username} (@${author.username})`;
 
-    modalSelectedTags = assignedTagNames;
-    renderModalTags();
+      // Thời gian hiển thị (thời gian xuất bản nếu là admin / thời gian nộp nếu là editor)
+      const timeLabelEl = document.getElementById("modal-time-label");
+      const subTimeEl = document.getElementById("modal-submitted-time");
+      if (subTimeEl) {
+        if (mode === "admin" && article.published_at) {
+          if (timeLabelEl) timeLabelEl.textContent = "Thời gian xuất bản:";
+          subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.published_at) : article.published_at;
+        } else {
+          if (timeLabelEl) timeLabelEl.textContent = "Thời gian nộp bài:";
+          subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.created_at) : (article.created_at || "");
+        }
+      }
+
+      // Người duyệt bài (dành cho chế độ Admin hoặc bài đã xuất bản)
+      const reviewerRow = document.getElementById("modal-reviewer-row");
+      const reviewerNameEl = document.getElementById("modal-reviewer-name");
+      const approverName = article.approver_name || article.reviewed_by_name || article.reviewer_name;
+      if (approverName && reviewerRow && reviewerNameEl) {
+        reviewerRow.style.display = "block";
+        reviewerNameEl.textContent = approverName;
+      } else if (reviewerRow) {
+        reviewerRow.style.display = "none";
+      }
+
+      // Trạng thái bài viết (dành cho Admin)
+      const statusRow = document.getElementById("modal-status-row");
+      const statusBadgeEl = document.getElementById("modal-status-badge");
+      if (mode === "admin" && statusRow && statusBadgeEl) {
+        statusRow.style.display = "block";
+        if (article.status === "published") {
+          statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--approved">Đang hiển thị</span>`;
+        } else if (article.status === "hidden") {
+          statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--rejected">Đã tạm ẩn</span>`;
+        } else {
+          statusBadgeEl.innerHTML = `<span class="admin-status-badge admin-status-badge--pending">${article.status}</span>`;
+        }
+      } else if (statusRow) {
+        statusRow.style.display = "none";
+      }
+
+      // Chuyên mục
+      const catDisplay = document.getElementById("modal-category-display");
+      if (catDisplay) {
+        catDisplay.textContent = category.name || "Thời sự";
+      }
+
+      // Nạp Tags của bài viết do phóng viên gán (Hỗ trợ mảng chuỗi, mảng object {name, slug}, chuỗi phân tách dấu phẩy)
+      let assignedTagNames = [];
+      if (Array.isArray(article.tags)) {
+        assignedTagNames = article.tags.map(t => {
+          if (!t) return "";
+          if (typeof t === "string") return t;
+          return t.name || t.tag_name || "";
+        }).filter(Boolean);
+      } else if (typeof article.tags === "string" && article.tags.trim()) {
+        assignedTagNames = article.tags.split(",").map(s => s.trim()).filter(Boolean);
+      } else if (Array.isArray(article.tags_text)) {
+        assignedTagNames = [...article.tags_text];
+      } else if (typeof article.tags_text === "string" && article.tags_text.trim()) {
+        assignedTagNames = article.tags_text.split(",").map(s => s.trim()).filter(Boolean);
+      }
+
+      modalSelectedTags = assignedTagNames;
+      renderModalTags();
+    } catch (err) {
+      console.error("Lỗi khi đổ dữ liệu vào modal:", err);
+    }
 
     // ==============================================================================
     // THIẾT LẬP GIAO DIỆN & HÀNH ĐỘNG THEO VAI TRÒ (EDITOR VS ADMIN)
@@ -509,7 +527,10 @@
     }
 
     const reviewModal = document.getElementById("modal-review-article");
-    if (reviewModal) reviewModal.style.display = "flex";
+    if (reviewModal) {
+      reviewModal.style.display = "flex";
+      reviewModal.style.zIndex = "1050";
+    }
   }
 
   function closeReviewModal() {

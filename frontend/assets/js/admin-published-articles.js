@@ -33,6 +33,10 @@
   let currentTab = "published"; // 'all' | 'published' | 'hidden'
   let searchQuery = "";
 
+  // Phân trang dữ liệu bảng quản trị
+  let currentPage = 1;
+  let perPage = 10;
+
   // Sắp xếp dữ liệu (Sort: chỉ Ngày xuất bản và Lượt xem)
   let sortField = "published_at"; // 'published_at' | 'views'
   let sortOrder = "desc"; // 'desc' | 'asc'
@@ -171,6 +175,9 @@
             </tbody>
           </table>
         </div>
+
+        <!-- Thanh phân trang bảng quản trị (Data Table Pagination) -->
+        <div id="admin-articles-pagination"></div>
       </div>
 
       <!-- MODAL 1: SỬA ĐÈ NỘI DUNG (ADMIN OVERRIDE) -->
@@ -315,6 +322,7 @@
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value.trim().toLowerCase();
+        currentPage = 1;
         renderTableRows();
       });
     }
@@ -356,6 +364,7 @@
 
   window.switchPublishedTab = function (tab) {
     currentTab = tab;
+    currentPage = 1;
     renderPageStructure();
     bindEvents();
     renderTableRows();
@@ -371,6 +380,7 @@
       sortField = field;
       sortOrder = (field === "published_at" || field === "views") ? "desc" : "asc";
     }
+    currentPage = 1;
     renderPageStructure();
     bindEvents();
     renderTableRows();
@@ -421,6 +431,12 @@
       countBadge.textContent = `${filtered.length} bài`;
     }
 
+    const totalRecords = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -437,10 +453,15 @@
           </td>
         </tr>
       `;
+      const pagEl = document.getElementById("admin-articles-pagination");
+      if (pagEl) pagEl.innerHTML = "";
       return;
     }
 
-    tbody.innerHTML = filtered.map(art => {
+    const startIndex = (currentPage - 1) * perPage;
+    const pageItems = filtered.slice(startIndex, startIndex + perPage);
+
+    tbody.innerHTML = pageItems.map(art => {
       const author = allUsers.find(u => String(u.id) === String(art.author_id)) || { full_name: art.author || "Phóng viên", username: "reporter" };
       const approver = allUsers.find(u => String(u.id) === String(art.approved_by));
 
@@ -472,7 +493,7 @@
           <td>
             <div class="admin-article-info" style="margin: 0;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <a href="javascript:void(0)" onclick="window.adminViewArticleDetail(${art.id})" class="admin-article-title-link" title="Bấm để xem chi tiết bài viết (đầy đủ định dạng bảng, danh sách, đa phương tiện)">
+                <a href="javascript:void(0)" onclick="window.adminViewArticleDetail(${art.id}, event)" class="admin-article-title-link" title="Bấm để xem chi tiết bài viết (đầy đủ định dạng bảng, danh sách, đa phương tiện)">
                   ${escapeHtml(art.title || "Chưa đặt tiêu đề")}
                 </a>
                 <a href="${detailUrl}" target="_blank" style="color: var(--muted); display: inline-flex; align-items: center;" title="Xem bài viết trên trang công khai (Mở tab mới)">
@@ -539,7 +560,7 @@
 
               <div id="action-menu-${art.id}" class="admin-action-dropdown-menu" style="display: none;">
                 <!-- Xem chi tiết bài (Dùng chung modal chuẩn định dạng CKEditor 5) -->
-                <button type="button" class="admin-dropdown-item" onclick="window.adminViewArticleDetail(${art.id})">
+                <button type="button" class="admin-dropdown-item" onclick="window.adminViewArticleDetail(${art.id}, event)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
@@ -583,6 +604,26 @@
         </tr>
       `;
     }).join("");
+
+    // Render thanh phân trang chuẩn bảng dữ liệu quản trị
+    if (typeof renderTablePagination === "function") {
+      renderTablePagination("admin-articles-pagination", {
+        currentPage,
+        perPage,
+        totalRecords,
+        totalPages,
+        perPageOptions: [10, 25, 50],
+        onPageChange: (newPage) => {
+          currentPage = newPage;
+          renderTableRows();
+        },
+        onLimitChange: (newLimit) => {
+          perPage = newLimit;
+          currentPage = 1;
+          renderTableRows();
+        }
+      });
+    }
   }
 
   // ==============================================================================
@@ -779,10 +820,20 @@
   /**
    * 1. Mở Modal Xem chi tiết bài viết (Dùng chung Modal thẩm định của Tòa soạn, chuẩn CKEditor 5)
    */
-  window.adminViewArticleDetail = function (id) {
+  window.adminViewArticleDetail = function (id, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     closeAllActionMenus();
-    const article = allArticles.find(a => Number(a.id) === Number(id));
-    if (!article) return;
+    const article = allArticles.find(a => String(a.id) === String(id));
+    if (!article) {
+      console.warn("Không tìm thấy bài viết với id:", id);
+      if (typeof showToast === "function") {
+        showToast("Không tìm thấy thông tin chi tiết bài viết này.", "error");
+      }
+      return;
+    }
 
     const reviewModalFn = window.openArticleReviewModal || window.openReviewModal;
     if (typeof reviewModalFn === "function") {
@@ -799,7 +850,28 @@
         }
       });
     } else {
-      console.warn("Chưa tải được openArticleReviewModal.");
+      console.warn("Chưa tải được openArticleReviewModal, tiến hành nạp DOM...");
+      if (typeof window.ensureReviewModalsExist === "function") {
+        window.ensureReviewModalsExist();
+        if (typeof window.openReviewModal === "function") {
+          window.openReviewModal(article, {
+            mode: "admin",
+            articles: allArticles,
+            categories: allCategories,
+            tags: allTags,
+            onEdit: (art) => {
+              window.adminOpenEditArticle(art.id);
+            },
+            onToggleStatus: (art) => {
+              window.adminToggleHideArticle(art.id);
+            }
+          });
+          return;
+        }
+      }
+      if (typeof showToast === "function") {
+        showToast("Hộp thoại chi tiết chưa sẵn sàng. Vui lòng tải lại trang.", "warning");
+      }
     }
   };
 
