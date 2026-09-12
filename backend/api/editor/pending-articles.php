@@ -62,7 +62,7 @@ if ($method === 'GET') {
         $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Nạp danh sách thẻ (tags) đính kèm cho từng bài viết
-        foreach ($articles as &$article) {
+        if (!empty($articles)) {
             $tagSql = "
                 SELECT t.id, t.name, t.slug
                 FROM article_tags at
@@ -70,12 +70,14 @@ if ($method === 'GET') {
                 WHERE at.article_id = ?
                 ORDER BY t.name ASC
             ";
-
             $tagStmt = $pdo->prepare($tagSql);
-            $tagStmt->execute([$article['id']]);
-            $article['tags'] = $tagStmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($articles as &$article) {
+                $tagStmt->execute([$article['id']]);
+                $article['tags'] = $tagStmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            unset($article);
         }
-        unset($article);
 
         jsonResponse(
             true,
