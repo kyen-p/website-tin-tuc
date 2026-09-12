@@ -45,33 +45,44 @@ if ($method === 'GET') {
 }
 
 // ==============================================================================
-// NGHIỆP VỤ 2: PUT - CẬP NHẬT THÔNG TIN LIÊN HỆ & MẠNG XÃ HỘI (CHỈ ADMIN)
+// NGHIỆP VỤ 2: PUT / POST - CẬP NHẬT THÔNG TIN LIÊN HỆ & MẠNG XÃ HỘI (CHỈ ADMIN)
 // ==============================================================================
-if ($method === 'PUT') {
+if ($method === 'PUT' || $method === 'POST') {
     requireRole(['admin']);
 
     $input = json_decode(file_get_contents('php://input'), true);
-
-    $social_links = json_encode([
-        'facebook' => $input['facebook'] ?? '',
-        'youtube'  => $input['youtube'] ?? '',
-        'tiktok'   => $input['tiktok'] ?? '',
-    ]);
-
-    $contactEmail = $input['contact_email'] ?? null;
-    $contactPhone = $input['contact_phone'] ?? null;
-    $address      = $input['address'] ?? null;
-    $shortDesc    = $input['short_description'] ?? null;
-
-    $check = $pdo->query("SELECT id FROM site_settings LIMIT 1")->fetch();
-
-    if ($check) {
-        $stmt = $pdo->prepare("UPDATE site_settings SET contact_email=?, contact_phone=?, address=?, social_links=?, short_description=? WHERE id=?");
-        $stmt->execute([$contactEmail, $contactPhone, $address, $social_links, $shortDesc, $check['id']]);
-    } else {
-        $stmt = $pdo->prepare("INSERT INTO site_settings (contact_email, contact_phone, address, social_links, short_description) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$contactEmail, $contactPhone, $address, $social_links, $shortDesc]);
+    if (!$input || !is_array($input)) {
+        $input = $_POST;
     }
 
-    jsonResponse(true, null, "Cập nhật thành công");
+    $social_links = json_encode([
+        'facebook' => trim($input['facebook'] ?? ''),
+        'youtube'  => trim($input['youtube'] ?? ''),
+        'tiktok'   => trim($input['tiktok'] ?? ''),
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+    $contactEmail = trim($input['contact_email'] ?? '');
+    $contactPhone = trim($input['contact_phone'] ?? '');
+    $address      = trim($input['address'] ?? '');
+    $shortDesc    = trim($input['short_description'] ?? '');
+
+    if (empty($contactEmail) || empty($contactPhone) || empty($address)) {
+        jsonResponse(false, null, "Vui lòng nhập đầy đủ email, số điện thoại hotline và địa chỉ tòa soạn.");
+    }
+
+    try {
+        $check = $pdo->query("SELECT id FROM site_settings LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+
+        if ($check) {
+            $stmt = $pdo->prepare("UPDATE site_settings SET contact_email=?, contact_phone=?, address=?, social_links=?, short_description=? WHERE id=?");
+            $stmt->execute([$contactEmail, $contactPhone, $address, $social_links, $shortDesc, $check['id']]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO site_settings (contact_email, contact_phone, address, social_links, short_description) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$contactEmail, $contactPhone, $address, $social_links, $shortDesc]);
+        }
+
+        jsonResponse(true, null, "Cập nhật cấu hình tòa soạn thành công");
+    } catch (PDOException $e) {
+        jsonResponse(false, null, "Lỗi cơ sở dữ liệu khi lưu cấu hình: " . $e->getMessage());
+    }
 }
