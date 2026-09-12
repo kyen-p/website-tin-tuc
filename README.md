@@ -1,3 +1,4 @@
+```text
 website-tin-tuc:.
 +---backend
 |   |   machtin_db.sql                      # Script tạo cấu trúc bảng và dữ liệu mẫu ban đầu cho CSDL MySQL
@@ -126,26 +127,34 @@ website-tin-tuc:.
             favorites.html                  # Giao diện danh sách bài viết đã lưu yêu thích của người dùng
             my-comments.html                # Giao diện danh sách các bình luận đã gửi của người dùng
             profile.html                    # Giao diện thông tin tài khoản và cập nhật hồ sơ cá nhân
+```
 
-
-#HƯỚNG DẪN CÀI ĐẶT VÀ KHỞI CHẠY HỆ THỐNG TRÊN XAMPP
-##BƯỚC 1: Khởi động môi trường XAMPP
-##BƯỚC 2: Đặt thư mục mã nguồn vào htdocs
-Bỏ toàn bộ thư mục dự án vào
+# HƯỚNG DẪN CÀI ĐẶT VÀ KHỞI CHẠY HỆ THỐNG TRÊN XAMPP
+## BƯỚC 1: Khởi động môi trường XAMPP
+## BƯỚC 2: Đặt thư mục mã nguồn vào htdocs
+Bỏ toàn bộ thư mục dự án vào. 
 Kiểm tra cấu trúc thư mục đảm bảo đường dẫn như sau:
+
 C:\xampp\htdocs\website-tin-tuc\backend\
+
 C:\xampp\htdocs\website-tin-tuc\frontend\
-##BƯỚC 3: Tạo Cơ sở dữ liệu và Import dữ liệu mẫu
-Mở trình duyệt web và truy cập vào địa chỉ: `http://localhost/phpmyadmin/`
-Bấm tạo database:
+
+## BƯỚC 3: Tạo Cơ sở dữ liệu và Import dữ liệu mẫu
+Mở trình duyệt web và truy cập vào địa chỉ: `http://localhost/phpmyadmin/`. Bấm tạo database:
+
 Tên cơ sở dữ liệu: machtin_db
+
 Bảng mã: Chọn utf8mb4_unicode_ci
+
 Sau khi tạo xong, chọn vào database machtin_db ở danh sách bên trái.
+
 Bấm vào tab Nhập ở thanh menu phía trên:
+
 Chọn tệp: Bấm chọn đến file machtin_db.sql nằm trong thư mục dự án
-##BƯỚC 4: Danh sách tài khoản đăng nhập mẫu
-MẬT KHẨU CHUNG CHO TẤT CẢ TÀI KHOẢN TRONG HỆ THỐNG: 12345678
-##BƯỚC 5: Các đường dẫn truy cập hệ thống trên trình duyệt
+## BƯỚC 4: Danh sách tài khoản đăng nhập mẫu
+Mật khẩu chung cho tất cả tài khoản trong hệ thống: 12345678
+## BƯỚC 5: Các đường dẫn truy cập hệ thống trên trình duyệt
 Sau khi hoàn tất các bước trên, bạn có thể dán đường dẫn sau vào thanh địa chỉ trình duyệt để bắt đầu trải nghiệm:
-Trang chủ tin tức (Public):
+
+Trang chủ:
 `http://localhost/website-tin-tuc/frontend/public/index.html`
