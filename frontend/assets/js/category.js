@@ -364,7 +364,7 @@ async function initCategoryPage() {
         endNotice.innerHTML = `
           <div style="text-align: center; padding: 28px 0 10px; border-top: 1px solid var(--line-soft); margin-top: 24px;">
             <p style="font-family: var(--f-sans); font-size: 13.5px; color: var(--muted); margin: 0; letter-spacing: 0.2px;">
-              Bạn đã xem hết những bài đăng mới nhất 2 ngày qua
+              Bạn đã xem hết những bài đăng mới nhất 48 giờ qua
             </p>
           </div>
         `;

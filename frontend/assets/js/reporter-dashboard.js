@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   </th>
                   <th class="is-sortable admin-col-num ${currentSortField === 'favorites_count' ? 'is-sorted' : ''}" onclick="handleSort('favorites_count')">
                     <div class="admin-th-content" style="justify-content: flex-end;">
-                      <span>Lưu bài</span>
+                      <span>Yêu thích</span>
                       <span class="admin-sort-icon">${getSortIcon('favorites_count')}</span>
                     </div>
                   </th>
