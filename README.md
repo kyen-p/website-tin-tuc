@@ -34,7 +34,7 @@ Kiểm tra lại đường dẫn chính xác trên máy tính đảm bảo như 
 ## BƯỚC 4: Danh sách tài khoản đăng nhập mẫu
 Danh sách tài khoản được trích xuất trực tiếp từ bảng `users` trong cơ sở dữ liệu mẫu (`machtin_db.sql`). Bạn có thể sử dụng **Tên đăng nhập (Username)** hoặc **Email** để đăng nhập vào hệ thống:
 
-> **Ghi chú quan trọng:**
+> **Ghi chú:**
 > - **Mật khẩu chung cho tất cả các tài khoản trên:** `12345678`
 > - Độc giả cũng có thể tự tạo tài khoản mới bất kỳ lúc nào tại trang **Đăng ký**.
 ---
