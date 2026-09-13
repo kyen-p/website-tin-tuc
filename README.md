@@ -34,7 +34,7 @@ Kiểm tra lại đường dẫn chính xác trên máy tính đảm bảo như 
 ## BƯỚC 4: Danh sách tài khoản đăng nhập mẫu
 Danh sách tài khoản được trích xuất trực tiếp từ bảng `users` trong cơ sở dữ liệu mẫu (`machtin_db.sql`). Bạn có thể sử dụng **Tên đăng nhập (Username)** hoặc **Email** để đăng nhập vào hệ thống:
 
-> **Ghi chú:**
+> **Ghi chú quan trọng:**
 > - **Mật khẩu chung cho tất cả các tài khoản trên:** `12345678`
 > - Độc giả cũng có thể tự tạo tài khoản mới bất kỳ lúc nào tại trang **Đăng ký**.
 ---
@@ -80,7 +80,7 @@ Sau khi hoàn tất việc nạp cơ sở dữ liệu, dán các đường dẫn
 - **Quản lý bài viết của tôi**:
   `http://localhost/website-tin-tuc/frontend/reporter/my-articles.html`
 
-### 5. Dành cho cho tất cả user:
+### 5. Dành cho tất cả user:
 - **Thông tin tài khoản**:
   `http://localhost/website-tin-tuc/frontend/user/profile.html`
 - **Bài viết đã lưu yêu thích**:
@@ -92,7 +92,7 @@ Sau khi hoàn tất việc nạp cơ sở dữ liệu, dán các đường dẫn
 
 ---
 
-## CẤU TRÚC HỆ THỐNG DỰ ÁN (PROJECT STRUCTURE)
+## CẤU TRÚC HỆ THỐNG DỰ ÁN
 
 ```text
 website-tin-tuc/
@@ -136,9 +136,13 @@ website-tin-tuc/
 |   |   |       write-article.php            # API phóng viên tạo mới hoặc cập nhật nội dung bài viết và gửi biên tập viên duyệt
 |   |   |       
 |   |   +---upload/
-|   |   |   +---articles/                    # Các tệp hình ảnh bìa và hình ảnh minh họa được đính kèm trong bài viết
-|   |   |   |              
-|   |   |   \---avatars/                     # Các tệp hình ảnh đại diện do người dùng tải lên
+|   |   |   +---articles/
+|   |   |   |       .gitkeep                 # Tệp giữ thư mục rỗng trong Git cho thư mục chứa hình ảnh minh họa bài viết
+|   |   |   |       article_*.jpg / png / webp # Các tệp hình ảnh bìa và hình ảnh minh họa được đính kèm trong bài viết
+|   |   |   |       
+|   |   |   \---avatars/
+|   |   |           .gitkeep                 # Tệp giữ thư mục rỗng trong Git cho thư mục chứa ảnh đại diện người dùng
+|   |   |           avatar_*.jpg / webp      # Các tệp hình ảnh đại diện do người dùng tải lên
 |   |   |           
 |   |   \---user/
 |   |           change-password.php          # API người dùng tự thay đổi mật khẩu tài khoản cá nhân
