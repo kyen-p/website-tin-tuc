@@ -1,18 +1,24 @@
-/* ==============================================================================
- * MẠCH TIN - PUBLIC.CSS (Style riêng cho các trang tin tức công khai)
+/**
  * ==============================================================================
- * 1. Bố cục lưới bài viết (Hero Grid, Section Latest, Split Layout)
- * 2. Thẻ bài viết (.article-card, .article-card--row, .card-link)
- * 3. Bảng xếp hạng đọc nhiều nhất (.rank-list, .rank-item)
- * 4. Hộp chủ đề & Tag Cloud (.tag-cloud, .tag-chip)
- * 5. Cột theo dòng sự kiện (.pulse-rail)
- * 6. Trang Chi tiết bài viết (.article-header, .byline-row, .body-text, .pullquote)
- * 7. Khu vực bình luận (.comments-section, .comment-row, .comment-report-btn)
- * 8. Trang Tìm kiếm (.search-hero, .search-form, .search-highlight)
- * 9. Trang Tác giả (.author-profile, .author-avatar, .author-articles)
- * ============================================================================== */
+ * TÊN FILE: frontend/assets/css/public.css
+ * PHÂN HỆ: Giao diện Chi tiết Nội dung Công khai (Public Editorial Views Stylesheet)
+ * MÔ TẢ: Định dạng các thành phần hiển thị nội dung tin tức công khai:
+ *        - Lưới tin tức trang chủ: Hero Grid (Bài đinh tiêu điểm & bài phụ), Tin mới, Sự kiện đáng chú ý.
+ *        - Thẻ bài viết (Article Card): Thẻ đứng, thẻ ngang, liên kết bao phủ toàn thẻ.
+ *        - Bảng xếp hạng đọc nhiều nhất trong tuần & Đám mây thẻ (Tag Cloud).
+ *        - Trang Chi tiết bài viết: Tiêu đề, Dòng tác giả (Byline), Nội dung biên tập, Trích dẫn (Pullquote).
+ *        - Khu vực Bình luận: Form gửi bình luận, Cây phản hồi bình luận phân cấp.
+ *        - Trang Tìm kiếm & Trang Hồ sơ Tác giả.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/public/{index, article-detail, category, search, author}.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/css/base.css, public-layout.css
+ * ==============================================================================
+ */
 
-/* 1. BỐ CỤC LƯỚI & KHỐI TRANG CHỦ */
+/* ==============================================================================
+ * PHẦN 1: BỐ CỤC LƯỚI BÀI VIẾT & KHỐI TIÊU ĐỀ TRANG CHỦ
+ * ============================================================================== */
 .section-head {
   display: flex;
   align-items: baseline;

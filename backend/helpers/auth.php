@@ -12,6 +12,7 @@
  * ==============================================================================
  */
 
+// Bước 1: Khởi động phiên làm việc PHP Session để quản trị thông tin đăng nhập máy chủ
 session_start();
 
 /**
@@ -24,7 +25,9 @@ session_start();
  * @return void
  */
 function requireLogin() {
+    // Bước 1: Kiểm tra xem biến định danh user_id đã tồn tại trong phiên làm việc $_SESSION hay chưa
     if (!isset($_SESSION['user_id'])) {
+        // Bước 2: Từ chối phiên truy cập và phản hồi thông điệp lỗi JSON
         jsonResponse(false, null, "Bạn cần đăng nhập");
     }
 }
@@ -44,8 +47,12 @@ function requireLogin() {
  * @return void
  */
 function requireRole($roles) {
+    // Bước 1: Bắt buộc người dùng phải có trạng thái đăng nhập hợp lệ trước
     requireLogin();
+    
+    // Bước 2: Đối chiếu vai trò hiện tại trong $_SESSION với danh sách vai trò được phép truy cập
     if (!in_array($_SESSION['role'], $roles)) {
+        // Bước 3: Từ chối quyền hạn và phản hồi lỗi JSON không đủ thẩm quyền
         jsonResponse(false, null, "Không có quyền truy cập");
     }
 }

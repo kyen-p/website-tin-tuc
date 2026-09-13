@@ -20,7 +20,7 @@ const FAVORITES_API = "../../backend/api/user/favorites.php";
 // KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DANH SÁCH YÊU THÍCH TỪ BACKEND
 // ==============================================================================
 async function initFavoritesPage() {
-  // Khởi tạo Header / Footer
+  // Bước 1: Khởi tạo thanh điều hướng đầu trang (Header) và chân trang (Footer)
   if (typeof initPublicHeader === "function") {
     await initPublicHeader("favorites");
   }
@@ -29,7 +29,7 @@ async function initFavoritesPage() {
     await initPublicFooter();
   }
 
-  // Lấy danh sách yêu thích từ PHP
+  // Bước 2: Tải danh sách bài viết yêu thích từ máy chủ backend PHP
   await loadFavorites();
 }
 
@@ -338,7 +338,7 @@ async function removeFavorite(articleId) {
       showToast(result.message || "Xóa yêu thích thành công", "success");
     }
 
-    // Nếu đang ở trang favorites thì tải lại danh sách
+    // Bước 3: Nếu người dùng đang đứng tại trang Quản lý yêu thích thì tự động tải lại danh sách
     const mount = document.getElementById("favorites-mount");
 
     if (mount) {
@@ -357,13 +357,13 @@ async function removeFavorite(articleId) {
   }
 }
 
-// Khởi chạy
+// Bước 4: Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initFavoritesPage);
 } else {
   initFavoritesPage();
 }
 
-// Gắn các hàm tiện ích vào window để có thể gọi từ giao diện hoặc các module khác
+// Bước 5: Đăng ký các hàm thao tác yêu thích vào phạm vi toàn cục window để gọi từ các module khác
 window.addFavorite = addFavorite;
 window.removeFavorite = removeFavorite;

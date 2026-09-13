@@ -163,7 +163,7 @@ PHỤ THUỘC:
                       <span id="label-upload-cover">Tải ảnh bìa</span>
                     </button>
                     <button type="button" id="btn-remove-cover" class="admin-btn admin-btn--sm admin-btn--danger"
-                      style="display: none; font-size: 12.5px;" onclick="removeCoverImage()">
+                      style="display: none; flex: 1; font-size: 12.5px;" onclick="removeCoverImage()">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="3 6 5 6 21 6"></polyline>
@@ -249,7 +249,14 @@ PHỤ THUỘC:
                 <span id="save-status-hint">Trạng thái: <strong>Soạn thảo mới</strong></span>
               </div>
               <div class="admin-sticky-actions__right">
-                <a href="my-articles.html" class="admin-btn admin-btn--default">Hủy bỏ</a>
+                <a href="my-articles.html" class="admin-btn admin-btn--default">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  Hủy bỏ
+                </a>
                 <button type="button" class="admin-btn admin-btn--default" onclick="saveArticle('draft')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round">

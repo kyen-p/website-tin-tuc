@@ -252,12 +252,12 @@
 
     let filtered = [...allComments];
 
-    // Lọc theo bài viết
+    // Bước 1: Lọc dữ liệu bình luận theo bài viết được chọn
     if (articleFilter !== "all") {
       filtered = filtered.filter((c) => String(c.article_id) === String(articleFilter));
     }
 
-    // Lọc theo từ khóa tìm kiếm
+    // Bước 2: Lọc dữ liệu theo từ khóa tìm kiếm (nội dung, tên người dùng, tiêu đề bài viết)
     if (searchQuery) {
       filtered = filtered.filter((c) => {
         const user = { full_name: c.full_name, username: c.username, avatar: c.avatar };
@@ -269,7 +269,7 @@
       });
     }
 
-    // Sắp xếp
+    // Bước 3: Sắp xếp danh sách bình luận theo mốc thời gian (mới nhất hoặc cũ nhất)
     filtered.sort((a, b) => {
       const timeA = new Date(String(a.created_at).replace(" ", "T")).getTime();
       const timeB = new Date(String(b.created_at).replace(" ", "T")).getTime();
@@ -281,6 +281,7 @@
       totalBadge.textContent = filtered.length;
     }
 
+    // Bước 4: Tính toán thông số phân trang cho danh sách bình luận (Pagination: Số bản ghi, tổng số trang)
     const totalRecords = filtered.length;
     const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
     if (currentPage > totalPages) {
@@ -300,6 +301,7 @@
       return;
     }
 
+    // Bước 5: Trích xuất tập dữ liệu của trang hiện tại và dựng mã HTML các hàng trong bảng (Table Rows)
     const startIndex = (currentPage - 1) * perPage;
     const pageItems = filtered.slice(startIndex, startIndex + perPage);
 

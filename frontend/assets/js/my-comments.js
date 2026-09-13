@@ -22,16 +22,17 @@ let activeDeleteCommentId = null;
 // KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DANH SÁCH BÀI BÌNH LUẬN CỦA BẢN THÂN
 // ==============================================================================
 async function initMyCommentsPage() {
-  // Header
+  // Bước 1: Khởi tạo thanh điều hướng đầu trang (Header) đồng bộ phiên làm việc
   if (typeof initPublicHeader === "function") {
     await initPublicHeader("my-comments");
   }
 
-  // Footer
+  // Bước 2: Khởi tạo khối chân trang (Footer) thông tin tòa soạn
   if (typeof initPublicFooter === "function") {
     await initPublicFooter();
   }
 
+  // Bước 3: Gửi yêu cầu HTTP GET đến API backend my-comments.php để lấy danh sách bình luận cá nhân
   try {
     const response = await fetch(COMMENTS_API, { credentials: "include" });
     const result = await response.json();
@@ -45,7 +46,7 @@ async function initMyCommentsPage() {
     renderCommentsApiNotAvailable();
   }
 
-  // Đóng dropdown khi click ra ngoài
+  // Bước 4: Lắng nghe sự kiện click toàn cục để đóng menu thả xuống (Dropdown Action Menu) khi nhấp chuột ra ngoài vùng menu
   document.addEventListener("click", function (e) {
     if (!e.target.closest(".comment-action-menu-wrap")) {
       document

@@ -1,11 +1,23 @@
 /**
- * ============================================================================
- * LAYOUT CSS CHO KHU VỰC QUẢN TRỊ / TÒA SOẠN (Reporter, Editor, Admin)
- * Phục vụ khung Sidebar cố định + Topbar tối giản + Vùng làm việc chính
- * ============================================================================
+ * ==============================================================================
+ * TÊN FILE: frontend/assets/css/admin-layout.css
+ * PHÂN HỆ: Khung Bố cục Quản trị & Tòa soạn (Editorial & Admin Layout)
+ * MÔ TẢ: Định dạng toàn bộ không gian làm việc chuyên nghiệp cho 3 phân hệ Tòa soạn:
+ *        - Phóng viên (Reporter): Bàn làm việc, Danh sách bài viết, Soạn thảo bài viết CKEditor 5.
+ *        - Biên tập viên (Editor): Bàn làm việc, Duyệt bài viết chờ duyệt, Quản lý Chuyên mục & Thẻ Tag.
+ *        - Quản trị viên (Admin): Bàn chỉ huy tổng quan KPI, Quản lý tài khoản, Cấu hình liên hệ, Quản trị bình luận.
+ *        Bao gồm: Khung Workspace, Sidebar cố định bên trái, Topbar điều khiển trên cùng,
+ *        Bảng dữ liệu Data Table, Khối thống kê KPI, Biểu đồ Chart.js container, Hộp thoại Modal kiểm duyệt.
+ * PHẠM VI SỬ DỤNG:
+ *   - Các trang thuộc frontend/admin/*.html, frontend/editor/*.html, frontend/reporter/*.html.
+ * PHỤ THUỘC:
+ *   - frontend/assets/css/base.css
+ * ==============================================================================
  */
 
-/* 1. KHUNG TỔNG THỂ WORKSPACE */
+/* ==============================================================================
+ * PHẦN 1: KHUNG TỔNG THỂ WORKSPACE VÀ KHÔNG GIAN LÀM VIỆC CHÍNH
+ * ============================================================================== */
 .admin-workspace {
   display: flex;
   min-height: 100vh;
@@ -1018,20 +1030,32 @@
   white-space: nowrap;
 }
 
+.admin-actions-cell .admin-btn {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+  min-width: 64px;
+}
+
 .admin-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 6px 12px;
+  height: 32px;
+  padding: 0 12px;
   border-radius: 6px;
   font-size: 12.5px;
   font-weight: 600;
+  line-height: 1;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: var(--f-sans, var(--f-body));
   border: 1px solid transparent;
+  box-sizing: border-box;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 .admin-btn svg {
@@ -1751,6 +1775,14 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.admin-sticky-actions__right .admin-btn {
+  height: 38px;
+  padding: 0 16px;
+  font-size: 13px;
+  min-width: 110px;
+  box-sizing: border-box;
 }
 
 @media (max-width: 640px) {

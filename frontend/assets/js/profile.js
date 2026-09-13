@@ -28,7 +28,7 @@ let currentAvatarValue = null;
 // KHỐI 1: KHỞI TẠO TRANG, RENDER AVATAR & ĐIỀN DỮ LIỆU VÀO BIỂU MẪU
 // ==============================================================================
 async function initProfilePage() {
-  // DOM Elements
+  // Bước 1: Truy xuất các phần tử giao diện DOM (Document Object Model) trên trang hồ sơ
   const userRoleBadge = document.getElementById("userRoleBadge");
 
   const profileForm = document.getElementById("profileForm");
@@ -51,7 +51,7 @@ async function initProfilePage() {
 
   const btnViewPublicProfile = document.getElementById("btnViewPublicProfile");
 
-  // Map vai trò
+  // Bước 2: Bảng ánh xạ vai trò người dùng (Role Mapping) sang tên gọi tiếng Việt thân thiện
   const roleMap = {
     admin: "Quản trị viên",
     editor: "Biên tập viên",
@@ -434,7 +434,7 @@ async function initProfilePage() {
     });
   }
 
-  // Khởi tạo Header / Footer
+  // Bước 7: Khởi tạo thanh điều hướng đầu trang (Header) và chân trang (Footer)
   if (typeof initPublicHeader === "function") {
     await initPublicHeader("profile");
   }
@@ -443,11 +443,11 @@ async function initProfilePage() {
     await initPublicFooter();
   }
 
-  // Lấy dữ liệu thật từ PHP
+  // Bước 8: Tải dữ liệu hồ sơ thực tế từ backend PHP qua API profile.php
   await loadProfile();
 }
 
-// Khởi chạy
+// Bước 9: Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initProfilePage);
 } else {

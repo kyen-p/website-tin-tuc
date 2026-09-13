@@ -276,7 +276,7 @@ async function initCategoryPage() {
       gridArticles = filtered.slice(startIndex, startIndex + PAGE_SIZE);
     }
 
-    // Render Bài tiêu điểm (chỉ hiển thị ở trang 1)
+    // Bước 1: Render Bài tiêu điểm nổi bật (Featured Article - kích thước lớn, chỉ hiển thị ở trang 1)
     if (featuredMount) {
       if (featuredArticle) {
         featuredMount.style.display = "block";
@@ -309,7 +309,7 @@ async function initCategoryPage() {
       }
     }
 
-    // Render các bài viết còn lại trong trang
+    // Bước 2: Render các bài viết còn lại trong trang dưới dạng lưới thẻ chuẩn (Grid Cards)
     if (gridMount) {
       if (gridArticles.length === 0) {
         gridMount.innerHTML = "";
@@ -340,7 +340,7 @@ async function initCategoryPage() {
       }
     }
 
-    // Render thanh phân trang số dùng chung
+    // Bước 3: Render thanh phân trang số dùng chung (Pagination Controls)
     if (typeof renderPublicPagination === "function") {
       renderPublicPagination("category-pagination-mount", {
         currentPage,
@@ -395,13 +395,14 @@ async function initCategoryPage() {
     tagMountId: "category-tag-cloud-mount"
   });
 
-  // Render danh sách bài viết lần đầu
+  // Bước 4: Khởi tạo hiển thị danh sách bài viết theo chuyên mục lần đầu
   renderArticlesList();
 }
 
 // ==============================================================================
 // KHỐI 7: KHỞI CHẠY AN TOÀN TRANG CHUYÊN MỤC
 // ==============================================================================
+// Bước 5: Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initCategoryPage);
 } else {

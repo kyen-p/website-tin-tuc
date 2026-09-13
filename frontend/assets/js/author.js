@@ -67,10 +67,10 @@ async function initAuthorPage() {
   if (container) container.style.display = "block";
   if (notFound) notFound.style.display = "none";
 
-  // Cập nhật tiêu đề trang
+  // Cập nhật tiêu đề thẻ trang trình duyệt (Document Title)
   document.title = `${author.full_name || author.username} - Hồ sơ | Mạch Tin`;
 
-  // Helper lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong a.category)
+  // Bước 1: Hàm tiện ích trích xuất chuyên mục của bài viết (Category Helper)
   function getCategory(a) {
     return (a && a.category) || { name: "Tin tức", slug: "" };
   }
@@ -213,10 +213,11 @@ async function initAuthorPage() {
       .join("");
   }
 
-  // Render lần đầu
+  // Bước 7: Khởi tạo hiển thị danh sách bài viết lần đầu (toàn bộ bài viết, không lọc từ khóa)
   renderAuthorArticles("");
 }
 
+// Bước 8: Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initAuthorPage);
 } else {

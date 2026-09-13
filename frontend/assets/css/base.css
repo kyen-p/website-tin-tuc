@@ -1,21 +1,35 @@
-/* ==============================================================================
- * MẠCH TIN - BASE.CSS (Hệ thống thiết kế nền tảng dùng chung toàn website)
+/**
  * ==============================================================================
- * 1. Import Fonts (Fraunces, Inter, IBM Plex Mono)
- * 2. Design Tokens (:root variables: Colors, Typography, Spacing, Radius)
- * 3. CSS Reset & Base Elements
- * 4. Typography Utilities (.eyebrow, .meta, .headline-*)
- * 5. Button Components (.btn, .btn-chip, .btn-primary, .btn-ghost, .btn-brass)
- * 6. Badge & Avatar Components (.badge, .user-avatar, .avatar-badge)
- * 7. Form Controls (.field, .form-group, input, textarea, select)
- * 8. Modal Dialog Component (.modal-overlay, .modal-box)
- * 9. Common Layout Utilities (.wrap, .pulse-mark, .hidden)
- * ============================================================================== */
+ * TÊN FILE: frontend/assets/css/base.css
+ * PHÂN HỆ: Hệ thống Định dạng Nền tảng Dùng chung (Global Base Stylesheet)
+ * MÔ TẢ: Định nghĩa toàn bộ Design Tokens (Hệ thống biến màu, Kiểu chữ, Khoảng cách, Bo góc),
+ *        CSS Reset (Chuẩn hóa hiển thị đa trình duyệt), và các Thành phần giao diện cốt lõi
+ *        (Nút bấm, Huy hiệu, Ô nhập liệu Form, Hộp thoại Modal, Trình bao bọc Wrap).
+ * PHẠM VI SỬ DỤNG:
+ *   - [DÙNG CHUNG TOÀN HỆ THỐNG] Nhúng tại phần <head> của toàn bộ 100% trang HTML.
+ * PHỤ THUỘC:
+ *   - Google Fonts (Fraunces, Inter, IBM Plex Mono)
+ * MỤC LỤC PHÂN ĐOẠN:
+ *   - Phần 1: Nhúng Phông chữ Google Fonts (Fraunces, Inter, IBM Plex Mono)
+ *   - Phần 2: Khai báo Design Tokens (:root CSS Variables)
+ *   - Phần 3: CSS Reset & Chuẩn hóa Thẻ HTML Nền tảng (box-sizing, body, typography)
+ *   - Phần 4: Lớp Tiện ích Kiểu chữ Typography (.eyebrow, .meta, .headline-*)
+ *   - Phần 5: Thành phần Nút bấm Buttons (.btn, .btn-primary, .btn-ghost, .btn-brass)
+ *   - Phần 6: Thành phần Huy hiệu & Ảnh đại diện Avatar (.badge, .user-avatar)
+ *   - Phần 7: Thành phần Ô nhập liệu Form Controls (.field, input, textarea, select)
+ *   - Phần 8: Thành phần Hộp thoại Modal (.modal-overlay, .modal-box)
+ *   - Phần 9: Tiện ích Bố cục Dùng chung (.wrap, .hidden, .pulse-mark)
+ * ==============================================================================
+ */
 
-/* 1. IMPORT GOOGLE FONTS */
+/* ==============================================================================
+ * PHẦN 1: NHÚNG PHÔNG CHỮ GOOGLE FONTS (FRAUNCES, INTER, IBM PLEX MONO)
+ * ============================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
-/* 2. DESIGN TOKENS */
+/* ==============================================================================
+ * PHẦN 2: THIẾT LẬP DESIGN TOKENS (:ROOT BIẾN MÀU, TYPOGRAPHY, KÍCH THƯỚC)
+ * ============================================================================== */
 :root {
   /* Bảng màu chuẩn Mạch Tin */
   --ink: #131B2E;           /* Xanh mực đậm, màu chữ chính, nền header footer */

@@ -1,7 +1,22 @@
-/* ==============================================================================
- * MẠCH TIN - AUTH.CSS (Layout Đăng nhập & Đăng ký căn giữa chuẩn ảnh thiết kế)
- * ============================================================================== */
+/**
+ * ==============================================================================
+ * TÊN FILE: frontend/assets/css/auth.css
+ * PHÂN HỆ: Giao diện Xác thực Tài khoản (Authentication Stylesheet)
+ * MÔ TẢ: Định dạng giao diện các trang xác thực tài khoản:
+ *        - Đăng nhập (frontend/public/login.html)
+ *        - Đăng ký tài khoản độc giả mới (frontend/public/register.html)
+ *        Bao gồm: Khung trang căn giữa hoàn hảo, Khối thương hiệu Logo Mạch Tin trên đỉnh,
+ *        Thẻ Card trắng nổi bật, Hệ thống thông báo lỗi/thành công, Nút bấm & Liên kết chuyển hướng.
+ * PHẠM VI SỬ DỤNG:
+ *   - frontend/public/login.html, frontend/public/register.html
+ * PHỤ THUỘC:
+ *   - frontend/assets/css/base.css
+ * ==============================================================================
+ */
 
+/* ==============================================================================
+ * PHẦN 1: KHUNG BAO TOÀN TRANG XÁC THỰC CĂN GIỮA
+ * ============================================================================== */
 .auth-page {
   min-height: 100vh;
   margin: 0;
@@ -16,7 +31,9 @@
   box-sizing: border-box;
 }
 
-/* 1. Logo Mạch Tin đặt bên trên Card */
+/* ==============================================================================
+ * PHẦN 2: THƯƠNG HIỆU LOGO MẠCH TIN PHÍA TRÊN CARD
+ * ============================================================================== */
 .auth-top-logo {
   display: inline-flex;
   align-items: center;
