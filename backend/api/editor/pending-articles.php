@@ -53,7 +53,7 @@ if ($method === 'GET') {
         LEFT JOIN users u ON a.author_id = u.id
         LEFT JOIN categories c ON a.category_id = c.id
         WHERE a.status = 'pending'
-        ORDER BY a.created_at DESC
+        ORDER BY COALESCE(a.updated_at, a.created_at) DESC
     ";
 
     try {

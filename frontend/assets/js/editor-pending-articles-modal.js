@@ -104,9 +104,9 @@
                   <div id="modal-reporter-name" style="font-weight: 700; color: var(--ink);"></div>
                 </div>
 
-                <!-- Thời gian nộp / gửi -->
+                <!-- Thời gian duyệt / xuất bản -->
                 <div style="font-size: 12.5px;">
-                  <div id="modal-time-label" style="color: var(--muted); margin-bottom: 3px;">Thời gian nộp bài:</div>
+                  <div id="modal-time-label" style="color: var(--muted); margin-bottom: 3px;">Thời gian gửi duyệt:</div>
                   <div id="modal-submitted-time" style="font-family: var(--f-mono); color: var(--ink);"></div>
                 </div>
 
@@ -134,14 +134,13 @@
                   <!-- Container các tag của bài viết -->
                   <div id="modal-selected-tags-mount" style="min-height: 42px; padding: 8px 10px; background: #FFF; border: 1px solid var(--line-soft); border-radius: 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;"></div>
                   <div id="modal-tag-desc-hint" style="font-size: 11px; color: var(--muted); margin-top: 5px;">
-                     <em>Khi duyệt bài, nếu có tag mới do phóng viên gắn, hệ thống sẽ tự động khởi tạo vào danh mục thẻ của tòa soạn. Nếu tag không phù hợp, BTV từ chối bài và yêu cầu PV sửa.</em>
                   </div>
                 </div>
 
                 <!-- TÙY CHỌN BAN BIÊN TẬP: ĐƯA VÀO SỰ KIỆN ĐÁNG CHÚ Ý -->
                 <div id="modal-is-notable-container" class="admin-form-group" style="background: #FFFDF9; border: 1.5px solid #F3DFC1; border-radius: 6px; padding: 12px; margin-top: 2px;">
                   <label class="admin-form-label" style="font-weight: 700; font-size: 12px; color: #8F7239; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 14px;">📌</span> Luồng sự kiện:
+                    Luồng sự kiện:
                   </label>
                   <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; user-select: none; margin: 0;">
                     <input 
@@ -152,7 +151,7 @@
                     <div>
                       <span style="font-weight: 700; font-size: 13px; color: var(--ink);">Đưa vào "Sự kiện đáng chú ý"</span>
                       <p style="font-size: 11.5px; color: var(--muted); margin: 2px 0 0; line-height: 1.45;">
-                        Khi duyệt xuất bản, bài viết sẽ được đưa vào cột dòng sự kiện nổi bật do Ban Biên tập tuyển chọn ở vị trí trung tâm Trang chủ.
+                        Nếu BTV tích chọn bài viết sẽ được đưa vào "Sự kiện đáng chú ý" ở Trang chủ.
                       </p>
                     </div>
                   </label>
@@ -160,7 +159,7 @@
 
                 <!-- Ghi chú thẩm định biên tập viên -->
                 <div id="modal-guideline-note" style="background: rgba(184, 147, 79, 0.08); border: 1px solid rgba(184, 147, 79, 0.25); border-radius: 6px; padding: 10px 12px; font-size: 11.5px; color: #78350F; line-height: 1.5;">
-                  <strong>Quy chuẩn tòa soạn:</strong> Biên tập viên không tự ý sửa đổi văn bản hay tag của tác giả. Nếu bài chưa đạt yêu cầu, vui lòng chọn <strong>"Từ chối bài viết"</strong> và ghi rõ lý do để phóng viên tự hoàn thiện.
+                  <strong>Quy chuẩn tòa soạn:</strong> Nếu bài chưa đạt yêu cầu, vui lòng chọn <strong>"Từ chối bài viết"</strong> và ghi rõ lý do để góp ý cho phóng viên hoàn thiện.
                 </div>
 
               </div>
@@ -371,7 +370,7 @@
       const repNameEl = document.getElementById("modal-reporter-name");
       if (repNameEl) repNameEl.textContent = `${author.full_name || author.username} (@${author.username})`;
 
-      // Thời gian hiển thị (thời gian xuất bản nếu là admin / thời gian nộp nếu là editor)
+      // Thời gian hiển thị (thời gian xuất bản nếu là admin / thời gian gửi duyệt nếu là editor)
       const timeLabelEl = document.getElementById("modal-time-label");
       const subTimeEl = document.getElementById("modal-submitted-time");
       if (subTimeEl) {
@@ -379,8 +378,9 @@
           if (timeLabelEl) timeLabelEl.textContent = "Thời gian xuất bản:";
           subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.published_at) : article.published_at;
         } else {
-          if (timeLabelEl) timeLabelEl.textContent = "Thời gian nộp bài:";
-          subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(article.created_at) : (article.created_at || "");
+          if (timeLabelEl) timeLabelEl.textContent = "Thời gian gửi duyệt:";
+          const submissionTime = article.updated_at || article.created_at || "";
+          subTimeEl.textContent = typeof formatDateTime === "function" ? formatDateTime(submissionTime) : submissionTime;     
         }
       }
 
