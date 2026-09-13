@@ -42,7 +42,7 @@ Danh sách tài khoản được trích xuất trực tiếp từ bảng `users`
 ## BƯỚC 5: Các đường dẫn truy cập hệ thống trên trình duyệt
 Sau khi hoàn tất việc nạp cơ sở dữ liệu, dán các đường dẫn sau vào thanh địa chỉ trình duyệt để bắt đầu trải nghiệm:
 
-### 1. Dành cho tất cả user (Công khai):
+### 1. Dành cho tất cả độc giả (Công khai):
 - **Trang chủ tin tức**:
   `http://localhost/website-tin-tuc/frontend/public/index.html`
 - **Trang đăng nhập**:
@@ -80,7 +80,7 @@ Sau khi hoàn tất việc nạp cơ sở dữ liệu, dán các đường dẫn
 - **Quản lý bài viết của tôi**:
   `http://localhost/website-tin-tuc/frontend/reporter/my-articles.html`
 
-### 5. Trang cá nhân:
+### 5. Dành cho tất cả user:
 - **Thông tin tài khoản**:
   `http://localhost/website-tin-tuc/frontend/user/profile.html`
 - **Bài viết đã lưu yêu thích**:
@@ -92,7 +92,7 @@ Sau khi hoàn tất việc nạp cơ sở dữ liệu, dán các đường dẫn
 
 ---
 
-## CẤU TRÚC HỆ THỐNG DỰ ÁN (PROJECT STRUCTURE)
+## CẤU TRÚC HỆ THỐNG DỰ ÁN
 
 ```text
 website-tin-tuc/
