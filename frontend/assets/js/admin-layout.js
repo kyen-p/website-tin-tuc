@@ -199,7 +199,7 @@ function initAdminLayout(currentRole, activeKey) {
   }
 
   // Nếu user cố truy cập vào khu vực không thuộc quyền của mình
-  if (currentUser.role !== currentRole && currentUser.role !== "admin") {
+  if (currentUser.role !== currentRole) {
     const targetFolder = currentUser.role;
     window.location.href = `../${targetFolder}/dashboard.html`;
     return null;

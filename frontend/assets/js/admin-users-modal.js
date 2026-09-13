@@ -485,7 +485,7 @@
   // ==============================================================================
   // KHỐI 5: LẮNG NGHE SỰ KIỆN TOÀN CỤC & XUẤT BẢN CÁC HÀM RA WINDOW
   // ==============================================================================
-  // Lắng nghe sự kiện toàn cục cho modal
+  // Bước 1: Gắn trình lắng nghe sự kiện phím Escape và nhấp chuột bên ngoài vùng Overlay để đóng hộp thoại Modal
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
       closeModal("changeRoleModal");
@@ -500,7 +500,7 @@
     }
   });
 
-  // Xuất các hàm ra window
+  // Bước 2: Đăng ký các hàm nghiệp vụ hộp thoại vào đối tượng toàn cục window để gọi từ các module khác
   window.closeModal = closeModal;
   window.handleOpenChangeRole = handleOpenChangeRole;
   window.handleSubmitChangeRole = handleSubmitChangeRole;

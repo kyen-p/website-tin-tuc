@@ -39,10 +39,10 @@ $method = $_SERVER['REQUEST_METHOD'];
 // NGHIỆP VỤ 1: GET - TRUY VẤN DANH SÁCH BÀI VIẾT ĐÃ XUẤT BẢN / ĐANG BỊ ẨN
 // ==============================================================================
 if ($method === 'GET') {
-    $isPaginated = isset($_GET['page']);
+    $isPaginated  = isset($_GET['page']);
     $statusFilter = isset($_GET['status']) ? trim($_GET['status']) : 'all';
-    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-    $categoryId = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
+    $search       = isset($_GET['search']) ? trim($_GET['search']) : '';
+    $categoryId   = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
 
     $whereClauses = ["a.status IN ('published', 'hidden')"];
     $params = [];
@@ -69,6 +69,10 @@ if ($method === 'GET') {
 
     $whereSql = " WHERE " . implode(" AND ", $whereClauses);
 
+    // Tính tổng số bản ghi nếu yêu cầu phân trang
+    $totalRecords = 0;
+    $page = 1;
+    $limit = 10;
     if ($isPaginated) {
         $countStmt = $pdo->prepare("SELECT COUNT(*) FROM articles a 
                                     JOIN users u ON a.author_id = u.id" . $whereSql);
@@ -76,64 +80,46 @@ if ($method === 'GET') {
         $totalRecords = (int)$countStmt->fetchColumn();
 
         list($page, $limit, $offset) = getPaginationParams(10, 50);
+    }
 
-        $sql = "SELECT a.*, u.full_name AS author_name, u.username AS author_username,
-                    approver.full_name AS approver_name, approver.username AS approver_username,
-                    c.name AS category_name, c.slug AS category_slug
-                FROM articles a
-                JOIN users u ON a.author_id = u.id
-                LEFT JOIN users approver ON a.approved_by = approver.id
-                LEFT JOIN categories c ON a.category_id = c.id
-                " . $whereSql . "
-                ORDER BY a.published_at DESC
-                LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Nạp đầy đủ danh sách Thẻ Tag (tags) cho từng bài viết
-        if (!empty($articles)) {
-            $tagStmt = $pdo->prepare("
-                SELECT t.id, t.name, t.slug 
-                FROM article_tags at 
-                INNER JOIN tags t ON at.tag_id = t.id 
-                WHERE at.article_id = ?
-            ");
-            foreach ($articles as &$art) {
-                $tagStmt->execute([$art['id']]);
-                $art['tags'] = $tagStmt->fetchAll(PDO::FETCH_ASSOC);
-            }
-            unset($art);
-        }
-
-        jsonPaginatedResponse(true, $articles, $totalRecords, $page, $limit);
-    } else {
-        $stmt = $pdo->query("SELECT a.*, u.full_name AS author_name, u.username AS author_username,
+    // Câu truy vấn lấy danh sách bài viết dùng chung
+    $sql = "SELECT a.*, u.full_name AS author_name, u.username AS author_username,
                 approver.full_name AS approver_name, approver.username AS approver_username,
                 c.name AS category_name, c.slug AS category_slug
             FROM articles a
             JOIN users u ON a.author_id = u.id
             LEFT JOIN users approver ON a.approved_by = approver.id
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.status IN ('published', 'hidden')
-            ORDER BY a.published_at DESC");
-        $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            " . $whereSql . "
+            ORDER BY a.published_at DESC";
 
-        // Nạp đầy đủ danh sách Thẻ Tag (tags) cho từng bài viết để Admin xem chi tiết & sửa đè
+    if ($isPaginated) {
+        $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+    }
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Nạp đầy đủ danh sách Thẻ Tag (tags) cho từng bài viết dùng chung 1 chỗ duy nhất
+    if (!empty($articles)) {
         $tagStmt = $pdo->prepare("
             SELECT t.id, t.name, t.slug 
             FROM article_tags at 
             INNER JOIN tags t ON at.tag_id = t.id 
             WHERE at.article_id = ?
         ");
-
         foreach ($articles as &$art) {
             $tagStmt->execute([$art['id']]);
             $art['tags'] = $tagStmt->fetchAll(PDO::FETCH_ASSOC);
         }
         unset($art);
+    }
 
+    // Trả về kết quả JSON theo chuẩn tương ứng
+    if ($isPaginated) {
+        jsonPaginatedResponse(true, $articles, $totalRecords, $page, $limit);
+    } else {
         jsonResponse(true, $articles);
     }
 }

@@ -237,14 +237,14 @@
       filtered = filtered.filter(u => u.role === roleFilter);
     }
 
-    // Lọc theo Status Dropdown
+    // Bước 1: Lọc dữ liệu người dùng theo trạng thái tài khoản (Status Filter: Hoạt động hoặc Bị khóa)
     if (statusFilter === "active") {
       filtered = filtered.filter(u => u.status !== "locked" && u.status !== "inactive");
     } else if (statusFilter === "locked") {
       filtered = filtered.filter(u => u.status === "locked" || u.status === "inactive");
     }
 
-    // Lọc theo Tìm kiếm
+    // Bước 2: Lọc dữ liệu theo từ khóa tìm kiếm (họ tên, username, email, tiểu sử)
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(u =>
@@ -255,7 +255,7 @@
       );
     }
 
-    // Sắp xếp
+    // Bước 3: Sắp xếp danh sách người dùng theo tiêu chí được chọn (thời gian tạo, họ tên)
     filtered.sort((a, b) => {
       if (sortField === "created_at") {
         const timeA = new Date(String(a.created_at || "").replace(" ", "T")).getTime() || 0;
@@ -269,18 +269,19 @@
       return 0;
     });
 
-    // Cập nhật số đếm
+    // Bước 4: Cập nhật huy hiệu hiển thị tổng số tài khoản người dùng
     if (countBadge) {
       countBadge.textContent = `${filtered.length} người dùng`;
     }
 
+    // Bước 5: Tính toán thông số phân trang cho danh sách người dùng (Pagination)
     const totalRecords = filtered.length;
     const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
     if (currentPage > totalPages) {
       currentPage = totalPages;
     }
 
-    // Trạng thái trống
+    // Bước 6: Hiển thị giao diện trạng thái trống (Empty State) khi không có người dùng phù hợp
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -304,6 +305,7 @@
       return;
     }
 
+    // Bước 7: Trích xuất tập dữ liệu cho trang hiện tại và dựng mã HTML các dòng người dùng (Table Rows)
     const startIndex = (currentPage - 1) * perPage;
     const pageItems = filtered.slice(startIndex, startIndex + perPage);
 

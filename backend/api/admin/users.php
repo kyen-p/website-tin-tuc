@@ -27,14 +27,15 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 
+// Kiểm tra quyền hạn Quản trị viên cho toàn bộ tệp API
+requireRole(['admin']);
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 // ==============================================================================
 // NGHIỆP VỤ 1: GET - LẤY DANH SÁCH TOÀN BỘ NGƯỜI DÙNG TRONG HỆ THỐNG
 // ==============================================================================
 if ($method === 'GET') {
-    requireRole(['admin']);
-
     $isPaginated = isset($_GET['page']);
     $role = isset($_GET['role']) ? trim($_GET['role']) : '';
     $status = isset($_GET['status']) ? trim($_GET['status']) : '';
@@ -65,30 +66,32 @@ if ($method === 'GET') {
 
     $whereSql = !empty($whereClauses) ? " WHERE " . implode(" AND ", $whereClauses) : "";
 
+    $totalRecords = 0;
+    $page = 1;
+    $limit = 10;
     if ($isPaginated) {
         $countStmt = $pdo->prepare("SELECT COUNT(*) FROM users" . $whereSql);
         $countStmt->execute($params);
         $totalRecords = (int)$countStmt->fetchColumn();
 
         list($page, $limit, $offset) = getPaginationParams(10, 50);
+    }
 
-        $sql = "SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, created_at 
-                FROM users" . $whereSql . " 
-                ORDER BY created_at DESC 
-                LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $sql = "SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, created_at 
+            FROM users" . $whereSql . " 
+            ORDER BY created_at DESC";
 
+    if ($isPaginated) {
+        $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+    }
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($isPaginated) {
         jsonPaginatedResponse(true, $users, $totalRecords, $page, $limit);
     } else {
-        $sql = "SELECT id, username, email, full_name, avatar, bio, role, status, lock_reason, locked_at, created_at 
-                FROM users" . $whereSql . " 
-                ORDER BY created_at DESC";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         jsonResponse(true, $users);
     }
 }
@@ -97,7 +100,6 @@ if ($method === 'GET') {
 // NGHIỆP VỤ 2: PUT - PHÂN VAI TRÒ HOẶC KHÓA/MỞ KHÓA TÀI KHOẢN
 // ==============================================================================
 if ($method === 'PUT') {
-    requireRole(['admin']);
     $input = json_decode(file_get_contents('php://input'), true);
     $userId = isset($input['user_id']) ? (int)$input['user_id'] : 0;
     $currentAdminId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;

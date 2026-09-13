@@ -27,49 +27,47 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 
+// Kiểm tra quyền hạn Quản trị viên cho toàn bộ tệp API
+requireRole(['admin']);
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 // ==============================================================================
 // NGHIỆP VỤ 1: GET - LẤY TOÀN BỘ BÌNH LUẬN TRONG HỆ THỐNG KÈM BÀI VIẾT & TÁC GIẢ (HỖ TRỢ PHÂN TRANG)
 // ==============================================================================
 if ($method === 'GET') {
-    requireRole(['admin']);
+    $isPaginated = isset($_GET['page']) || isset($_GET['limit']);
 
-    // Hỗ trợ phân trang nếu có tham số page hoặc limit
-    if (isset($_GET['page']) || isset($_GET['limit'])) {
+    $baseSql = "SELECT c.*, u.full_name, u.username, u.avatar, a.title AS article_title, a.slug AS article_slug 
+                FROM comments c 
+                JOIN users u ON c.user_id = u.id 
+                JOIN articles a ON c.article_id = a.id 
+                ORDER BY c.created_at DESC";
+
+    if ($isPaginated) {
         list($page, $limit, $offset) = getPaginationParams(10, 50);
 
         $countStmt = $pdo->query("SELECT COUNT(*) FROM comments");
         $totalRecords = (int)$countStmt->fetchColumn();
 
-        $stmt = $pdo->prepare("SELECT c.*, u.full_name, u.username, u.avatar, a.title AS article_title, a.slug AS article_slug 
-            FROM comments c 
-            JOIN users u ON c.user_id = u.id 
-            JOIN articles a ON c.article_id = a.id 
-            ORDER BY c.created_at DESC 
-            LIMIT ? OFFSET ?");
+        $stmt = $pdo->prepare($baseSql . " LIMIT ? OFFSET ?");
         $stmt->bindValue(1, $limit, PDO::PARAM_INT);
         $stmt->bindValue(2, $offset, PDO::PARAM_INT);
         $stmt->execute();
         $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         jsonPaginatedResponse(true, $comments, $totalRecords, $page, $limit);
+    } else {
+        $stmt = $pdo->query($baseSql);
+        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        jsonResponse(true, $comments);
     }
-
-    $stmt = $pdo->query("SELECT c.*, u.full_name, u.username, u.avatar, a.title AS article_title, a.slug AS article_slug 
-        FROM comments c 
-        JOIN users u ON c.user_id = u.id 
-        JOIN articles a ON c.article_id = a.id 
-        ORDER BY c.created_at DESC");
-    $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    jsonResponse(true, $comments);
 }
 
 // ==============================================================================
 // NGHIỆP VỤ 2: DELETE - XÓA BÌNH LUẬN VI PHẠM
 // ==============================================================================
 if ($method === 'DELETE') {
-    requireRole(['admin']);
     $input = json_decode(file_get_contents('php://input'), true);
     if (empty($input['comment_id'])) {
         jsonResponse(false, null, "Thiếu ID bình luận");

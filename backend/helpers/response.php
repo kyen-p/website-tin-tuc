@@ -22,8 +22,13 @@
  * @return void (Hàm xuất chuỗi JSON và dừng chương trình ngay lập tức)
  */
 function jsonResponse($success, $data = null, $message = "") {
+    // Bước 1: Thiết lập tiêu đề giao thức HTTP Content-Type định dạng dữ liệu JSON
     header('Content-Type: application/json');
+    
+    // Bước 2: Mã hóa mảng dữ liệu thành chuỗi JSON chuẩn và xuất ra luồng đầu ra
     echo json_encode(["success" => $success, "message" => $message, "data" => $data]);
+    
+    // Bước 3: Dừng thực thi kịch bản máy chủ PHP ngay lập tức
     exit;
 }
 
@@ -37,9 +42,16 @@ function jsonResponse($success, $data = null, $message = "") {
  * @return array [$page, $limit, $offset]
  */
 function getPaginationParams($defaultLimit = 10, $maxLimit = 50) {
+    // Bước 1: Chuẩn hóa số thứ tự trang hiện tại (tối thiểu là trang 1)
     $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    
+    // Bước 2: Chuẩn hóa số lượng bản ghi hiển thị trên một trang (ràng buộc từ 1 đến giới hạn tối đa)
     $limit = isset($_GET['limit']) ? min($maxLimit, max(1, (int)$_GET['limit'])) : $defaultLimit;
+    
+    // Bước 3: Tính toán độ lệch bản ghi OFFSET cho câu lệnh truy vấn CSDL
     $offset = ($page - 1) * $limit;
+    
+    // Bước 4: Trả về bộ ba tham số phân trang [$page, $limit, $offset]
     return [$page, $limit, $offset];
 }
 
@@ -57,8 +69,13 @@ function getPaginationParams($defaultLimit = 10, $maxLimit = 50) {
  * @return void
  */
 function jsonPaginatedResponse($success, $data, $totalRecords, $page, $limit, $message = "") {
+    // Bước 1: Thiết lập tiêu đề giao thức HTTP Content-Type định dạng dữ liệu JSON
     header('Content-Type: application/json');
+    
+    // Bước 2: Tính toán tổng số trang dựa trên tổng số bản ghi và kích thước trang
     $totalPages = $limit > 0 ? (int)ceil($totalRecords / $limit) : 1;
+    
+    // Bước 3: Đóng gói cấu trúc phản hồi kèm trường pagination chuẩn mực và xuất JSON
     echo json_encode([
         "success" => $success,
         "message" => $message,
@@ -70,5 +87,7 @@ function jsonPaginatedResponse($success, $data, $totalRecords, $page, $limit, $m
             "total_pages" => $totalPages
         ]
     ]);
+    
+    // Bước 4: Dừng thực thi kịch bản máy chủ PHP ngay lập tức
     exit;
 }

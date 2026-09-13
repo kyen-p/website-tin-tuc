@@ -53,12 +53,12 @@ async function initSearchPage() {
     console.error("Lỗi khi tải dữ liệu tìm kiếm từ backend", error);
   }
 
-  // Helper lấy tác giả (đã được API nhúng sẵn trong article.author)
+  // Bước 1: Hàm tiện ích trích xuất thông tin tác giả bài viết (Author Helper - đã được API nhúng sẵn trong article.author)
   function getAuthor(article) {
     return (article && article.author) || { full_name: "Ban Biên Tập", id: 1 };
   }
 
-  // DOM Elements
+  // Bước 2: Truy xuất các phần tử giao diện DOM (Document Object Model) trên trang tìm kiếm
   const searchForm = document.getElementById("searchForm");
   const searchInput = document.getElementById("searchInput");
   const searchSummaryText = document.getElementById("searchSummaryText");
@@ -68,12 +68,12 @@ async function initSearchPage() {
   const hotTagsMount = document.getElementById("hotTagsMount");
   const breadcrumbCurrent = document.getElementById("breadcrumb-current");
 
-  // Điền sẵn từ khóa vào ô search input
+  // Bước 3: Điền sẵn từ khóa vào ô nhập liệu tìm kiếm (Search Input) từ tham số URL
   if (searchInput) {
     searchInput.value = queryParam;
   }
 
-  // 4. Render các thành phần tĩnh & danh mục
+  // Bước 4: Khởi tạo các thành phần tĩnh, danh sách lựa chọn chuyên mục và danh sách thẻ Tag nóng
   setupCategoryOptions();
   renderHotTags();
 

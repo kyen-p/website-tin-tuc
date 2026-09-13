@@ -1,15 +1,25 @@
-/* ==============================================================================
- * MẠCH TIN - PUBLIC-LAYOUT.CSS
+/**
  * ==============================================================================
- * Khung sườn dùng chung cho khu vực công khai (public/) và cá nhân độc giả (user/):
- * 1. Top Ticker (Thanh tin nóng chạy ngang @keyframes ticker)
- * 2. Header công khai (Header Utility bar, Header Main, Logo, Nav, Category bar)
- * 3. User Avatar Menu & Notifications Bell (2 trạng thái Guest / Logged in User)
- * 4. Breadcrumb Navigation
- * 5. Footer 3 cột chuẩn thông tin tòa soạn
- * ============================================================================== */
+ * TÊN FILE: frontend/assets/css/public-layout.css
+ * PHÂN HỆ: Khung Giao diện Công khai & Độc giả (Public & User Chrome Layout)
+ * MÔ TẢ: Định dạng toàn bộ các khối giao diện bao quanh dùng chung cho các trang Công khai
+ *        (frontend/public/*) và trang Cá nhân độc giả (frontend/user/*):
+ *        - Top Ticker: Dải tin nóng chạy chữ chuyển động ngang (CSS Keyframes Animation).
+ *        - Site Header: Thanh tiện ích trên cùng, thương hiệu Logo Mạch Tin, thanh điều hướng,
+ *          và dải danh mục chuyên mục ngang.
+ *        - Menu Người dùng & Chuông thông báo: Hiển thị trạng thái Khách vãng lai / Đã đăng nhập.
+ *        - Breadcrumb Navigation: Thanh điều hướng chỉ mục phân cấp trang.
+ *        - Site Footer: Chân trang 3 cột thông tin tòa soạn, giấy phép xuất bản, liên hệ.
+ * PHẠM VI SỬ DỤNG:
+ *   - Các trang thuộc frontend/public/*.html và frontend/user/*.html.
+ * PHỤ THUỘC:
+ *   - frontend/assets/css/base.css
+ * ==============================================================================
+ */
 
-/* 1. TOP TICKER TIN NÓNG */
+/* ==============================================================================
+ * PHẦN 1: DẢI TIN NÓNG CHẠY NGANG (TOP TICKER TICKER-INNER)
+ * ============================================================================== */
 .ticker {
   background-color: var(--ink);
   color: var(--paper);

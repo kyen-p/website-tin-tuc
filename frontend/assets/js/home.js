@@ -42,28 +42,28 @@ async function initHomePage() {
   // ==============================================================================
   // KHỐI 2: CÁC TIỆN ÍCH DỰNG THẺ BÀI VIẾT (CARD HELPERS & FORMATTERS)
   // ==============================================================================
-  // Helper lấy chuyên mục của 1 bài viết (đã được API nhúng sẵn trong a.category)
+  // Bước 1: Hàm tiện ích truy xuất chuyên mục của bài viết (Category Helper - đã được API nhúng sẵn trong a.category)
   function getCategory(a) {
     return a.category || { name: "Tin tức", slug: "" };
   }
 
-  // Helper lấy tác giả của 1 bài viết (đã được API nhúng sẵn trong a.author)
+  // Bước 2: Hàm tiện ích truy xuất tác giả bài viết (Author Helper - đã được API nhúng sẵn trong a.author)
   function getAuthor(a) {
     return a.author || { full_name: "Ban Biên Tập", id: "" };
   }
 
-  // Bài viết trả về từ API đã là bài đã xuất bản và có published_at
+  // Bước 3: Lọc danh sách các bài viết đã chính thức xuất bản (Published Articles)
   const publishedArticles = allArticles.filter((a) => a.published_at);
 
-  // Mốc thời gian hệ thống
+  // Mốc thời gian hệ thống đồng bộ toàn ứng dụng
   const now = getSystemTime();
 
-  // Helper chuẩn hóa định dạng số lượt đọc
+  // Bước 4: Hàm tiện ích trích xuất và chuẩn hóa số lượt xem của bài viết
   function getViews(a) {
     return typeof getArticleViews === "function" ? getArticleViews(a) : Number(a.view_count || 0);
   }
 
-  // Helper render dòng meta chuẩn đồng bộ: Tác giả · Thời gian · Lượt đọc
+  // Bước 5: Hàm tiện ích dựng chuỗi HTML dòng thông tin bổ trợ (Metadata Byline: Tác giả · Thời gian · Lượt đọc)
   function renderCardMeta(a, author) {
     const viewsFormatted = formatNumber(getViews(a));
     const authorUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(author) : `author.html?username=${encodeURIComponent(author.username || author.id)}`;

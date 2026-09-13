@@ -605,13 +605,13 @@ async function confirmDeleteDetailComment() {
     showToast("Đã xóa bình luận thành công!", "success");
     closeDeleteDetailCommentModal();
 
-    // Re-render comments
+    // Bước 1: Loại bỏ trực tiếp phần tử dòng bình luận bị xóa khỏi cây cấu trúc giao diện DOM (Document Object Model)
     const rowEl = document.getElementById(`comment-${activeDeleteDetailCommentId}`);
     if (rowEl) {
       rowEl.remove();
     }
     
-    // Cập nhật lại số đếm
+    // Bước 2: Cập nhật giảm số lượng hiển thị tổng số bình luận trên giao diện
     const countMount = document.getElementById("comment-count-mount");
     if (countMount) {
       const current = parseInt(countMount.textContent) || 1;

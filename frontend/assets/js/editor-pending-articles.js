@@ -199,13 +199,13 @@
       return tB - tA;
     });
 
-    // Cập nhật số lượng
+    // Bước 1: Cập nhật huy hiệu số lượng bài viết chờ duyệt trên giao diện
     const countBadge = document.getElementById("list-count-badge");
     if (countBadge) {
       countBadge.textContent = `${filtered.length} bài`;
     }
 
-    // Trạng thái rỗng
+    // Bước 2: Hiển thị giao diện trạng thái trống (Empty State) khi không có bài viết thỏa mãn
     if (filtered.length === 0) {
       let emptyMsg = "Hiện tại không có bài viết nào đang chờ duyệt";
       if (currentSearchQuery) {
@@ -235,7 +235,7 @@
       return;
     }
 
-    // Tính toán phân trang
+    // Bước 3: Tính toán các chỉ số phân trang (Pagination: Tổng số trang, phạm vi dòng dữ liệu)
     const totalRecords = filtered.length;
     const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
     if (currentPage > totalPages) {
@@ -245,10 +245,10 @@
     const startIndex = (currentPage - 1) * perPage;
     const pageItems = filtered.slice(startIndex, startIndex + perPage);
 
-    // Render các dòng bảng của trang hiện tại
+    // Bước 4: Hiển thị danh sách các dòng dữ liệu bảng (Table Rows) cho trang hiện tại
     tbody.innerHTML = pageItems.map((article) => renderArticleRow(article)).join("");
 
-    // Render thanh phân trang chuẩn bảng quản trị
+    // Bước 5: Render thanh điều khiển phân trang tiêu chuẩn bảng quản trị (Table Pagination)
     if (typeof renderTablePagination === "function") {
       renderTablePagination("editor-pending-pagination", {
         currentPage,
