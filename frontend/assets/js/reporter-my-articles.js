@@ -280,7 +280,6 @@
 
         const rejectionHtml = (art.status === "rejected" && (art.rejection_reason || "").trim())
           ? `<div style="margin-top: 7px; display: inline-flex; align-items: flex-start; gap: 6px; padding: 5px 10px; background: #FEF2F2; border-left: 3px solid #EF4444; border-radius: 4px; font-size: 12px; color: #991B1B; line-height: 1.4;">
-              <svg style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
               <span><strong>Ban Biên tập phản hồi:</strong> ${escapeHtml(art.rejection_reason)}</span>
             </div>`
           : "";
