@@ -136,13 +136,9 @@ website-tin-tuc/
 |   |   |       write-article.php            # API phóng viên tạo mới hoặc cập nhật nội dung bài viết và gửi biên tập viên duyệt
 |   |   |       
 |   |   +---upload/
-|   |   |   +---articles/
-|   |   |   |       .gitkeep                 # Tệp giữ thư mục rỗng trong Git cho thư mục chứa hình ảnh minh họa bài viết
-|   |   |   |       article_*.jpg / png / webp # Các tệp hình ảnh bìa và hình ảnh minh họa được đính kèm trong bài viết
-|   |   |   |       
-|   |   |   \---avatars/
-|   |   |           .gitkeep                 # Tệp giữ thư mục rỗng trong Git cho thư mục chứa ảnh đại diện người dùng
-|   |   |           avatar_*.jpg / webp      # Các tệp hình ảnh đại diện do người dùng tải lên
+|   |   |   +---articles/                    # Các tệp hình ảnh bìa và hình ảnh minh họa được đính kèm trong bài viết
+|   |   |   |              
+|   |   |   \---avatars/                     # Các tệp hình ảnh đại diện do người dùng tải lên
 |   |   |           
 |   |   \---user/
 |   |           change-password.php          # API người dùng tự thay đổi mật khẩu tài khoản cá nhân
