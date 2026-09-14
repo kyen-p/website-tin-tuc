@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
         
         if (!result.success || !result.data) {
-          mount.innerHTML = `<div class="admin-card" style="padding: 24px; text-align: center; color: var(--muted);">Không thể tải dữ liệu thống kê từ máy chủ.</div>`;
+          mount.innerHTML = `<div class="admin-card" style="padding: 24px; text-align: center; color: var(--muted);">Không có dữ liệu thống kê.</div>`;
           return;
         }
 
