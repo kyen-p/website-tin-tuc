@@ -1,40 +1,35 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/common.js
- * PHÂN HỆ: Thư viện Tiện ích & Khung Giao diện dùng chung (Shared Frontend Core & Chrome Utilities)
- * MÔ TẢ: Cung cấp toàn bộ các tiện ích nền tảng và hàm dùng chung cho toàn bộ giao diện:
- *        1. Auth & Session Helper: Quản lý phiên PHP Session, lấy user hiện tại, đăng xuất, kiểm tra quyền truy cập.
- *        2. API URL Resolver & Safe Fetch: Chuẩn hóa đường dẫn tương đối gọi API backend và phân tích JSON an toàn.
- *        3. Formatting & Security Utilities: Tạo slug SEO, URL bài viết/tác giả, chống XSS, định dạng ngày tháng tiếng Việt, số liệu.
- *        4. Asset & Media Resolvers: Chuẩn hóa đường dẫn hình ảnh, render ảnh bìa bài viết với fallback placeholder, avatar người dùng.
- *        5. Toast Notification: Trình bao bọc hiển thị thông báo Toast chuẩn màu sắc Pastel (Thành công, Thông tin, Cảnh báo, Lỗi).
- *        6. Public Chrome Renderers: Tự động khởi tạo Header, Ticker tin tức nóng, Footer thông tin tòa soạn và Sidebar đọc nhiều / Tags nổi bật.
- * PHẠM VI SỬ DỤNG:
- *   - [DÙNG CHUNG TOÀN HỆ THỐNG] Tất cả các trang HTML thuộc phân hệ Public, User, Reporter, Editor, Admin.
- * PHỤ THUỘC (APIs):
- *   - backend/api/auth/me.php
- *   - backend/api/auth/logout.php
- *   - backend/api/public/categories.php
- *   - backend/api/public/articles.php
- *   - backend/api/admin/contact-config.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/common.js
+PHÂN HỆ: Thư viện Tiện ích dùng chung (Frontend Utilities)
+MÔ TẢ: Cung cấp các hàm bổ trợ dùng chung cho toàn bộ giao diện website:
+       1. Quản lý phiên đăng nhập: Lấy thông tin user hiện tại từ PHP Session, đăng xuất, kiểm tra quyền truy cập.
+       2. Xử lý API: Tự động điều chỉnh đường dẫn tương đối (resolveApiUrl) và gửi request an toàn (safeFetchJson).
+       3. Tiện ích chuỗi & Bảo mật: Tạo slug SEO, chống tấn công XSS, định dạng ngày tháng tiếng Việt.
+       4. Xử lý hình ảnh: Chuẩn hóa đường dẫn upload, hiển thị ảnh bìa (kèm khung placeholder dự phòng), avatar người dùng.
+       5. Thông báo nhanh: Hàm showToast hiển thị thông báo với 4 trạng thái (thành công, cảnh báo, lỗi, thông tin).
+       6. Khung giao diện tự động: Render Header, Ticker tin nóng, Footer và Sidebar đọc nhiều / thẻ tag.
+       7. Phân trang: Hỗ trợ phân trang danh sách tin công khai và phân trang bảng dữ liệu Admin.
+PHẠM VI SỬ DỤNG:
+       - Được nhúng trong tất cả các file HTML (Public, User, Reporter, Editor, Admin).
+PHỤ THUỘC:
+       - Thư viện Toastify JS (hiển thị thông báo)
+       - Các API: auth/me.php, auth/logout.php, public/categories.php, public/articles.php, admin/contact-config.php
+==============================================================================
+*/
 
 /**
- * Lấy mốc thời gian hệ thống dùng chung
+ * Lấy mốc thời gian hệ thống
  */
 function getSystemTime() {
   return new Date();
 }
 
-// ==============================================================================
-// PHẦN 1: AUTH & SESSION HELPER (KẾT NỐI PHP SESSION & PHÂN QUYỀN TRUY CẬP)
-// ==============================================================================
+// 1. Quản lý phiên đăng nhập và phân quyền
 
 /**
- * Chuẩn hóa đường dẫn gọi API backend PHP dựa trên thư mục hiện tại của trang.
- * Toàn bộ trang frontend nằm ở độ sâu frontend/{public|user|admin|reporter|editor}/*.html
- * nên đường dẫn tới backend/api/ luôn là "../../backend/api/" từ các trang đó.
+ * Tự động chuẩn hóa đường dẫn gọi API backend PHP dựa theo vị trí thư mục của trang web
+ * (VD: từ /frontend/public/ gọi về ../../backend/api/...)
  */
 function resolveApiUrl(apiPath) {
   const cleanPath = String(apiPath).replace(/^\/+/, "");
@@ -52,8 +47,7 @@ function resolveApiUrl(apiPath) {
 window.resolveApiUrl = resolveApiUrl;
 
 /**
- * Phân tích chuỗi JSON an toàn: nếu phản hồi là mã PHP thô (khi chạy không có server PHP)
- * hoặc trang lỗi HTML thì trả về null thay vì ném ngoại lệ làm crash ứng dụng.
+ * Chuyển chuỗi thành JSON an toàn, tránh lỗi crash trang khi backend trả về lỗi máy chủ hoặc chuỗi rỗng
  */
 function safeJsonParse(text) {
   if (!text || typeof text !== "string") return null;
@@ -70,7 +64,7 @@ function safeJsonParse(text) {
 window.safeJsonParse = safeJsonParse;
 
 /**
- * Gọi API trả về JSON an toàn: tự động phân tích và xử lý khi backend trả về JSON hoặc rỗng.
+ * Gửi fetch request và nhận dữ liệu JSON an toàn
  */
 async function safeFetchJson(url, options) {
   try {
@@ -86,18 +80,13 @@ async function safeFetchJson(url, options) {
 }
 window.safeFetchJson = safeFetchJson;
 
-// Cache trong bộ nhớ (chỉ tồn tại trong 1 lần tải trang) để tránh gọi lại me.php
-// nhiều lần khi nhiều đoạn code trên cùng 1 trang đều gọi getCurrentUser().
+// Biến lưu tạm thông tin user trong một phiên tải trang để tránh gửi lặp lại nhiều request me.php
 let __machtinCurrentUserCache = undefined;
 
 /**
- * Lấy người dùng hiện tại đang đăng nhập (hoặc null nếu là Guest).
- * Nguồn dữ liệu duy nhất: PHP Session, thông qua backend/api/auth/me.php.
- *
- * LƯU Ý: hàm này được giữ NGUYÊN chữ ký đồng bộ (không phải Promise) vì rất nhiều
- * trang/màn hình trong toàn bộ dự án (kể cả các trang ngoài phạm vi Cặp 1) đang gọi
- * getCurrentUser() và dùng kết quả ngay lập tức, không await. Để không phải sửa
- * hàng loạt file ngoài phạm vi Cặp 1, hàm dùng XMLHttpRequest đồng bộ gọi me.php.
+ * Lấy thông tin tài khoản đang đăng nhập (hoặc null nếu là khách vãng lai).
+ * Dữ liệu được xác thực trực tiếp từ PHP Session thông qua API backend/api/auth/me.php.
+ * Sử dụng XMLHttpRequest đồng bộ để các file JS khác có thể lấy user ngay lập tức mà không cần chuyển sang hàm bất đồng bộ (async/await).
  */
 function getCurrentUser() {
   if (__machtinCurrentUserCache !== undefined) {
@@ -105,7 +94,7 @@ function getCurrentUser() {
   }
   try {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", resolveApiUrl("auth/me.php"), false); // false = đồng bộ
+    xhr.open("GET", resolveApiUrl("auth/me.php"), false); // Gửi đồng bộ
     xhr.send(null);
     if (xhr.status >= 200 && xhr.status < 300) {
       const res = safeJsonParse(xhr.responseText);
@@ -121,33 +110,23 @@ function getCurrentUser() {
 window.getCurrentUser = getCurrentUser;
 
 /**
- * Theo yêu cầu Cặp 1: phiên đăng nhập giờ hoàn toàn do PHP Session quản lý
- * (xem auth/login.php), KHÔNG còn cơ chế lưu user vào localStorage để giả lập
- * đăng nhập ở phía frontend nữa.
- *
- * Hàm này được GIỮ LẠI dưới dạng no-op (thay vì xóa hẳn) chỉ vì một số màn hình
- * thuộc phạm vi Cặp 2/Cặp 3 (vd: admin-layout.js, profile.js) hiện vẫn gọi trực
- * tiếp setCurrentUser(...) ngoài luồng auth thật - xóa hẳn sẽ làm crash các trang
- * đó. Cặp 1 không tự ý sửa các file đó nên giữ hàm rỗng để đảm bảo tương thích.
+ * Cập nhật cache người dùng khi có thay đổi thông tin (như cập nhật họ tên, avatar)
  */
 function setCurrentUser(user) {
-  // Cập nhật bộ nhớ cache người dùng hiện tại để các hàm như getCurrentUser() và initPublicHeader()
-  // phản ánh ngay lập tức dữ liệu mới mà không cần tải lại trang.
   __machtinCurrentUserCache = user !== undefined ? user : undefined;
 }
 window.setCurrentUser = setCurrentUser;
 
 /**
- * Đăng xuất tài khoản: gọi API hủy PHP Session, sau đó mới điều hướng.
+ * Đăng xuất: gọi API hủy Session PHP trên máy chủ, xóa cache và chuyển hướng trang
  */
 function logout(redirectUrl) {
   fetch(resolveApiUrl("auth/logout.php"), { method: "POST", credentials: "include" })
     .catch((error) => {
-      console.error("Lỗi khi gọi API đăng xuất", error);
+      console.error("Lỗi khi gọi API đăng xuất:", error);
     })
     .then(() => {
-      // Buộc lần gọi getCurrentUser() kế tiếp (ở trang sau khi điều hướng) phải
-      // hỏi lại backend thay vì dùng cache của phiên cũ.
+      // Xóa cache user hiện tại
       __machtinCurrentUserCache = undefined;
 
       showToast("Đăng xuất thành công!", "success");
@@ -170,7 +149,7 @@ function logout(redirectUrl) {
 
 /**
  * Kiểm tra phân quyền truy cập trang
- * @param {Array<string>} allowedRoles - Danh sách vai trò được phép vào (vd: ['admin'], ['editor'])
+ * @param {Array<string>} allowedRoles - Danh sách vai trò được phép (ví dụ: ['admin'], ['editor'])
  */
 function checkAuth(allowedRoles) {
   const user = getCurrentUser();
@@ -188,8 +167,7 @@ function checkAuth(allowedRoles) {
   return user;
 }
 
-// 3. FORMATTING & SECURITY UTILITIES
-// ==============================================================================
+// 2. Tiện ích chuỗi, bảo mật và định dạng
 
 /**
  * Hàm chuyển đổi chuỗi tiếng Việt thành Slug chuẩn SEO & URL an toàn
@@ -290,31 +268,6 @@ function getArticleViews(article) {
   return Number(article.view_count || 0);
 }
 window.getArticleViews = getArticleViews;
-
-/**
- * Helper lấy đối tượng chuyên mục của bài viết chuẩn hóa
- */
-function getArticleCategory(article, categories = []) {
-  if (!article) return { name: "Tin tức", slug: "tin-tuc" };
-  if (article.category && typeof article.category === "object") return article.category;
-  const cat = Array.isArray(categories) ? categories.find((c) => String(c.id) === String(article.category_id)) : null;
-  return cat || { name: article.category_name || "Tin tức", slug: article.category_slug || "tin-tuc" };
-}
-window.getArticleCategory = getArticleCategory;
-
-/**
- * Helper lấy thông tin tác giả bài viết chuẩn hóa
- */
-function getArticleAuthor(article) {
-  if (!article) return { full_name: "Ban Biên Tập", username: "banbientap" };
-  if (article.author && typeof article.author === "object") return article.author;
-  return {
-    full_name: article.author_name || article.author || "Ban Biên Tập",
-    username: article.author_username || "banbientap",
-    avatar: article.author_avatar || ""
-  };
-}
-window.getArticleAuthor = getArticleAuthor;
 
 /**
  * Định dạng ngày đăng bài chuẩn toàn hệ thống Mạch Tin:
@@ -481,32 +434,29 @@ function renderUserAvatar(user, customClass) {
   return `<div class="${className}">${initials}</div>`;
 }
 
-// ==============================================================================
-// 4. TOAST NOTIFICATION (PASTEL CARDS THEME - CHUẨN MẪU HÌNH ẢNH)
-// ==============================================================================
+// 3. Thông báo nhanh (Toast notification)
 
 /**
- * Hiển thị thông báo Toast dạng thẻ mềm Pastel theo phong cách chuẩn mực:
- * - 4 Trạng thái: Success (Xanh lá), Info (Xanh lam), Warning (Vàng ấm), Error (Đỏ hồng)
- * - Có Icon tròn, Tiêu đề in đậm, Nội dung mô tả và Nút đóng ✕
- * - Tự động biến mất sau 3.5 giây
+ * Hiển thị thông báo nhanh (Toast notification):
+ * - Hỗ trợ 4 trạng thái: success (thành công), info (thông tin), warning (cảnh báo), error (lỗi)
+ * - Tự động ẩn sau 3.5 giây
  * 
  * @param {string} message - Nội dung thông báo
- * @param {'success'|'info'|'warning'|'error'} type - Loại trạng thái
- * @param {string} [title] - Tiêu đề tùy chỉnh (nếu không truyền sẽ dùng mặc định theo type)
- * @param {number} [duration=3500] - Thời gian hiển thị (ms)
+ * @param {'success'|'info'|'warning'|'error'} type - Loại thông báo
+ * @param {string} [title] - Tiêu đề (nếu không truyền sẽ lấy mặc định)
+ * @param {number} [duration=3500] - Thời gian hiển thị tính bằng mili-giây
  */
 function showToast(message, type = "info", title = null, duration = 3500) {
   // Chuẩn hóa loại trạng thái
   const validTypes = ["success", "info", "warning", "error"];
   const finalType = validTypes.includes(type) ? type : "info";
 
-  // Tiêu đề mặc định
+  // Tiêu đề mặc định tiếng Việt
   const defaultTitles = {
-    success: "Success",
-    info: "Info",
-    warning: "Warning",
-    error: "Error"
+    success: "Thành công",
+    info: "Thông báo",
+    warning: "Cảnh báo",
+    error: "Lỗi"
   };
 
   const finalTitle = title || defaultTitles[finalType];
@@ -593,12 +543,10 @@ function showToast(message, type = "info", title = null, duration = 3500) {
 }
 window.showToast = showToast;
 
-// ==============================================================================
-// 5. PUBLIC CHROME RENDERERS (HEADER & FOOTER)
-// ==============================================================================
+// 4. Tự động tạo Header, tin nóng và Footer
 
 /**
- * SVG Icon nhịp đập thương hiệu Mạch Tin
+ * Biểu tượng nhịp đập thương hiệu Báo Mạch Tin (SVG)
  */
 const PULSE_SVG_ICON = `
   <svg class="pulse-mark" width="24" height="24" viewBox="0 0 26 26" fill="none" aria-hidden="true">
@@ -607,7 +555,7 @@ const PULSE_SVG_ICON = `
 `;
 
 /**
- * Tự động render Header & Thanh Ticker cho các trang Public & User
+ * Hiển thị thứ ngày tháng tiếng Việt cho thanh tiện ích Header (VD: "Thứ Tư, 16/09/2026")
  */
 function getVietnameseDateLabel(date) {
   const days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
@@ -618,6 +566,10 @@ function getVietnameseDateLabel(date) {
   return `${dayName}, ${dd}/${mm}/${yyyy}`;
 }
 
+/**
+ * Tự động tạo thanh Header, Ticker tin nóng và Menu điều hướng cho các trang công khai và người dùng
+ * @param {string} activeCategorySlug - Slug của chuyên mục đang xem (để active menu)
+ */
 async function initPublicHeader(activeCategorySlug = "") {
   const headerMount = document.getElementById("site-header");
   if (!headerMount) return;
@@ -770,7 +722,11 @@ async function initPublicHeader(activeCategorySlug = "") {
             ${PULSE_SVG_ICON}
             <span class="logo__word">MẠCH <em>TIN</em></span>
           </a>
-          <nav class="main-nav" aria-label="Điều hướng chuyên mục">
+          <nav class="main-nav" id="mainNavMenu" aria-label="Điều hướng chuyên mục">
+            <div class="mobile-drawer-header">
+              <span class="mobile-drawer-title">DANH MỤC TIN</span>
+              <button type="button" class="mobile-drawer-close" id="mobileMenuCloseBtn" aria-label="Đóng menu">✕</button>
+            </div>
             <a href="${publicPrefix}index.html" class="${isIndexPage ? 'is-active' : ''}">Trang chủ</a>
             ${navLinksHtml}
           </nav>
@@ -782,9 +738,17 @@ async function initPublicHeader(activeCategorySlug = "") {
               </svg>
             </a>
             ${headerActionsHtml}
+            <button type="button" class="nav-toggle" id="mobileMenuBtn" aria-label="Mở menu danh mục">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
+      <div class="mobile-nav-overlay" id="mobileMenuOverlay"></div>
       <div class="category-bar">
         <div class="wrap">
           <a href="${publicPrefix}category.html" class="${isCategoryAll ? 'is-active' : ''}">Tất cả</a>
@@ -806,6 +770,47 @@ async function initPublicHeader(activeCategorySlug = "") {
       if (!userMenuDropdown.contains(e.target)) {
         userMenuDropdown.classList.remove("is-open");
       }
+    });
+  }
+
+  // Gắn sự kiện điều khiển Menu di động (Mobile Drawer & Hamburger)
+  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+  const mainNavMenu = document.getElementById("mainNavMenu");
+  const mobileMenuOverlay = document.getElementById("mobileMenuOverlay");
+  const mobileMenuCloseBtn = document.getElementById("mobileMenuCloseBtn");
+
+  const openMobileMenu = () => {
+    if (mainNavMenu) mainNavMenu.classList.add("is-active");
+    if (mobileMenuOverlay) mobileMenuOverlay.classList.add("is-active");
+    document.body.classList.add("mobile-menu-locked");
+  };
+
+  const closeMobileMenu = () => {
+    if (mainNavMenu) mainNavMenu.classList.remove("is-active");
+    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove("is-active");
+    document.body.classList.remove("mobile-menu-locked");
+  };
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openMobileMenu();
+    });
+  }
+
+  if (mobileMenuCloseBtn) {
+    mobileMenuCloseBtn.addEventListener("click", closeMobileMenu);
+  }
+
+  if (mobileMenuOverlay) {
+    mobileMenuOverlay.addEventListener("click", closeMobileMenu);
+  }
+
+  // Tự động đóng drawer khi người dùng bấm vào một link chuyển trang
+  if (mainNavMenu) {
+    const navAnchors = mainNavMenu.querySelectorAll("a");
+    navAnchors.forEach((a) => {
+      a.addEventListener("click", closeMobileMenu);
     });
   }
 }
@@ -856,11 +861,13 @@ async function initPublicFooter() {
   `;
 }
 
+// 5. Hiển thị Sidebar (bài đọc nhiều và thẻ tag nổi bật)
+
 /**
- * ==============================================================================
- * 6. PUBLIC SIDEBAR RENDERER (ĐỌC NHIỀU NHẤT TRONG TUẦN & TAG NỔI BẬT)
- * Dùng chung đồng nhất cho cả 3 trang: index.html, category.html, search.html
- * ==============================================================================
+ * Hiển thị khối Sidebar bên phải (dùng chung cho trang chủ, chuyên mục và tìm kiếm)
+ * - Lấy danh sách 5 bài đọc nhiều nhất trong tuần (view_count cao nhất)
+ * - Lấy danh sách 15 thẻ tag nổi bật kèm liên kết tìm kiếm theo thẻ
+ * @param {Object} options Tùy chọn ID các phần tử mount
  */
 async function initPublicSidebar(options = {}) {
   const rankMountId = options.rankMountId || "rank-mount";
@@ -936,24 +943,19 @@ async function initPublicSidebar(options = {}) {
   }
 }
 
-// ==============================================================================
-// 7. HỆ THỐNG PHÂN TRANG DÙNG CHUNG TOÀN HỆ THỐNG (PAGINATION SYSTEM)
-// ==============================================================================
+// 6. Thành phần phân trang dùng chung (Pagination)
 
 /**
- * [THÀNH PHẦN DÙNG CHUNG FRONTEND CÔNG KHAI] renderPublicPagination
- * Render thanh phân trang số (Numbered Pagination) chuẩn phong cách báo chí:
- * - Dành cho các trang công khai: category.html, search.html...
- * - Tự động tính toán hiển thị dấu ba chấm (...) thông minh khi nhiều trang
- * - Hỗ trợ nút Trang trước, Trang sau, bấm số trang và tự cuộn mượt (smooth scroll) lên đầu nội dung
+ * Hiển thị thanh phân trang đánh số cho người dùng (trang chuyên mục, tìm kiếm...)
+ * - Tự động hiển thị dấu ba chấm (...) khi số lượng trang lớn
+ * - Hỗ trợ nút Trang trước, Trang sau và tự động cuộn lên đầu danh sách
  * 
- * @param {string|HTMLElement} container - ID hoặc Element chứa thanh phân trang
- * @param {Object} options
- * @param {number} options.currentPage - Trang hiện tại (1-based)
+ * @param {string|HTMLElement} container - ID hoặc phần tử DOM chứa thanh phân trang
+ * @param {Object} options - Các thông số cấu hình
+ * @param {number} options.currentPage - Trang hiện tại
  * @param {number} options.totalPages - Tổng số trang
- * @param {number} [options.totalRecords] - Tổng số bản ghi (tùy chọn)
- * @param {Function} options.onPageChange - Hàm callback khi chuyển trang: (newPage) => void
- * @param {string|HTMLElement} [options.scrollTarget] - Phần tử cuộn tới khi chuyển trang (mặc định cuộn lên đầu container)
+ * @param {Function} options.onPageChange - Hàm callback khi người dùng bấm đổi trang
+ * @param {string|HTMLElement} [options.scrollTarget] - Vị trí cuộn trang lên
  */
 function renderPublicPagination(container, options) {
   const mount = typeof container === "string" ? document.getElementById(container) : container;
@@ -1067,22 +1069,18 @@ function renderPublicPagination(container, options) {
 window.renderPublicPagination = renderPublicPagination;
 
 /**
- * [THÀNH PHẦN DÙNG CHUNG BẢNG QUẢN TRỊ ADMIN] renderTablePagination
- * Render thanh điều hướng dữ liệu bảng quản trị (Data Table Pagination):
- * - Dành cho các trang quản trị: published-articles.html, users.html...
- * - Dropdown tùy chọn số lượng bản ghi trên trang: 10, 25, 50 dòng/trang
- * - Thông tin số lượng hiển thị chi tiết: "Hiển thị 1 - 10 trên tổng số 45 bản ghi"
- * - Nút chuyển trang trước / sau & các trang số
+ * Hiển thị thanh phân trang cho các bảng dữ liệu quản trị (Admin/Editor/Reporter):
+ * - Hỗ trợ chọn số lượng bản ghi mỗi trang (10, 25, 50 dòng)
+ * - Hiển thị vị trí bản ghi hiện tại và tổng số dòng
+ * - Nút chuyển trang trước/sau và danh sách số trang
  * 
- * @param {string|HTMLElement} container - ID hoặc Element chứa thanh phân trang bảng
- * @param {Object} options
- * @param {number} options.currentPage - Trang hiện tại (1-based)
- * @param {number} options.perPage - Số bản ghi trên 1 trang
- * @param {number} options.totalRecords - Tổng số bản ghi
- * @param {number} [options.totalPages] - Tổng số trang (nếu không truyền sẽ tự tính)
- * @param {number[]} [options.perPageOptions] - Các mốc số lượng (mặc định [10, 25, 50])
- * @param {Function} options.onPageChange - Hàm callback khi đổi trang: (newPage) => void
- * @param {Function} [options.onLimitChange] - Hàm callback khi đổi perPage: (newLimit) => void
+ * @param {string|HTMLElement} container - ID hoặc phần tử DOM
+ * @param {Object} options - Các thông số cấu hình
+ * @param {number} options.currentPage - Trang hiện tại
+ * @param {number} options.perPage - Số dòng trên mỗi trang
+ * @param {number} options.totalRecords - Tổng số dòng dữ liệu
+ * @param {Function} options.onPageChange - Hàm gọi lại khi chuyển trang
+ * @param {Function} [options.onLimitChange] - Hàm gọi lại khi thay đổi số dòng mỗi trang
  */
 function renderTablePagination(container, options) {
   const mount = typeof container === "string" ? document.getElementById(container) : container;

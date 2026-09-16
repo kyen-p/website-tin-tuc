@@ -1,21 +1,20 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/admin-dashboard.js
- * PHÂN HỆ: Tổng quan Giám sát Hệ thống Quản trị viên (Admin Dashboard Module)
- * MÔ TẢ: Thu thập dữ liệu và biểu diễn các chỉ số KPI toàn hệ thống:
- *        1. Tải dữ liệu tổng hợp trực tiếp từ API backend/api/admin/dashboard.php (Server-Side Aggregation tối ưu hóa).
- *        2. Render lưới thẻ chỉ số KPI tổng quan đồng bộ chuẩn Editorial: Tổng tài khoản (phân tách 4 vai trò admin,
- *           editor, reporter, user), tổng bài viết xuất bản/ẩn, tổng lượt xem, bình quân lượt xem và tổng bình luận.
- *        3. Biểu đồ Chart.js: Xu hướng bài đăng & lượt xem 7 ngày gần nhất; Cơ cấu bài viết theo chuyên mục.
- *        4. Bảng Top 5 bài viết có lượt xem cao nhất và Bảng Năng suất Phóng viên (số bài xuất bản, tổng view).
- * PHẠM VI SỬ DỤNG:
- *   - frontend/admin/dashboard.html
- * PHỤ THUỘC:
- *   - Chart.js (thư viện biểu đồ)
- *   - frontend/assets/js/common.js (resolveApiUrl, escapeHtml, extractThumbnail, renderTableCoverThumb, getArticleDetailUrl)
- *   - backend/api/admin/dashboard.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/admin-dashboard.js
+PHÂN HỆ: Trang tổng quan quản trị viên
+MÔ TẢ: Thu thập dữ liệu và biểu diễn các chỉ số KPI toàn hệ thống:
+       - Tải dữ liệu thống kê từ API backend/api/admin/dashboard.php
+       - Hiển thị các thẻ chỉ số KPI: Tổng người dùng (theo 4 vai trò), bài viết, lượt xem, bình luận
+       - Biểu đồ Chart.js: Xu hướng bài đăng & lượt xem 7 ngày qua, tỷ lệ bài theo chuyên mục
+       - Bảng Top 5 bài viết nhiều lượt xem nhất và Bảng thống kê năng suất phóng viên
+PHẠM VI SỬ DỤNG:
+       - frontend/admin/dashboard.html
+PHỤ THUỘC:
+       - Chart.js
+       - frontend/assets/js/common.js
+       - backend/api/admin/dashboard.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
@@ -31,9 +30,7 @@
       .replace(/'/g, "&#039;");
   };
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO DASHBOARD & TẢI DỮ LIỆU TỔNG HỢP QUA API (SERVER-SIDE)
-  // ==============================================================================
+  // 1. Khởi tạo Dashboard và tải dữ liệu thống kê qua API
   let trendChartInstance = null;
   let categoryChartInstance = null;
 
@@ -80,9 +77,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 2: RENDER KHUNG BỐ CỤC DASHBOARD & CÁC THẺ CHỈ SỐ KPI TỔNG QUAN
-  // ==============================================================================
+  // 2. Hiển thị khung bố cục Dashboard và các thẻ chỉ số KPI tổng quan
   /**
    * Render HTML giao diện đồng bộ class với hệ thống admin-layout.css
    */
@@ -217,7 +212,7 @@
 
       </div>
 
-      <!-- TẦNG 3: 2 KHỐI BẢNG TOP (TOP BÀI VIẾT & NĂNG SUẤT PHÓNG VIÊN) -->
+      <!-- Bảng bài viết nổi bật và năng suất phóng viên -->
       <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px; align-items: stretch;">
         
         <!-- BẢNG 1: TOP 5 BÀI VIẾT LƯỢT XEM CAO NHẤT -->
@@ -276,9 +271,7 @@
     `;
   }
 
-  // ==============================================================================
-  // KHỐI 3: KHỞI TẠO BIỂU ĐỒ TRỰC QUAN CHART.JS (XU HƯỚNG & CƠ CẤU CHUYÊN MỤC)
-  // ==============================================================================
+  // 3. Khởi tạo biểu đồ trực quan Chart.js (xu hướng và cơ cấu chuyên mục)
   /**
    * Khởi tạo Biểu đồ Xu hướng 7 ngày qua (Chart.js) từ dữ liệu đã tổng hợp của Server
    */
@@ -424,9 +417,7 @@
     });
   }
 
-  // ==============================================================================
-  // KHỐI 4: RENDER BẢNG TOP BÀI VIẾT XEM NHIỀU & BẢNG NĂNG SUẤT PHÓNG VIÊN
-  // ==============================================================================
+  // 4. Hiển thị bảng Top bài viết xem nhiều và Bảng năng suất phóng viên
   /**
    * Render Top 5 Bài viết xem nhiều nhất (Đồng bộ với Editor/Reporter table row)
    */

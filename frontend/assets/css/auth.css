@@ -1,7 +1,7 @@
 /**
  * ==============================================================================
  * TÊN FILE: frontend/assets/css/auth.css
- * PHÂN HỆ: Giao diện Xác thực Tài khoản (Authentication Stylesheet)
+ * PHÂN HỆ: Giao diện Xác thực Tài khoản 
  * MÔ TẢ: Định dạng giao diện các trang xác thực tài khoản:
  *        - Đăng nhập (frontend/public/login.html)
  *        - Đăng ký tài khoản độc giả mới (frontend/public/register.html)
@@ -62,7 +62,9 @@
   color: var(--brass-dark, #93692F);
 }
 
-/* 2. Khung Card trắng */
+/* ==============================================================================
+ * PHẦN 3: KHUNG THẺ CARD TRẮNG CHỨA BIỂU MẪU XÁC THỰC
+ * ============================================================================== */
 .auth-card {
   width: 100%;
   max-width: 440px;
@@ -94,7 +96,9 @@
   margin: 0;
 }
 
-/* 3. Form và Input Controls */
+/* ==============================================================================
+ * PHẦN 4: BIỂU MẪU VÀ CÁC TRƯỜNG NHẬP LIỆU
+ * ============================================================================== */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -151,7 +155,9 @@
   }
 }
 
-/* Thông báo lỗi Validation */
+/* ==============================================================================
+ * PHẦN 5: HIỂN THỊ LỖI KIỂM TRA DỮ LIỆU
+ * ============================================================================== */
 .auth-field__error {
   font-family: var(--f-mono, 'IBM Plex Mono', monospace);
   font-size: 11px;
@@ -169,11 +175,13 @@
   display: block;
 }
 
-/* Nút Submit đỏ gạch nung tòa soạn */
+/* ==============================================================================
+ * PHẦN 6: NÚT BẤM GỬI FORM VÀ CHUYỂN HƯỚNG LIÊN KẾT
+ * ============================================================================== */
 .auth-btn-submit {
   width: 100%;
   padding: 11px 16px;
-  background-color: #8D3C30; /* Màu nâu đỏ gạch chuẩn ảnh */
+  background-color: #8D3C30; /* Tông màu đỏ gạch truyền thống tòa soạn */
   color: #FFFFFF;
   border: 1px solid #8D3C30;
   border-radius: var(--radius, 4px);
@@ -189,7 +197,7 @@
   border-color: #752F25;
 }
 
-/* Đáy Card chuyển đổi Đăng nhập / Đăng ký */
+/* Chân thẻ card chuyển tiếp giữa Đăng nhập và Đăng ký */
 .auth-card__footer {
   margin-top: 22px;
   padding-top: 18px;
@@ -210,7 +218,9 @@
   text-decoration: underline;
 }
 
-/* Cảnh báo tài khoản bị khóa */
+/* ==============================================================================
+ * PHẦN 7: THÔNG BÁO TÀI KHOẢN BỊ KHÓA VÀ NÚT ẨN/HIỆN MẬT KHẨU
+ * ============================================================================== */
 .auth-locked-alert {
   display: none;
   background-color: #FDF2F0;
@@ -228,7 +238,7 @@
   display: block;
 }
 
-/* Khung bọc ô mật khẩu để đặt icon con mắt bên phải */
+/* Khung bọc ô mật khẩu để đặt nút ẩn/hiện mật khẩu */
 .input-password-wrap {
   position: relative;
   display: flex;

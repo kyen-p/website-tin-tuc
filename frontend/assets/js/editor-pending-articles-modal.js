@@ -1,36 +1,31 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/editor-pending-articles-modal.js
- * PHÂN HỆ: Hộp thoại Thẩm định & Xem chi tiết Bài viết DÙNG CHUNG (Shared Article Review & Inspection Modal)
- * MÔ TẢ: Cung cấp giao diện cửa sổ Modal tương tác chuẩn 2 cột đồng bộ cho cả Editor và Admin:
- *        1. Tự động sinh cấu trúc HTML Modal vào DOM (Modal đọc nội dung, Modal xác nhận xuất bản, Modal nhập lý do từ chối).
- *        2. Hiển thị chế độ Read-only toàn bộ nội dung bài viết với đầy đủ định dạng siêu văn bản CKEditor 5 (.body-text .ck-content):
- *           - Giữ nguyên số thứ tự danh sách (1, 2, 3... <ol>), viền kẻ ô bảng biểu (table), trích dẫn blockquote, căn lề CK5, ảnh kèm chú thích.
- *        3. Hỗ trợ 2 chế độ vận hành (Dual-Mode):
- *           - Chế độ Editor (pending-articles.html): Thẩm định bài chờ duyệt, đánh dấu sự kiện đáng chú ý, Duyệt & Xuất bản hoặc Từ chối kèm lý do.
- *           - Chế độ Admin (published-articles.html): Xem chi tiết nguyên bản bài đã đăng, nút đóng, nút chuyển sang Sửa bài viết (CK5) và Ẩn/Hiện bài.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/editor/pending-articles.html
- *   - frontend/admin/published-articles.html
- * PHỤ THUỘC:
- *   - frontend/assets/css/base.css (.body-text, .ck-content)
- *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, formatDateTime, etc.)
- *   - backend/api/editor/pending-articles.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/editor-pending-articles-modal.js
+PHÂN HỆ: Modal thẩm định và xem chi tiết bài viết
+MÔ TẢ: Hộp thoại tương tác chuẩn 2 cột đồng bộ cho cả Editor và Admin:
+       - Tự động sinh cấu trúc HTML Modal vào DOM (Xem nội dung, Xác nhận duyệt, Lý do từ chối)
+       - Hiển thị chế độ Read-only toàn bộ nội dung bài viết với đầy đủ định dạng CKEditor 5
+       - Hỗ trợ 2 chế độ:
+         + Editor: Thẩm định bài chờ duyệt, đánh dấu sự kiện đáng chú ý, Duyệt hoặc Từ chối kèm lý do
+         + Admin: Xem chi tiết nguyên bản bài đã đăng, chuyển sang Sửa nội dung đè hoặc Ẩn/Hiện bài
+PHẠM VI SỬ DỤNG:
+       - frontend/editor/pending-articles.html
+       - frontend/admin/published-articles.html
+PHỤ THUỘC:
+       - frontend/assets/css/base.css
+       - frontend/assets/js/common.js
+       - backend/api/editor/pending-articles.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: TRẠNG THÁI BÀI VIẾT ĐANG THẨM ĐỊNH
-  // ==============================================================================
+  // 1. Trạng thái bài viết đang thẩm định
   let reviewingArticle = null;
   let modalSelectedTags = [];
 
-  // ==============================================================================
-  // KHỐI 2: KHỞI TẠO CẤU TRÚC DOM CHO CÁC MODAL THẨM ĐỊNH VÀ HỘP THOẠI XÁC NHẬN
-  // ==============================================================================
+  // 2. Khởi tạo cấu trúc DOM cho các modal thẩm định và hộp thoại xác nhận
   /**
    * Tạo cấu trúc HTML các modal thẩm định và chèn vào DOM nếu chưa tồn tại
    */
@@ -175,7 +170,7 @@
               </button>
             </div>
 
-            <!-- KHỐI HÀNH ĐỘNG BIÊN TẬP VIÊN (EDITOR ACTIONS) -->
+            <!-- Nút thao tác biên tập viên -->
             <div id="modal-editor-actions" style="display: flex; align-items: center; gap: 10px;">
               <button type="button" id="btn-trigger-reject" class="admin-btn admin-btn--danger" style="background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; font-weight: 600; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
                 Từ chối bài viết
@@ -185,7 +180,7 @@
               </button>
             </div>
 
-            <!-- KHỐI HÀNH ĐỘNG QUẢN TRỊ VIÊN (ADMIN ACTIONS) -->
+            <!-- Nút thao tác quản trị viên -->
             <div id="modal-admin-actions" style="display: none; align-items: center; gap: 10px;">
               <button type="button" id="btn-admin-edit-from-modal" class="admin-btn" style="background: #FFFBEB; color: #B45309; border: 1.5px solid #FCD34D; font-weight: 700; padding: 8px 18px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;">
@@ -272,9 +267,7 @@
     bindModalInternalEvents();
   }
 
-  // ==============================================================================
-  // KHỐI 3: MỞ / ĐÓNG MODAL THẨM ĐỊNH & HIỂN THỊ DỮ LIỆU BÀI VIẾT READ-ONLY
-  // ==============================================================================
+  // 3. Mở / đóng modal thẩm định và hiển thị dữ liệu bài viết
   let currentModalOptions = {};
 
   /**
@@ -439,9 +432,7 @@
       console.error("Lỗi khi đổ dữ liệu vào modal:", err);
     }
 
-    // ==============================================================================
-    // THIẾT LẬP GIAO DIỆN & HÀNH ĐỘNG THEO VAI TRÒ (EDITOR VS ADMIN)
-    // ==============================================================================
+    // 4. Thiết lập giao diện và hành động theo vai trò (Editor vs Admin)
     const headingEl = document.getElementById("modal-review-heading");
     const subheadingEl = document.getElementById("modal-review-subheading");
     const modeBadgeEl = document.getElementById("modal-review-mode-badge");
@@ -570,9 +561,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 4: XỬ LÝ DUYỆT XUẤT BẢN HOẶC TỪ CHỐI BÀI VIẾT QUA BACKEND API
-  // ==============================================================================
+  // 5. Xử lý duyệt xuất bản hoặc từ chối bài viết qua API
   /**
    * XỬ LÝ: DUYỆT & XUẤT BẢN BÀI VIẾT QUA BACKEND API
    */
@@ -675,9 +664,7 @@
     if (rejectModal) rejectModal.style.display = "none";
   }
 
-  // ==============================================================================
-  // KHỐI 5: GẮN SỰ KIỆN NỘI BỘ CHO CÁC MODAL & XUẤT HÀM TOÀN CỤC
-  // ==============================================================================
+  // 6. Gắn sự kiện nội bộ cho các modal và xuất hàm toàn cục
   /**
    * Gắn sự kiện nội bộ cho các nút bấm trong Modal
    */

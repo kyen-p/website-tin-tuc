@@ -1,40 +1,32 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/admin/comments.php
- * PHÂN HỆ: API Quản trị Bình luận Toàn trang (Global Comments Service)
- * MÔ TẢ: Cung cấp các thao tác kiểm duyệt bình luận cấp cao cho Quản trị viên:
- *        - GET: Lấy danh sách toàn bộ bình luận của độc giả trên tất cả bài viết kèm thông tin người đăng,
- *               tiêu đề và slug bài viết (hỗ trợ Admin điều hướng cuộn lướt chính xác tới vị trí bình luận và chớp sáng viền).
- *        - DELETE: Xóa vĩnh viễn bình luận vi phạm chính sách nội dung khỏi cơ sở dữ liệu.
- * PHẠM VI SỬ DỤNG:
- *   - [KHU VỰC QUẢN TRỊ TỐI CAO - ADMIN]
- *   - Phân quyền: role = 'admin'
- *   - Phương thức: GET, DELETE
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireRole)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/admin-comments.js (Bảng quản trị bình luận)
- * TRẢ VỀ (JSON):
- *   - GET: Danh sách bình luận
- *   - DELETE: Thông báo kết quả xóa
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/admin/comments.php
+PHÂN HỆ: Quản trị bình luận
+MÔ TẢ: Quản lý và kiểm duyệt bình luận toàn hệ thống:
+       - Lấy danh sách bình luận của độc giả kèm thông tin bài viết và người đăng
+       - Hỗ trợ phân trang danh sách bình luận
+       - Xóa bình luận vi phạm chính sách nội dung
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: role = 'admin'
+       - Phương thức: GET, DELETE
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 
-// Kiểm tra quyền hạn Quản trị viên cho toàn bộ tệp API
+// Chỉ Quản trị viên (admin) mới được truy cập
 requireRole(['admin']);
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// ==============================================================================
-// NGHIỆP VỤ 1: GET - LẤY TOÀN BỘ BÌNH LUẬN TRONG HỆ THỐNG KÈM BÀI VIẾT & TÁC GIẢ (HỖ TRỢ PHÂN TRANG)
-// ==============================================================================
+// 1. Lấy danh sách bình luận toàn hệ thống (hỗ trợ phân trang)
 if ($method === 'GET') {
     $isPaginated = isset($_GET['page']) || isset($_GET['limit']);
 
@@ -64,9 +56,7 @@ if ($method === 'GET') {
     }
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 2: DELETE - XÓA BÌNH LUẬN VI PHẠM
-// ==============================================================================
+// 2. Xóa bình luận vi phạm khỏi cơ sở dữ liệu
 if ($method === 'DELETE') {
     $input = json_decode(file_get_contents('php://input'), true);
     if (empty($input['comment_id'])) {
@@ -76,3 +66,4 @@ if ($method === 'DELETE') {
     $stmt->execute([(int)$input['comment_id']]);
     jsonResponse(true, null, "Đã xóa vĩnh viễn bình luận thành công");
 }
+

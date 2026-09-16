@@ -1,27 +1,25 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/home.js
- * PHÂN HỆ: Trang chủ Công khai (Public Homepage Module)
- * MÔ TẢ: Khởi tạo dữ liệu và render toàn bộ các phân vùng giao diện Trang chủ Báo Mạch Tin:
- *        1. Tải dữ liệu bài viết đã xuất bản và danh sách thẻ tag từ Backend API.
- *        2. Phân vùng Hero Grid: Tính điểm "Nóng" = Lượt xem / (Giờ trôi qua + 1) để chọn 5 bài tiêu điểm (2 bài đinh lớn bên trái, 3 bài nhỏ bên phải).
- *        3. Phân vùng Mới cập nhật (Latest Grid): Lọc và hiển thị các bài đăng trong vòng 48 giờ gần nhất.
- *        4. Phân vùng Dòng sự kiện nổi bật (Notable Events Stream): Danh sách bài viết do Ban Biên tập chọn lọc.
- *        5. Phân vùng Sidebar chung: Đọc nhiều nhất trong tuần và Đám mây thẻ Tag nổi bật (qua initPublicSidebar).
- *        6. Tự động đồng bộ số lượt đọc khi người dùng quay lại (pageshow event).
- * PHẠM VI SỬ DỤNG:
- *   - frontend/public/index.html (hoặc gốc /)
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, initPublicSidebar, resolveApiUrl, getArticleDetailUrl, renderCoverImage, etc.)
- *   - backend/api/public/articles.php
- *   - backend/api/public/tags.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/home.js
+PHÂN HỆ: Trang chủ công khai
+MÔ TẢ: Khởi tạo dữ liệu và hiển thị các phân vùng giao diện trang chủ Báo Mạch Tin:
+       - Tải dữ liệu bài viết đã xuất bản và danh sách thẻ tag từ backend API
+       - Phân vùng Hero Grid: 5 bài tiêu điểm nóng nhất (2 bài lớn bên trái, 3 bài nhỏ bên phải)
+       - Phân vùng mới cập nhật: các bài đăng trong vòng 48 giờ gần nhất
+       - Phân vùng sự kiện đáng chú ý: bài viết do ban biên tập chọn lọc
+       - Phân vùng Sidebar: đọc nhiều nhất trong tuần và đám mây thẻ tag
+       - Tự động đồng bộ số lượt đọc khi quay lại trang (pageshow)
+PHẠM VI SỬ DỤNG:
+       - frontend/public/index.html (hoặc /)
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/public/articles.php
+       - backend/api/public/tags.php
+==============================================================================
+*/
 
 async function initHomePage() {
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO KHUNG TRANG (HEADER & FOOTER) VÀ TẢI DỮ LIỆU TỪ BACKEND
-  // ==============================================================================
+  // 1. Khởi tạo khung trang và tải dữ liệu từ backend
   await initPublicHeader("");
   await initPublicFooter();
 
@@ -39,31 +37,29 @@ async function initHomePage() {
     tags = [];
   }
 
-  // ==============================================================================
-  // KHỐI 2: CÁC TIỆN ÍCH DỰNG THẺ BÀI VIẾT (CARD HELPERS & FORMATTERS)
-  // ==============================================================================
-  // Bước 1: Hàm tiện ích truy xuất chuyên mục của bài viết (Category Helper - đã được API nhúng sẵn trong a.category)
+  // 2. Các tiện ích dựng thẻ bài viết
+  // Hàm tiện ích truy xuất chuyên mục của bài viết (Category Helper - đã được API nhúng sẵn trong a.category)
   function getCategory(a) {
     return a.category || { name: "Tin tức", slug: "" };
   }
 
-  // Bước 2: Hàm tiện ích truy xuất tác giả bài viết (Author Helper - đã được API nhúng sẵn trong a.author)
+  // Hàm tiện ích truy xuất tác giả bài viết (Author Helper - đã được API nhúng sẵn trong a.author)
   function getAuthor(a) {
     return a.author || { full_name: "Ban Biên Tập", id: "" };
   }
 
-  // Bước 3: Lọc danh sách các bài viết đã chính thức xuất bản (Published Articles)
+  // Lọc danh sách các bài viết đã chính thức xuất bản (Published Articles)
   const publishedArticles = allArticles.filter((a) => a.published_at);
 
   // Mốc thời gian hệ thống đồng bộ toàn ứng dụng
   const now = getSystemTime();
 
-  // Bước 4: Hàm tiện ích trích xuất và chuẩn hóa số lượt xem của bài viết
+  // Hàm tiện ích trích xuất và chuẩn hóa số lượt xem của bài viết
   function getViews(a) {
     return typeof getArticleViews === "function" ? getArticleViews(a) : Number(a.view_count || 0);
   }
 
-  // Bước 5: Hàm tiện ích dựng chuỗi HTML dòng thông tin bổ trợ (Metadata Byline: Tác giả · Thời gian · Lượt đọc)
+  // Hàm tiện ích dựng chuỗi HTML dòng thông tin bổ trợ (Metadata Byline: Tác giả · Thời gian · Lượt đọc)
   function renderCardMeta(a, author) {
     const viewsFormatted = formatNumber(getViews(a));
     const authorUrl = typeof getAuthorProfileUrl === "function" ? getAuthorProfileUrl(author) : `author.html?username=${encodeURIComponent(author.username || author.id)}`;
@@ -78,10 +74,8 @@ async function initHomePage() {
     `;
   }
 
-  // ==============================================================================
-  // KHỐI 3: PHÂN VÙNG HERO GRID (5 BÀI TIÊU ĐIỂM NÓNG NHẤT)
+  // 3. Phân vùng Hero Grid (5 bài tiêu điểm nóng nhất)
   // Điểm Nóng = Views / (Số giờ trôi qua + 1)
-  // ==============================================================================
   const scoredArticles = publishedArticles.map((a) => {
     const pubDate = typeof parseSystemDate === "function" ? parseSystemDate(a.published_at) : new Date(String(a.published_at).replace(" ", "T"));
     const hoursDiff = Math.max(0, (now.getTime() - (pubDate ? pubDate.getTime() : now.getTime())) / (1000 * 60 * 60));
@@ -168,9 +162,7 @@ async function initHomePage() {
     }
   }
 
-  // ==============================================================================
-  // KHỐI 4: PHÂN VÙNG MỚI CẬP NHẬT (LATEST SECTION - 48 GIỜ GẦN NHẤT)
-  // ==============================================================================
+  // 4. Phân vùng mới cập nhật (48 giờ gần nhất)
   const latestSection = document.getElementById("latest-section");
   const latestMount = document.getElementById("latest-mount");
   if (latestSection && latestMount) {
@@ -214,10 +206,8 @@ async function initHomePage() {
     }
   }
 
-  // ==============================================================================
-  // KHỐI 5: PHÂN VÙNG SỰ KIỆN ĐÁNG CHÚ Ý (NOTABLE EVENTS STREAM)
+  // 5. Phân vùng sự kiện đáng chú ý
   // Lọc các bài viết được Editor đánh dấu đáng chú ý (is_notable_event === true)
-  // ==============================================================================
   const streamMount = document.getElementById("stream-mount");
   if (streamMount) {
     // Lấy các bài được Editor chọn đưa vào sự kiện đáng chú ý
@@ -262,18 +252,14 @@ async function initHomePage() {
     }
   }
 
-  // ==============================================================================
-  // KHỐI 6: PHÂN VÙNG SIDEBAR ("ĐỌC NHIỀU NHẤT TRONG TUẦN" & "TAG NỔI BẬT")
-  // ==============================================================================
+  // 6. Phân vùng sidebar (đọc nhiều nhất trong tuần và thẻ tag)
   await initPublicSidebar({
     rankMountId: "rank-mount",
     tagMountId: "tag-mount"
   });
 }
 
-// ==============================================================================
-// KHỐI 7: KHỞI CHẠY VÀ ĐỒNG BỘ KHI QUAY LẠI TRANG (PAGESHOW)
-// ==============================================================================
+// 7. Khởi chạy và đồng bộ khi quay lại trang (pageshow)
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initHomePage);
 } else {

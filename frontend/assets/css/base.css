@@ -817,6 +817,12 @@ textarea.form-control {
   padding: 0 24px;
 }
 
+@media (max-width: 640px) {
+  .wrap {
+    padding: 0 16px;
+  }
+}
+
 .pulse-mark {
   color: var(--crimson);
   flex-shrink: 0;
@@ -992,11 +998,8 @@ a:hover .ph img {
 }
 
 /* ============================================================================== */
-/* KHỐI: QUY CHUẨN ĐỊNH DẠNG NỘI DUNG SIÊU VĂN BẢN (RICH TEXT / CKEDITOR 5)       */
-/* Áp dụng chung cho: Chi tiết bài báo (.body-text), Modal Thẩm định Editor,      */
-/* Modal Xem & Thẩm định Admin (.ck-content).                                     */
-/* Khắc phục triệt để: Mất số thứ tự 1, 2, 3... (<ol>), mất viền bảng (<table>),   */
-/* căn lề CK5, hình ảnh, khối trích dẫn blockquote, video media embed.            */
+/* Định dạng nội dung bài viết (Rich Text / CKEditor 5)                           */
+/* Áp dụng cho: Chi tiết bài báo (.body-text), Modal xem trước bài viết           */
 /* ============================================================================== */
 .body-text,
 .ck-content {

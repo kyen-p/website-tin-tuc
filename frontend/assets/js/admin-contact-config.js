@@ -1,28 +1,24 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/admin-contact-config.js
- * PHÂN HỆ: Cấu hình Thông tin Liên hệ Tòa soạn (Admin Contact Config Module)
- * MÔ TẢ: Quản trị và cập nhật các thông tin liên hệ và nhận diện thương hiệu của tòa soạn:
- *        1. Quản lý email tòa soạn (contact_email), hotline (contact_phone), địa chỉ trụ sở (address),
- *           đoạn giới thiệu ngắn (short_description), và các liên kết mạng xã hội (Facebook, YouTube, TikTok).
- *        2. Tải cấu hình hiện tại từ backend qua admin/contact-config.php.
- *        3. Cho phép cập nhật lưu dữ liệu thông qua API PUT admin/contact-config.php.
- *        4. Hỗ trợ khôi phục về cấu hình mặc định ban đầu (Reset to Default).
- * PHẠM VI SỬ DỤNG:
- *   - frontend/admin/contact-config.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml)
- *   - backend/api/admin/contact-config.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/admin-contact-config.js
+PHÂN HỆ: Cấu hình thông tin liên hệ tòa soạn
+MÔ TẢ: Quản trị và cập nhật thông tin liên hệ và nhận diện thương hiệu của tòa soạn:
+       - Quản lý email tòa soạn, hotline, địa chỉ trụ sở, giới thiệu ngắn và mạng xã hội
+       - Tải cấu hình hiện tại từ backend qua admin/contact-config.php
+       - Cập nhật lưu dữ liệu thông qua API PUT admin/contact-config.php
+       - Khôi phục về cấu hình mặc định ban đầu
+PHẠM VI SỬ DỤNG:
+       - frontend/admin/contact-config.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/admin/contact-config.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO CẤU HÌNH MẶC ĐỊNH & TRẠNG THÁI HIỆN TẠI
-  // ==============================================================================
-  // Dữ liệu mặc định gốc của tòa soạn
+  // 1. Khởi tạo cấu hình mặc định và trạng thái hiện tại
   const DEFAULT_SETTINGS = {
     contact_email: "lienhe@machtin.vn",
     contact_phone: "028 1234 5678",
@@ -46,9 +42,7 @@
     bindEvents();
   }
 
-  // ==============================================================================
-  // KHỐI 2: TẢI CẤU HÌNH LIÊN HỆ TỪ BACKEND QUA API
-  // ==============================================================================
+  // 2. Tải cấu hình liên hệ từ backend qua API
   /**
    * Tải cấu hình từ backend API (admin/contact-config.php)
    */
@@ -79,9 +73,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 3: RENDER GIAO DIỆN FORM CẤU HÌNH LIÊN HỆ & MẠNG XÃ HỘI
-  // ==============================================================================
+  // 3. Hiển thị giao diện form cấu hình liên hệ và mạng xã hội
   /**
    * Render giao diện Form cấu hình liên hệ tinh gọn, chuẩn hệ thống Admin
    */
@@ -271,9 +263,7 @@
     `;
   }
 
-  // ==============================================================================
-  // KHỐI 4: GẮN SỰ KIỆN LƯU FORM VÀ KHÔI PHỤC MẶC ĐỊNH
-  // ==============================================================================
+  // 4. Gắn sự kiện lưu form và khôi phục mặc định
   function bindEvents() {
     const form = document.getElementById("contactConfigForm");
     const btnReset = document.getElementById("btnResetConfig");
@@ -299,9 +289,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 5: GỬI DỮ LIỆU CẬP NHẬT CẤU HÌNH LÊN BACKEND (API POST/PUT)
-  // ==============================================================================
+  // 5. Gửi dữ liệu cập nhật cấu hình lên backend (API POST/PUT)
   /**
    * Lưu cấu hình tòa soạn lên cơ sở dữ liệu
    */

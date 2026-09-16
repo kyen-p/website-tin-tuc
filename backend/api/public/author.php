@@ -1,39 +1,26 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/public/author.php
- * PHÂN HỆ: API Hồ sơ Tác giả Công khai (Public Author Service)
- * MÔ TẢ: Lấy thông tin hồ sơ của tác giả/phóng viên (họ tên, avatar, bio) cùng toàn bộ
- *        danh sách bài viết đã xuất bản của tác giả đó.
- * PHẠM VI SỬ DỤNG:
- *   - [API CÔNG KHAI]
- *   - Phương thức: GET
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/author.js (Hiển thị trang giới thiệu tác giả author.html)
- * THAM SỐ TRUY VẤN (QUERY PARAMS):
- *   - id: (int) ID của tác giả HOẶC
- *   - username: (string) Tên tài khoản tác giả (VD: "reporter_nam")
- * TRẢ VỀ (JSON):
- *   - { success: true, data: { id, username, email, full_name, avatar, bio, role, articles: [...] } }
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/public/author.php
+PHÂN HỆ: Thông tin tác giả công khai
+MÔ TẢ: Lấy thông tin hồ sơ tác giả và danh sách bài viết đã xuất bản của tác giả
+PHẠM VI SỬ DỤNG:
+       - Phương thức: GET
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+==============================================================================
+*/
 
 require_once '../../config/database.php';
 require_once '../../helpers/response.php';
 
-// ==============================================================================
-// KHỐI 1: KIỂM TRA PHƯƠNG THỨC HTTP
-// ==============================================================================
+// Kiểm tra phương thức request
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 }
 
-// ==============================================================================
-// KHỐI 2: TIẾP NHẬN THAM SỐ ĐỊNH DANH TÁC GIẢ (ID HOẶC USERNAME)
-// ==============================================================================
+// Tiếp nhận tham số id hoặc username của tác giả
 $idParam = isset($_GET['id']) ? trim($_GET['id']) : '';
 $usernameParam = isset($_GET['username']) ? trim($_GET['username']) : '';
 
@@ -41,9 +28,7 @@ if ($idParam === '' && $usernameParam === '') {
     jsonResponse(false, null, "Thiếu id hoặc username tác giả");
 }
 
-// ==============================================================================
-// KHỐI 3: TRUY VẤN THÔNG TIN TÀI KHOẢN TÁC GIẢ
-// ==============================================================================
+// Lấy thông tin tài khoản tác giả
 try {
     if ($usernameParam !== '') {
         $stmt = $pdo->prepare(
@@ -69,9 +54,7 @@ try {
 
     $author['id'] = (int) $author['id'];
 
-    // ==============================================================================
-    // KHỐI 4: TRUY VẤN DANH SÁCH BÀI VIẾT ĐÃ XUẤT BẢN CỦA TÁC GIẢ
-    // ==============================================================================
+    // Lấy danh sách các bài viết đã xuất bản của tác giả
     $stmt = $pdo->prepare(
         "SELECT
             a.id, a.title, a.slug, a.short_description, a.cover_image,
@@ -106,9 +89,6 @@ try {
 
     $author['articles'] = $articles;
 
-    // ==============================================================================
-    // KHỐI 5: PHẢN HỒI KẾT QUẢ CHO CLIENT
-    // ==============================================================================
     jsonResponse(true, $author);
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");

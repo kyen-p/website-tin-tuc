@@ -1,48 +1,32 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/admin/dashboard.php
- * PHÂN HỆ: API Bảng điều khiển Quản trị viên (Admin Dashboard Service)
- * MÔ TẢ: Cung cấp số liệu thống kê tổng hợp cho Bàn Quản trị hệ thống:
- *        - Thống kê các chỉ số KPI: Tổng người dùng (phân chia 4 vai trò admin/editor/reporter/user),
- *          tổng bài viết (hiển thị/ẩn), tổng lượt xem toàn trang, bình quân lượt xem, tổng bình luận.
- *        - Thống kê xu hướng xuất bản bài viết và lượt xem theo dải 7 ngày gần nhất (SQL Grouping).
- *        - Thống kê cơ cấu tỷ trọng bài viết xuất bản theo từng chuyên mục.
- *        - Danh sách Top 5 bài viết có lượt xem cao nhất toàn trang kèm thông tin tác giả và chuyên mục.
- *        - Bảng thống kê năng suất và tổng lượt xem của đội ngũ Phóng viên.
- * PHẠM VI SỬ DỤNG:
- *   - [KHU VỰC QUẢN TRỊ VIÊN - ADMIN]
- *   - Phân quyền: role = 'admin'
- *   - Phương thức: GET
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireRole)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/admin-dashboard.js (Giao diện giám sát & thống kê Admin)
- * TRẢ VỀ (JSON):
- *   - { success: true, data: { kpi: {...}, trend: {...}, category_share: {...}, top_articles: [...], reporter_stats: [...] } }
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/admin/dashboard.php
+PHÂN HỆ: Bảng điều khiển quản trị viên
+MÔ TẢ: Cung cấp các chỉ số KPI, xu hướng 7 ngày, thị phần chuyên mục và hiệu suất phóng viên
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: role = 'admin'
+       - Phương thức: GET
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 
-// Kiểm tra quyền hạn: Chỉ Quản trị viên (admin) mới được truy cập
+// Chỉ Quản trị viên (admin) mới được truy cập
 requireRole(['admin']);
 
-// ==============================================================================
-// KHỐI 1: KIỂM TRA PHƯƠNG THỨC HTTP
-// ==============================================================================
+// Kiểm tra phương thức request
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 }
 
 try {
-    // ==============================================================================
-    // KHỐI 2: TÍNH TOÁN CÁC CHỈ SỐ KPI TỔNG QUAN (USERS, ARTICLES, COMMENTS)
-    // ==============================================================================
     // 1. Thống kê tài khoản người dùng theo vai trò
     $userStatsStmt = $pdo->query("
         SELECT 
@@ -91,10 +75,7 @@ try {
         'activeCommentsCount' => $totalComments
     ];
 
-    // ==============================================================================
-    // KHỐI 3: THỐNG KÊ XU HƯỚNG BÀI XUẤT BẢN & LƯỢT XEM 7 NGÀY GẦN NHẤT
-    // ==============================================================================
-    // Tìm mốc ngày xuất bản mới nhất trong cơ sở dữ liệu làm mốc tham chiếu 7 ngày
+    // Thống kê xu hướng bài viết và lượt xem trong 7 ngày gần nhất
     $maxDateStmt = $pdo->query("SELECT MAX(published_at) FROM articles WHERE status = 'published'");
     $maxPublished = $maxDateStmt->fetchColumn();
     $baseDate = $maxPublished ? new DateTime($maxPublished) : new DateTime();
@@ -140,9 +121,7 @@ try {
         'viewCounts' => array_column($daysMap, 'viewCount')
     ];
 
-    // ==============================================================================
-    // KHỐI 4: THỐNG KÊ CƠ CẤU BÀI VIẾT THEO CHUYÊN MỤC
-    // ==============================================================================
+    // Thống kê số bài theo chuyên mục
     $catStmt = $pdo->query("
         SELECT c.id, c.name,
                COUNT(CASE WHEN a.status = 'published' THEN a.id END) AS count
@@ -158,9 +137,7 @@ try {
         'counts' => array_map('intval', array_column($catRows, 'count'))
     ];
 
-    // ==============================================================================
-    // KHỐI 5: TOP 5 BÀI VIẾT XEM NHIỀU NHẤT TOÀN TRANG
-    // ==============================================================================
+    // Top 5 bài viết nhiều lượt xem nhất
     $topArticlesStmt = $pdo->query("
         SELECT a.id, a.title, a.slug, a.short_description, a.cover_image, a.view_count, a.published_at,
                c.id AS category_id, c.name AS category_name,
@@ -181,9 +158,7 @@ try {
     }
     unset($art);
 
-    // ==============================================================================
-    // KHỐI 6: NĂNG SUẤT VÀ LƯU LƯỢNG TRUY CẬP ĐỘI NGŨ PHÓNG VIÊN
-    // ==============================================================================
+    // Thống kê năng suất và lượt xem theo phóng viên
     $repStmt = $pdo->query("
         SELECT u.id, u.full_name AS name, u.username,
                COUNT(CASE WHEN a.status = 'published' THEN a.id END) AS publishedCount,
@@ -207,9 +182,6 @@ try {
     }
     unset($rep);
 
-    // ==============================================================================
-    // KHỐI 7: PHẢN HỒI KẾT QUẢ CHO CLIENT
-    // ==============================================================================
     jsonResponse(true, [
         'kpi' => $kpi,
         'trend' => $trend,
@@ -221,3 +193,4 @@ try {
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
 }
+

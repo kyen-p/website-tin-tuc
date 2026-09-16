@@ -1,27 +1,25 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/admin-layout.js
- * PHÂN HỆ: Khung Giao diện & Điều hướng Tòa soạn (Editorial Workspace Layout & Navigation)
- * MÔ TẢ: Cung cấp layout dùng chung cho 3 phân hệ nội bộ của Tòa soạn Báo Mạch Tin:
- *        - Phân hệ Phóng viên (Reporter): Dashboard, Bài viết của tôi, Soạn bài viết.
- *        - Phân hệ Biên tập viên (Editor): Dashboard, Bài chờ duyệt, Danh mục & Thẻ Tag.
- *        - Phân hệ Quản trị viên (Admin): Dashboard, Quản lý bài đăng, Người dùng, Bình luận, Cấu hình liên hệ.
- *        Bao gồm:
- *        1. Route Guard: Kiểm tra phân quyền truy cập trang, chuyển hướng người dùng trái phép.
- *        2. Dynamic Sidebar Renderer: Tự động dựng cây Menu, hiển thị Role Badge, huy hiệu số lượng (Badge Count).
- *        3. Profile Card & Actions: Hiển thị avatar, tên người dùng, nút xem Trang chủ và Đăng xuất.
- *        4. Table Helper Utilities: Trích xuất thumbnail, render ảnh thu nhỏ cho table, highlight bài viết theo URL param (?id=).
- * PHẠM VI SỬ DỤNG:
- *   - Các trang thuộc frontend/reporter/*.html, frontend/editor/*.html, frontend/admin/*.html.
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (getCurrentUser, logout, escapeHtml, getInitials, resolveAssetPath, resolveApiUrl)
- *   - backend/api/editor/pending-articles.php (đếm số bài chờ duyệt cho Editor)
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/admin-layout.js
+PHÂN HỆ: Khung giao diện và điều hướng tòa soạn
+MÔ TẢ: Cung cấp layout và điều hướng dùng chung cho các phân hệ nội bộ:
+       - Phân hệ Phóng viên (Reporter): Dashboard, Bài viết của tôi, Soạn bài viết
+       - Phân hệ Biên tập viên (Editor): Dashboard, Bài chờ duyệt, Chuyên mục & Thẻ tag
+       - Phân hệ Quản trị viên (Admin): Dashboard, Quản lý bài đăng, Người dùng, Bình luận, Cấu hình liên hệ
+       Bao gồm:
+       1. Kiểm tra quyền truy cập (Route Guard) và chuyển hướng nếu không đủ thẩm quyền
+       2. Tự động dựng cây Menu Sidebar, hiển thị huy hiệu vai trò và số lượng bài chờ duyệt
+       3. Hiển thị thông tin cá nhân trên Sidebar/Topbar (avatar, họ tên, nút xem Trang chủ, Đăng xuất)
+       4. Các hàm tiện ích bảng: trích xuất ảnh bìa thu nhỏ, tô đậm dòng dữ liệu theo ID
+PHẠM VI SỬ DỤNG:
+       - Được nhúng trong các trang: frontend/reporter/*.html, frontend/editor/*.html, frontend/admin/*.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/editor/pending-articles.php
+==============================================================================
+*/
 
-// ==============================================================================
-// KHỐI 1: CẤU HÌNH DANH MỤC MENU THEO VAI TRÒ (WORKSPACE_MENUS)
-// ==============================================================================
+// 1. Cấu hình danh mục menu theo từng vai trò
 const WORKSPACE_MENUS = {
   reporter: {
     roleTitle: "Ban Phóng viên",
@@ -115,9 +113,7 @@ const WORKSPACE_MENUS = {
   }
 };
 
-// ==============================================================================
-// KHỐI 2: XỬ LÝ BADGE ĐẾM SỐ LƯỢNG TRÊN SIDEBAR
-// ==============================================================================
+// 2. Xử lý huy hiệu đếm số lượng trên Sidebar
 
 /**
  * Tính toán số lượng huy hiệu (Badge Count)
@@ -147,9 +143,7 @@ function updateSidebarBadge(key, count, type = "warning") {
 }
 window.updateSidebarBadge = updateSidebarBadge;
 
-// ==============================================================================
-// KHỐI 3: AVATAR VÀ KHỞI TẠO KHUNG GIAO DIỆN TÒA SOẠN (INIT ADMIN LAYOUT)
-// ==============================================================================
+// 3. Khởi tạo khung giao diện tòa soạn và hiển thị avatar
 
 /**
  * Render Avatar đồng bộ cho Sidebar & Topbar (hỗ trợ ảnh hoặc chữ cái đầu viết tắt)
@@ -233,13 +227,21 @@ function initAdminLayout(currentRole, activeKey) {
 
     sidebarMount.className = "admin-sidebar";
     sidebarMount.innerHTML = `
-      <!-- 2.1. Header Sidebar: Logo thương hiệu TĨNH (không link, chuẩn ảnh mẫu) + Role Badge -->
+      <!-- 2.1. Header Sidebar: Logo thương hiệu TĨNH + Nút đóng X (chỉ hiện trên tablet/mobile) + Role Badge -->
       <div class="admin-sidebar__header">
-        <div class="admin-sidebar__brand">
-          <svg class="admin-sidebar__logo-pulse" width="24" height="24" viewBox="0 0 26 26" fill="none" aria-hidden="true">
-            <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="var(--crimson)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="admin-sidebar__logo-text">MẠCH <em>TIN</em></div>
+        <div class="admin-sidebar__header-top">
+          <div class="admin-sidebar__brand">
+            <svg class="admin-sidebar__logo-pulse" width="24" height="24" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+              <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="var(--crimson)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="admin-sidebar__logo-text">MẠCH <em>TIN</em></div>
+          </div>
+          <button type="button" class="admin-sidebar__close-btn" id="adminSidebarCloseBtn" aria-label="Đóng menu" title="Đóng menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
         <div class="admin-sidebar__role-pill ${roleConfig.roleBadgeClass}">
           <span class="admin-sidebar__role-dot"></span>
@@ -289,12 +291,96 @@ function initAdminLayout(currentRole, activeKey) {
     `;
   }
 
-  // 3. Topbar: Ẩn/loại bỏ để tối ưu không gian làm việc
+  // 3. Topbar: Hiển thị trên Tablet/Mobile (<= 1024px) với Hamburger, Logo và Role Badge
   const topbarMount = document.getElementById("admin-topbar");
   if (topbarMount) {
-    topbarMount.style.display = "none";
-    topbarMount.innerHTML = "";
+    topbarMount.className = "admin-topbar";
+    topbarMount.innerHTML = `
+      <div class="admin-topbar__inner">
+        <div class="admin-topbar__left">
+          <button type="button" class="admin-topbar__toggle" id="adminSidebarToggle" aria-label="Mở menu quản trị" title="Mở menu quản trị">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="admin-topbar__brand">
+            <svg class="admin-topbar__logo-pulse" width="22" height="22" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+              <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="var(--crimson)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="admin-topbar__logo-text">MẠCH <em>TIN</em></span>
+          </div>
+        </div>
+        <div class="admin-topbar__right">
+          <div class="admin-sidebar__role-pill ${roleConfig.roleBadgeClass}">
+            <span class="admin-sidebar__role-dot"></span>
+            <span>${roleConfig.roleTitle}</span>
+          </div>
+        </div>
+      </div>
+    `;
   }
+
+  // 3.1. Thiết lập Backdrop Overlay và sự kiện Đóng / Mở Menu Drawer
+  let overlay = document.getElementById("adminSidebarOverlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "adminSidebarOverlay";
+    overlay.className = "admin-sidebar-overlay";
+    document.body.appendChild(overlay);
+  }
+
+  function openAdminDrawer() {
+    if (sidebarMount) sidebarMount.classList.add("is-open");
+    if (overlay) overlay.classList.add("is-active");
+    document.body.classList.add("mobile-menu-locked");
+  }
+
+  function closeAdminDrawer() {
+    if (sidebarMount) sidebarMount.classList.remove("is-open");
+    if (overlay) overlay.classList.remove("is-active");
+    document.body.classList.remove("mobile-menu-locked");
+  }
+
+  const toggleBtn = document.getElementById("adminSidebarToggle");
+  if (toggleBtn) {
+    toggleBtn.onclick = openAdminDrawer;
+  }
+
+  const closeBtn = document.getElementById("adminSidebarCloseBtn");
+  if (closeBtn) {
+    closeBtn.onclick = closeAdminDrawer;
+  }
+
+  if (overlay) {
+    overlay.onclick = closeAdminDrawer;
+  }
+
+  // Tự động đóng Drawer khi click chọn một mục menu điều hướng
+  if (sidebarMount) {
+    sidebarMount.querySelectorAll(".admin-sidebar__link").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 1024) {
+          closeAdminDrawer();
+        }
+      });
+    });
+  }
+
+  // Đóng Drawer bằng phím Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAdminDrawer();
+    }
+  });
+
+  // Tự động thu gọn và mở khóa scroll khi resize lên màn hình laptop (> 1024px)
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 1024) {
+      closeAdminDrawer();
+    }
+  });
 
   // 4. Tự động tải số lượng huy hiệu cho Biên tập viên (Bài chờ duyệt)
   if (currentRole === "editor") {
@@ -315,9 +401,7 @@ function initAdminLayout(currentRole, activeKey) {
   return currentUser;
 }
 
-// ==============================================================================
-// KHỐI 4: CÁC TIỆN ÍCH HỖ TRỢ BẢNG DỮ LIỆU QUẢN TRỊ (TABLE & MEDIA HELPERS)
-// ==============================================================================
+// 4. Các tiện ích hỗ trợ bảng dữ liệu quản trị
 
 /**
  * Trích xuất ảnh bìa (cover_image) cho các bảng quản trị

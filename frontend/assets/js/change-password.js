@@ -1,25 +1,23 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/change-password.js
- * PHÂN HỆ: Đổi Mật khẩu Tài khoản (User Change Password Module)
- * MÔ TẢ: Quản lý quy trình đổi mật khẩu của tài khoản hiện tại:
- *        1. Kiểm tra tính hợp lệ của mật khẩu mới (độ dài tối thiểu 8 ký tự, không trùng mật khẩu cũ, khớp mật khẩu xác nhận).
- *        2. Ẩn/hiện mật khẩu bằng icon mắt linh hoạt trên từng trường nhập liệu.
- *        3. Gửi yêu cầu cập nhật mật khẩu an toàn qua PUT backend/api/user/change-password.php.
- *        4. Hiển thị thông báo kết quả (Toast) và tự động reset form khi đổi mật khẩu thành công.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/user/change-password.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, showToast)
- *   - backend/api/user/change-password.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/change-password.js
+PHÂN HỆ: Đổi mật khẩu tài khoản
+MÔ TẢ: Quản lý quy trình đổi mật khẩu của tài khoản hiện tại:
+       - Kiểm tra hợp lệ mật khẩu mới (tối thiểu 8 ký tự, không trùng mật khẩu cũ, khớp xác nhận)
+       - Ẩn/hiện mật khẩu bằng icon mắt
+       - Gửi yêu cầu cập nhật mật khẩu qua API backend/api/user/change-password.php
+       - Hiển thị thông báo và đặt lại form khi thành công
+PHẠM VI SỬ DỤNG:
+       - frontend/user/change-password.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/user/change-password.php
+==============================================================================
+*/
 
 const CHANGE_PASSWORD_API = "../../backend/api/user/change-password.php";
 
-// ==============================================================================
-// KHỐI 1: KHỞI TẠO KHUNG TRANG & ĐĂNG KÝ CÁC PHẦN TỬ GIAO DIỆN
-// ==============================================================================
+// 1. Khởi tạo khung trang và đăng ký các phần tử giao diện
 async function initChangePasswordPage() {
   if (typeof initPublicHeader === "function") {
     await initPublicHeader("change-password");
@@ -27,7 +25,7 @@ async function initChangePasswordPage() {
   if (typeof initPublicFooter === "function") {
     await initPublicFooter();
   } 
-  // Bước 1: Truy xuất các phần tử giao diện DOM (Document Object Model) của biểu mẫu đổi mật khẩu
+  // Truy xuất các phần tử giao diện DOM (Document Object Model) của biểu mẫu đổi mật khẩu
   const changePasswordForm = document.getElementById("changePasswordForm");
   const currentPasswordInput = document.getElementById("currentPasswordInput");
   const newPasswordInput = document.getElementById("newPasswordInput");
@@ -35,9 +33,7 @@ async function initChangePasswordPage() {
   const btnResetPasswordForm = document.getElementById("btnResetPasswordForm");
   const toggleButtons = document.querySelectorAll(".btn-toggle-password");
 
-  // ==============================================================================
-  // KHỐI 2: TÙY CHỌN ẨN / HIỆN MẬT KHẨU & ĐẶT LẠI BIỂU MẪU
-  // ==============================================================================
+  // 2. Tùy chọn ẩn / hiện mật khẩu và đặt lại biểu mẫu
   // Biểu tượng SVG mắt mở (trạng thái hiển thị mật khẩu)
   const eyeOpenSvg = `
     <svg
@@ -74,7 +70,7 @@ async function initChangePasswordPage() {
     </svg>
   `;
 
-  // Bước 2: Gắn trình lắng nghe sự kiện Event Listener cho các nút chuyển đổi ẩn / hiện mật khẩu
+  // Gắn trình lắng nghe sự kiện Event Listener cho các nút chuyển đổi ẩn / hiện mật khẩu
   toggleButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const targetId = btn.getAttribute("data-target");
@@ -92,7 +88,7 @@ async function initChangePasswordPage() {
     });
   });
 
-  // Bước 3: Hàm làm mới toàn bộ biểu mẫu (Reset Form) về trạng thái trống ban đầu
+  // Hàm làm mới toàn bộ biểu mẫu (Reset Form) về trạng thái trống ban đầu
   function resetPasswordForm() {
     if (changePasswordForm) {
       changePasswordForm.reset();
@@ -117,10 +113,8 @@ async function initChangePasswordPage() {
     });
   }
 
-  // ==============================================================================
-  // KHỐI 3: KIỂM TRA TÍNH HỢP LỆ VÀ GỬI YÊU CẦU ĐỔI MẬT KHẨU QUA API
-  // ==============================================================================
-  // Bước 4: Xử lý sự kiện gửi form (Form Submit Event Handler)
+  // 3. Kiểm tra tính hợp lệ và gửi yêu cầu đổi mật khẩu qua API
+  // Xử lý sự kiện gửi form (Form Submit Event Handler)
   if (changePasswordForm) {
     changePasswordForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -186,7 +180,7 @@ async function initChangePasswordPage() {
       }
 
       try {
-        // Bước 5: Gửi yêu cầu HTTP PUT tới API backend để cập nhật mật khẩu mới
+        // Gửi yêu cầu HTTP PUT tới API backend để cập nhật mật khẩu mới
         const response = await fetch(CHANGE_PASSWORD_API, {
           method: "PUT",
           credentials: "include",
@@ -208,7 +202,7 @@ async function initChangePasswordPage() {
           return;
         }
 
-        // Bước 6: Làm mới biểu mẫu và hiển thị thông báo thành công dạng Toast
+        // Làm mới biểu mẫu và hiển thị thông báo thành công dạng Toast
         resetPasswordForm();
 
         if (typeof showToast === "function") {
@@ -228,7 +222,7 @@ async function initChangePasswordPage() {
   }
 }
 
-// Bước 7: Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
+// Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initChangePasswordPage);
 } else {

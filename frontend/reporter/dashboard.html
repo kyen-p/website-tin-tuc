@@ -1,11 +1,11 @@
 <!--
 ==============================================================================
 TÊN FILE: frontend/reporter/dashboard.html
-PHÂN HỆ: Bàn Làm Việc Phóng Viên - Bảng Thống Kê (Reporter Dashboard View)
+PHÂN HỆ: Bảng thống kê phóng viên
 MÔ TẢ: Khung giao diện trung tâm theo dõi thống kê bài viết dành cho phóng viên:
-       - Sidebar điều hướng phóng viên (#admin-sidebar) được render tự động bởi admin-layout.js.
-       - Thanh tiêu đề trên cùng (#admin-topbar) chứa tên tài khoản và avatar.
-       - Vùng gắn nội dung thống kê (#workspace-content): các thẻ chỉ số (bài viết, lượt đọc, bình luận), bộ lọc thời gian và bảng bài viết.
+       - Sidebar điều hướng phóng viên (#admin-sidebar) được render tự động bởi admin-layout.js
+       - Thanh tiêu đề trên cùng (#admin-topbar) chứa tên tài khoản và avatar
+       - Vùng gắn nội dung thống kê (#workspace-content): các thẻ chỉ số, bộ lọc thời gian và bảng bài viết
 PHỤ THUỘC:
        - frontend/assets/css/base.css, admin-layout.css
        - frontend/assets/js/common.js, admin-layout.js, reporter-dashboard.js
@@ -18,27 +18,23 @@ PHỤ THUỘC:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thống kê bài viết - Phóng viên | Mạch Tin</title>
 
-  <!-- CSS Nền tảng & Layout Quản trị -->
+  <!-- CSS nền tảng và layout quản trị -->
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/admin-layout.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH)            -->
-  <!-- ============================================================================== -->
+  <!-- 1. Bố cục khung làm việc tòa soạn (Sidebar và Topbar) -->
   <div class="admin-workspace">
     <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
     <div class="admin-main">
-      <!-- Topbar tối giản: Tên & Avatar -->
+      <!-- Topbar tối giản: Tên và Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- ============================================================================== -->
-      <!-- KHỐI 2: VÙNG NỘI DUNG HIỂN THỊ CÁC CHỈ SỐ THỐNG KÊ CỦA BÀI VIẾT                -->
-      <!-- ============================================================================== -->
+      <!-- 2. Vùng nội dung hiển thị các chỉ số thống kê của bài viết -->
       <main class="admin-content">
         <div class="admin-page-header">
           <h1 class="admin-page-title">Thống kê bài viết</h1>
@@ -52,9 +48,7 @@ PHỤ THUỘC:
     </div>
   </div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
-  <!-- ============================================================================== -->
+  <!-- 3. Tải các thư viện và tập lệnh JavaScript điều hành trang -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

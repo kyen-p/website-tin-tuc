@@ -1,28 +1,22 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/reporter/my-articles.php
- * PHÂN HỆ: API Quản lý Bài viết Phóng viên (Reporter Articles Service)
- * MÔ TẢ: Cung cấp các thao tác quản lý bài viết của phóng viên:
- *        - GET: Lấy danh sách toàn bộ bài viết do phóng viên sáng tác (mọi trạng thái).
- *        - PUT: Thu hồi bài viết về bản nháp (action='withdraw') hoặc gửi duyệt (action='submit').
- *        - DELETE: Xóa bài viết thuộc quyền sở hữu (chỉ cho phép xóa bản nháp hoặc bị từ chối;
- *          tự động xóa tệp ảnh bìa và ảnh nội dung đính kèm).
- * PHẠM VI SỬ DỤNG:
- *   - [KHU VỰC TÒA SOẠN - PHÓNG VIÊN]
- *   - Phân quyền: role = 'reporter'
- *   - Phương thức: GET, PUT, DELETE
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireRole, $_SESSION['user_id'])
- *   - backend/helpers/file.php (deleteUploadedFile)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/reporter-articles.js (Hiển thị và xử lý bảng bài viết phóng viên)
- * TRẢ VỀ (JSON):
- *   - Theo từng nghiệp vụ tương ứng
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/reporter/my-articles.php
+PHÂN HỆ: Quản lý bài viết của phóng viên
+MÔ TẢ: Cung cấp các chức năng quản lý bài viết cá nhân của phóng viên:
+       - Lấy danh sách toàn bộ bài viết do phóng viên sáng tác (mọi trạng thái)
+       - Thu hồi bài viết về bản nháp (withdraw) hoặc gửi duyệt lên ban biên tập (submit)
+       - Xóa bài viết cá nhân (chỉ áp dụng cho bài nháp hoặc bị từ chối; dọn dẹp ảnh đính kèm)
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: role = 'reporter'
+       - Phương thức: GET, PUT, DELETE
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+       - helpers/file.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -36,9 +30,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $userId = $_SESSION['user_id'];
 
 try {
-    // ==============================================================================
-    // NGHIỆP VỤ 1: GET - LẤY TOÀN BỘ BÀI VIẾT CỦA PHÓNG VIÊN ĐANG ĐĂNG NHẬP
-    // ==============================================================================
+    // 1. Lấy danh sách toàn bộ bài viết của phóng viên đang đăng nhập
     if ($method === 'GET') {
         $stmt = $pdo->prepare("
             SELECT
@@ -71,9 +63,7 @@ try {
         );
     }
 
-    // ==============================================================================
-    // NGHIỆP VỤ 2: PUT - THU HỒI BÀI VIẾT HOẶC GỬI DUYỆT LÊN BAN BIÊN TẬP
-    // ==============================================================================
+    // 2. Thu hồi bài viết về bản nháp hoặc gửi duyệt lên Ban biên tập
     if ($method === 'PUT') {
         $input = json_decode(file_get_contents('php://input'), true);
         $articleId = $input['article_id'] ?? null;
@@ -105,9 +95,7 @@ try {
         }
     }
 
-    // ==============================================================================
-    // NGHIỆP VỤ 3: DELETE - XÓA BÀI VIẾT VÀ DỌN DẸP TỆP TIN ĐÍNH KÈM
-    // ==============================================================================
+    // 3. Xóa bài viết và dọn dẹp các tệp ảnh đính kèm
     if ($method === 'DELETE') {
         $input = json_decode(file_get_contents('php://input'), true);
         $articleId = $input['article_id'] ?? ($_GET['id'] ?? null);
@@ -150,8 +138,7 @@ try {
             }
         }
 
-        // Nhờ ON DELETE CASCADE trong database, xóa articles sẽ tự động xóa
-        // các liên kết trong article_tags, comments và favorites
+        // Xóa bài viết (các liên kết bảng con tự động xóa nhờ ON DELETE CASCADE)
         $pdo->prepare("DELETE FROM articles WHERE id = ?")->execute([$articleId]);
 
         jsonResponse(true, null, "Đã xóa bài viết thành công");
@@ -163,4 +150,5 @@ try {
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");
 }
+
 

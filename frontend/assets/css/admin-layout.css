@@ -1,7 +1,7 @@
 /**
  * ==============================================================================
  * TÊN FILE: frontend/assets/css/admin-layout.css
- * PHÂN HỆ: Khung Bố cục Quản trị & Tòa soạn (Editorial & Admin Layout)
+ * PHÂN HỆ: Khung Bố cục Quản trị & Tòa soạn 
  * MÔ TẢ: Định dạng toàn bộ không gian làm việc chuyên nghiệp cho 3 phân hệ Tòa soạn:
  *        - Phóng viên (Reporter): Bàn làm việc, Danh sách bài viết, Soạn thảo bài viết CKEditor 5.
  *        - Biên tập viên (Editor): Bàn làm việc, Duyệt bài viết chờ duyệt, Quản lý Chuyên mục & Thẻ Tag.
@@ -29,7 +29,9 @@
   overflow-x: clip;
 }
 
-/* 2. SIDEBAR CỐ ĐỊNH BÊN TRÁI */
+/* ==============================================================================
+ * PHẦN 2: THANH ĐIỀU HƯỚNG BÊN TRÁI CỐ ĐỊNH (ADMIN SIDEBAR)
+ * ============================================================================== */
 .admin-sidebar {
   width: 260px;
   min-width: 260px;
@@ -61,6 +63,33 @@
   flex-direction: column;
   gap: 12px;
   background-color: #FCFAF6;
+}
+
+.admin-sidebar__header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.admin-sidebar__close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.admin-sidebar__close-btn:hover {
+  background-color: rgba(19, 27, 46, 0.08);
+  color: var(--crimson);
 }
 
 .admin-sidebar__brand {
@@ -394,7 +423,32 @@
   border-color: #FADBD8;
 }
 
-/* 3. KHU VỰC NỘI DUNG CHÍNH (MAIN CONTENT) */
+/* 2.4. Backdrop Overlay cho Mobile/Tablet Drawer */
+.admin-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(19, 27, 46, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  cursor: pointer;
+}
+
+.admin-sidebar-overlay.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.mobile-menu-locked {
+  overflow: hidden !important;
+}
+
+/* ==============================================================================
+ * PHẦN 3: KHU VỰC NỘI DUNG CHÍNH
+ * ============================================================================== */
 .admin-main {
   flex: 1;
   min-width: 0;
@@ -440,7 +494,9 @@
   margin: 0;
 }
 
-/* 4. KPI STATS CARDS (Tổng quan chỉ số) */
+/* ==============================================================================
+ * PHẦN 4: THẺ THỐNG KÊ CHỈ SỐ VÀ HIỆU SUẤT (KPI STATS CARDS)
+ * ============================================================================== */
 .admin-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -522,7 +578,9 @@
   line-height: 1.1;
 }
 
-/* 5. DATA TABLE CARD & CONTROLS */
+/* ==============================================================================
+ * PHẦN 5: THẺ CARD CHỨA BẢNG DỮ LIỆU & CÔNG CỤ TÌM KIẾM 
+ * ============================================================================== */
 .admin-card {
   background-color: var(--white);
   border: 1px solid var(--line);
@@ -605,7 +663,9 @@
   width: 280px;
 }
 
-/* 6. TABLE CONTAINER & STYLES */
+/* ==============================================================================
+ * PHẦN 6: ĐỊNH DẠNG BẢNG DỮ LIỆU 
+ * ============================================================================== */
 .admin-table-responsive {
   width: 100%;
   overflow-x: auto;
@@ -769,7 +829,9 @@
   color: #DC2626;
 }
 
-/* 7. EMPTY STATE (Trạng thái rỗng chuẩn quy định) */
+/* ==============================================================================
+ * PHẦN 7: KHỐI THÔNG BÁO DỮ LIỆU RỖNG
+ * ============================================================================== */
 .admin-empty-state {
   padding: 60px 24px;
   text-align: center;
@@ -803,7 +865,9 @@
   margin: 0;
 }
 
-/* 8. STATUS TABS (Bộ lọc trạng thái bài viết) */
+/* ==============================================================================
+ * PHẦN 8: THANH CHUYỂN TAB TRẠNG THÁI
+ * ============================================================================== */
 .admin-tabs-nav {
   display: flex;
   align-items: center;
@@ -869,7 +933,9 @@
   color: #ffffff !important;
 }
 
-/* 9. STATUS BADGES (Huy hiệu trạng thái bài viết) */
+/* ==============================================================================
+ * PHẦN 9: HUY HIỆU HIỂN THỊ TRẠNG THÁI BÀI VIẾT 
+ * ============================================================================== */
 .admin-status-badge {
   display: inline-flex;
   align-items: center;
@@ -913,7 +979,9 @@
   border: 1px solid #BBF7D0;
 }
 
-/* 10. ARTICLE THUMB & TITLE ROW */
+/* ==============================================================================
+ * PHẦN 10: KHỐI HÀNG DỮ LIỆU BÀI VIẾT & ẢNH ĐẠI DIỆN 
+ * ============================================================================== */
 .admin-article-cell {
   display: flex;
   align-items: flex-start;
@@ -996,7 +1064,9 @@
   overflow: hidden;
 }
 
-/* 11. REJECTION REASON BOX */
+/* ==============================================================================
+ * PHẦN 11: HỘP THÔNG BÁO LÝ DO TỪ CHỐI DUYỆT BÀI 
+ * ============================================================================== */
 .admin-rejection-box {
   margin-top: 6px;
   padding: 8px 12px;
@@ -1022,7 +1092,9 @@
   font-weight: 700;
 }
 
-/* 12. ACTION BUTTONS */
+/* ==============================================================================
+ * PHẦN 12: HỆ THỐNG NÚT BẤM HÀNH ĐỘNG VÀ MENU THAO TÁC 
+ * ============================================================================== */
 .admin-actions-cell {
   display: flex;
   align-items: center;
@@ -1288,7 +1360,9 @@
   font-weight: 700;
 }
 
-/* 13. MODAL XÁC NHẬN */
+/* ==============================================================================
+ * PHẦN 13: HỘP THOẠI MODAL KIỂM DUYỆT & XÁC NHẬN 
+ * ============================================================================== */
 .admin-modal-overlay {
   position: fixed;
   top: 0;
@@ -1361,7 +1435,9 @@
   gap: 10px;
 }
 
-/* 14. FORM STYLES & LAYOUT (Soạn bài viết) */
+/* ==============================================================================
+ * PHẦN 14: BỐ CỤC BIỂU MẪU VÀ TRƯỜNG NHẬP LIỆU (FORM STYLES & LAYOUT)
+ * ============================================================================== */
 .admin-form-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -1486,7 +1562,9 @@
   line-height: 1.5;
 }
 
-/* 16. DRAG & DROP FILE UPLOAD ZONE (Chỉ upload từ máy) */
+/* ==============================================================================
+ * PHẦN 15: KHU VỰC TẢI ẢNH KÉO THẢ TỪ THIẾT BỊ 
+ * ============================================================================== */
 .admin-upload-zone {
   border: 2px dashed var(--line);
   border-radius: 8px;
@@ -1589,7 +1667,9 @@
   height: 16px;
 }
 
-/* 17. INTERACTIVE TAGS COMPONENT (Quản lý thẻ thông minh) */
+/* ==============================================================================
+ * PHẦN 16: BỘ GẮN THẺ THÔNG MINH 
+ * ============================================================================== */
 .admin-tags-input-container {
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -1681,7 +1761,9 @@
   border-color: var(--brass-dark);
 }
 
-/* 18. CKEDITOR 5 CUSTOM STYLING */
+/* ==============================================================================
+ * PHẦN 17: TÙY CHỈNH GIAO DIỆN BỘ SOẠN THẢO CKEDITOR 5
+ * ============================================================================== */
 .ck.ck-editor {
   border-radius: 6px;
   overflow: hidden;
@@ -1741,7 +1823,9 @@
   box-shadow: 0 0 0 3px rgba(184, 137, 79, 0.15) !important;
 }
 
-/* 19. STICKY ACTIONS BAR AT BOTTOM */
+/* ==============================================================================
+ * PHẦN 18: THANH CÔNG CỤ ĐÁY CỐ ĐỊNH CHO BIÊN TẬP
+ * ============================================================================== */
 .admin-sticky-actions {
   position: sticky;
   bottom: 12px;
@@ -1796,7 +1880,9 @@
   }
 }
 
-/* 20. ROW & CARD HIGHLIGHT FLASH ANIMATION */
+/* ==============================================================================
+ * PHẦN 19: HIỆU ỨNG FLASH ANIMATION 
+ * ============================================================================== */
 .admin-row-highlight-flash {
   animation: adminRowGlowFlash 2.5s ease forwards !important;
 }
@@ -1817,7 +1903,7 @@
 }
 
 /* ==============================================================================
- * 21. PHÂN TRANG BẢNG DỮ LIỆU QUẢN TRỊ (ADMIN DATA TABLE PAGINATION)
+ * PHẦN 20: PHÂN TRANG BẢNG DỮ LIỆU QUẢN TRỊ
  * ============================================================================== */
 .admin-table-pagination {
   display: flex;
@@ -1915,6 +2001,280 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* ==============================================================================
+ * PHẦN 21: TƯƠNG THÍCH MÀN HÌNH ĐA THIẾT BỊ TABLET & MOBILE (RESPONSIVE LAYOUT)
+ * ============================================================================== */
+@media (max-width: 1024px) {
+  /* Topbar thanh điều hướng di động / tablet */
+  .admin-topbar {
+    display: block !important;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background-color: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 1px 4px rgba(19, 27, 46, 0.04);
+    width: 100%;
+  }
+
+  .admin-topbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 56px;
+    gap: 12px;
+    box-sizing: border-box;
+  }
+
+  .admin-topbar__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .admin-topbar__toggle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--ink);
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    transition: all 0.15s ease;
+  }
+
+  .admin-topbar__toggle:hover,
+  .admin-topbar__toggle:active {
+    background-color: #EDE8DC;
+    border-color: var(--brass);
+    color: var(--brass-dark);
+  }
+
+  .admin-topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+    cursor: default;
+  }
+
+  .admin-topbar__logo-pulse {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .admin-topbar__logo-text {
+    font-family: var(--f-display), 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    display: flex;
+    align-items: baseline;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .admin-topbar__logo-text em {
+    font-family: var(--f-serif), 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 600;
+    color: #8F7239;
+    margin-left: 4px;
+  }
+
+  .admin-topbar__right {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .admin-topbar__right .admin-sidebar__role-pill {
+    padding: 5px 12px;
+    font-size: 11.5px;
+    margin: 0;
+  }
+
+  /* 22.2. Sidebar chuyển sang Off-canvas Drawer */
+  .admin-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 82vw !important;
+    flex: none !important;
+    z-index: 1000 !important;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s ease;
+    box-shadow: 4px 0 28px rgba(19, 27, 46, 0.2);
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.is-open {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+  }
+
+  .admin-sidebar__close-btn {
+    display: flex !important;
+  }
+
+  /* 22.3. Bố cục Workspace khi Sidebar thu vào Drawer */
+  .admin-workspace {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  .admin-main {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: 1 1 100% !important;
+    display: block !important;
+  }
+
+  .admin-content {
+    padding: 20px 16px !important;
+  }
+
+  /* 22.4. Tối ưu thanh Toolbar bảng dữ liệu trên Tablet & Mobile */
+  .admin-card__toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .admin-search-input {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Phân trang linh hoạt */
+  .admin-table-pagination {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .admin-pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 22.5. Tự động chuyển các cụm lưới 2 cột sang 1 cột xếp dọc trên Điện thoại (<= 768px) */
+@media (max-width: 768px) {
+  #cat-tag-grid,
+  .admin-content div[style*="grid-template-columns"],
+  .admin-content [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  #section-reporters div[style*="overflow: hidden"],
+  #section-reporters div[style*="overflow"],
+  .admin-card div[style*="overflow: hidden"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  #modal-review-article {
+    padding: 10px !important;
+  }
+
+  #modal-review-article .admin-modal-container {
+    max-height: 96vh !important;
+    max-height: 96dvh !important;
+    width: 100% !important;
+  }
+
+  #modal-review-article .admin-modal-header {
+    padding: 12px 16px !important;
+  }
+
+  #modal-review-article .admin-modal-body {
+    padding: 16px 14px !important;
+  }
+
+  #modal-review-article div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  #modal-review-article [style*="display: none"],
+  #modal-review-article [style*="display:none"] {
+    display: none !important;
+  }
+
+  #modal-review-article .admin-modal-footer {
+    padding: 12px 14px !important;
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+
+  #modal-review-article .admin-modal-footer > div:not([style*="display: none"]):not([style*="display:none"]),
+  #modal-review-article #modal-editor-actions:not([style*="display: none"]):not([style*="display:none"]),
+  #modal-review-article #modal-admin-actions:not([style*="display: none"]):not([style*="display:none"]) {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  #modal-review-article .admin-modal-footer .admin-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  #contactConfigForm div[style*="justify-content: space-between"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  #contactConfigForm #btnResetConfig,
+  #contactConfigForm #btnSaveConfig {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-topbar__inner {
+    padding: 0 12px;
+  }
+
+  .admin-topbar__logo-text {
+    font-size: 17px;
+  }
+
+  .admin-topbar__right .admin-sidebar__role-pill {
+    padding: 4px 9px;
+    font-size: 10.5px;
+  }
+
+  #section-reporters .admin-table th,
+  #section-reporters .admin-table td {
+    padding: 10px 6px !important;
+    font-size: 12px !important;
+  }
 }
 
 

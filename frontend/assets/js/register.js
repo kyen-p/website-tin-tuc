@@ -1,24 +1,21 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/register.js
- * PHÂN HỆ: Xác thực & Đăng ký Độc giả (Reader Registration Module)
- * MÔ TẢ: Xử lý giao diện và nghiệp vụ đăng ký tài khoản độc giả mới:
- *        1. Quản lý trạng thái form: Ẩn/hiện mật khẩu và xác nhận mật khẩu.
- *        2. Kiểm tra tính hợp lệ dữ liệu nhập (Client-side Validation): Họ tên, username, email, mật khẩu tối thiểu 8 ký tự.
- *        3. Gửi thông tin đăng ký đến API backend/api/auth/register.php.
- *        4. Hiển thị thông báo kết quả (thành công hoặc lỗi chi tiết theo từng ô nhập).
- *        5. Tự động chuyển hướng sang trang đăng nhập (login.html) khi tạo tài khoản thành công.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/public/register.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (resolveApiUrl, showToast)
- *   - backend/api/auth/register.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/register.js
+PHÂN HỆ: Đăng ký tài khoản độc giả
+MÔ TẢ: Xử lý giao diện và tạo tài khoản mới:
+       - Ẩn / hiện mật khẩu và xác nhận mật khẩu
+       - Kiểm tra hợp lệ dữ liệu nhập (họ tên, username, email, mật khẩu >= 8 ký tự)
+       - Gửi thông tin đăng ký lên API backend/api/auth/register.php
+       - Chuyển hướng sang trang đăng nhập khi thành công
+PHẠM VI SỬ DỤNG:
+       - frontend/public/register.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js (resolveApiUrl, showToast)
+       - backend/api/auth/register.php
+==============================================================================
+*/
 
-// ==============================================================================
-// KHỐI 1: HÀM HỖ TRỢ ẨN/HIỆN MẬT KHẨU (PASSWORD TOGGLE)
-// ==============================================================================
+// Xử lý bật / tắt hiển thị mật khẩu
 function setupToggle(btnId, inputId) {
     const btn = document.getElementById(btnId);
     const input = document.getElementById(inputId);
@@ -29,14 +26,12 @@ function setupToggle(btnId, inputId) {
       input.setAttribute("type", isPassword ? "text" : "password");
       btn.innerHTML = isPassword
         ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
-        : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+        : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="7" r="3"></circle></svg>`;
       btn.setAttribute("aria-label", isPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu");
     });
 }
 
-// ==============================================================================
-// KHỐI 2: KHỞI TẠO BIỂU MẪU & XỬ LÝ SUBMIT ĐĂNG KÝ
-// ==============================================================================
+// Khởi tạo sự kiện form đăng ký
 document.addEventListener("DOMContentLoaded", () => {
   setupToggle("togglePasswordBtn", "passwordInput");
   setupToggle("toggleConfirmPasswordBtn", "confirmPasswordInput");
@@ -185,9 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ==============================================================================
-// KHỐI 3: HÀM TIỆN ÍCH GÁN TRẠNG THÁI LỖI CHO TRƯỜNG DỮ LIỆU
-// ==============================================================================
+// Gán thông báo lỗi cho ô nhập liệu
 function setError(fieldElem, errorElem, message) {
   if (fieldElem) fieldElem.classList.add("has-error");
   if (errorElem) errorElem.textContent = message;

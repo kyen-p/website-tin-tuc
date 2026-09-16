@@ -1,28 +1,24 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/ckeditor-helper.js
- * PHÂN HỆ: Tiện ích Dùng chung Toàn hệ thống (Shared Editor Helper)
- * MÔ TẢ: Cấu hình và khởi tạo trình soạn thảo WYSIWYG CKEditor 5 Super-build chuẩn:
- *        - Hỗ trợ đầy đủ bộ công cụ: Định dạng văn bản, căn lề (Alignment),
- *          chèn bảng biểu (Tables), trích dẫn (BlockQuote), nhúng video (MediaEmbed).
- *        - Tích hợp sẵn CustomServerUploadAdapter tải ảnh trực tiếp lên máy chủ
- *          thông qua API `backend/api/upload.php`.
- *        - Hỗ trợ căn chỉnh vị trí ảnh (inline, block, side) và chú thích ảnh (caption).
- * PHẠM VI SỬ DỤNG:
- *   - Phóng viên soạn và sửa bài: frontend/reporter/write-article.html
- *   - Quản trị viên sửa đè bài: frontend/admin/published-articles.html
- * PHỤ THUỘC:
- *   - CKEditor 5 Super-build (cdn.ckeditor.com)
- *   - frontend/assets/js/common.js (resolveApiUrl, resolveAssetPath, showToast)
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/ckeditor-helper.js
+PHÂN HỆ: Tiện ích dùng chung toàn hệ thống
+MÔ TẢ: Cấu hình và khởi tạo trình soạn thảo WYSIWYG CKEditor 5 Super-build:
+       - Hỗ trợ bộ công cụ: định dạng văn bản, căn lề, bảng biểu, trích dẫn, nhúng video
+       - Tích hợp CustomServerUploadAdapter tải ảnh trực tiếp lên máy chủ qua backend/api/upload.php
+       - Hỗ trợ căn chỉnh vị trí ảnh và chú thích ảnh
+PHẠM VI SỬ DỤNG:
+       - Phóng viên: frontend/reporter/write-article.html
+       - Quản trị viên: frontend/admin/published-articles.html
+PHỤ THUỘC:
+       - CKEditor 5 Super-build
+       - frontend/assets/js/common.js
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  /**
-   * Adapter xử lý tải ảnh lên máy chủ cục bộ cho CKEditor 5
-   */
+  // 1. Adapter xử lý tải ảnh lên máy chủ cục bộ cho CKEditor 5
   class CustomServerUploadAdapter {
     constructor(loader) {
       this.loader = loader;
@@ -72,9 +68,7 @@
     abort() {}
   }
 
-  /**
-   * Plugin đăng ký adapter tải ảnh vào kho plugin FileRepository của CKEditor 5
-   */
+  // 2. Plugin đăng ký adapter tải ảnh vào kho plugin FileRepository của CKEditor 5
   function CustomUploadAdapterPlugin(editor) {
     if (editor.plugins.has("FileRepository")) {
       editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
@@ -83,12 +77,7 @@
     }
   }
 
-  /**
-   * [HÀM DÙNG CHUNG TOÀN HỆ THỐNG] Khởi tạo CKEditor 5 chuẩn nhất quán cho cả Phóng viên và Admin
-   * @param {string|HTMLElement} target - Bộ chọn CSS hoặc thẻ DOM element (ví dụ '#editor', '#editContent')
-   * @param {object} customOptions - Các tùy chọn bổ sung hoặc ghi đè (ví dụ placeholder)
-   * @returns {Promise<ClassicEditor|null>} Đối tượng instance của CKEditor 5
-   */
+  // 3. Khởi tạo CKEditor 5 chuẩn dùng chung toàn hệ thống
   async function initArticleEditor(target, customOptions = {}) {
     const el = typeof target === "string" ? document.querySelector(target) : target;
     if (!el) {
@@ -189,7 +178,7 @@
     }
   }
 
-  // Xuất các hàm ra phạm vi toàn cục
+  // 4. Xuất các hàm ra phạm vi toàn cục
   window.CustomServerUploadAdapter = CustomServerUploadAdapter;
   window.initArticleEditor = initArticleEditor;
 })();

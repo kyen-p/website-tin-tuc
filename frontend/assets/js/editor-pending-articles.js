@@ -1,30 +1,28 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/editor-pending-articles.js
- * PHÂN HỆ: Danh sách Bài viết Chờ duyệt Biên tập viên (Editor Pending Articles Module)
- * MÔ TẢ: Quản lý danh sách và luồng thẩm định các bài viết chờ duyệt:
- *        1. Tải danh sách bài chờ duyệt qua GET backend/api/editor/pending-articles.php và danh mục qua backend/api/public/categories.php.
- *        2. Lọc nhanh theo chuyên mục, tìm kiếm theo tiêu đề bài viết hoặc tên phóng viên.
- *        3. Render bảng bài viết chờ duyệt kèm huy hiệu trạng thái, ảnh đại diện, sapo và thông tin tác giả.
- *        4. Tích hợp kích hoạt Modal Thẩm định toàn diện (phối hợp với editor-pending-articles-modal.js).
- *        5. Cung cấp API nội bộ window.EditorPendingArticles để modal có thể kích hoạt reload dữ liệu sau khi duyệt/từ chối.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/editor/pending-articles.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/admin-layout.js (getCurrentUser, updateSidebarBadge, etc.)
- *   - frontend/assets/js/common.js (resolveApiUrl, escapeHtml, formatDate, extractThumbnail, etc.)
- *   - frontend/assets/js/editor-pending-articles-modal.js (openReviewModal, etc.)
- *   - backend/api/editor/pending-articles.php
- *   - backend/api/public/categories.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/editor-pending-articles.js
+PHÂN HỆ: Danh sách bài viết chờ duyệt biên tập viên
+MÔ TẢ: Quản lý danh sách và luồng thẩm định các bài viết chờ duyệt:
+       - Tải danh sách bài chờ duyệt qua backend/api/editor/pending-articles.php
+       - Lọc theo chuyên mục, tìm kiếm theo tiêu đề bài viết hoặc tên phóng viên
+       - Render bảng bài viết chờ duyệt kèm huy hiệu trạng thái, ảnh đại diện, tác giả
+       - Tích hợp modal thẩm định toàn diện (editor-pending-articles-modal.js)
+       - Cung cấp API window.EditorPendingArticles để tải lại dữ liệu sau khi duyệt/từ chối
+PHẠM VI SỬ DỤNG:
+       - frontend/editor/pending-articles.html
+PHỤ THUỘC:
+       - frontend/assets/js/admin-layout.js
+       - frontend/assets/js/common.js
+       - frontend/assets/js/editor-pending-articles-modal.js
+       - backend/api/editor/pending-articles.php
+       - backend/api/public/categories.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI LỌC/TÌM KIẾM BÀI CHỜ DUYỆT
-  // ==============================================================================
+  // 1. Khởi tạo trang và trạng thái lọc/tìm kiếm bài chờ duyệt
   let allArticles = [];
   let allCategories = [];
   let currentUser = null;
@@ -68,9 +66,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 2: TẢI DỮ LIỆU BÀI VIẾT CHỜ DUYỆT & CHUYÊN MỤC TỪ BACKEND
-  // ==============================================================================
+  // 2. Tải dữ liệu bài viết chờ duyệt và chuyên mục từ backend
   async function loadData() {
     try {
       const [artRes, catRes] = await Promise.all([
@@ -86,9 +82,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 3: RENDER KHUNG BẢNG & ĐẾM THỐNG KÊ SỐ LƯỢNG CHỜ DUYỆT
-  // ==============================================================================
+  // 3. Hiển thị khung bảng và đếm thống kê số lượng chờ duyệt
   /**
    * Render khung sườn giao diện
    */
@@ -163,9 +157,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 4: LỌC TRẠNG THÁI PENDING, TÌM KIẾM & RENDER DÒNG BÀI VIẾT
-  // ==============================================================================
+  // 4. Lọc trạng thái chờ duyệt, tìm kiếm và hiển thị danh sách bài viết
   /**
    * Render Danh sách bài viết dạng Bảng (Table) - Chỉ hiển thị các bài status === 'pending'
    */
@@ -199,13 +191,13 @@
       return tB - tA;
     });
 
-    // Bước 1: Cập nhật huy hiệu số lượng bài viết chờ duyệt trên giao diện
+    // Cập nhật huy hiệu số lượng bài viết chờ duyệt trên giao diện
     const countBadge = document.getElementById("list-count-badge");
     if (countBadge) {
       countBadge.textContent = `${filtered.length} bài`;
     }
 
-    // Bước 2: Hiển thị giao diện trạng thái trống (Empty State) khi không có bài viết thỏa mãn
+    // Hiển thị giao diện trạng thái trống (Empty State) khi không có bài viết thỏa mãn
     if (filtered.length === 0) {
       let emptyMsg = "Hiện tại không có bài viết nào đang chờ duyệt";
       if (currentSearchQuery) {
@@ -235,7 +227,7 @@
       return;
     }
 
-    // Bước 3: Tính toán các chỉ số phân trang (Pagination: Tổng số trang, phạm vi dòng dữ liệu)
+    // Tính toán các chỉ số phân trang (Pagination: Tổng số trang, phạm vi dòng dữ liệu)
     const totalRecords = filtered.length;
     const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
     if (currentPage > totalPages) {
@@ -245,10 +237,10 @@
     const startIndex = (currentPage - 1) * perPage;
     const pageItems = filtered.slice(startIndex, startIndex + perPage);
 
-    // Bước 4: Hiển thị danh sách các dòng dữ liệu bảng (Table Rows) cho trang hiện tại
+    // Hiển thị danh sách các dòng dữ liệu bảng (Table Rows) cho trang hiện tại
     tbody.innerHTML = pageItems.map((article) => renderArticleRow(article)).join("");
 
-    // Bước 5: Render thanh điều khiển phân trang tiêu chuẩn bảng quản trị (Table Pagination)
+    // Render thanh điều khiển phân trang tiêu chuẩn bảng quản trị (Table Pagination)
     if (typeof renderTablePagination === "function") {
       renderTablePagination("editor-pending-pagination", {
         currentPage,
@@ -378,9 +370,7 @@
     `;
   }
 
-  // ==============================================================================
-  // KHỐI 5: GẮN SỰ KIỆN TƯƠNG TÁC & XUẤT API CHO MODAL THẨM ĐỊNH
-  // ==============================================================================
+  // 5. Gắn sự kiện tương tác và xuất API cho modal thẩm định
   /**
    * Gắn sự kiện tương tác
    */

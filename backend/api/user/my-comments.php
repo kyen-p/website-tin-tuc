@@ -1,27 +1,22 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/user/my-comments.php
- * PHÂN HỆ: API Quản lý Bình luận Người dùng (User Comments Service)
- * MÔ TẢ: Cung cấp đầy đủ các thao tác CRUD bình luận cho người dùng đăng nhập:
- *        - GET: Lấy danh sách lịch sử bình luận của chính người dùng.
- *        - POST: Đăng bình luận mới cho một bài viết (kiểm tra tài khoản không bị khóa).
- *        - PUT: Chỉnh sửa nội dung bình luận thuộc quyền sở hữu của chính mình.
- *        - DELETE: Xóa bình luận thuộc quyền sở hữu của chính mình.
- * PHẠM VI SỬ DỤNG:
- *   - [API THÀNH VIÊN ĐĂNG NHẬP]
- *   - Phương thức: GET, POST, PUT, DELETE
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireLogin, $_SESSION['user_id'])
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/article-detail.js (Đăng bình luận mới dưới bài viết)
- *   - frontend/assets/js/profile.js (Quản lý tab lịch sử bình luận cá nhân, sửa/xóa bình luận)
- * TRẢ VỀ (JSON):
- *   - Theo từng nghiệp vụ CRUD tương ứng
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/user/my-comments.php
+PHÂN HỆ: Quản lý bình luận cá nhân
+MÔ TẢ: Cung cấp các thao tác quản lý bình luận cho thành viên đã đăng nhập:
+       - Lấy danh sách lịch sử bình luận của chính mình
+       - Đăng bình luận mới cho bài viết (kiểm tra tài khoản không bị khóa)
+       - Chỉnh sửa nội dung bình luận của chính mình
+       - Xóa bình luận của chính mình
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: Thành viên đã đăng nhập
+       - Phương thức: GET, POST, PUT, DELETE
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -34,9 +29,7 @@ $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    // ==============================================================================
-    // NGHIỆP VỤ 1: GET - LẤY DANH SÁCH BÌNH LUẬN CỦA USER ĐANG ĐĂNG NHẬP
-    // ==============================================================================
+    // 1. Lấy danh sách bình luận của người dùng đang đăng nhập
     if ($method === 'GET') {
         $stmt = $pdo->prepare("
             SELECT c.id, c.article_id, c.content, c.created_at,
@@ -52,9 +45,7 @@ try {
         jsonResponse(true, $comments, "Lấy danh sách bình luận thành công");
     }
 
-    // ==============================================================================
-    // NGHIỆP VỤ 2: POST - ĐĂNG BÌNH LUẬN MỚI
-    // ==============================================================================
+    // 2. Đăng bình luận mới cho bài viết
     if ($method === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -108,9 +99,7 @@ try {
         jsonResponse(true, $newComment, "Bình luận thành công");
     }
 
-    // ==============================================================================
-    // NGHIỆP VỤ 3: PUT - CHỈNH SỬA NỘI DUNG BÌNH LUẬN CHÍNH CHỦ
-    // ==============================================================================
+    // 3. Chỉnh sửa nội dung bình luận của chính mình
     if ($method === 'PUT') {
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -145,9 +134,7 @@ try {
         jsonResponse(true, null, "Chỉnh sửa bình luận thành công");
     }
 
-    // ==============================================================================
-    // NGHIỆP VỤ 4: DELETE - XÓA BÌNH LUẬN CHÍNH CHỦ
-    // ==============================================================================
+    // 4. Xóa bình luận của chính mình
     if ($method === 'DELETE') {
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -187,4 +174,5 @@ try {
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống: " . $e->getMessage());
 }
+
 

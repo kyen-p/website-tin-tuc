@@ -1,28 +1,26 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/search.js
- * PHÂN HỆ: Tìm kiếm & Lọc bài viết (Public Search & Tag Discovery Module)
- * MÔ TẢ: Khởi tạo và xử lý toàn bộ logic tìm kiếm nội dung trên trang công khai:
- *        1. Đọc và đồng bộ tham số URL (?q=, ?tag=, ?cat=, ?sort=).
- *        2. Tải toàn bộ dữ liệu bài viết đã xuất bản, chuyên mục và danh sách tag.
- *        3. Lọc đa điều kiện: Tag, từ khóa tìm kiếm (bỏ dấu tiếng Việt, tìm theo tiêu đề/mô tả/nội dung), chuyên mục.
- *        4. Sắp xếp kết quả: Mới nhất (newest), cũ nhất (oldest), lượt đọc nhiều nhất (views).
- *        5. Highlight từ khóa tìm kiếm (thẻ <mark>) trong tiêu đề và tóm tắt kết quả.
- *        6. Tích hợp sidebar tin đọc nhiều và danh mục hashtag thịnh hành.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/public/search.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, initPublicSidebar, resolveApiUrl, getArticleDetailUrl, etc.)
- *   - backend/api/public/articles.php
- *   - backend/api/public/categories.php
- *   - backend/api/public/tags.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/search.js
+PHÂN HỆ: Tìm kiếm và lọc bài viết
+MÔ TẢ: Khởi tạo và xử lý toàn bộ logic tìm kiếm nội dung trên trang công khai:
+       - Đọc và đồng bộ tham số URL (?q=, ?tag=, ?cat=, ?sort=)
+       - Tải toàn bộ dữ liệu bài viết đã xuất bản, chuyên mục và danh sách tag
+       - Lọc đa điều kiện: Tag, từ khóa tìm kiếm (bỏ dấu tiếng Việt), chuyên mục
+       - Sắp xếp kết quả: mới nhất, cũ nhất, lượt đọc nhiều nhất
+       - Đánh dấu từ khóa tìm kiếm (thẻ mark) trong tiêu đề và tóm tắt kết quả
+       - Tích hợp sidebar tin đọc nhiều và danh mục hashtag thịnh hành
+PHẠM VI SỬ DỤNG:
+       - frontend/public/search.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/public/articles.php
+       - backend/api/public/categories.php
+       - backend/api/public/tags.php
+==============================================================================
+*/
 
 async function initSearchPage() {
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO KHUNG TRANG, ĐỌC THAM SỐ URL & TẢI DỮ LIỆU TÌM KIẾM
-  // ==============================================================================
+  // 1. Khởi tạo khung trang, đọc tham số URL và tải dữ liệu tìm kiếm
   // 1. Khởi tạo Header và Footer dùng chung
   if (typeof initPublicHeader === "function") await initPublicHeader("search");
   if (typeof initPublicFooter === "function") await initPublicFooter();
@@ -53,12 +51,12 @@ async function initSearchPage() {
     console.error("Lỗi khi tải dữ liệu tìm kiếm từ backend", error);
   }
 
-  // Bước 1: Hàm tiện ích trích xuất thông tin tác giả bài viết (Author Helper - đã được API nhúng sẵn trong article.author)
+  // Hàm tiện ích trích xuất thông tin tác giả bài viết (Author Helper - đã được API nhúng sẵn trong article.author)
   function getAuthor(article) {
     return (article && article.author) || { full_name: "Ban Biên Tập", id: 1 };
   }
 
-  // Bước 2: Truy xuất các phần tử giao diện DOM (Document Object Model) trên trang tìm kiếm
+  // Truy xuất các phần tử giao diện DOM (Document Object Model) trên trang tìm kiếm
   const searchForm = document.getElementById("searchForm");
   const searchInput = document.getElementById("searchInput");
   const searchSummaryText = document.getElementById("searchSummaryText");
@@ -68,12 +66,12 @@ async function initSearchPage() {
   const hotTagsMount = document.getElementById("hotTagsMount");
   const breadcrumbCurrent = document.getElementById("breadcrumb-current");
 
-  // Bước 3: Điền sẵn từ khóa vào ô nhập liệu tìm kiếm (Search Input) từ tham số URL
+  // Điền sẵn từ khóa vào ô nhập liệu tìm kiếm (Search Input) từ tham số URL
   if (searchInput) {
     searchInput.value = queryParam;
   }
 
-  // Bước 4: Khởi tạo các thành phần tĩnh, danh sách lựa chọn chuyên mục và danh sách thẻ Tag nóng
+  // Khởi tạo các thành phần tĩnh, danh sách lựa chọn chuyên mục và danh sách thẻ Tag nóng
   setupCategoryOptions();
   renderHotTags();
 
@@ -83,9 +81,7 @@ async function initSearchPage() {
     tagMountId: "sidebarAllTagsMount"
   });
 
-  // ==============================================================================
-  // KHỐI 2: LẮNG NGHE SỰ KIỆN TÌM KIẾM, LỌC CHUYÊN MỤC & SẮP XẾP
-  // ==============================================================================
+  // 2. Lắng nghe sự kiện tìm kiếm, lọc chuyên mục và sắp xếp
   if (categoryFilter) {
     categoryFilter.addEventListener("change", (e) => {
       selectedCategory = e.target.value;
@@ -151,9 +147,7 @@ async function initSearchPage() {
   // 6. Thực thi tìm kiếm lần đầu khi tải trang
   executeSearch();
 
-  // ==============================================================================
-  // KHỐI 3: THUẬT TOÁN TÌM KIẾM, LỌC ĐA ĐIỀU KIỆN & SẮP XẾP BÀI VIẾT
-  // ==============================================================================
+  // 3. Thuật toán tìm kiếm, lọc đa điều kiện và sắp xếp bài viết
   function executeSearch() {
     let publishedArticles = articles.filter((a) => a.status === "published");
 
@@ -236,9 +230,7 @@ async function initSearchPage() {
     renderArticleCards(publishedArticles, queryParam);
   }
 
-  // ==============================================================================
-  // KHỐI 4: RENDER DANH SÁCH KẾT QUẢ & HIGHLIGHT TỪ KHÓA TÌM KIẾM
-  // ==============================================================================
+  // 4. Hiển thị danh sách kết quả và đánh dấu từ khóa tìm kiếm
   function renderArticleCards(list, keyword) {
     if (!searchResultsList) return;
     const paginationMount = document.getElementById("search-pagination-mount");
@@ -359,9 +351,7 @@ async function initSearchPage() {
     }
   }
 
-  // ==============================================================================
-  // KHỐI 5: CÁC HÀM TIỆN ÍCH HỖ TRỢ TÌM KIẾM (XỬ LÝ DẤU, REGEX & DOM OPTIONS)
-  // ==============================================================================
+  // 5. Các hàm tiện ích hỗ trợ tìm kiếm (xử lý dấu, regex)
   function highlightKeyword(text, keyword) {
     if (!text) return "";
     if (!keyword) return escapeHtml(text);

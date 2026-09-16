@@ -1,12 +1,12 @@
 <!--
 ==============================================================================
 TÊN FILE: frontend/reporter/write-article.html
-PHÂN HỆ: Bàn Làm Việc Phóng Viên - Soạn Bài Viết Mới / Chỉnh Sửa (Reporter Write Article View)
+PHÂN HỆ: Soạn bài viết phóng viên
 MÔ TẢ: Khung giao diện biên tập bài viết đầy đủ cho phóng viên:
-       - Sidebar điều hướng phóng viên (#admin-sidebar) và thanh Topbar tối giản (#admin-topbar).
-       - Cột trái: tiêu đề (#article-title), sapo tóm tắt (#article-sapo), bộ soạn thảo siêu văn bản CKEditor 5 (#editor).
-       - Cột phải: khung tải & xem trước ảnh bìa (#cover-preview-container), chọn chuyên mục (#article-category), bộ gắn thẻ Tag thông minh (#tags-container).
-       - Thanh hành động cố định dưới đáy (.admin-sticky-actions): nút Hủy, nút Lưu nháp, nút Gửi duyệt bài.
+       - Sidebar điều hướng phóng viên (#admin-sidebar) và thanh Topbar tối giản (#admin-topbar)
+       - Cột trái: tiêu đề (#article-title), tóm tắt (#article-sapo), bộ soạn thảo CKEditor 5
+       - Cột phải: khung tải ảnh bìa (#cover-preview-container), chọn chuyên mục, bộ gắn thẻ tag
+       - Thanh hành động cố định dưới đáy: nút Hủy, nút Lưu nháp, nút Gửi duyệt bài
 PHỤ THUỘC:
        - frontend/assets/css/base.css, admin-layout.css
        - CKEditor 5 Super-build CDN
@@ -21,7 +21,7 @@ PHỤ THUỘC:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Soạn bài viết - Phóng viên | Mạch Tin</title>
 
-  <!-- CSS Nền tảng & Layout Quản trị -->
+  <!-- CSS nền tảng và layout quản trị -->
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/admin-layout.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -32,20 +32,16 @@ PHỤ THUỘC:
 
 <body>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 1: BỐ CỤC KHUNG LÀM VIỆC TÒA SOẠN (SIDEBAR & TOPBAR ĐIỀU HÀNH)            -->
-  <!-- ============================================================================== -->
+  <!-- 1. Bố cục khung làm việc tòa soạn (Sidebar và Topbar) -->
   <div class="admin-workspace">
     <!-- Sidebar cố định (render tự động bởi admin-layout.js) -->
     <aside id="admin-sidebar"></aside>
 
     <div class="admin-main">
-      <!-- Topbar tối giản: Tên & Avatar -->
+      <!-- Topbar tối giản: Tên và Avatar -->
       <header id="admin-topbar"></header>
 
-      <!-- ============================================================================== -->
-      <!-- KHỐI 2: VÙNG NỘI DUNG FORM SOẠN THẢO BÀI VIẾT (2 CỘT) VÀ THANH HÀNH ĐỘNG DÍNH -->
-      <!-- ============================================================================== -->
+      <!-- 2. Vùng nội dung form soạn thảo bài viết (2 cột) và thanh hành động -->
       <main class="admin-content">
         <div class="admin-page-header">
           <div>
@@ -282,9 +278,7 @@ PHỤ THUỘC:
     </div>
   </div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 3: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
-  <!-- ============================================================================== -->
+  <!-- 3. Tải các thư viện và tập lệnh JavaScript điều hành trang -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/admin-layout.js"></script>

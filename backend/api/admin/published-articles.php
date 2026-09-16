@@ -1,28 +1,23 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/admin/published-articles.php
- * PHÂN HỆ: API Quản lý Bài viết Toàn hệ thống (Global Articles Service)
- * MÔ TẢ: Cung cấp quyền giám sát tối cao đối với các bài viết đã qua kiểm duyệt:
- *        - GET: Lấy danh sách bài viết đã xuất bản hoặc bị ẩn (status: published, hidden).
- *        - PUT: Bật/tắt trạng thái hiển thị (toggle Ẩn/Hiện) hoặc chỉnh sửa nội dung bài viết.
- *        - DELETE: Xóa vĩnh viễn bài viết khỏi hệ thống (đồng thời quét dọn ảnh bìa và các ảnh
- *          minh họa upload cục bộ trong bài; CSDL tự động cascade các comment, tag, favorite).
- * PHẠM VI SỬ DỤNG:
- *   - [KHU VỰC QUẢN TRỊ TỐI CAO - ADMIN]
- *   - Phân quyền: role = 'admin'
- *   - Phương thức: GET, PUT, DELETE
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireRole)
- *   - backend/helpers/file.php (deleteUploadedFile)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/admin-articles.js (Bảng quản lý tin bài hệ thống)
- * TRẢ VỀ (JSON):
- *   - Theo từng nghiệp vụ tương ứng
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/admin/published-articles.php
+PHÂN HỆ: Quản lý bài viết toàn hệ thống
+MÔ TẢ: Cung cấp quyền quản trị bài viết đã xuất bản và bài viết bị ẩn:
+       - Lấy danh sách bài viết kèm tác giả, chuyên mục, thẻ tag (hỗ trợ phân trang, lọc, tìm kiếm)
+       - Chuyển đổi trạng thái Ẩn / Xuất bản hoặc cập nhật nội dung bài viết
+       - Xóa bài viết và tự động dọn dẹp các tệp ảnh đính kèm
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: role = 'admin'
+       - Phương thức: GET, PUT, DELETE
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+       - helpers/file.php
+       - helpers/string.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -30,14 +25,12 @@ require_once __DIR__ . '/../../helpers/auth.php';
 require_once __DIR__ . '/../../helpers/file.php';
 require_once __DIR__ . '/../../helpers/string.php';
 
-// Kiểm tra quyền hạn: Chỉ Quản trị viên (admin) mới được truy cập
+// Chỉ Quản trị viên (admin) mới được truy cập
 requireRole(['admin']);
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// ==============================================================================
-// NGHIỆP VỤ 1: GET - TRUY VẤN DANH SÁCH BÀI VIẾT ĐÃ XUẤT BẢN / ĐANG BỊ ẨN
-// ==============================================================================
+// 1. Lấy danh sách bài viết đã xuất bản hoặc đang bị ẩn
 if ($method === 'GET') {
     $isPaginated  = isset($_GET['page']);
     $statusFilter = isset($_GET['status']) ? trim($_GET['status']) : 'all';
@@ -69,7 +62,7 @@ if ($method === 'GET') {
 
     $whereSql = " WHERE " . implode(" AND ", $whereClauses);
 
-    // Tính tổng số bản ghi nếu yêu cầu phân trang
+    // Tính tổng số bản ghi nếu có yêu cầu phân trang
     $totalRecords = 0;
     $page = 1;
     $limit = 10;
@@ -82,7 +75,7 @@ if ($method === 'GET') {
         list($page, $limit, $offset) = getPaginationParams(10, 50);
     }
 
-    // Câu truy vấn lấy danh sách bài viết dùng chung
+    // Truy vấn danh sách bài viết kết hợp thông tin tác giả và chuyên mục
     $sql = "SELECT a.*, u.full_name AS author_name, u.username AS author_username,
                 approver.full_name AS approver_name, approver.username AS approver_username,
                 c.name AS category_name, c.slug AS category_slug
@@ -101,7 +94,7 @@ if ($method === 'GET') {
     $stmt->execute($params);
     $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Nạp đầy đủ danh sách Thẻ Tag (tags) cho từng bài viết dùng chung 1 chỗ duy nhất
+    // Lấy danh sách thẻ tag cho từng bài viết
     if (!empty($articles)) {
         $tagStmt = $pdo->prepare("
             SELECT t.id, t.name, t.slug 
@@ -116,7 +109,6 @@ if ($method === 'GET') {
         unset($art);
     }
 
-    // Trả về kết quả JSON theo chuẩn tương ứng
     if ($isPaginated) {
         jsonPaginatedResponse(true, $articles, $totalRecords, $page, $limit);
     } else {
@@ -124,15 +116,13 @@ if ($method === 'GET') {
     }
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 2: PUT - CHỈNH SỬA NỘI DUNG HOẶC BẬT/TẮT ẨN HIỆN BÀI VIẾT
-// ==============================================================================
+// 2. Chỉnh sửa nội dung hoặc chuyển đổi trạng thái Ẩn / Hiện bài viết
 if ($method === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true);
     $id = $input['id'] ?? null;
     if (!$id) jsonResponse(false, null, "Thiếu id bài viết");
 
-    // Nhánh 2.1: Chuyển đổi trạng thái Ẩn / Hiện (toggle_status)
+    // Trường hợp 2.1: Chuyển đổi trạng thái Ẩn / Hiện (toggle_status)
     if (isset($input['toggle_status']) && $input['toggle_status'] === true) {
         $stmt = $pdo->prepare("SELECT status FROM articles WHERE id = ?");
         $stmt->execute([$id]);
@@ -144,7 +134,7 @@ if ($method === 'PUT') {
         jsonResponse(true, ['status' => $newStatus], "Cập nhật trạng thái thành công");
     }
 
-    // Nhánh 2.2: Cập nhật toàn bộ thông tin chi tiết bài viết (Bao gồm Thẻ Tag)
+    // Trường hợp 2.2: Cập nhật thông tin chi tiết bài viết (bao gồm cả thẻ tag)
     $pdo->beginTransaction();
     try {
         $stmt = $pdo->prepare(
@@ -161,9 +151,9 @@ if ($method === 'PUT') {
             $id
         ]);
 
-        // Đồng bộ danh sách Thẻ Tag nếu có trong payload
+        // Cập nhật danh sách thẻ tag nếu có truyền lên
         if (isset($input['tags']) && is_array($input['tags'])) {
-            // Xóa liên kết tags cũ của bài viết
+            // Xóa liên kết thẻ cũ của bài viết
             $delTagsStmt = $pdo->prepare("DELETE FROM article_tags WHERE article_id = ?");
             $delTagsStmt->execute([$id]);
 
@@ -171,7 +161,7 @@ if ($method === 'PUT') {
             foreach ($uniqueTagNames as $tagName) {
                 if ($tagName === '') continue;
 
-                // Kiểm tra tag đã tồn tại trong từ điển hệ thống chưa
+                // Kiểm tra tag đã tồn tại trong CSDL chưa, nếu chưa thì thêm mới
                 $stmtTag = $pdo->prepare("SELECT id FROM tags WHERE LOWER(name) = LOWER(?) LIMIT 1");
                 $stmtTag->execute([$tagName]);
                 $existingTag = $stmtTag->fetch(PDO::FETCH_ASSOC);
@@ -200,33 +190,29 @@ if ($method === 'PUT') {
     }
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 3: DELETE - XÓA VĨNH VIỄN BÀI VIẾT & DỌN DẸP TỆP TIN VẬT LÝ LIÊN QUAN
-// ==============================================================================
+// 3. Xóa vĩnh viễn bài viết và dọn dẹp các tệp ảnh đính kèm
 if ($method === 'DELETE') {
     $input = json_decode(file_get_contents('php://input'), true);
     $id = $input['id'] ?? null;
     if (!$id) jsonResponse(false, null, "Thiếu id bài viết");
 
-    // Lấy thông tin bài viết để xóa các file ảnh vật lý liên quan (ảnh bìa + ảnh minh họa trong bài)
+    // Lấy thông tin bài viết để xóa ảnh bìa và các ảnh minh họa trong nội dung
     $stmtFind = $pdo->prepare("SELECT cover_image, content FROM articles WHERE id = ?");
     $stmtFind->execute([$id]);
     $article = $stmtFind->fetch(PDO::FETCH_ASSOC);
 
     if ($article) {
-        // 1. Xóa ảnh bìa (cover_image)
+        // Xóa ảnh bìa nếu có
         if (!empty($article['cover_image'])) {
             deleteUploadedFile($article['cover_image']);
         }
 
-        // 2. Quét và xóa các ảnh minh họa chèn trong nội dung bài viết
+        // Quét và xóa các ảnh minh họa upload cục bộ trong nội dung bài viết
         if (!empty($article['content'])) {
             preg_match_all('/src=["\']([^"\']+)["\']/i', $article['content'], $matches);
             if (!empty($matches[1])) {
                 foreach ($matches[1] as $imgSrc) {
-                    // Nếu là ảnh upload cục bộ của hệ thống
                     if (strpos($imgSrc, 'backend/api/upload/') !== false) {
-                        // Chuẩn hóa lấy đúng đường dẫn bắt đầu từ backend/api/upload/...
                         $pos = strpos($imgSrc, 'backend/api/upload/');
                         $cleanImgPath = substr($imgSrc, $pos);
                         deleteUploadedFile($cleanImgPath);
@@ -236,9 +222,9 @@ if ($method === 'DELETE') {
         }
     }
 
-    // Nhờ đã khai báo ON DELETE CASCADE trong database, xóa articles sẽ tự xóa luôn
-    // comments, article_tags, favorites liên quan - không cần code PHP dọn từng bảng
+    // Xóa bài viết trong CSDL (các bảng liên quan tự động xóa nhờ khóa ngoại ON DELETE CASCADE)
     $stmt = $pdo->prepare("DELETE FROM articles WHERE id = ?");
     $stmt->execute([$id]);
     jsonResponse(true, null, "Đã xóa vĩnh viễn bài viết và các tệp ảnh liên quan");
 }
+

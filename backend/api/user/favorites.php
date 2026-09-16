@@ -1,26 +1,21 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/user/favorites.php
- * PHÂN HỆ: API Bài viết Yêu thích (User Favorites Service)
- * MÔ TẢ: Quản lý danh sách bài viết yêu thích / lưu đọc sau của người dùng:
- *        - GET: Lấy danh sách bài viết đã lưu yêu thích.
- *        - POST: Thêm một bài viết vào danh sách yêu thích.
- *        - DELETE: Bỏ lưu bài viết khỏi danh sách yêu thích.
- * PHẠM VI SỬ DỤNG:
- *   - [API THÀNH VIÊN ĐĂNG NHẬP]
- *   - Phương thức: GET, POST, DELETE
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireLogin, $_SESSION['user_id'])
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/article-detail.js (Nút Lưu bài viết / Bỏ lưu)
- *   - frontend/assets/js/profile.js (Tab danh sách bài viết đã lưu)
- * TRẢ VỀ (JSON):
- *   - Theo từng nghiệp vụ CRUD tương ứng
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/user/favorites.php
+PHÂN HỆ: Quản lý bài viết yêu thích
+MÔ TẢ: Cung cấp các thao tác lưu và quản lý bài viết yêu thích của thành viên:
+       - Lấy danh sách bài viết đã lưu yêu thích
+       - Thêm bài viết vào danh sách yêu thích
+       - Bỏ lưu bài viết khỏi danh sách yêu thích
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: Thành viên đã đăng nhập
+       - Phương thức: GET, POST, DELETE
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -33,9 +28,7 @@ $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    // ==============================================================================
-    // NGHIỆP VỤ 1: GET - LẤY DANH SÁCH BÀI VIẾT ĐÃ YÊU THÍCH
-    // ==============================================================================
+    // 1. Lấy danh sách bài viết đã lưu yêu thích
     if ($method === 'GET') {
         $stmt = $pdo->prepare("
             SELECT
@@ -63,9 +56,7 @@ try {
         );
     }
 
-    // ==============================================================================
-    // NGHIỆP VỤ 2: POST - THÊM BÀI VIẾT VÀO DANH SÁCH YÊU THÍCH
-    // ==============================================================================
+    // 2. Thêm bài viết vào danh sách yêu thích
     if ($method === 'POST') {
         $input = json_decode(
             file_get_contents('php://input'),
@@ -149,9 +140,7 @@ try {
         );
     }
 
-    // ==============================================================================
-    // NGHIỆP VỤ 3: DELETE - BỎ LƯU BÀI VIẾT KHỎI DANH SÁCH YÊU THÍCH
-    // ==============================================================================
+    // 3. Bỏ lưu bài viết khỏi danh sách yêu thích
     if ($method === 'DELETE') {
         $input = json_decode(
             file_get_contents('php://input'),
@@ -207,3 +196,4 @@ try {
         "Lỗi hệ thống, vui lòng thử lại sau"
     );
 }
+

@@ -1,27 +1,24 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/admin-users-modal.js
- * PHÂN HỆ: Quản lý Modal & Thao tác Người dùng Quản trị viên (Admin Users Modal Module)
- * MÔ TẢ: Xử lý giao diện và nghiệp vụ của các hộp thoại modal phục vụ quản trị người dùng:
- *        1. Cung cấp danh sách preset lý do khóa tài khoản vi phạm.
- *        2. Render HTML các modal: Đổi vai trò phân quyền (Change Role Modal), Xác nhận thao tác (User Action Modal),
- *           Xem chi tiết lý do khóa tài khoản (View Lock Reason Modal).
- *        3. Thực hiện gọi API PUT admin/users.php để lưu thay đổi vai trò hoặc cập nhật trạng thái khóa/mở khóa tài khoản.
- *        4. Xuất khẩu các hàm ra window (window.AdminUsersModals) để admin-users.js sử dụng chung.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/admin/users.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, renderUserAvatar, formatDateTime)
- *   - backend/api/admin/users.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/admin-users-modal.js
+PHÂN HỆ: Modal thao tác người dùng quản trị viên
+MÔ TẢ: Xử lý giao diện và nghiệp vụ của các hộp thoại modal quản trị người dùng:
+       - Danh sách preset lý do khóa tài khoản vi phạm
+       - Render modal Đổi vai trò, Xác nhận thao tác, Xem lý do khóa tài khoản
+       - Gọi API PUT admin/users.php để lưu thay đổi vai trò hoặc khóa/mở khóa tài khoản
+       - Xuất khẩu các hàm ra window.AdminUsersModals để admin-users.js sử dụng chung
+PHẠM VI SỬ DỤNG:
+       - frontend/admin/users.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/admin/users.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: DANH SÁCH LÝ DO MẪU & HELPER ĐỊNH DẠNG VAI TRÒ, AVATAR
-  // ==============================================================================
+  // 1. Danh sách lý do mẫu và helper định dạng vai trò, avatar
   const ACCOUNT_LOCK_PRESETS = [
     "Vi phạm quy chế sử dụng và điều khoản tòa soạn",
     "Tài khoản có hoạt động bất thường hoặc nghi ngờ bị xâm phạm",
@@ -65,9 +62,7 @@
     return `<div class="avatar-badge avatar-badge--md">${initials}</div>`;
   }
 
-  // ==============================================================================
-  // KHỐI 2: RENDER CẤU TRÚC HTML CÁC MODAL HỘP THOẠI QUẢN TRỊ
-  // ==============================================================================
+  // 2. Render cấu trúc HTML các modal hộp thoại quản trị
   function renderModalsHtml() {
     return `
       <!-- 1. MODAL PHÂN QUYỀN VAI TRÒ -->
@@ -163,9 +158,7 @@
     modal.style.display = "flex";
   }
 
-  // ==============================================================================
-  // KHỐI 3: XỬ LÝ NGHIỆP VỤ MỞ MODAL & GỬI YÊU CẦU PHÂN QUYỀN VAI TRÒ (API PUT)
-  // ==============================================================================
+  // 3. Xử lý mở modal và gửi yêu cầu phân quyền vai trò (API PUT)
   function handleOpenChangeRole(userId) {
     if (typeof window.closeAllUserActionMenus === "function") window.closeAllUserActionMenus();
     const users = window.AdminUsers ? window.AdminUsers.getAllUsers() : [];
@@ -294,9 +287,7 @@
     });
   }
 
-  // ==============================================================================
-  // KHỐI 4: XỬ LÝ NGHIỆP VỤ KHÓA / MỞ KHÓA TÀI KHOẢN & XEM LÝ DO KHÓA
-  // ==============================================================================
+  // 4. Xử lý khóa / mở khóa tài khoản và xem lý do khóa
   function handleToggleLockUser(userId, shouldLock) {
     if (typeof window.closeAllUserActionMenus === "function") window.closeAllUserActionMenus();
     const users = window.AdminUsers ? window.AdminUsers.getAllUsers() : [];
@@ -482,10 +473,8 @@
     modal.style.display = "flex";
   }
 
-  // ==============================================================================
-  // KHỐI 5: LẮNG NGHE SỰ KIỆN TOÀN CỤC & XUẤT BẢN CÁC HÀM RA WINDOW
-  // ==============================================================================
-  // Bước 1: Gắn trình lắng nghe sự kiện phím Escape và nhấp chuột bên ngoài vùng Overlay để đóng hộp thoại Modal
+  // 5. Lắng nghe sự kiện toàn cục và xuất bản các hàm ra window
+  // Gắn trình lắng nghe sự kiện phím Escape và nhấp chuột bên ngoài vùng Overlay để đóng hộp thoại Modal
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
       closeModal("changeRoleModal");
@@ -500,7 +489,7 @@
     }
   });
 
-  // Bước 2: Đăng ký các hàm nghiệp vụ hộp thoại vào đối tượng toàn cục window để gọi từ các module khác
+  // Đăng ký các hàm nghiệp vụ hộp thoại vào đối tượng toàn cục window để gọi từ các module khác
   window.closeModal = closeModal;
   window.handleOpenChangeRole = handleOpenChangeRole;
   window.handleSubmitChangeRole = handleSubmitChangeRole;

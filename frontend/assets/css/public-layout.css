@@ -1,7 +1,7 @@
 /**
  * ==============================================================================
  * TÊN FILE: frontend/assets/css/public-layout.css
- * PHÂN HỆ: Khung Giao diện Công khai & Độc giả (Public & User Chrome Layout)
+ * PHÂN HỆ: Khung Giao diện Công khai & Độc giả 
  * MÔ TẢ: Định dạng toàn bộ các khối giao diện bao quanh dùng chung cho các trang Công khai
  *        (frontend/public/*) và trang Cá nhân độc giả (frontend/user/*):
  *        - Top Ticker: Dải tin nóng chạy chữ chuyển động ngang (CSS Keyframes Animation).
@@ -18,7 +18,7 @@
  */
 
 /* ==============================================================================
- * PHẦN 1: DẢI TIN NÓNG CHẠY NGANG (TOP TICKER TICKER-INNER)
+ * PHẦN 1: DẢI TIN NÓNG CHẠY NGANG 
  * ============================================================================== */
 .ticker {
   background-color: var(--ink);
@@ -75,7 +75,9 @@
   to { transform: translateX(-50%); }
 }
 
-/* 2. SITE HEADER */
+/* ==============================================================================
+ * PHẦN 2: KHUNG ĐIỀU HƯỚNG CHÍNH VÀ THƯƠNG HIỆU TÒA SOẠN 
+ * ============================================================================== */
 .site-header {
   background-color: var(--paper);
   border-bottom: 1px solid var(--ink);
@@ -214,6 +216,138 @@
   justify-content: center;
   border-radius: 50%;
   cursor: pointer;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+
+.nav-toggle:hover {
+  border-color: var(--ink);
+  background-color: var(--paper-alt);
+}
+
+/* Khối tiêu đề của Mobile Drawer (mặc định ẩn trên desktop) */
+.mobile-drawer-header {
+  display: none;
+}
+
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(19, 27, 46, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.mobile-nav-overlay.is-active {
+  display: block;
+  opacity: 1;
+}
+
+body.mobile-menu-locked {
+  overflow: hidden;
+}
+
+/* ============================================================================== */
+/* RESPONSIVE CHO PUBLIC HEADER & NAVIGATION (< 768px)                            */
+/* ============================================================================== */
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  /* Chuyển .main-nav thành Off-canvas Mobile Drawer */
+  .main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    max-width: 82vw;
+    height: 100vh;
+    height: 100dvh;
+    background-color: var(--paper);
+    border-right: 1px solid var(--line);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0 0 24px;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+  }
+
+  .main-nav.is-active {
+    transform: translateX(0);
+  }
+
+  .mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    background-color: var(--paper-alt);
+  }
+
+  .mobile-drawer-title {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .mobile-drawer-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+
+  .mobile-drawer-close:hover {
+    color: var(--crimson);
+  }
+
+  .main-nav a {
+    display: block;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 14.5px;
+    color: var(--ink);
+  }
+
+  .main-nav a:hover,
+  .main-nav a.is-active {
+    background-color: rgba(184, 137, 79, 0.08);
+    color: var(--brass-dark);
+    font-weight: 600;
+  }
+
+  .main-nav a.is-active::after {
+    display: none;
+  }
+
+  /* Tối ưu Header Utility trên màn hình hẹp */
+  .header-utility .wrap {
+    font-size: 11px;
+    gap: 8px;
+  }
+
+  .header-main .wrap {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .logo__word {
+    font-size: 22px;
+  }
 }
 
 /* Thanh chuyên mục cuộn ngang dưới header */
@@ -245,7 +379,9 @@
   font-weight: 600;
 }
 
-/* 3. TRẠNG THÁI HEADER ĐÃ ĐĂNG NHẬP (Chuông + Avatar + Dropdown) */
+/* ==============================================================================
+ * PHẦN 3: TRẠNG THÁI ĐÃ ĐĂNG NHẬP, CHUÔNG THÔNG BÁO VÀ MENU NGƯỜI DÙNG
+ * ============================================================================== */
 .header-user {
   display: flex;
   align-items: center;
@@ -451,7 +587,9 @@
   color: var(--crimson);
 }
 
-/* 4. BREADCRUMB */
+/* ==============================================================================
+ * PHẦN 4: THANH ĐIỀU HƯỚNG PHÂN CẤP TRANG (BREADCRUMB NAVIGATION)
+ * ============================================================================== */
 .breadcrumb {
   font-family: var(--f-mono);
   font-size: 12px;
@@ -466,7 +604,9 @@
   color: var(--crimson);
 }
 
-/* 5. SITE FOOTER (3 CỘT + ĐÁY) */
+/* ==============================================================================
+ * PHẦN 5: CHÂN TRANG TÒA SOẠN (SITE FOOTER & BẢN QUYỀN)
+ * ============================================================================== */
 .site-footer {
   background-color: var(--ink);
   color: #C9C6BC;
@@ -476,7 +616,7 @@
 
 .footer-top {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 44px 0 32px;
+  padding: 44px 24px 32px;
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: 40px;
@@ -544,7 +684,7 @@
 }
 
 .footer-bottom {
-  padding: 16px 0;
+  padding: 16px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -553,8 +693,35 @@
   color: #8C8A7D;
 }
 
+@media (max-width: 768px) {
+  .site-footer {
+    margin-top: 40px;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 36px 20px 28px;
+  }
+
+  .footer-brand p {
+    margin: 10px 0 16px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    max-width: 100%;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 20px 20px 24px;
+    line-height: 1.5;
+  }
+}
+
 /* ==============================================================================
- * 6. USER ACCOUNT LAYOUT & PROFILE (Dành riêng cho khu vực user/)
+ * PHẦN 6: BỐ CỤC VÀ GIAO DIỆN KHU VỰC CÁ NHÂN ĐỘC GIẢ (USER ACCOUNT & BOOKMARKS)
  * ============================================================================== */
 .user-account-layout {
   display: grid;

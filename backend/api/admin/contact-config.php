@@ -1,27 +1,19 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/admin/contact-config.php
- * PHÂN HỆ: API Cấu hình Thông tin Tòa soạn & Liên hệ (Site Settings Service)
- * MÔ TẢ: Quản lý thông tin liên hệ và liên kết mạng xã hội của Tòa soạn Báo Mạch Tin:
- *        - GET: Đọc cấu hình liên hệ (email, hotline, địa chỉ, mô tả, link MXH) - Public cho toàn trang (Footer, Trang liên hệ).
- *        - PUT: Cập nhật thông tin tòa soạn và các kênh mạng xã hội - Chỉ Quản trị viên (Admin).
- * PHẠM VI SỬ DỤNG:
- *   - [CÔNG KHAI & KHU VỰC QUẢN TRỊ ADMIN]
- *   - Phân quyền: GET (Công khai), PUT (role = 'admin')
- *   - Phương thức: GET, PUT
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireRole)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/layout.js (Render footer thông tin liên hệ toàn trang)
- *   - frontend/assets/js/admin-contact.js (Giao diện cài đặt thông tin tòa soạn)
- * TRẢ VỀ (JSON):
- *   - GET: { contact_email, contact_phone, address, short_description, social_links: {...} }
- *   - PUT: Thông báo cập nhật thành công
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/admin/contact-config.php
+PHÂN HỆ: Cấu hình tòa soạn
+MÔ TẢ: Quản lý thông tin liên hệ và mạng xã hội của Tòa soạn Báo Mạch Tin:
+       - Xem thông tin liên hệ (công khai cho toàn trang)
+       - Cập nhật thông tin tòa soạn và liên kết mạng xã hội (chỉ Admin)
+PHẠM VI SỬ DỤNG:
+       - Phương thức: GET (công khai), PUT/POST (role = 'admin')
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -29,11 +21,8 @@ require_once __DIR__ . '/../../helpers/auth.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// ==============================================================================
-// NGHIỆP VỤ 1: GET - ĐỌC THÔNG TIN CẤU HÌNH TÒA SOẠN (CÔNG KHAI)
-// ==============================================================================
+// 1. Lấy thông tin cấu hình tòa soạn (công khai cho toàn trang)
 if ($method === 'GET') {
-    // Ai cũng xem được, không cần đăng nhập
     $stmt = $pdo->query("SELECT * FROM site_settings LIMIT 1");
     $settings = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -44,9 +33,7 @@ if ($method === 'GET') {
     jsonResponse(true, $settings);
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 2: PUT / POST - CẬP NHẬT THÔNG TIN LIÊN HỆ & MẠNG XÃ HỘI (CHỈ ADMIN)
-// ==============================================================================
+// 2. Cập nhật thông tin liên hệ & mạng xã hội của tòa soạn (chỉ Admin)
 if ($method === 'PUT' || $method === 'POST') {
     requireRole(['admin']);
 
@@ -86,3 +73,4 @@ if ($method === 'PUT' || $method === 'POST') {
         jsonResponse(false, null, "Lỗi cơ sở dữ liệu khi lưu cấu hình: " . $e->getMessage());
     }
 }
+
