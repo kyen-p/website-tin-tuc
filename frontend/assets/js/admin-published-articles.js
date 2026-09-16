@@ -1,29 +1,27 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/admin-published-articles.js
- * PHÂN HỆ: Quản lý Bài viết Đã đăng Quản trị viên (Admin Published Articles Module)
- * MÔ TẢ: Quản trị danh sách toàn bộ các bài viết đã được duyệt xuất bản trên hệ thống:
- *        1. Tải dữ liệu qua admin/published-articles.php, public/categories.php, admin/users.php.
- *        2. Lọc trạng thái xuất bản qua 3 tab: Đang hiển thị (published), Đã tạm ẩn (hidden), Tất cả (all).
- *        3. Tìm kiếm theo tiêu đề bài viết, tóm tắt sapo hoặc tên tác giả.
- *        4. Sắp xếp trực tiếp trên tiêu đề các cột (Ngày xuất bản, Lượt xem ▲▼).
- *        5. Menu thao tác dạng 3 chấm (•••): Sửa nội dung đè (Admin Override), Ẩn/Hiện bài viết, Xóa vĩnh viễn với modal xác nhận.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/admin/published-articles.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, formatDate, getArticleViews, getAdminSortIcon, etc.)
- *   - backend/api/admin/published-articles.php
- *   - backend/api/public/categories.php
- *   - backend/api/admin/users.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/admin-published-articles.js
+PHÂN HỆ: Quản lý bài viết đã xuất bản
+MÔ TẢ: Quản trị danh sách các bài viết đã duyệt xuất bản trên hệ thống:
+       - Tải dữ liệu qua admin/published-articles.php, public/categories.php, admin/users.php
+       - Lọc theo tab: Đang hiển thị, Đã tạm ẩn, Tất cả
+       - Tìm kiếm theo tiêu đề, tóm tắt sapo hoặc tác giả
+       - Sắp xếp trực tiếp trên tiêu đề các cột (Ngày xuất bản, Lượt xem)
+       - Thao tác: Chỉnh sửa nội dung đè, Ẩn/Hiện bài viết, Xóa bài viết vĩnh viễn
+PHẠM VI SỬ DỤNG:
+       - frontend/admin/published-articles.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/admin/published-articles.php
+       - backend/api/public/categories.php
+       - backend/api/admin/users.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI BỘ LỌC / SẮP XẾP
-  // ==============================================================================
+  // 1. Khởi tạo trang và trạng thái bộ lọc / sắp xếp
   let allArticles = [];
   let allCategories = [];
   let allUsers = [];
@@ -64,9 +62,7 @@
     renderTableRows();
   }
 
-  // ==============================================================================
-  // KHỐI 2: TẢI DỮ LIỆU BÀI VIẾT ĐÃ ĐĂNG, DANH MỤC, NGƯỜI DÙNG & TAGS TỪ API
-  // ==============================================================================
+  // 2. Tải dữ liệu bài viết đã đăng, danh mục, người dùng và tags từ API
   async function loadData() {
     try {
       const [articlesRes, categoriesRes, usersRes, tagsRes] = await Promise.all([
@@ -94,9 +90,7 @@
     return getAdminSortIcon(field, sortField, sortOrder);
   }
 
-  // ==============================================================================
-  // KHỐI 3: RENDER KHUNG BỐ CỤC, CÁC TAB TRẠNG THÁI & GẮN SỰ KIỆN TÌM KIẾM
-  // ==============================================================================
+  // 3. Hiển thị khung bố cục, các tab trạng thái và gắn sự kiện tìm kiếm
   function renderPageStructure() {
     const container = document.getElementById("workspace-content");
     if (!container) return;
@@ -386,9 +380,7 @@
     renderTableRows();
   };
 
-  // ==============================================================================
-  // KHỐI 4: RENDER BẢNG BÀI VIẾT, SẮP XẾP CỘT & PHÂN LOẠI THEO TAB / TỪ KHÓA
-  // ==============================================================================
+  // 4. Hiển thị bảng bài viết, sắp xếp cột và phân loại theo tab / từ khóa
   function renderTableRows() {
     const tbody = document.getElementById("articles-tbody");
     const countBadge = document.getElementById("list-count-badge");
@@ -626,9 +618,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 5: MENU THAO TÁC BA CHẤM & CÁC NGHIỆP VỤ QUẢN TRỊ VIÊN (ẨN/HIỆN, SỬA ĐÈ, XÓA)
-  // ==============================================================================
+  // 5. Menu thao tác ba chấm và các nghiệp vụ quản trị viên (ẩn/hiện, sửa đè, xóa)
 
   function closeAllActionMenus() {
     document.querySelectorAll(".admin-action-dropdown-menu").forEach(menu => {
@@ -664,9 +654,7 @@
     }
   });
 
-  // ============================================================================
-  // CÁC HÀM XỬ LÝ NGHIỆP VỤ CỦA ADMIN
-  // ============================================================================
+  // 6. Các hàm xử lý thao tác của quản trị viên
 
   let adminEditorInstance = null;
 
@@ -701,9 +689,7 @@
     }
   }
 
-  // ==============================================================================
-  // QUẢN LÝ THẺ BÀI VIẾT (TAGS) CHO MODAL SỬA ĐÈ CỦA ADMIN
-  // ==============================================================================
+  // 7. Quản lý thẻ bài viết (tags) cho modal sửa đè của admin
   /**
    * Hiển thị danh sách các thẻ tag đã chọn trong form sửa của Admin
    */

@@ -1,40 +1,27 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/public/article-detail.php
- * PHÂN HỆ: API Chi tiết Bài viết Công khai (Public Article Detail Service)
- * MÔ TẢ: Lấy toàn bộ nội dung bài viết theo id hoặc slug, danh sách tag gắn kèm,
- *        thông tin tác giả và tự động tăng lượt xem một cách an toàn (chống spam F5).
- * PHẠM VI SỬ DỤNG:
- *   - [API CÔNG KHAI]
- *   - Phương thức: GET
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/article-detail.js (Tải nội dung bài viết và tăng lượt xem)
- * THAM SỐ TRUY VẤN (QUERY PARAMS):
- *   - id: (int) ID bài viết HOẶC
- *   - slug: (string) Slug bài viết (VD: "kinh-te-viet-nam-2026")
- * ĐẶC BIỆT (CHỐNG SPAM VIEW):
- *   - Sử dụng $_SESSION['viewed_articles'] để ghi nhớ các bài đã đọc trong phiên.
- *   - Không tăng view nếu chính tác giả bài viết đang xem bài của mình.
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/public/article-detail.php
+PHÂN HỆ: Chi tiết bài viết công khai
+MÔ TẢ: Lấy nội dung chi tiết bài viết theo id hoặc slug, danh sách tag kèm theo,
+       thông tin tác giả và tự động tăng lượt đọc an toàn
+PHẠM VI SỬ DỤNG:
+       - Phương thức: GET
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+==============================================================================
+*/
 
 require_once '../../config/database.php';
 require_once '../../helpers/response.php';
 
-// ==============================================================================
-// KHỐI 1: KIỂM TRA PHƯƠNG THỨC HTTP
-// ==============================================================================
+// Kiểm tra phương thức request
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 }
 
-// ==============================================================================
-// KHỐI 2: TIẾP NHẬN THAM SỐ ĐỊNH DANH BÀI VIẾT (ID HOẶC SLUG)
-// ==============================================================================
+// Tiếp nhận tham số id hoặc slug của bài viết
 $idParam = isset($_GET['id']) ? trim($_GET['id']) : '';
 $slugParam = isset($_GET['slug']) ? trim($_GET['slug']) : '';
 
@@ -42,9 +29,7 @@ if ($idParam === '' && $slugParam === '') {
     jsonResponse(false, null, "Thiếu id hoặc slug bài viết");
 }
 
-// ==============================================================================
-// KHỐI 3: TRUY VẤN KIỂM TRA BÀI VIẾT TỒN TẠI VÀ ĐÃ XUẤT BẢN (PUBLISHED)
-// ==============================================================================
+// Kiểm tra sự tồn tại của bài viết
 try {
     if ($slugParam !== '') {
         $stmt = $pdo->prepare("SELECT id, author_id FROM articles WHERE slug = ? AND status = 'published' LIMIT 1");
@@ -65,12 +50,7 @@ try {
     $articleId = (int) $found['id'];
     $authorId = $found['author_id'] !== null ? (int) $found['author_id'] : null;
 
-    // ==============================================================================
-    // KHỐI 4: CƠ CHẾ TĂNG LƯỢT XEM AN TOÀN (ANTI-SPAM VIEW ENGINE)
-    // - Khởi tạo phiên làm việc (Session) để theo dõi danh sách bài viết đã đọc
-    // - Ngăn chặn tác giả tự tăng lượt xem bài của chính mình
-    // - Chỉ tăng view nếu bài viết chưa từng được xem trong phiên hiện tại (chống F5)
-    // ==============================================================================
+    // Tăng lượt xem bài viết an toàn qua Session (tránh spam F5 và không tính lượt xem của tác giả)
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -89,9 +69,7 @@ try {
         $_SESSION['viewed_articles'][] = $articleId;
     }
 
-    // ==============================================================================
-    // KHỐI 5: LẤY CHI TIẾT ĐẦY ĐỦ NỘI DUNG BÀI VIẾT, CHUYÊN MỤC VÀ TÁC GIẢ
-    // ==============================================================================
+    // Lấy thông tin chi tiết bài viết, chuyên mục và tác giả
     $stmt = $pdo->prepare(
         "SELECT
             a.id, a.title, a.slug, a.short_description, a.content, a.cover_image,
@@ -141,9 +119,7 @@ try {
         ],
     ];
 
-    // ==============================================================================
-    // KHỐI 6: TRUY VẤN DANH SÁCH THẺ TAG CỦA BÀI VIẾT
-    // ==============================================================================
+    // Lấy danh sách thẻ tag của bài viết
     $tagStmt = $pdo->prepare("
         SELECT t.id, t.name, t.slug 
         FROM article_tags at 
@@ -154,9 +130,6 @@ try {
     $tagStmt->execute([$articleId]);
     $article['tags'] = $tagStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // ==============================================================================
-    // KHỐI 7: PHẢN HỒI KẾT QUẢ CHO CLIENT
-    // ==============================================================================
     jsonResponse(true, $article);
 } catch (PDOException $e) {
     jsonResponse(false, null, "Lỗi hệ thống, vui lòng thử lại sau");

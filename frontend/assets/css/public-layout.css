@@ -1,7 +1,7 @@
 /**
  * ==============================================================================
  * TÊN FILE: frontend/assets/css/public-layout.css
- * PHÂN HỆ: Khung Giao diện Công khai & Độc giả (Public & User Chrome Layout)
+ * PHÂN HỆ: Khung Giao diện Công khai & Độc giả 
  * MÔ TẢ: Định dạng toàn bộ các khối giao diện bao quanh dùng chung cho các trang Công khai
  *        (frontend/public/*) và trang Cá nhân độc giả (frontend/user/*):
  *        - Top Ticker: Dải tin nóng chạy chữ chuyển động ngang (CSS Keyframes Animation).
@@ -18,7 +18,7 @@
  */
 
 /* ==============================================================================
- * PHẦN 1: DẢI TIN NÓNG CHẠY NGANG (TOP TICKER TICKER-INNER)
+ * PHẦN 1: DẢI TIN NÓNG CHẠY NGANG 
  * ============================================================================== */
 .ticker {
   background-color: var(--ink);
@@ -75,7 +75,9 @@
   to { transform: translateX(-50%); }
 }
 
-/* 2. SITE HEADER */
+/* ==============================================================================
+ * PHẦN 2: KHUNG ĐIỀU HƯỚNG CHÍNH VÀ THƯƠNG HIỆU TÒA SOẠN 
+ * ============================================================================== */
 .site-header {
   background-color: var(--paper);
   border-bottom: 1px solid var(--ink);
@@ -377,7 +379,9 @@ body.mobile-menu-locked {
   font-weight: 600;
 }
 
-/* 3. TRẠNG THÁI HEADER ĐÃ ĐĂNG NHẬP (Chuông + Avatar + Dropdown) */
+/* ==============================================================================
+ * PHẦN 3: TRẠNG THÁI ĐÃ ĐĂNG NHẬP, CHUÔNG THÔNG BÁO VÀ MENU NGƯỜI DÙNG
+ * ============================================================================== */
 .header-user {
   display: flex;
   align-items: center;
@@ -583,7 +587,9 @@ body.mobile-menu-locked {
   color: var(--crimson);
 }
 
-/* 4. BREADCRUMB */
+/* ==============================================================================
+ * PHẦN 4: THANH ĐIỀU HƯỚNG PHÂN CẤP TRANG (BREADCRUMB NAVIGATION)
+ * ============================================================================== */
 .breadcrumb {
   font-family: var(--f-mono);
   font-size: 12px;
@@ -598,7 +604,9 @@ body.mobile-menu-locked {
   color: var(--crimson);
 }
 
-/* 5. SITE FOOTER (3 CỘT + ĐÁY) */
+/* ==============================================================================
+ * PHẦN 5: CHÂN TRANG TÒA SOẠN (SITE FOOTER & BẢN QUYỀN)
+ * ============================================================================== */
 .site-footer {
   background-color: var(--ink);
   color: #C9C6BC;
@@ -713,7 +721,7 @@ body.mobile-menu-locked {
 }
 
 /* ==============================================================================
- * 6. USER ACCOUNT LAYOUT & PROFILE (Dành riêng cho khu vực user/)
+ * PHẦN 6: BỐ CỤC VÀ GIAO DIỆN KHU VỰC CÁ NHÂN ĐỘC GIẢ (USER ACCOUNT & BOOKMARKS)
  * ============================================================================== */
 .user-account-layout {
   display: grid;

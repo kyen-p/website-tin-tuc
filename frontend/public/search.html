@@ -1,14 +1,14 @@
 <!--
 ==============================================================================
 TÊN FILE: frontend/public/search.html
-PHÂN HỆ: Tra Cứu Tin Tức & Thẻ Tag (Public Search & Tag View)
+PHÂN HỆ: Tìm kiếm và lọc bài viết
 MÔ TẢ: Khung giao diện tìm kiếm nội dung bài viết và lọc theo nhãn thẻ:
-       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường.
-       - Thanh tìm kiếm trung tâm (#searchForm) và danh sách gợi ý Tag thịnh hành (#hotTagsMount).
-       - Thanh công cụ lọc: tóm tắt kết quả (#searchSummaryText), lọc chuyên mục (#categoryFilter), sắp xếp (#sortFilter).
-       - Lưới hiển thị danh sách kết quả bài viết (#searchResultsList).
-       - Cột phụ: Bảng xếp hạng đọc nhiều nhất trong tuần (#topViewsMount) và Tag Cloud (#sidebarAllTagsMount).
-       - Vùng gắn Footer trang tự động (#site-footer).
+       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường
+       - Thanh tìm kiếm trung tâm (#searchForm) và danh sách gợi ý tag thịnh hành
+       - Thanh công cụ lọc: tóm tắt kết quả, lọc chuyên mục, sắp xếp
+       - Lưới hiển thị danh sách kết quả bài viết (#searchResultsList)
+       - Cột phụ: bảng xếp hạng đọc nhiều nhất trong tuần và thẻ tag nổi bật
+       - Vùng gắn Footer trang tự động (#site-footer)
 PHỤ THUỘC:
        - frontend/assets/css/base.css, public-layout.css, public.css
        - frontend/assets/js/common.js, search.js
@@ -21,7 +21,7 @@ PHỤ THUỘC:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tìm kiếm tin tức - Mạch Tin</title>
 
-  <!-- CSS Nền tảng & Layout Công khai -->
+  <!-- CSS nền tảng và layout công khai -->
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/public-layout.css">
   <link rel="stylesheet" href="../assets/css/public.css">
@@ -31,14 +31,10 @@ PHỤ THUỘC:
 </head>
 <body>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
-  <!-- ============================================================================== -->
+  <!-- 1. Header và thanh tin vắn tự động (render bởi common.js) -->
   <div id="site-header"></div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 2: NỘI DUNG TÌM KIẾM (THANH TÌM KIẾM, BỘ LỌC, KẾT QUẢ & SIDEBAR)           -->
-  <!-- ============================================================================== -->
+  <!-- 2. Nội dung tìm kiếm (Thanh tìm kiếm, bộ lọc, kết quả và sidebar) -->
   <main>
     <div class="wrap">
       
@@ -127,14 +123,10 @@ PHỤ THUỘC:
     </div>
   </main>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
-  <!-- ============================================================================== -->
+  <!-- 3. Footer công khai (render bởi common.js) -->
   <div id="site-footer"></div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
-  <!-- ============================================================================== -->
+  <!-- 4. Tải các thư viện và tập lệnh JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/search.js"></script>

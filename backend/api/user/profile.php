@@ -1,26 +1,21 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/user/profile.php
- * PHÂN HỆ: API Hồ sơ Cá nhân (User Profile Service)
- * MÔ TẢ: Lấy và cập nhật thông tin tài khoản cá nhân:
- *        - GET: Lấy thông tin chi tiết của người dùng đang đăng nhập.
- *        - PUT: Cập nhật họ tên, username, email, tiểu sử (bio), avatar (tự động xóa ảnh cũ khỏi server).
- * PHẠM VI SỬ DỤNG:
- *   - [API THÀNH VIÊN ĐĂNG NHẬP]
- *   - Phương thức: GET, PUT
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireLogin, $_SESSION['user_id'])
- *   - backend/helpers/file.php (deleteUploadedFile khi thay đổi avatar)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/profile.js (Tải và cập nhật thông tin cá nhân)
- *   - frontend/assets/js/admin-layout.js (Đồng bộ thông tin hiển thị trên Topbar)
- * TRẢ VỀ (JSON):
- *   - { success: true, data: { id, username, email, full_name, avatar, bio, role, status, created_at }, message: "..." }
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/user/profile.php
+PHÂN HỆ: Quản lý hồ sơ cá nhân
+MÔ TẢ: Lấy và cập nhật thông tin tài khoản cá nhân:
+       - Lấy thông tin chi tiết của người dùng đang đăng nhập
+       - Cập nhật họ tên, username, email, tiểu sử (bio), avatar (tự động xóa ảnh cũ)
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: Thành viên đã đăng nhập
+       - Phương thức: GET, PUT
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+       - helpers/file.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -34,9 +29,7 @@ $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    // ==============================================================================
-    // NGHIỆP VỤ 1: GET - LẤY THÔNG TIN CÁ NHÂN CỦA NGƯỜI DÙNG HIỆN TẠI
-    // ==============================================================================
+    // 1. Lấy thông tin cá nhân của người dùng hiện tại
     if ($method === 'GET') {
         $stmt = $pdo->prepare("
             SELECT
@@ -68,9 +61,7 @@ try {
         );
     }
 
-    // ==============================================================================
-    // NGHIỆP VỤ 2: PUT - CẬP NHẬT THÔNG TIN HỒ SƠ CÁ NHÂN
-    // ==============================================================================
+    // 2. Cập nhật thông tin hồ sơ cá nhân
     if ($method === 'PUT') {
         // Đọc dữ liệu JSON từ request body
         $input = json_decode(

@@ -1,29 +1,27 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/article-detail.js
- * PHÂN HỆ: Chi tiết Bài viết & Tương tác Độc giả (Public Article Detail Module)
- * MÔ TẢ: Khởi tạo và xử lý toàn bộ logic trên trang đọc bài viết chi tiết:
- *        1. Tải dữ liệu bài viết qua ?id= hoặc ?slug= từ backend/api/public/article-detail.php.
- *        2. Phân tích nội dung: Render HTML bài viết, xử lý nhúng video tự động (YouTube/Vimeo oembed).
- *        3. Hiển thị thông tin tác giả, chuyên mục, thẻ tag, ngày xuất bản và lượt đọc.
- *        4. Tương tác Yêu thích (Bookmark / Favorite) có xác thực người dùng.
- *        5. Hệ thống bình luận đa tương tác: Đăng bình luận mới, sửa trực tiếp tại chỗ, xóa bình luận (kèm modal xác nhận), tự động cuộn và highlight bình luận từ Quản lý bình luận cá nhân (User) & Quản trị bình luận (Admin).
- *        6. Tải và hiển thị danh sách bài viết liên quan cùng chuyên mục.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/public/article-detail.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, resolveApiUrl, getCurrentUser, showToast, etc.)
- *   - backend/api/public/article-detail.php
- *   - backend/api/public/comments.php
- *   - backend/api/user/favorites.php
- *   - backend/api/user/my-comments.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/article-detail.js
+PHÂN HỆ: Chi tiết bài viết và tương tác độc giả
+MÔ TẢ: Khởi tạo và xử lý toàn bộ logic trên trang đọc bài viết chi tiết:
+       - Tải dữ liệu bài viết qua ?id= hoặc ?slug= từ backend/api/public/article-detail.php
+       - Render HTML bài viết và xử lý nhúng video tự động (YouTube/Vimeo)
+       - Hiển thị tác giả, chuyên mục, thẻ tag, ngày xuất bản và lượt đọc
+       - Tương tác lưu bài viết yêu thích (Bookmark)
+       - Hệ thống bình luận: Đăng bình luận mới, sửa tại chỗ, xóa và highlight bình luận
+       - Tải và hiển thị bài viết liên quan cùng chuyên mục
+PHẠM VI SỬ DỤNG:
+       - frontend/public/article-detail.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/public/article-detail.php
+       - backend/api/public/comments.php
+       - backend/api/user/favorites.php
+       - backend/api/user/my-comments.php
+==============================================================================
+*/
 
 async function initArticleDetailPage() {
-  // ==============================================================================
-  // KHỐI 1: TẢI CHI TIẾT BÀI VIẾT & KHỞI TẠO KHUNG TRANG (HEADER / FOOTER)
-  // ==============================================================================
+  // 1. Tải chi tiết bài viết và khởi tạo khung trang (Header / Footer)
   const urlParams = new URLSearchParams(window.location.search);
   const articleId = Number(urlParams.get("id")) || 0;
   const articleSlug = (urlParams.get("slug") || "").trim();
@@ -60,9 +58,7 @@ async function initArticleDetailPage() {
   if (container) container.style.display = "block";
   if (notFound) notFound.style.display = "none";
 
-  // ==============================================================================
-  // KHỐI 2: RENDER THÔNG TIN BÀI BÁO (TIÊU ĐỀ, BREADCRUMB, TÁC GIẢ, META)
-  // ==============================================================================
+  // 2. Hiển thị thông tin bài viết (tiêu đề, breadcrumb, tác giả, meta)
   document.title = `${article.title} - Mạch Tin`;
 
   const currentUser = getCurrentUser();
@@ -103,9 +99,7 @@ async function initArticleDetailPage() {
     coverMount.style.display = "none";
   }
 
-  // ==============================================================================
-  // KHỐI 3: RENDER THÂN BÀI VIẾT & XỬ LÝ NHÚNG VIDEO TỰ ĐỘNG (OEMBED TO IFRAME)
-  // ==============================================================================
+  // 3. Hiển thị thân bài viết và xử lý nhúng video (YouTube / Vimeo)
   const contentContainer = document.getElementById("article-content-body");
   if (contentContainer) {
     if (article.content && article.content.trim()) {
@@ -138,9 +132,7 @@ async function initArticleDetailPage() {
     }
   }
 
-  // ==============================================================================
-  // KHỐI 4: RENDER DANH SÁCH THẺ TAG & THÔNG TIN TÁC GIẢ CUỐI BÀI
-  // ==============================================================================
+  // 4. Hiển thị danh sách thẻ tag và thông tin tác giả cuối bài
   const tagsMount = document.getElementById("article-tags-mount");
   if (tagsMount) {
     if (currentTags.length > 0) {
@@ -187,9 +179,7 @@ async function initArticleDetailPage() {
     authorAvatarBottom.innerHTML = renderUserAvatar(author, "avatar-badge avatar-badge--md");
   }
 
-  // ==============================================================================
-  // KHỐI 5: TƯƠNG TÁC LƯU BÀI VIẾT YÊU THÍCH (FAVORITE BOOKMARK)
-  // ==============================================================================
+  // 5. Tương tác lưu bài viết yêu thích (Favorite bookmark)
   const favoriteBtn = document.getElementById("btn-favorite");
   let userFavorites = [];
 
@@ -273,9 +263,7 @@ async function initArticleDetailPage() {
     });
   }
 
-  // ==============================================================================
-  // KHỐI 6: KHU VỰC BÌNH LUẬN (HIỂN THỊ, GỬI BÌNH LUẬN, SỬA & XÓA)
-  // ==============================================================================
+  // 6. Khu vực bình luận (hiển thị, gửi bình luận, sửa và xóa)
   const commentCountMount = document.getElementById("comment-count-mount");
   const commentListMount = document.getElementById("comment-list-mount");
   const commentFormMount = document.getElementById("comment-form-mount");
@@ -431,9 +419,7 @@ async function initArticleDetailPage() {
     });
   }
 
-  // ==============================================================================
-  // KHỐI 7: BÀI VIẾT LIÊN QUAN CÙNG CHUYÊN MỤC (RELATED ARTICLES)
-  // ==============================================================================
+  // 7. Bài viết liên quan cùng chuyên mục
   const relatedMount = document.getElementById("related-articles-mount");
   if (relatedMount) {
     let sameCategoryArticles = [];
@@ -475,9 +461,7 @@ if (document.readyState === "loading") {
   initArticleDetailPage();
 }
 
-// ==============================================================================
-// KHỐI 8: CÁC HÀM TIỆN ÍCH TƯƠNG TÁC BÌNH LUẬN (HIGHLIGHT, SỬA & XÓA BÌNH LUẬN)
-// ==============================================================================
+// 8. Các hàm tiện ích tương tác bình luận (highlight, sửa và xóa bình luận)
 /**
  * Tự động cuộn đến bình luận và làm nổi màu (Highlight) trong 2.8s khi có param comment_id trên URL
  * (Được kích hoạt khi điều hướng từ trang Quản lý bình luận User 'my-comments.js' hoặc Quản trị Admin 'admin-comments.js')
@@ -605,13 +589,13 @@ async function confirmDeleteDetailComment() {
     showToast("Đã xóa bình luận thành công!", "success");
     closeDeleteDetailCommentModal();
 
-    // Bước 1: Loại bỏ trực tiếp phần tử dòng bình luận bị xóa khỏi cây cấu trúc giao diện DOM (Document Object Model)
+    // Loại bỏ trực tiếp phần tử dòng bình luận bị xóa khỏi cây cấu trúc giao diện DOM (Document Object Model)
     const rowEl = document.getElementById(`comment-${activeDeleteDetailCommentId}`);
     if (rowEl) {
       rowEl.remove();
     }
     
-    // Bước 2: Cập nhật giảm số lượng hiển thị tổng số bình luận trên giao diện
+    // Cập nhật giảm số lượng hiển thị tổng số bình luận trên giao diện
     const countMount = document.getElementById("comment-count-mount");
     if (countMount) {
       const current = parseInt(countMount.textContent) || 1;

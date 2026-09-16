@@ -1,26 +1,24 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/favorites.js
- * PHÂN HỆ: Danh sách Bài viết Yêu thích (User Favorites Module)
- * MÔ TẢ: Quản lý danh sách bài báo độc giả đã đánh dấu lưu trữ/yêu thích:
- *        1. Tải danh sách bài viết yêu thích của tài khoản hiện tại qua GET backend/api/user/favorites.php.
- *        2. Render danh sách thẻ bài viết yêu thích (kèm ảnh bìa, tóm tắt, ngày lưu, link chi tiết).
- *        3. Bỏ lưu bài viết trực tiếp khỏi danh sách (DELETE) hoặc thêm mới bài viết (POST).
- * PHẠM VI SỬ DỤNG:
- *   - frontend/user/favorites.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, showToast, renderCoverImage, etc.)
- *   - backend/api/user/favorites.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/favorites.js
+PHÂN HỆ: Danh sách bài viết yêu thích
+MÔ TẢ: Quản lý danh sách bài báo độc giả đã đánh dấu lưu trữ/yêu thích:
+       - Tải danh sách bài viết yêu thích qua backend/api/user/favorites.php
+       - Hiển thị danh sách thẻ bài viết đã lưu (ảnh bìa, tóm tắt, ngày lưu)
+       - Thêm mới hoặc bỏ lưu bài viết trực tiếp khỏi danh sách
+PHẠM VI SỬ DỤNG:
+       - frontend/user/favorites.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/user/favorites.php
+==============================================================================
+*/
 
 const FAVORITES_API = "../../backend/api/user/favorites.php";
 
-// ==============================================================================
-// KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DANH SÁCH YÊU THÍCH TỪ BACKEND
-// ==============================================================================
+// 1. Khởi tạo khung trang và tải danh sách yêu thích từ backend
 async function initFavoritesPage() {
-  // Bước 1: Khởi tạo thanh điều hướng đầu trang (Header) và chân trang (Footer)
+  // Khởi tạo thanh điều hướng đầu trang (Header) và chân trang (Footer)
   if (typeof initPublicHeader === "function") {
     await initPublicHeader("favorites");
   }
@@ -29,7 +27,7 @@ async function initFavoritesPage() {
     await initPublicFooter();
   }
 
-  // Bước 2: Tải danh sách bài viết yêu thích từ máy chủ backend PHP
+  // Tải danh sách bài viết yêu thích từ máy chủ backend PHP
   await loadFavorites();
 }
 
@@ -109,9 +107,7 @@ async function loadFavorites() {
   }
 }
 
-// ==============================================================================
-// KHỐI 2: RENDER GIAO DIỆN DANH SÁCH BÀI VIẾT ĐÃ LƯU
-// ==============================================================================
+// 2. Hiển thị danh sách bài viết đã lưu
 /**
  * Render danh sách từ dữ liệu PHP
  */
@@ -269,9 +265,7 @@ function renderFavoritesList(favoriteArticles) {
   `;
 }
 
-// ==============================================================================
-// KHỐI 3: CÁC THAO TÁC API (THÊM / XÓA BÀI VIẾT YÊU THÍCH)
-// ==============================================================================
+// 3. Các thao tác API (thêm / xóa bài viết yêu thích)
 /**
  * POST: Thêm bài viết yêu thích
  * Có thể được gọi từ các trang bài viết khác.
@@ -338,7 +332,7 @@ async function removeFavorite(articleId) {
       showToast(result.message || "Xóa yêu thích thành công", "success");
     }
 
-    // Bước 3: Nếu người dùng đang đứng tại trang Quản lý yêu thích thì tự động tải lại danh sách
+    // Nếu người dùng đang đứng tại trang Quản lý yêu thích thì tự động tải lại danh sách
     const mount = document.getElementById("favorites-mount");
 
     if (mount) {
@@ -357,13 +351,13 @@ async function removeFavorite(articleId) {
   }
 }
 
-// Bước 4: Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
+// Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initFavoritesPage);
 } else {
   initFavoritesPage();
 }
 
-// Bước 5: Đăng ký các hàm thao tác yêu thích vào phạm vi toàn cục window để gọi từ các module khác
+// Đăng ký các hàm thao tác yêu thích vào phạm vi toàn cục window để gọi từ các module khác
 window.addFavorite = addFavorite;
 window.removeFavorite = removeFavorite;

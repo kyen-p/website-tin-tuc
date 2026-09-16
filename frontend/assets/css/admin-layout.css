@@ -1,7 +1,7 @@
 /**
  * ==============================================================================
  * TÊN FILE: frontend/assets/css/admin-layout.css
- * PHÂN HỆ: Khung Bố cục Quản trị & Tòa soạn (Editorial & Admin Layout)
+ * PHÂN HỆ: Khung Bố cục Quản trị & Tòa soạn 
  * MÔ TẢ: Định dạng toàn bộ không gian làm việc chuyên nghiệp cho 3 phân hệ Tòa soạn:
  *        - Phóng viên (Reporter): Bàn làm việc, Danh sách bài viết, Soạn thảo bài viết CKEditor 5.
  *        - Biên tập viên (Editor): Bàn làm việc, Duyệt bài viết chờ duyệt, Quản lý Chuyên mục & Thẻ Tag.
@@ -29,7 +29,9 @@
   overflow-x: clip;
 }
 
-/* 2. SIDEBAR CỐ ĐỊNH BÊN TRÁI */
+/* ==============================================================================
+ * PHẦN 2: THANH ĐIỀU HƯỚNG BÊN TRÁI CỐ ĐỊNH (ADMIN SIDEBAR)
+ * ============================================================================== */
 .admin-sidebar {
   width: 260px;
   min-width: 260px;
@@ -444,7 +446,9 @@ body.mobile-menu-locked {
   overflow: hidden !important;
 }
 
-/* 3. KHU VỰC NỘI DUNG CHÍNH (MAIN CONTENT) */
+/* ==============================================================================
+ * PHẦN 3: KHU VỰC NỘI DUNG CHÍNH
+ * ============================================================================== */
 .admin-main {
   flex: 1;
   min-width: 0;
@@ -490,7 +494,9 @@ body.mobile-menu-locked {
   margin: 0;
 }
 
-/* 4. KPI STATS CARDS (Tổng quan chỉ số) */
+/* ==============================================================================
+ * PHẦN 4: THẺ THỐNG KÊ CHỈ SỐ VÀ HIỆU SUẤT (KPI STATS CARDS)
+ * ============================================================================== */
 .admin-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -572,7 +578,9 @@ body.mobile-menu-locked {
   line-height: 1.1;
 }
 
-/* 5. DATA TABLE CARD & CONTROLS */
+/* ==============================================================================
+ * PHẦN 5: THẺ CARD CHỨA BẢNG DỮ LIỆU & CÔNG CỤ TÌM KIẾM 
+ * ============================================================================== */
 .admin-card {
   background-color: var(--white);
   border: 1px solid var(--line);
@@ -655,7 +663,9 @@ body.mobile-menu-locked {
   width: 280px;
 }
 
-/* 6. TABLE CONTAINER & STYLES */
+/* ==============================================================================
+ * PHẦN 6: ĐỊNH DẠNG BẢNG DỮ LIỆU 
+ * ============================================================================== */
 .admin-table-responsive {
   width: 100%;
   overflow-x: auto;
@@ -819,7 +829,9 @@ body.mobile-menu-locked {
   color: #DC2626;
 }
 
-/* 7. EMPTY STATE (Trạng thái rỗng chuẩn quy định) */
+/* ==============================================================================
+ * PHẦN 7: KHỐI THÔNG BÁO DỮ LIỆU RỖNG
+ * ============================================================================== */
 .admin-empty-state {
   padding: 60px 24px;
   text-align: center;
@@ -853,7 +865,9 @@ body.mobile-menu-locked {
   margin: 0;
 }
 
-/* 8. STATUS TABS (Bộ lọc trạng thái bài viết) */
+/* ==============================================================================
+ * PHẦN 8: THANH CHUYỂN TAB TRẠNG THÁI
+ * ============================================================================== */
 .admin-tabs-nav {
   display: flex;
   align-items: center;
@@ -919,7 +933,9 @@ body.mobile-menu-locked {
   color: #ffffff !important;
 }
 
-/* 9. STATUS BADGES (Huy hiệu trạng thái bài viết) */
+/* ==============================================================================
+ * PHẦN 9: HUY HIỆU HIỂN THỊ TRẠNG THÁI BÀI VIẾT 
+ * ============================================================================== */
 .admin-status-badge {
   display: inline-flex;
   align-items: center;
@@ -963,7 +979,9 @@ body.mobile-menu-locked {
   border: 1px solid #BBF7D0;
 }
 
-/* 10. ARTICLE THUMB & TITLE ROW */
+/* ==============================================================================
+ * PHẦN 10: KHỐI HÀNG DỮ LIỆU BÀI VIẾT & ẢNH ĐẠI DIỆN 
+ * ============================================================================== */
 .admin-article-cell {
   display: flex;
   align-items: flex-start;
@@ -1046,7 +1064,9 @@ body.mobile-menu-locked {
   overflow: hidden;
 }
 
-/* 11. REJECTION REASON BOX */
+/* ==============================================================================
+ * PHẦN 11: HỘP THÔNG BÁO LÝ DO TỪ CHỐI DUYỆT BÀI 
+ * ============================================================================== */
 .admin-rejection-box {
   margin-top: 6px;
   padding: 8px 12px;
@@ -1072,7 +1092,9 @@ body.mobile-menu-locked {
   font-weight: 700;
 }
 
-/* 12. ACTION BUTTONS */
+/* ==============================================================================
+ * PHẦN 12: HỆ THỐNG NÚT BẤM HÀNH ĐỘNG VÀ MENU THAO TÁC 
+ * ============================================================================== */
 .admin-actions-cell {
   display: flex;
   align-items: center;
@@ -1338,7 +1360,9 @@ body.mobile-menu-locked {
   font-weight: 700;
 }
 
-/* 13. MODAL XÁC NHẬN */
+/* ==============================================================================
+ * PHẦN 13: HỘP THOẠI MODAL KIỂM DUYỆT & XÁC NHẬN 
+ * ============================================================================== */
 .admin-modal-overlay {
   position: fixed;
   top: 0;
@@ -1411,7 +1435,9 @@ body.mobile-menu-locked {
   gap: 10px;
 }
 
-/* 14. FORM STYLES & LAYOUT (Soạn bài viết) */
+/* ==============================================================================
+ * PHẦN 14: BỐ CỤC BIỂU MẪU VÀ TRƯỜNG NHẬP LIỆU (FORM STYLES & LAYOUT)
+ * ============================================================================== */
 .admin-form-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -1536,7 +1562,9 @@ body.mobile-menu-locked {
   line-height: 1.5;
 }
 
-/* 16. DRAG & DROP FILE UPLOAD ZONE (Chỉ upload từ máy) */
+/* ==============================================================================
+ * PHẦN 15: KHU VỰC TẢI ẢNH KÉO THẢ TỪ THIẾT BỊ 
+ * ============================================================================== */
 .admin-upload-zone {
   border: 2px dashed var(--line);
   border-radius: 8px;
@@ -1639,7 +1667,9 @@ body.mobile-menu-locked {
   height: 16px;
 }
 
-/* 17. INTERACTIVE TAGS COMPONENT (Quản lý thẻ thông minh) */
+/* ==============================================================================
+ * PHẦN 16: BỘ GẮN THẺ THÔNG MINH 
+ * ============================================================================== */
 .admin-tags-input-container {
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -1731,7 +1761,9 @@ body.mobile-menu-locked {
   border-color: var(--brass-dark);
 }
 
-/* 18. CKEDITOR 5 CUSTOM STYLING */
+/* ==============================================================================
+ * PHẦN 17: TÙY CHỈNH GIAO DIỆN BỘ SOẠN THẢO CKEDITOR 5
+ * ============================================================================== */
 .ck.ck-editor {
   border-radius: 6px;
   overflow: hidden;
@@ -1791,7 +1823,9 @@ body.mobile-menu-locked {
   box-shadow: 0 0 0 3px rgba(184, 137, 79, 0.15) !important;
 }
 
-/* 19. STICKY ACTIONS BAR AT BOTTOM */
+/* ==============================================================================
+ * PHẦN 18: THANH CÔNG CỤ ĐÁY CỐ ĐỊNH CHO BIÊN TẬP
+ * ============================================================================== */
 .admin-sticky-actions {
   position: sticky;
   bottom: 12px;
@@ -1846,7 +1880,9 @@ body.mobile-menu-locked {
   }
 }
 
-/* 20. ROW & CARD HIGHLIGHT FLASH ANIMATION */
+/* ==============================================================================
+ * PHẦN 19: HIỆU ỨNG FLASH ANIMATION 
+ * ============================================================================== */
 .admin-row-highlight-flash {
   animation: adminRowGlowFlash 2.5s ease forwards !important;
 }
@@ -1867,7 +1903,7 @@ body.mobile-menu-locked {
 }
 
 /* ==============================================================================
- * 21. PHÂN TRANG BẢNG DỮ LIỆU QUẢN TRỊ (ADMIN DATA TABLE PAGINATION)
+ * PHẦN 20: PHÂN TRANG BẢNG DỮ LIỆU QUẢN TRỊ
  * ============================================================================== */
 .admin-table-pagination {
   display: flex;
@@ -1968,10 +2004,10 @@ body.mobile-menu-locked {
 }
 
 /* ==============================================================================
- * 22. RESPONSIVE QUẢN TRỊ TOÀN DIỆN CHO TABLET & MOBILE (<= 1024px)
+ * PHẦN 21: TƯƠNG THÍCH MÀN HÌNH ĐA THIẾT BỊ TABLET & MOBILE (RESPONSIVE LAYOUT)
  * ============================================================================== */
 @media (max-width: 1024px) {
-  /* 22.1. Topbar thanh điều hướng di động / tablet */
+  /* Topbar thanh điều hướng di động / tablet */
   .admin-topbar {
     display: block !important;
     position: sticky;

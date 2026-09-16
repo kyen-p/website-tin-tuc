@@ -1,14 +1,14 @@
 <!--
 ==============================================================================
 TÊN FILE: frontend/user/profile.html
-PHÂN HỆ: Không Gian Độc Giả - Thông Tin Tài Khoản (User Space - Profile View)
+PHÂN HỆ: Thông tin tài khoản
 MÔ TẢ: Khung giao diện quản lý và cập nhật thông tin cá nhân của người dùng:
-       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường.
-       - Thẻ hiển thị vai trò (#userRoleBadge) và nút chuyển nhanh đến trang cá nhân công khai (#btnViewPublicProfile).
-       - Khối cập nhật ảnh đại diện (#avatarPreviewContainer): xem trước, nút tải ảnh lên, nút xóa ảnh.
-       - Form cập nhật thông tin (#profileForm): Họ và tên, Username, Email, Tiểu sử cá nhân (Bio).
-       - Nút Hủy thay đổi (#btnResetForm) và nút Lưu cập nhật (#btnSubmitProfile).
-       - Vùng gắn Footer trang tự động (#site-footer).
+       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường
+       - Thẻ hiển thị vai trò (#userRoleBadge) và nút chuyển nhanh đến trang cá nhân công khai
+       - Khối cập nhật ảnh đại diện (#avatarPreviewContainer): xem trước, nút tải ảnh lên, nút xóa ảnh
+       - Form cập nhật thông tin (#profileForm): Họ và tên, Username, Email, Tiểu sử cá nhân (Bio)
+       - Nút Hủy thay đổi và nút Lưu cập nhật
+       - Vùng gắn Footer trang tự động (#site-footer)
 PHỤ THUỘC:
        - frontend/assets/css/base.css, public-layout.css, public.css
        - frontend/assets/js/common.js, profile.js
@@ -21,7 +21,7 @@ PHỤ THUỘC:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thông tin tài khoản - Mạch Tin</title>
 
-  <!-- CSS Nền tảng & Layout Công khai -->
+  <!-- CSS nền tảng và layout công khai -->
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/public-layout.css">
   <link rel="stylesheet" href="../assets/css/public.css">
@@ -31,14 +31,10 @@ PHỤ THUỘC:
 </head>
 <body>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
-  <!-- ============================================================================== -->
+  <!-- 1. Header và thanh tin vắn tự động (render bởi common.js) -->
   <div id="site-header"></div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 2: NỘI DUNG FORM CẬP NHẬT HỒ SƠ TÀI KHOẢN (AVATAR, THÔNG TIN CƠ BẢN)       -->
-  <!-- ============================================================================== -->
+  <!-- 2. Nội dung form cập nhật hồ sơ tài khoản (Avatar, thông tin cơ bản) -->
   <main>
     <div class="wrap">
       
@@ -147,14 +143,10 @@ PHỤ THUỘC:
     </div>
   </main>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
-  <!-- ============================================================================== -->
+  <!-- 3. Footer công khai (render bởi common.js) -->
   <div id="site-footer"></div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
-  <!-- ============================================================================== -->
+  <!-- 4. Tải các thư viện và tập lệnh JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/profile.js?v=2.0"></script>

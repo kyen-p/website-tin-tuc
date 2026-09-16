@@ -1,29 +1,26 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/admin-comments.js
- * PHÂN HỆ: Quản trị Bình luận Hệ thống (Admin Comments Management Module)
- * MÔ TẢ: Kiểm duyệt và giám sát các phản hồi, bình luận của độc giả trên toàn hệ thống bài viết:
- *        1. Tải danh sách bình luận qua admin/comments.php và danh sách bài viết đã xuất bản qua admin/published-articles.php.
- *        2. Hỗ trợ xem nhanh ngữ cảnh bình luận trên bài viết thực tế (tự động cuộn lướt tới đúng vị trí bình luận
- *           và chớp sáng viền qua param &comment_id=...#comment-...) thông qua liên kết tiêu đề bài viết và nút "Xem".
- *        3. Lọc bình luận theo bài viết cụ thể, sắp xếp theo thời gian (mới nhất / cũ nhất).
- *        4. Tìm kiếm theo nội dung bình luận, tên độc giả (@username) hoặc tiêu đề bài viết.
- *        5. Xóa vĩnh viễn các bình luận vi phạm chính sách qua API DELETE admin/comments.php với modal xác nhận an toàn.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/admin/comments.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, renderUserAvatar, timeAgo, getArticleDetailUrl)
- *   - backend/api/admin/comments.php
- *   - backend/api/admin/published-articles.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/admin-comments.js
+PHÂN HỆ: Quản trị bình luận hệ thống
+MÔ TẢ: Kiểm duyệt và giám sát các phản hồi, bình luận của độc giả trên toàn hệ thống bài viết:
+       - Tải danh sách bình luận qua admin/comments.php và danh sách bài viết đã xuất bản
+       - Hỗ trợ xem nhanh ngữ cảnh bình luận trên bài viết thực tế
+       - Lọc bình luận theo bài viết cụ thể, sắp xếp theo thời gian (mới nhất / cũ nhất)
+       - Tìm kiếm theo nội dung bình luận, tên độc giả hoặc tiêu đề bài viết
+       - Xóa bình luận vi phạm qua API DELETE admin/comments.php kèm modal xác nhận
+PHẠM VI SỬ DỤNG:
+       - frontend/admin/comments.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/admin/comments.php
+       - backend/api/admin/published-articles.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI BỘ LỌC BÌNH LUẬN
-  // ==============================================================================
+  // 1. Khởi tạo trang và trạng thái bộ lọc bình luận
   let allComments = [];
   let allArticles = [];
 
@@ -47,9 +44,7 @@
     renderCommentsTable();
   }
 
-  // ==============================================================================
-  // KHỐI 2: TẢI DỮ LIỆU BÌNH LUẬN & BÀI VIẾT TỪ API
-  // ==============================================================================
+  // 2. Tải dữ liệu bình luận và bài viết từ API
   async function loadData() {
     try {
       const [commentsRes, articlesRes] = await Promise.all([
@@ -65,9 +60,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 3: RENDER BỐ CỤC KHUNG THẺ, BẢNG BÌNH LUẬN & MODAL XÓA
-  // ==============================================================================
+  // 3. Hiển thị bố cục khung thẻ, bảng bình luận và modal xóa
   function renderPageStructure() {
     const container = document.getElementById("workspace-content");
     if (!container) return;
@@ -153,9 +146,7 @@
     `;
   }
 
-  // ==============================================================================
-  // KHỐI 4: GẮN SỰ KIỆN TÌM KIẾM, BỘ LỌC & THAO TÁC XÓA BÌNH LUẬN (API DELETE)
-  // ==============================================================================
+  // 4. Gắn sự kiện tìm kiếm, bộ lọc và thao tác xóa bình luận (API DELETE)
   function bindEvents() {
     const searchInput = document.getElementById("commentSearchInput");
     if (searchInput) {
@@ -243,21 +234,19 @@
     };
   }
 
-  // ==============================================================================
-  // KHỐI 5: LỌC DỮ LIỆU, SẮP XẾP & RENDER CÁC HÀNG BẢNG BÌNH LUẬN
-  // ==============================================================================
+  // 5. Lọc dữ liệu, sắp xếp và hiển thị các hàng bảng bình luận
   function renderCommentsTable() {
     const tbody = document.getElementById("commentTableBody");
     if (!tbody) return;
 
     let filtered = [...allComments];
 
-    // Bước 1: Lọc dữ liệu bình luận theo bài viết được chọn
+    // Lọc dữ liệu bình luận theo bài viết được chọn
     if (articleFilter !== "all") {
       filtered = filtered.filter((c) => String(c.article_id) === String(articleFilter));
     }
 
-    // Bước 2: Lọc dữ liệu theo từ khóa tìm kiếm (nội dung, tên người dùng, tiêu đề bài viết)
+    // Lọc dữ liệu theo từ khóa tìm kiếm (nội dung, tên người dùng, tiêu đề bài viết)
     if (searchQuery) {
       filtered = filtered.filter((c) => {
         const user = { full_name: c.full_name, username: c.username, avatar: c.avatar };
@@ -269,7 +258,7 @@
       });
     }
 
-    // Bước 3: Sắp xếp danh sách bình luận theo mốc thời gian (mới nhất hoặc cũ nhất)
+    // Sắp xếp danh sách bình luận theo mốc thời gian (mới nhất hoặc cũ nhất)
     filtered.sort((a, b) => {
       const timeA = new Date(String(a.created_at).replace(" ", "T")).getTime();
       const timeB = new Date(String(b.created_at).replace(" ", "T")).getTime();
@@ -281,7 +270,7 @@
       totalBadge.textContent = filtered.length;
     }
 
-    // Bước 4: Tính toán thông số phân trang cho danh sách bình luận (Pagination: Số bản ghi, tổng số trang)
+    // Tính toán thông số phân trang cho danh sách bình luận (Pagination: Số bản ghi, tổng số trang)
     const totalRecords = filtered.length;
     const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
     if (currentPage > totalPages) {
@@ -301,7 +290,7 @@
       return;
     }
 
-    // Bước 5: Trích xuất tập dữ liệu của trang hiện tại và dựng mã HTML các hàng trong bảng (Table Rows)
+    // Trích xuất tập dữ liệu của trang hiện tại và dựng mã HTML các hàng trong bảng (Table Rows)
     const startIndex = (currentPage - 1) * perPage;
     const pageItems = filtered.slice(startIndex, startIndex + perPage);
 

@@ -1,13 +1,13 @@
 <!--
 ==============================================================================
 TÊN FILE: frontend/public/category.html
-PHÂN HỆ: Trang Chuyên Mục & Lọc Tin Công Khai (Public Category View)
+PHÂN HỆ: Chuyên mục công khai
 MÔ TẢ: Khung giao diện hiển thị bài viết theo chuyên mục hoặc bộ lọc:
-       - Đường dẫn Breadcrumb (#breadcrumb-category).
-       - Tiêu đề, mô tả và thanh cuộn tag ngang (#category-tags-mount) kèm nút trượt điều hướng (#category-tag-prev, #category-tag-next).
-       - Khối bài tiêu điểm của chuyên mục (#category-featured-mount).
-       - Lưới danh sách bài viết (#category-grid-mount) và thanh thông báo cuối trang (#category-end-notice).
-       - Cột phụ: Bảng xếp hạng đọc nhiều nhất trong tuần (#category-rank-mount) và Tag Cloud (#category-tag-cloud-mount).
+       - Đường dẫn Breadcrumb (#breadcrumb-category)
+       - Tiêu đề, mô tả và thanh cuộn tag ngang (#category-tags-mount) kèm nút điều hướng
+       - Khối bài tiêu điểm của chuyên mục (#category-featured-mount)
+       - Lưới danh sách bài viết (#category-grid-mount) và thanh thông báo cuối trang
+       - Cột phụ: Bảng xếp hạng đọc nhiều nhất trong tuần và thẻ tag nổi bật
 PHỤ THUỘC:
        - frontend/assets/css/base.css, public-layout.css, public.css
        - frontend/assets/js/common.js, category.js
@@ -20,7 +20,7 @@ PHỤ THUỘC:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chuyên mục - Mạch Tin</title>
   
-  <!-- CSS Nền tảng & Layout Công khai -->
+  <!-- CSS nền tảng và layout công khai -->
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/public-layout.css">
   <link rel="stylesheet" href="../assets/css/public.css">
@@ -30,14 +30,10 @@ PHỤ THUỘC:
 </head>
 <body>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
-  <!-- ============================================================================== -->
+  <!-- 1. Header và thanh tin vắn tự động (render bởi common.js) -->
   <div id="site-header"></div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 2: NỘI DUNG CHÍNH CHUYÊN MỤC (TIÊU ĐIỂM, LƯỚI BÀI VIẾT, SIDEBAR XẾP HẠNG) -->
-  <!-- ============================================================================== -->
+  <!-- 2. Nội dung chính chuyên mục (Tiêu điểm, lưới bài viết, sidebar xếp hạng) -->
   <main>
     <div class="wrap">
       <!-- Breadcrumb -->
@@ -108,14 +104,10 @@ PHỤ THUỘC:
     </div>
   </main>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
-  <!-- ============================================================================== -->
+  <!-- 3. Footer công khai (render bởi common.js) -->
   <div id="site-footer"></div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
-  <!-- ============================================================================== -->
+  <!-- 4. Tải các thư viện và tập lệnh JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/category.js"></script>

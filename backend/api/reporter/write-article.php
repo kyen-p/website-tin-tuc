@@ -1,28 +1,22 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/reporter/write-article.php
- * PHÂN HỆ: API Soạn thảo Bài viết Phóng viên (Article Editor Service)
- * MÔ TẢ: Tiếp nhận dữ liệu viết bài, tạo mới hoặc cập nhật bài viết cho phóng viên:
- *        - GET: Lấy dữ liệu chi tiết bài viết (bao gồm tags, chuyên mục) để nạp vào form chỉnh sửa.
- *        - POST/PUT: Lưu bài viết ở trạng thái bản nháp (draft) hoặc gửi thẩm định (pending).
- *        - Tự động sinh slug duy nhất (URL friendly) và đồng bộ danh sách Tags liên quan.
- * PHẠM VI SỬ DỤNG:
- *   - [KHU VỰC TÒA SOẠN - PHÓNG VIÊN]
- *   - Phân quyền: role = 'reporter'
- *   - Phương thức: GET, POST, PUT
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireRole, $_SESSION['user_id'])
- *   - backend/helpers/string.php (createSlug)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/write-article.js (Trang biên tập bài viết của phóng viên)
- * TRẢ VỀ (JSON):
- *   - GET: { success: true, data: { id, title, slug, content, tags: [...] } }
- *   - POST/PUT: { success: true, data: { id, title, slug, status }, message: "..." }
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/reporter/write-article.php
+PHÂN HỆ: Soạn thảo bài viết của phóng viên
+MÔ TẢ: Tiếp nhận dữ liệu viết bài, tạo mới hoặc cập nhật bài viết cho phóng viên:
+       - Lấy dữ liệu chi tiết bài viết (kèm tags, chuyên mục) để nạp vào form sửa
+       - Lưu bài viết ở trạng thái bản nháp (draft) hoặc gửi duyệt (pending)
+       - Tự động sinh slug duy nhất (URL thân thiện) và đồng bộ thẻ tag
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: role = 'reporter'
+       - Phương thức: GET, POST, PUT
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+       - helpers/string.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -35,9 +29,7 @@ requireRole(['reporter']);
 $method = $_SERVER['REQUEST_METHOD'];
 $authorId = (int) $_SESSION['user_id'];
 
-// ==============================================================================
-// NGHIỆP VỤ 1: GET - LẤY THÔNG TIN BÀI VIẾT ĐỂ NẠP VÀO FORM CHỈNH SỬA
-// ==============================================================================
+// 1. Lấy thông tin bài viết để nạp vào form chỉnh sửa
 if ($method === 'GET') {
     $articleId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     if ($articleId <= 0) {
@@ -75,9 +67,7 @@ if ($method === 'GET') {
     }
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 2: POST/PUT - LƯU BẢN NHÁP HOẶC GỬI THẨM ĐỊNH (TẠO MỚI HOẶC SỬA)
-// ==============================================================================
+// 2. Lưu bản nháp hoặc gửi thẩm định (tạo mới hoặc chỉnh sửa bài viết)
 if ($method !== 'POST' && $method !== 'PUT') {
     jsonResponse(false, null, "Phương thức không được hỗ trợ");
 }

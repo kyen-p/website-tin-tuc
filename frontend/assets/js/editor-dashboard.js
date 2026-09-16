@@ -1,28 +1,26 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/editor-dashboard.js
- * PHÂN HỆ: Bảng điều khiển Biên tập viên (Editor Dashboard Module)
- * MÔ TẢ: Thống kê & trực quan hóa số liệu toàn tòa soạn cho Biên tập viên:
- *        1. Tải số liệu từ backend/api/editor/dashboard.php (category_stats, reporter_stats, top_tags).
- *        2. Bảng theo dõi năng suất phóng viên (bài đã đăng, tổng lượt xem, bài đang chờ duyệt).
- *        3. Biểu đồ Cột nhóm (Grouped Bar Chart qua Chart.js): tương quan giữa lượt view và số bài theo chuyên mục.
- *        4. Biểu đồ Cột ngang (Horizontal Bar Chart qua Chart.js): Top 10 thẻ tag có bài viết nhiều nhất.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/editor/dashboard.html
- * PHỤ THUỘC:
- *   - Chart.js (thư viện biểu đồ)
- *   - frontend/assets/js/admin-layout.js
- *   - frontend/assets/js/common.js (resolveApiUrl, etc.)
- *   - backend/api/editor/dashboard.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/editor-dashboard.js
+PHÂN HỆ: Bảng điều khiển biên tập viên
+MÔ TẢ: Thống kê và trực quan hóa số liệu toàn tòa soạn cho Biên tập viên:
+       - Tải số liệu từ backend/api/editor/dashboard.php
+       - Bảng theo dõi năng suất phóng viên (bài đã đăng, tổng lượt xem, bài chờ duyệt)
+       - Biểu đồ Cột nhóm (Chart.js): tương quan giữa lượt xem và số bài theo chuyên mục
+       - Biểu đồ Cột ngang (Chart.js): Top 10 thẻ tag có bài viết nhiều nhất
+PHẠM VI SỬ DỤNG:
+       - frontend/editor/dashboard.html
+PHỤ THUỘC:
+       - Chart.js
+       - frontend/assets/js/admin-layout.js
+       - frontend/assets/js/common.js
+       - backend/api/editor/dashboard.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO BẢNG ĐIỀU KHIỂN & LƯU TRỮ INSTANCE BIỂU ĐỒ
-  // ==============================================================================
+  // 1. Khởi tạo bảng điều khiển và lưu trữ instance biểu đồ
   // Biến lưu trữ biểu đồ để hủy (destroy) khi re-render
   let categoryChartInstance = null;
   let topTagsChartInstance = null;
@@ -64,9 +62,7 @@
     initTopTagsChart(data.top_tags || []);
   }
 
-  // ==============================================================================
-  // KHỐI 2: BẢNG THEO DÕI HIỆU SUẤT & NĂNG SUẤT PHÓNG VIÊN
-  // ==============================================================================
+  // 2. Bảng theo dõi hiệu suất và năng suất phóng viên
   function renderReporterSection(reporterStats) {
     const tbody = document.getElementById("reporter-table-body");
     if (!tbody) return;
@@ -107,9 +103,7 @@
       .join("");
   }
 
-  // ==============================================================================
-  // KHỐI 3: BIỂU ĐỒ CỘT NHÓM (GROUPED BAR CHART) - TƯƠNG QUAN LƯỢT XEM VÀ BÀI VIẾT
-  // ==============================================================================
+  // 3. Biểu đồ cột nhóm - tương quan lượt xem và bài viết
   function initCategoryChart(catStats) {
     const canvas = document.getElementById("categoryChart");
     if (!canvas || typeof Chart === "undefined") return;
@@ -262,9 +256,7 @@
     });
   }
 
-  // ==============================================================================
-  // KHỐI 4: BIỂU ĐỒ CỘT NGANG (HORIZONTAL BAR CHART) - TOP 10 THẺ TAG
-  // ==============================================================================
+  // 4. Biểu đồ cột ngang - Top 10 thẻ tag
   function initTopTagsChart(topTagsStats) {
     const canvas = document.getElementById("topTagsChart");
     if (!canvas || typeof Chart === "undefined") return;
@@ -355,9 +347,7 @@
     });
   }
 
-  // ==============================================================================
-  // KHỐI 5: HÀM HỖ TRỢ XỬ LÝ CHUỖI AN TOÀN (HELPER FUNCTIONS)
-  // ==============================================================================
+  // 5. Hàm hỗ trợ xử lý chuỗi an toàn
   function escapeHTML(str) {
     if (!str) return "";
     return String(str)

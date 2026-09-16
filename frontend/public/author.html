@@ -1,14 +1,14 @@
 <!--
 ==============================================================================
 TÊN FILE: frontend/public/author.html
-PHÂN HỆ: Trang Hồ Sơ Tác Giả & Phóng Viên (Public Author Profile View)
+PHÂN HỆ: Hồ sơ tác giả công khai
 MÔ TẢ: Khung giao diện xem hồ sơ cá nhân và các bài viết của phóng viên / tác giả:
-       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường.
-       - Khối thông tin tác giả: ảnh đại diện, họ tên, vai trò, email liên hệ, tiểu sử.
-       - Thống kê bài viết đã đăng & tổng lượt đọc của tác giả.
-       - Bộ lọc chuyên mục dành riêng cho tác giả (#author-cat-filter).
-       - Lưới danh sách các bài viết đã xuất bản của tác giả (#author-articles-mount).
-       - Vùng gắn Footer trang tự động (#site-footer).
+       - Vùng gắn Header điều hướng (#site-header) và Breadcrumb dẫn đường
+       - Khối thông tin tác giả: ảnh đại diện, họ tên, vai trò, email liên hệ, tiểu sử
+       - Thống kê bài viết đã đăng và tổng lượt đọc của tác giả
+       - Bộ lọc chuyên mục dành riêng cho tác giả (#author-cat-filter)
+       - Lưới danh sách các bài viết đã xuất bản của tác giả (#author-articles-mount)
+       - Vùng gắn Footer trang tự động (#site-footer)
 PHỤ THUỘC:
        - frontend/assets/css/base.css, public-layout.css, public.css
        - frontend/assets/js/common.js, author.js
@@ -21,7 +21,7 @@ PHỤ THUỘC:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tác giả - Mạch Tin</title>
   
-  <!-- CSS Nền tảng & Layout Công khai -->
+  <!-- CSS nền tảng và layout công khai -->
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/public-layout.css">
   <link rel="stylesheet" href="../assets/css/public.css">
@@ -29,14 +29,10 @@ PHỤ THUỘC:
 </head>
 <body>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 1: HEADER & TICKER ĐIỀU HƯỚNG CÔNG KHAI (Tự động render bởi common.js)     -->
-  <!-- ============================================================================== -->
+  <!-- 1. Header và thanh tin vắn tự động (render bởi common.js) -->
   <div id="site-header"></div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 2: NỘI DUNG HỒ SƠ TÁC GIẢ & DANH SÁCH BÀI VIẾT ĐÃ XUẤT BẢN                -->
-  <!-- ============================================================================== -->
+  <!-- 2. Nội dung hồ sơ tác giả và danh sách bài viết đã xuất bản -->
   <main>
     <div class="wrap">
       <!-- Breadcrumb -->
@@ -114,14 +110,10 @@ PHỤ THUỘC:
     </div>
   </main>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 3: FOOTER CÔNG KHAI (Tự động render bởi common.js)                         -->
-  <!-- ============================================================================== -->
+  <!-- 3. Footer công khai (render bởi common.js) -->
   <div id="site-footer"></div>
 
-  <!-- ============================================================================== -->
-  <!-- KHỐI 4: TẢI CÁC THƯ VIỆN & TẬP LỆNH JAVASCRIPT ĐIỀU HÀNH TRANG                 -->
-  <!-- ============================================================================== -->
+  <!-- 4. Tải các thư viện và tập lệnh JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/author.js"></script>

@@ -1,28 +1,26 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/admin-users.js
- * PHÂN HỆ: Quản lý Người dùng & Phân quyền Quản trị viên (Admin Users Management Module)
- * MÔ TẢ: Quản lý toàn bộ danh sách tài khoản người dùng, nhân sự tòa soạn và độc giả:
- *        1. Tải danh sách người dùng qua admin/users.php và dữ liệu đóng góp qua admin/published-articles.php, admin/comments.php.
- *        2. Phân loại theo 4 tab: Tất cả tài khoản, Đội ngũ tòa soạn (admin/editor/reporter), Độc giả (user), Tài khoản bị khóa.
- *        3. Bộ lọc vai trò và trạng thái; Tìm kiếm thời gian thực theo họ tên, @username hoặc email.
- *        4. Hiển thị thông số đóng góp (số bài viết xuất bản, số bình luận).
- *        5. Thao tác quản trị: Phân quyền đổi vai trò, Khóa/Mở khóa tài khoản có nhập lý do, Xem lý do khóa tài khoản.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/admin/users.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/admin-users-modal.js (window.AdminUsersModals)
- *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, formatDate, renderUserAvatar, getAdminSortIcon, etc.)
- *   - backend/api/admin/users.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/admin-users.js
+PHÂN HỆ: Quản lý người dùng và phân quyền
+MÔ TẢ: Quản lý danh sách tài khoản người dùng, nhân sự tòa soạn và độc giả:
+       - Tải danh sách người dùng qua admin/users.php và dữ liệu đóng góp
+       - Phân loại theo tab: Tất cả tài khoản, Đội ngũ tòa soạn, Độc giả, Tài khoản bị khóa
+       - Bộ lọc vai trò và trạng thái; Tìm kiếm theo họ tên, username hoặc email
+       - Hiển thị thông số đóng góp: số bài viết xuất bản, số bình luận
+       - Thao tác: Phân quyền đổi vai trò, Khóa/Mở khóa tài khoản kèm lý do
+PHẠM VI SỬ DỤNG:
+       - frontend/admin/users.html
+PHỤ THUỘC:
+       - frontend/assets/js/admin-users-modal.js
+       - frontend/assets/js/common.js
+       - backend/api/admin/users.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI BỘ LỌC NGƯỜI DÙNG
-  // ==============================================================================
+  // 1. Khởi tạo trang và trạng thái bộ lọc người dùng
   let allUsers = [];
   let allArticles = [];
   let allComments = [];
@@ -53,9 +51,7 @@
     renderTableRows();
   }
 
-  // ==============================================================================
-  // KHỐI 2: TẢI DỮ LIỆU NGƯỜI DÙNG & ĐÓNG GÓP TỪ CÁC API HỆ THỐNG
-  // ==============================================================================
+  // 2. Tải dữ liệu người dùng và đóng góp từ các API hệ thống
   async function loadData() {
     try {
       const [usersRes, articlesRes, commentsRes, categoriesRes] = await Promise.all([
@@ -90,9 +86,7 @@
     return { total, staff, readers, locked };
   }
 
-  // ==============================================================================
-  // KHỐI 3: RENDER KHUNG BỐ CỤC, CÁC TAB ĐIỀU HƯỚNG & THANH CÔNG CỤ LỌC
-  // ==============================================================================
+  // 3. Hiển thị khung bố cục, các tab điều hướng và thanh công cụ lọc
   /**
    * Render khung cấu trúc trang quản lý người dùng
    */
@@ -209,9 +203,7 @@
     return getAdminSortIcon(field, sortField, sortOrder);
   }
 
-  // ==============================================================================
-  // KHỐI 4: RENDER DANH SÁCH HÀNG BẢNG NGƯỜI DÙNG & TÍNH TOÁN ĐÓNG GÓP
-  // ==============================================================================
+  // 4. Hiển thị danh sách hàng bảng người dùng và tính toán đóng góp
   /**
    * Render các hàng dữ liệu của Bảng
    */
@@ -237,14 +229,14 @@
       filtered = filtered.filter(u => u.role === roleFilter);
     }
 
-    // Bước 1: Lọc dữ liệu người dùng theo trạng thái tài khoản (Status Filter: Hoạt động hoặc Bị khóa)
+    // Lọc dữ liệu người dùng theo trạng thái tài khoản (Status Filter: Hoạt động hoặc Bị khóa)
     if (statusFilter === "active") {
       filtered = filtered.filter(u => u.status !== "locked" && u.status !== "inactive");
     } else if (statusFilter === "locked") {
       filtered = filtered.filter(u => u.status === "locked" || u.status === "inactive");
     }
 
-    // Bước 2: Lọc dữ liệu theo từ khóa tìm kiếm (họ tên, username, email, tiểu sử)
+    // Lọc dữ liệu theo từ khóa tìm kiếm (họ tên, username, email, tiểu sử)
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(u =>
@@ -255,7 +247,7 @@
       );
     }
 
-    // Bước 3: Sắp xếp danh sách người dùng theo tiêu chí được chọn (thời gian tạo, họ tên)
+    // Sắp xếp danh sách người dùng theo tiêu chí được chọn (thời gian tạo, họ tên)
     filtered.sort((a, b) => {
       if (sortField === "created_at") {
         const timeA = new Date(String(a.created_at || "").replace(" ", "T")).getTime() || 0;
@@ -269,19 +261,19 @@
       return 0;
     });
 
-    // Bước 4: Cập nhật huy hiệu hiển thị tổng số tài khoản người dùng
+    // Cập nhật huy hiệu hiển thị tổng số tài khoản người dùng
     if (countBadge) {
       countBadge.textContent = `${filtered.length} người dùng`;
     }
 
-    // Bước 5: Tính toán thông số phân trang cho danh sách người dùng (Pagination)
+    // Tính toán thông số phân trang cho danh sách người dùng (Pagination)
     const totalRecords = filtered.length;
     const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
     if (currentPage > totalPages) {
       currentPage = totalPages;
     }
 
-    // Bước 6: Hiển thị giao diện trạng thái trống (Empty State) khi không có người dùng phù hợp
+    // Hiển thị giao diện trạng thái trống (Empty State) khi không có người dùng phù hợp
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -305,7 +297,7 @@
       return;
     }
 
-    // Bước 7: Trích xuất tập dữ liệu cho trang hiện tại và dựng mã HTML các dòng người dùng (Table Rows)
+    // Trích xuất tập dữ liệu cho trang hiện tại và dựng mã HTML các dòng người dùng (Table Rows)
     const startIndex = (currentPage - 1) * perPage;
     const pageItems = filtered.slice(startIndex, startIndex + perPage);
 
@@ -514,9 +506,7 @@
     }
   }
 
-  // ==============================================================================
-  // KHỐI 5: GẮN SỰ KIỆN TƯƠNG TÁC, BỘ LỌC & MENU THAO TÁC NGƯỜI DÙNG
-  // ==============================================================================
+  // 5. Gắn sự kiện tương tác, bộ lọc và menu thao tác người dùng
   /**
    * Đăng ký các sự kiện và hàm xử lý
    */

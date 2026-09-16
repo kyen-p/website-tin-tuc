@@ -1,23 +1,23 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/category.js
- * PHÂN HỆ: Trang Chuyên mục & Lọc theo Thẻ Tag (Category & Tag Filter Module)
- * MÔ TẢ: Quản lý hiển thị danh sách bài viết theo chuyên mục, thẻ chủ đề hoặc các bộ lọc đặc biệt:
- *        1. Phân tích tham số URL: ?slug= (chuyên mục), ?tag= (thẻ tag), ?filter= (latest: 48h qua, notable: sự kiện nổi bật).
- *        2. Tải dữ liệu bài viết, chuyên mục, danh sách thẻ từ Backend API.
- *        3. Cập nhật tiêu đề trang (Document Title), Breadcrumb và Mô tả chuyên mục động.
- *        4. Hiển thị thanh cuộn thẻ tag ngang (Tag Chips Bar), điều khiển cuộn qua 2 nút trượt và xử lý sự kiện lọc nhanh.
- *        5. Render bố cục danh sách: 1 bài tiêu điểm lớn (Featured Article) phía trên và lưới bài viết phía dưới.
- *        6. Tích hợp Sidebar Đọc nhiều nhất trong tuần & Đám mây thẻ Tag qua initPublicSidebar.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/public/category.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, initPublicSidebar, resolveApiUrl, getArticleDetailUrl, etc.)
- *   - backend/api/public/articles.php
- *   - backend/api/public/categories.php
- *   - backend/api/public/tags.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/category.js
+PHÂN HỆ: Chuyên mục và lọc theo thẻ tag
+MÔ TẢ: Quản lý hiển thị danh sách bài viết theo chuyên mục, thẻ hoặc bộ lọc đặc biệt:
+       - Phân tích tham số URL: ?slug=, ?tag=, ?filter= (latest, notable)
+       - Tải dữ liệu bài viết, chuyên mục, thẻ tag từ backend API
+       - Cập nhật tiêu đề trang, Breadcrumb và mô tả chuyên mục động
+       - Thanh trượt thẻ tag (Tag Chips Bar) kèm 2 nút cuộn
+       - Bố cục danh sách: 1 bài tiêu điểm lớn phía trên và lưới bài viết phía dưới
+       - Tích hợp Sidebar đọc nhiều nhất trong tuần và đám mây thẻ tag
+PHẠM VI SỬ DỤNG:
+       - frontend/public/category.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/public/articles.php
+       - backend/api/public/categories.php
+       - backend/api/public/tags.php
+==============================================================================
+*/
 
 async function initCategoryPage() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -27,9 +27,7 @@ async function initCategoryPage() {
   let currentPage = parseInt(urlParams.get("page") || "1", 10);
   if (isNaN(currentPage) || currentPage < 1) currentPage = 1;
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DỮ LIỆU TỪ BACKEND
-  // ==============================================================================
+  // 1. Khởi tạo khung trang và tải dữ liệu từ backend
   if (typeof initPublicHeader === "function") {
     await initPublicHeader(categorySlug);
   }
@@ -56,9 +54,7 @@ async function initCategoryPage() {
   // Tìm chuyên mục hiện tại
   const currentCategory = categorySlug ? categories.find((c) => c.slug === categorySlug) || null : null;
 
-  // ==============================================================================
-  // KHỐI 2: CÁC TIỆN ÍCH HỖ TRỢ TRÍCH XUẤT THÔNG TIN BÀI VIẾT
-  // ==============================================================================
+  // 2. Các tiện ích hỗ trợ trích xuất thông tin bài viết
   function getCategory(catId) {
     return categories.find((c) => c.id === catId) || { name: "Tin tức", slug: "" };
   }
@@ -71,9 +67,7 @@ async function initCategoryPage() {
     return typeof getArticleViews === "function" ? getArticleViews(article) : Number(article?.view_count || 0);
   }
 
-  // ==============================================================================
-  // KHỐI 3: RENDER TIÊU ĐỀ CHUYÊN MỤC, BREADCRUMB & DOCUMENT.TITLE ĐỘNG
-  // ==============================================================================
+  // 3. Hiển thị tiêu đề chuyên mục, breadcrumb và tiêu đề trang
   const breadcrumbCategory = document.getElementById("breadcrumb-category");
   const categoryTitle = document.getElementById("category-title");
   const categoryDesc = document.getElementById("category-description");
@@ -104,9 +98,7 @@ async function initCategoryPage() {
   if (categoryTitle) categoryTitle.textContent = titleName;
   if (categoryDesc) categoryDesc.textContent = descText;
 
-  // ==============================================================================
-  // KHỐI 4: RENDER BĂNG CHIP THẺ TAG (TAG CHIPS BAR)
-  // ==============================================================================
+  // 4. Hiển thị băng chip thẻ tag (Tag chips bar)
   const tagChipsMount = document.getElementById("category-tags-mount");
   if (tagChipsMount) {
     let relevantTags = tags;
@@ -208,9 +200,7 @@ async function initCategoryPage() {
     setTimeout(updateTagScrollButtons, 60);
   }
 
-  // ==============================================================================
-  // KHỐI 5: LỌC VÀ RENDER DANH SÁCH BÀI VIẾT (TIÊU ĐIỂM + LƯỚI BÀI VIẾT)
-  // ==============================================================================
+  // 5. Lọc và hiển thị danh sách bài viết (tiêu điểm và lưới bài viết)
   function renderArticlesList() {
     let filtered = allArticles.filter((a) => a.status === "published");
 
@@ -276,7 +266,7 @@ async function initCategoryPage() {
       gridArticles = filtered.slice(startIndex, startIndex + PAGE_SIZE);
     }
 
-    // Bước 1: Render Bài tiêu điểm nổi bật (Featured Article - kích thước lớn, chỉ hiển thị ở trang 1)
+    // Render Bài tiêu điểm nổi bật (Featured Article - kích thước lớn, chỉ hiển thị ở trang 1)
     if (featuredMount) {
       if (featuredArticle) {
         featuredMount.style.display = "block";
@@ -309,7 +299,7 @@ async function initCategoryPage() {
       }
     }
 
-    // Bước 2: Render các bài viết còn lại trong trang dưới dạng lưới thẻ chuẩn (Grid Cards)
+    // Render các bài viết còn lại trong trang dưới dạng lưới thẻ chuẩn (Grid Cards)
     if (gridMount) {
       if (gridArticles.length === 0) {
         gridMount.innerHTML = "";
@@ -340,7 +330,7 @@ async function initCategoryPage() {
       }
     }
 
-    // Bước 3: Render thanh phân trang số dùng chung (Pagination Controls)
+    // Render thanh phân trang số dùng chung (Pagination Controls)
     if (typeof renderPublicPagination === "function") {
       renderPublicPagination("category-pagination-mount", {
         currentPage,
@@ -387,22 +377,18 @@ async function initCategoryPage() {
     renderArticlesList();
   });
 
-  // ==============================================================================
-  // KHỐI 6: RENDER SIDEBAR CHUNG (ĐỌC NHIỀU NHẤT & ĐÁM MÂY THẺ TAG)
-  // ==============================================================================
+  // 6. Hiển thị sidebar chung (đọc nhiều nhất và đám mây thẻ tag)
   await initPublicSidebar({
     rankMountId: "category-rank-mount",
     tagMountId: "category-tag-cloud-mount"
   });
 
-  // Bước 4: Khởi tạo hiển thị danh sách bài viết theo chuyên mục lần đầu
+  // Khởi tạo hiển thị danh sách bài viết theo chuyên mục lần đầu
   renderArticlesList();
 }
 
-// ==============================================================================
-// KHỐI 7: KHỞI CHẠY AN TOÀN TRANG CHUYÊN MỤC
-// ==============================================================================
-// Bước 5: Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
+// 7. Khởi chạy trang chuyên mục
+// Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initCategoryPage);
 } else {

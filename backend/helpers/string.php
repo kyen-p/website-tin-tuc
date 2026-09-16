@@ -1,35 +1,29 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/helpers/string.php
- * PHÂN HỆ: Trợ giúp Xử lý Chuỗi (Backend String Helper)
- * MÔ TẢ: Cung cấp các tiện ích xử lý chuỗi ký tự, chuyển đổi tiếng Việt có dấu sang slug URL.
- * PHẠM VI SỬ DỤNG:
- *   - [TẬP TIN DÙNG CHUNG CỐT LÕI]
- *   - Được require_once bởi: backend/api/reporter/write-article.php, backend/api/editor/categories-tags.php, backend/api/admin/published-articles.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/helpers/string.php
+PHÂN HỆ: Trợ giúp Xử lý Chuỗi (String Helper)
+MÔ TẢ: Cung cấp tiện ích xử lý chuỗi và tạo slug URL:
+       - createSlug: Chuyển tiêu đề tiếng Việt có dấu thành chuỗi slug không dấu,
+         thay khoảng trắng bằng dấu gạch nối (-), loại bỏ ký tự đặc biệt.
+PHẠM VI SỬ DỤNG:
+       - Dùng khi tạo hoặc cập nhật bài viết, chuyên mục, thẻ tag để tối ưu đường dẫn URL (SEO).
+==============================================================================
+*/
 
 /**
- * [HÀM DÙNG CHUNG TOÀN HỆ THỐNG] createSlug
- * - Chức năng: Chuyển đổi chuỗi tiêu đề tiếng Việt có dấu thành dạng slug URL chuẩn
- *   (chữ thường không dấu, phân tách bằng dấu gạch ngang, loại bỏ ký tự đặc biệt).
- * - Được gọi bởi:
- *   + backend/api/reporter/write-article.php (khi tạo hoặc cập nhật slug bài viết)
- *   + backend/api/editor/categories-tags.php (khi tạo hoặc sửa slug chuyên mục / tag)
- *   + backend/api/admin/published-articles.php (khi admin tạo thẻ tag mới lúc sửa đè bài viết)
- * 
- * @param string $text Chuỗi tiêu đề gốc (tiếng Việt UTF-8)
- * @return string Chuỗi slug thân thiện URL (VD: "kinh-te-viet-nam-2026")
+ * Chuyển đổi văn bản tiếng Việt có dấu thành Slug thân thiện với URL (VD: "Tin tức thể thao 2026" -> "tin-tuc-the-thao-2026")
+ * @param string $text Chuỗi văn bản tiếng Việt
+ * @return string Chuỗi slug chuẩn
  */
 if (!function_exists('createSlug')) {
     function createSlug($text)
     {
-        // Bước 1: Loại bỏ khoảng trắng thừa hai đầu và chuyển toàn bộ chuỗi sang chữ thường UTF-8
+        // Chuyển toàn bộ chuỗi sang chữ thường UTF-8 và bỏ khoảng trắng 2 đầu
         $text = trim($text);
         $text = mb_strtolower($text, 'UTF-8');
 
-        // Bước 2: Bảng đối chiếu các ký tự tiếng Việt có dấu
+        // Bảng ký tự tiếng Việt có dấu
         $vietnamese = [
             'à','á','ạ','ả','ã','â','ầ','ấ','ậ','ẩ','ẫ','ă','ằ','ắ','ặ','ẳ','ẵ',
             'è','é','ẹ','ẻ','ẽ','ê','ề','ế','ệ','ể','ễ',
@@ -39,7 +33,7 @@ if (!function_exists('createSlug')) {
             'ỳ','ý','ỵ','ỷ','ỹ','đ'
         ];
 
-        // Bước 3: Bảng ký tự Latin tương ứng không dấu
+        // Bảng ký tự Latin tương ứng không dấu
         $latin = [
             'a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a',
             'e','e','e','e','e','e','e','e','e','e','e',
@@ -49,13 +43,13 @@ if (!function_exists('createSlug')) {
             'y','y','y','y','y','d'
         ];
 
-        // Bước 4: Thay thế toàn bộ ký tự có dấu sang ký tự Latin không dấu
+        // Thay thế ký tự có dấu thành không dấu
         $text = str_replace($vietnamese, $latin, $text);
         
-        // Bước 5: Thay thế các ký tự không phải chữ cái và số thành dấu gạch ngang phân cách
+        // Thay các ký tự không phải chữ cái và số bằng dấu gạch ngang (-)
         $text = preg_replace('/[^a-z0-9]+/u', '-', $text);
         
-        // Bước 6: Cắt bỏ các dấu gạch ngang dư thừa ở đầu và cuối chuỗi slug
+        // Cắt bỏ các dấu gạch ngang dư thừa ở hai đầu chuỗi
         return trim($text, '-');
     }
 }

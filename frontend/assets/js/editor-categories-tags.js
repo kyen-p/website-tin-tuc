@@ -1,35 +1,23 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/editor-categories-tags.js
- * PHÂN HỆ: Quản trị Chuyên mục & Thẻ Tag Biên tập viên (Editor Categories & Tags Module)
- * MÔ TẢ: Cung cấp giao diện quản lý 2 cột cho Ban Biên tập:
- *        1. QUẢN LÝ CHUYÊN MỤC:
- *           - Xem danh sách chuyên mục kèm số lượng bài viết (published + pending + draft + rejected).
- *           - Thêm chuyên mục mới (Tên, Slug tự động tạo, Mô tả).
- *           - Sửa tên, slug và mô tả chuyên mục.
- *           - Xóa chuyên mục: Khóa / chặn xóa nếu số bài viết > 0 ("Chuyên mục còn X bài viết, không thể xóa để bảo toàn dữ liệu").
- *             Chỉ cho phép xóa khi số bài = 0.
- *        2. QUẢN LÝ THẺ (TAGS):
- *           - Hiển thị danh sách toàn bộ tag trong hệ thống kèm số lượng bài viết gắn tag.
- *           - Thêm tag mới thủ công.
- *           - Sửa tên Tag / Gộp thông minh (Smart Merge): Khi đổi tên tag A sang B, nếu B đã có sẵn trong hệ thống thì
- *             tự động gộp các bài viết của A sang B và thu hồi tag A.
- *           - Xóa Tag vĩnh viễn: Tự động gỡ tag đó ra khỏi mọi bài viết liên quan.
- *           - Lọc nhanh các tag rác (0 bài viết) hoặc tag đang có bài (≥1).
- * PHẠM VI SỬ DỤNG:
- *   - frontend/editor/categories-tags.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (resolveApiUrl, showToast, escapeHtml, etc.)
- *   - backend/api/editor/categories-tags.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/editor-categories-tags.js
+PHÂN HỆ: Quản trị chuyên mục và thẻ tag
+MÔ TẢ: Cung cấp giao diện quản lý 2 cột cho Ban Biên tập:
+       - Quản lý chuyên mục: Xem danh sách, thêm mới, sửa và xóa an toàn (chặn xóa khi còn bài viết)
+       - Quản lý thẻ tag: Xem danh sách, thêm tag, sửa/gộp thông minh và xóa tag khỏi bài viết
+       - Lọc theo tag có bài, tag rác (0 bài viết)
+PHẠM VI SỬ DỤNG:
+       - frontend/editor/categories-tags.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/editor/categories-tags.php
+==============================================================================
+*/
 
 (function () {
   "use strict";
 
-  // ==============================================================================
-  // KHỐI 1: KHỞI TẠO TRANG & TRẠNG THÁI BỘ LỌC CHUYÊN MỤC / TAG
-  // ==============================================================================
+  // 1. Khởi tạo trang và trạng thái bộ lọc chuyên mục / tag
   let allCategories = [];
   let allTags = [];
 
@@ -49,9 +37,7 @@
     attachEventListeners();
   }
 
-  // ==============================================================================
-  // KHỐI 2: TẢI DANH SÁCH CHUYÊN MỤC & TAG KÈM SỐ LƯỢNG BÀI VIẾT QUA API
-  // ==============================================================================
+  // 2. Tải danh sách chuyên mục và tag kèm số lượng bài viết qua API
   async function loadData() {
     const [catRes, tagRes] = await Promise.all([
       fetch(resolveApiUrl("editor/categories-tags.php?type=categories"), { credentials: "include" }).then(r => r.json()),
@@ -61,9 +47,7 @@
     allTags = tagRes.data || [];
   }
 
-  // ==============================================================================
-  // KHỐI 3: RENDER KHUNG GIAO DIỆN & CỘT CHUYÊN MỤC (KÈM KHÓA BẢO VỆ DỮ LIỆU)
-  // ==============================================================================
+  // 3. Hiển thị khung giao diện và cột chuyên mục
   /**
    * Render khung 2 cột tinh gọn
    */
@@ -261,9 +245,7 @@
       .join("");
   }
 
-  // ==============================================================================
-  // KHỐI 4: RENDER CỘT THẺ TỪ KHÓA (TAGS) & BỘ LỌC THÔNG MINH
-  // ==============================================================================
+  // 4. Hiển thị cột thẻ tag và bộ lọc thông minh
   /**
    * Render Cột 2: Danh sách Thẻ Tags
    */
@@ -332,9 +314,7 @@
       .join("");
   }
 
-  // ==============================================================================
-  // KHỐI 5: GẮN SỰ KIỆN TƯƠNG TÁC & XỬ LÝ CRUD CHUYÊN MỤC / TAG QUA API
-  // ==============================================================================
+  // 5. Gắn sự kiện tương tác và xử lý thêm/sửa/xóa chuyên mục và tag qua API
   /**
    * Gắn các sự kiện tương tác
    */

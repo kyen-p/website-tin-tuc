@@ -1,36 +1,30 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/editor/categories-tags.php
- * PHÂN HỆ: API Quản lý Chuyên mục và Thẻ Tag (Taxonomy Management Service)
- * MÔ TẢ: Cung cấp đầy đủ các thao tác CRUD danh mục phân loại bài viết cho ban biên tập:
- *        - GET: Lấy danh sách chuyên mục (categories) hoặc thẻ tag (tags) kèm số lượng bài viết liên kết.
- *        - POST: Thêm mới chuyên mục hoặc thẻ tag (tự động tạo slug).
- *        - PUT: Chỉnh sửa tên, slug, mô tả của chuyên mục / tag; hỗ trợ thuật toán gộp thẻ tag trùng lặp thông minh.
- *        - DELETE: Xóa chuyên mục (nếu chưa có bài viết) hoặc xóa thẻ tag (tự động dọn dẹp liên kết).
- * PHẠM VI SỬ DỤNG:
- *   - [KHU VỰC TÒA SOẠN - BAN BIÊN TẬP]
- *   - Phân quyền: role = 'editor'
- *   - Tham số truy vấn: type = 'categories' | 'tags'
- *   - Phương thức: GET, POST, PUT, DELETE
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireRole)
- *   - backend/helpers/string.php (createSlug)
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/categories-tags.js (Giao diện quản lý danh mục và thẻ tag)
- * TRẢ VỀ (JSON):
- *   - Theo từng nghiệp vụ CRUD tương ứng
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/editor/categories-tags.php
+PHÂN HỆ: Quản lý chuyên mục và thẻ tag
+MÔ TẢ: Cung cấp đầy đủ các thao tác quản lý danh mục và thẻ phân loại bài viết:
+       - Lấy danh sách chuyên mục hoặc thẻ tag kèm số lượng bài viết liên kết
+       - Thêm mới chuyên mục hoặc thẻ tag (tự động tạo slug)
+       - Chỉnh sửa tên, slug, mô tả; hỗ trợ gộp thẻ tag trùng lặp
+       - Xóa chuyên mục (nếu chưa có bài viết) hoặc xóa thẻ tag
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: role = 'editor'
+       - Phương thức: GET, POST, PUT, DELETE
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+       - helpers/string.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 require_once __DIR__ . '/../../helpers/string.php';
 
-// Kiểm tra quyền hạn: Chỉ Biên tập viên (editor) mới được quản lý chuyên mục và tag
+// Chỉ Biên tập viên (editor) mới được quản lý chuyên mục và tag
 requireRole(['editor']);
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -40,9 +34,7 @@ if ($type !== 'categories' && $type !== 'tags') {
     jsonResponse(false, null, "type phải là categories hoặc tags");
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 1: GET - LẤY DANH SÁCH CHUYÊN MỤC HOẶC THẺ TAG
-// ==============================================================================
+// 1. Lấy danh sách chuyên mục hoặc thẻ tag
 if ($method === 'GET') {
     try {
         if ($type === 'categories') {
@@ -93,9 +85,7 @@ if ($method === 'GET') {
     }
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 2: POST - TẠO MỚI CHUYÊN MỤC HOẶC THẺ TAG
-// ==============================================================================
+// 2. Thêm mới chuyên mục hoặc thẻ tag
 if ($method === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -201,9 +191,7 @@ if ($method === 'POST') {
     }
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 3: PUT - CẬP NHẬT CHUYÊN MỤC HOẶC TAG (HỖ TRỢ GỘP TAG TRÙNG LẶP)
-// ==============================================================================
+// 3. Cập nhật thông tin chuyên mục hoặc thẻ tag (hỗ trợ gộp thẻ tag trùng lặp)
 if ($method === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -371,9 +359,7 @@ if ($method === 'PUT') {
     }
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 4: DELETE - XÓA CHUYÊN MỤC HOẶC THẺ TAG
-// ==============================================================================
+// 4. Xóa chuyên mục hoặc thẻ tag
 if ($method === 'DELETE') {
     $id = $_GET['id'] ?? null;
 

@@ -1,38 +1,36 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/my-comments.js
- * PHÂN HỆ: Quản lý Bình luận cá nhân (User My-Comments Module)
- * MÔ TẢ: Hiển thị và quản lý tất cả bình luận do người dùng hiện tại đã đăng:
- *        1. Tải danh sách bình luận cá nhân từ backend/api/user/my-comments.php.
- *        2. Render danh sách kèm ngữ cảnh bài viết (tên bài, liên kết nhảy tới vị trí bình luận).
- *        3. Hỗ trợ menu hành động (xem chi tiết, mở modal xác nhận xóa bình luận).
- *        4. Thực thi xóa bình luận qua phương thức DELETE tới backend/api/user/my-comments.php.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/user/my-comments.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, resolveApiUrl, showToast, escapeHtml, etc.)
- *   - backend/api/user/my-comments.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/my-comments.js
+PHÂN HỆ: Quản lý bình luận cá nhân
+MÔ TẢ: Hiển thị và quản lý tất cả bình luận do người dùng hiện tại đã đăng:
+       - Tải danh sách bình luận cá nhân từ backend/api/user/my-comments.php
+       - Hiển thị danh sách kèm ngữ cảnh bài viết (tên bài, link nhảy tới bình luận)
+       - Menu hành động (xem chi tiết, mở modal xác nhận xóa)
+       - Xóa bình luận qua phương thức DELETE tới backend/api/user/my-comments.php
+PHẠM VI SỬ DỤNG:
+       - frontend/user/my-comments.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/user/my-comments.php
+==============================================================================
+*/
 
 const COMMENTS_API = typeof resolveApiUrl === "function" ? resolveApiUrl("user/my-comments.php") : "/backend/api/user/my-comments.php";
 let activeDeleteCommentId = null;
 
-// ==============================================================================
-// KHỐI 1: KHỞI TẠO KHUNG TRANG & TẢI DANH SÁCH BÀI BÌNH LUẬN CỦA BẢN THÂN
-// ==============================================================================
+// 1. Khởi tạo khung trang và tải danh sách bình luận của bản thân
 async function initMyCommentsPage() {
-  // Bước 1: Khởi tạo thanh điều hướng đầu trang (Header) đồng bộ phiên làm việc
+  // Khởi tạo thanh điều hướng đầu trang (Header) đồng bộ phiên làm việc
   if (typeof initPublicHeader === "function") {
     await initPublicHeader("my-comments");
   }
 
-  // Bước 2: Khởi tạo khối chân trang (Footer) thông tin tòa soạn
+  // Khởi tạo khối chân trang (Footer) thông tin tòa soạn
   if (typeof initPublicFooter === "function") {
     await initPublicFooter();
   }
 
-  // Bước 3: Gửi yêu cầu HTTP GET đến API backend my-comments.php để lấy danh sách bình luận cá nhân
+  // Gửi yêu cầu HTTP GET đến API backend my-comments.php để lấy danh sách bình luận cá nhân
   try {
     const response = await fetch(COMMENTS_API, { credentials: "include" });
     const result = await response.json();
@@ -46,7 +44,7 @@ async function initMyCommentsPage() {
     renderCommentsApiNotAvailable();
   }
 
-  // Bước 4: Lắng nghe sự kiện click toàn cục để đóng menu thả xuống (Dropdown Action Menu) khi nhấp chuột ra ngoài vùng menu
+  // Lắng nghe sự kiện click toàn cục để đóng menu thả xuống (Dropdown Action Menu) khi nhấp chuột ra ngoài vùng menu
   document.addEventListener("click", function (e) {
     if (!e.target.closest(".comment-action-menu-wrap")) {
       document
@@ -58,9 +56,7 @@ async function initMyCommentsPage() {
   });
 }
 
-// ==============================================================================
-// KHỐI 2: RENDER GIAO DIỆN DANH SÁCH BÌNH LUẬN & TRẠNG THÁI RỖNG
-// ==============================================================================
+// 2. Hiển thị danh sách bình luận và trạng thái rỗng
 function renderCommentsApiNotAvailable() {
   const mount = document.getElementById("my-comments-mount");
 
@@ -327,9 +323,7 @@ function renderMyCommentsList(comments) {
   `;
 }
 
-// ==============================================================================
-// KHỐI 3: THAO TÁC MENU TÙY CHỌN, MODAL VÀ XÓA BÌNH LUẬN QUA API
-// ==============================================================================
+// 3. Thao tác menu tùy chọn, modal và xóa bình luận qua API
 /**
  * Đóng / mở menu ba chấm
  */

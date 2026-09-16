@@ -1,58 +1,42 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/helpers/auth.php
- * PHÂN HỆ: Trợ giúp Xác thực & Phân quyền (Backend Auth Helper)
- * MÔ TẢ: Khởi tạo PHP Session và cung cấp các hàm kiểm tra đăng nhập, phân quyền vai trò.
- * PHẠM VI SỬ DỤNG:
- *   - [TẬP TIN DÙNG CHUNG CỐT LÕI]
- *   - Phụ thuộc: backend/helpers/response.php (gọi jsonResponse khi từ chối truy cập)
- *   - Được require_once bởi: Tất cả các API yêu cầu đăng nhập thuộc
- *     backend/api/{user, reporter, editor, admin}/** và backend/api/upload.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/helpers/auth.php
+PHÂN HỆ: Trợ giúp Xác thực & Phân quyền (Auth Helper)
+MÔ TẢ: Quản lý phiên làm việc PHP Session và kiểm tra quyền hạn người dùng:
+       - Khởi động Session nếu chưa có.
+       - Kiểm tra trạng thái đã đăng nhập (requireLogin).
+       - Kiểm tra vai trò người dùng được phép truy cập (requireRole: admin, editor, reporter, user).
+PHẠM VI SỬ DỤNG:
+       - Dùng chung cho các API cần xác thực danh tính và phân quyền.
+PHỤ THUỘC:
+       - backend/helpers/response.php (gọi jsonResponse khi từ chối truy cập)
+==============================================================================
+*/
 
-// Bước 1: Khởi động phiên làm việc PHP Session để quản trị thông tin đăng nhập máy chủ
+// Khởi tạo phiên làm việc PHP Session
 session_start();
 
 /**
- * [HÀM DÙNG CHUNG] requireLogin
- * - Chức năng: Kiểm tra người dùng hiện tại đã đăng nhập vào hệ thống hay chưa thông qua PHP Session.
- * - Hành vi: Nếu chưa đăng nhập ($_SESSION['user_id'] chưa tồn tại), trả về lỗi 
- *   JSON { success: false, message: "Bạn cần đăng nhập" } và dừng thực thi ngay.
- * - Được gọi bởi: requireRole(), backend/api/user/**, backend/api/upload.php.
- * 
- * @return void
+ * Kiểm tra xem người dùng đã đăng nhập chưa
+ * Nếu chưa đăng nhập ($_SESSION['user_id'] không tồn tại), ngắt và trả về lỗi 401 JSON
  */
 function requireLogin() {
-    // Bước 1: Kiểm tra xem biến định danh user_id đã tồn tại trong phiên làm việc $_SESSION hay chưa
     if (!isset($_SESSION['user_id'])) {
-        // Bước 2: Từ chối phiên truy cập và phản hồi thông điệp lỗi JSON
-        jsonResponse(false, null, "Bạn cần đăng nhập");
+        jsonResponse(false, null, "Bạn cần đăng nhập để thực hiện chức năng này", 401);
     }
 }
 
 /**
- * [HÀM DÙNG CHUNG] requireRole
- * - Chức năng: Kiểm tra quyền truy cập dựa trên danh sách các vai trò (roles) được phép.
- * - Các vai trò trong hệ thống: 'admin', 'editor', 'reporter', 'user'.
- * - Hành vi: Tự động gọi requireLogin() trước, sau đó nếu vai trò hiện tại không nằm trong
- *   mảng $roles thì trả về lỗi { success: false, message: "Không có quyền truy cập" } và dừng thực thi.
- * - Được gọi bởi: 
- *   + backend/api/admin/** (cho phép ['admin'])
- *   + backend/api/editor/** (cho phép ['editor', 'admin'])
- *   + backend/api/reporter/** (cho phép ['reporter', 'admin'])
- * 
- * @param array $roles Mảng danh sách các chuỗi vai trò được cấp quyền
- * @return void
+ * Kiểm tra quyền truy cập theo vai trò (Role-based Access Control)
+ * @param array $roles Mảng các vai trò được phép (ví dụ: ['admin'], ['editor', 'admin'])
  */
 function requireRole($roles) {
-    // Bước 1: Bắt buộc người dùng phải có trạng thái đăng nhập hợp lệ trước
+    // Trước tiên yêu cầu người dùng phải đăng nhập
     requireLogin();
     
-    // Bước 2: Đối chiếu vai trò hiện tại trong $_SESSION với danh sách vai trò được phép truy cập
+    // Đối chiếu vai trò hiện tại trong Session với danh sách vai trò hợp lệ
     if (!in_array($_SESSION['role'], $roles)) {
-        // Bước 3: Từ chối quyền hạn và phản hồi lỗi JSON không đủ thẩm quyền
-        jsonResponse(false, null, "Không có quyền truy cập");
+        jsonResponse(false, null, "Bạn không có quyền truy cập chức năng này", 403);
     }
 }

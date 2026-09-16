@@ -1,81 +1,71 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/helpers/response.php
- * PHÂN HỆ: Trợ giúp Xử lý Phản hồi (Backend Response Helper)
- * MÔ TẢ: Chuẩn hóa định dạng phản hồi JSON trả về cho toàn bộ các yêu cầu API.
- * PHẠM VI SỬ DỤNG:
- *   - [TẬP TIN DÙNG CHUNG CỐT LÕI]
- *   - Được require_once bởi HẦU HẾT các API endpoint trong backend/api/**
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/helpers/response.php
+PHÂN HỆ: Trợ giúp Xử lý Phản hồi API (Response Helper)
+MÔ TẢ: Định dạng dữ liệu trả về theo chuẩn JSON cho toàn bộ API hệ thống:
+       - jsonResponse: Trả về kết quả thao tác đơn lẻ hoặc danh sách ngắn.
+       - getPaginationParams: Đọc và tính toán tham số phân trang từ URL (page, limit, offset).
+       - jsonPaginatedResponse: Trả về danh sách có kèm thông tin phân trang (tổng số trang, tổng số dòng).
+PHẠM VI SỬ DỤNG:
+       - Dùng chung cho tất cả các endpoint API trong backend/api/**
+==============================================================================
+*/
 
 /**
- * [HÀM DÙNG CHUNG TOÀN HỆ THỐNG] jsonResponse
- * - Chức năng: Thiết lập Header JSON, đóng gói dữ liệu phản hồi theo cấu trúc
- *   thống nhất { success, message, data } và kết thúc thực thi kịch bản (exit).
- * - Được gọi bởi: Toàn bộ các API backend khi trả kết quả thành công hoặc báo lỗi về frontend.
- * 
- * @param bool $success Trạng thái kết quả thao tác (true: thành công, false: thất bại)
- * @param mixed $data Dữ liệu kèm theo trả về client (mảng, object, null)
- * @param string $message Thông điệp giải thích kết quả gửi tới người dùng
- * @return void (Hàm xuất chuỗi JSON và dừng chương trình ngay lập tức)
+ * Trả về phản hồi JSON chuẩn và kết thúc xử lý
+ * @param bool $success Trạng thái (true: thành công, false: thất bại)
+ * @param mixed $data Dữ liệu kèm theo (object, array, null)
+ * @param string $message Thông báo phản hồi cho người dùng
+ * @param int $statusCode Mã HTTP status code (200, 400, 401, 403, 500...)
  */
-function jsonResponse($success, $data = null, $message = "") {
-    // Bước 1: Thiết lập tiêu đề giao thức HTTP Content-Type định dạng dữ liệu JSON
-    header('Content-Type: application/json');
+function jsonResponse($success, $data = null, $message = "", $statusCode = 200) {
+    http_response_code($statusCode);
+    header('Content-Type: application/json; charset=utf-8');
     
-    // Bước 2: Mã hóa mảng dữ liệu thành chuỗi JSON chuẩn và xuất ra luồng đầu ra
-    echo json_encode(["success" => $success, "message" => $message, "data" => $data]);
+    echo json_encode([
+        "success" => $success, 
+        "message" => $message, 
+        "data" => $data
+    ], JSON_UNESCAPED_UNICODE);
     
-    // Bước 3: Dừng thực thi kịch bản máy chủ PHP ngay lập tức
     exit;
 }
 
 /**
- * [HÀM DÙNG CHUNG TOÀN HỆ THỐNG] getPaginationParams
- * - Chức năng: Lấy và chuẩn hóa các tham số phân trang từ $_GET (page, limit, offset).
- * - Kiểm tra tính hợp lệ: page >= 1, limit nằm trong khoảng 1 đến $maxLimit.
- * 
- * @param int $defaultLimit Số bản ghi mặc định trên 1 trang (mặc định 10)
- * @param int $maxLimit Số bản ghi tối đa cho phép trên 1 trang (mặc định 50)
- * @return array [$page, $limit, $offset]
+ * Lấy và tính toán các tham số phân trang từ query string ($_GET)
+ * @param int $defaultLimit Số phần tử mặc định trên mỗi trang (mặc định 10)
+ * @param int $maxLimit Số phần tử tối đa cho phép trên mỗi trang (mặc định 50)
+ * @return array Mảng gồm [$page, $limit, $offset] để đưa trực tiếp vào SQL LIMIT/OFFSET
  */
 function getPaginationParams($defaultLimit = 10, $maxLimit = 50) {
-    // Bước 1: Chuẩn hóa số thứ tự trang hiện tại (tối thiểu là trang 1)
+    // Lấy số trang hiện tại, tối thiểu là 1
     $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
     
-    // Bước 2: Chuẩn hóa số lượng bản ghi hiển thị trên một trang (ràng buộc từ 1 đến giới hạn tối đa)
+    // Giới hạn số lượng bản ghi hiển thị trên 1 trang để tránh tải quá tải CSDL
     $limit = isset($_GET['limit']) ? min($maxLimit, max(1, (int)$_GET['limit'])) : $defaultLimit;
     
-    // Bước 3: Tính toán độ lệch bản ghi OFFSET cho câu lệnh truy vấn CSDL
+    // Tính khoảng cách offset để truy vấn CSDL
     $offset = ($page - 1) * $limit;
     
-    // Bước 4: Trả về bộ ba tham số phân trang [$page, $limit, $offset]
     return [$page, $limit, $offset];
 }
 
 /**
- * [HÀM DÙNG CHUNG TOÀN HỆ THỐNG] jsonPaginatedResponse
- * - Chức năng: Đóng gói phản hồi API có cấu trúc phân trang chuẩn mực:
- *   { success, message, data, pagination: { current_page, per_page, total_records, total_pages } }
- * 
- * @param bool $success Trạng thái kết quả thao tác
- * @param mixed $data Danh sách bản ghi thuộc trang hiện tại
- * @param int $totalRecords Tổng số bản ghi thỏa điều kiện lọc trong CSDL
+ * Trả về phản hồi JSON kèm dữ liệu phân trang chuẩn
+ * @param bool $success Trạng thái kết quả
+ * @param mixed $data Danh sách dữ liệu của trang hiện tại
+ * @param int $totalRecords Tổng số bản ghi trong CSDL thỏa mãn điều kiện
  * @param int $page Trang hiện tại
- * @param int $limit Số bản ghi mỗi trang
- * @param string $message Thông điệp giải thích
- * @return void
+ * @param int $limit Số bản ghi trên 1 trang
+ * @param string $message Thông báo
  */
 function jsonPaginatedResponse($success, $data, $totalRecords, $page, $limit, $message = "") {
-    // Bước 1: Thiết lập tiêu đề giao thức HTTP Content-Type định dạng dữ liệu JSON
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
     
-    // Bước 2: Tính toán tổng số trang dựa trên tổng số bản ghi và kích thước trang
+    // Tính tổng số trang (làm tròn lên)
     $totalPages = $limit > 0 ? (int)ceil($totalRecords / $limit) : 1;
     
-    // Bước 3: Đóng gói cấu trúc phản hồi kèm trường pagination chuẩn mực và xuất JSON
     echo json_encode([
         "success" => $success,
         "message" => $message,
@@ -86,8 +76,7 @@ function jsonPaginatedResponse($success, $data, $totalRecords, $page, $limit, $m
             "total_records" => (int)$totalRecords,
             "total_pages" => $totalPages
         ]
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
     
-    // Bước 4: Dừng thực thi kịch bản máy chủ PHP ngay lập tức
     exit;
 }

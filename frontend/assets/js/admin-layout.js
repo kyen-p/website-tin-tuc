@@ -1,27 +1,25 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/admin-layout.js
- * PHÂN HỆ: Khung Giao diện & Điều hướng Tòa soạn (Editorial Workspace Layout & Navigation)
- * MÔ TẢ: Cung cấp layout dùng chung cho 3 phân hệ nội bộ của Tòa soạn Báo Mạch Tin:
- *        - Phân hệ Phóng viên (Reporter): Dashboard, Bài viết của tôi, Soạn bài viết.
- *        - Phân hệ Biên tập viên (Editor): Dashboard, Bài chờ duyệt, Danh mục & Thẻ Tag.
- *        - Phân hệ Quản trị viên (Admin): Dashboard, Quản lý bài đăng, Người dùng, Bình luận, Cấu hình liên hệ.
- *        Bao gồm:
- *        1. Route Guard: Kiểm tra phân quyền truy cập trang, chuyển hướng người dùng trái phép.
- *        2. Dynamic Sidebar Renderer: Tự động dựng cây Menu, hiển thị Role Badge, huy hiệu số lượng (Badge Count).
- *        3. Profile Card & Actions: Hiển thị avatar, tên người dùng, nút xem Trang chủ và Đăng xuất.
- *        4. Table Helper Utilities: Trích xuất thumbnail, render ảnh thu nhỏ cho table, highlight bài viết theo URL param (?id=).
- * PHẠM VI SỬ DỤNG:
- *   - Các trang thuộc frontend/reporter/*.html, frontend/editor/*.html, frontend/admin/*.html.
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (getCurrentUser, logout, escapeHtml, getInitials, resolveAssetPath, resolveApiUrl)
- *   - backend/api/editor/pending-articles.php (đếm số bài chờ duyệt cho Editor)
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/admin-layout.js
+PHÂN HỆ: Khung giao diện và điều hướng tòa soạn
+MÔ TẢ: Cung cấp layout và điều hướng dùng chung cho các phân hệ nội bộ:
+       - Phân hệ Phóng viên (Reporter): Dashboard, Bài viết của tôi, Soạn bài viết
+       - Phân hệ Biên tập viên (Editor): Dashboard, Bài chờ duyệt, Chuyên mục & Thẻ tag
+       - Phân hệ Quản trị viên (Admin): Dashboard, Quản lý bài đăng, Người dùng, Bình luận, Cấu hình liên hệ
+       Bao gồm:
+       1. Kiểm tra quyền truy cập (Route Guard) và chuyển hướng nếu không đủ thẩm quyền
+       2. Tự động dựng cây Menu Sidebar, hiển thị huy hiệu vai trò và số lượng bài chờ duyệt
+       3. Hiển thị thông tin cá nhân trên Sidebar/Topbar (avatar, họ tên, nút xem Trang chủ, Đăng xuất)
+       4. Các hàm tiện ích bảng: trích xuất ảnh bìa thu nhỏ, tô đậm dòng dữ liệu theo ID
+PHẠM VI SỬ DỤNG:
+       - Được nhúng trong các trang: frontend/reporter/*.html, frontend/editor/*.html, frontend/admin/*.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/editor/pending-articles.php
+==============================================================================
+*/
 
-// ==============================================================================
-// KHỐI 1: CẤU HÌNH DANH MỤC MENU THEO VAI TRÒ (WORKSPACE_MENUS)
-// ==============================================================================
+// 1. Cấu hình danh mục menu theo từng vai trò
 const WORKSPACE_MENUS = {
   reporter: {
     roleTitle: "Ban Phóng viên",
@@ -115,9 +113,7 @@ const WORKSPACE_MENUS = {
   }
 };
 
-// ==============================================================================
-// KHỐI 2: XỬ LÝ BADGE ĐẾM SỐ LƯỢNG TRÊN SIDEBAR
-// ==============================================================================
+// 2. Xử lý huy hiệu đếm số lượng trên Sidebar
 
 /**
  * Tính toán số lượng huy hiệu (Badge Count)
@@ -147,9 +143,7 @@ function updateSidebarBadge(key, count, type = "warning") {
 }
 window.updateSidebarBadge = updateSidebarBadge;
 
-// ==============================================================================
-// KHỐI 3: AVATAR VÀ KHỞI TẠO KHUNG GIAO DIỆN TÒA SOẠN (INIT ADMIN LAYOUT)
-// ==============================================================================
+// 3. Khởi tạo khung giao diện tòa soạn và hiển thị avatar
 
 /**
  * Render Avatar đồng bộ cho Sidebar & Topbar (hỗ trợ ảnh hoặc chữ cái đầu viết tắt)
@@ -407,9 +401,7 @@ function initAdminLayout(currentRole, activeKey) {
   return currentUser;
 }
 
-// ==============================================================================
-// KHỐI 4: CÁC TIỆN ÍCH HỖ TRỢ BẢNG DỮ LIỆU QUẢN TRỊ (TABLE & MEDIA HELPERS)
-// ==============================================================================
+// 4. Các tiện ích hỗ trợ bảng dữ liệu quản trị
 
 /**
  * Trích xuất ảnh bìa (cover_image) cho các bảng quản trị

@@ -1,40 +1,33 @@
 <?php
-/**
- * ==============================================================================
- * TÊN FILE: backend/api/admin/users.php
- * PHÂN HỆ: API Quản trị Tài khoản Người dùng (User Administration Service)
- * MÔ TẢ: Cung cấp các công cụ quản lý thành viên cho Quản trị viên (Admin):
- *        - GET: Lấy danh sách toàn bộ tài khoản người dùng trong hệ thống kèm trạng thái khóa.
- *        - PUT: Phân quyền vai trò người dùng (user, reporter, editor) hoặc Khóa/Mở khóa tài khoản kèm lý do.
- *        - Cơ chế bảo vệ: Nghiêm cấm tự khóa tài khoản của chính mình hoặc can thiệp tài khoản Admin.
- * PHẠM VI SỬ DỤNG:
- *   - [KHU VỰC QUẢN TRỊ TỐI CAO - ADMIN]
- *   - Phân quyền: role = 'admin'
- *   - Phương thức: GET, PUT
- * PHỤ THUỘC (HELPERS):
- *   - backend/config/database.php ($pdo)
- *   - backend/helpers/response.php (jsonResponse)
- *   - backend/helpers/auth.php (requireRole, $_SESSION['user_id'])
- * ĐƯỢC GỌI BỞI (FRONTEND):
- *   - frontend/assets/js/admin-users.js (Bảng quản lý tài khoản thành viên)
- * TRẢ VỀ (JSON):
- *   - GET: Danh sách người dùng
- *   - PUT: Kết quả cập nhật vai trò hoặc trạng thái khóa
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: backend/api/admin/users.php
+PHÂN HỆ: Quản trị người dùng
+MÔ TẢ: Quản lý danh sách tài khoản thành viên:
+       - Xem danh sách người dùng kèm bộ lọc theo vai trò, trạng thái và tìm kiếm
+       - Hỗ trợ phân trang danh sách người dùng
+       - Phân quyền vai trò (User, Reporter, Editor)
+       - Khóa / Mở khóa tài khoản kèm lý do vi phạm
+PHẠM VI SỬ DỤNG:
+       - Phân quyền: role = 'admin'
+       - Phương thức: GET, PUT
+PHỤ THUỘC:
+       - config/database.php
+       - helpers/response.php
+       - helpers/auth.php
+==============================================================================
+*/
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/auth.php';
 
-// Kiểm tra quyền hạn Quản trị viên cho toàn bộ tệp API
+// Chỉ Quản trị viên (admin) mới được truy cập
 requireRole(['admin']);
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// ==============================================================================
-// NGHIỆP VỤ 1: GET - LẤY DANH SÁCH TOÀN BỘ NGƯỜI DÙNG TRONG HỆ THỐNG
-// ==============================================================================
+// 1. Lấy danh sách toàn bộ người dùng trong hệ thống (hỗ trợ lọc và phân trang)
 if ($method === 'GET') {
     $isPaginated = isset($_GET['page']);
     $role = isset($_GET['role']) ? trim($_GET['role']) : '';
@@ -96,9 +89,7 @@ if ($method === 'GET') {
     }
 }
 
-// ==============================================================================
-// NGHIỆP VỤ 2: PUT - PHÂN VAI TRÒ HOẶC KHÓA/MỞ KHÓA TÀI KHOẢN
-// ==============================================================================
+// 2. Phân vai trò hoặc khóa / mở khóa tài khoản
 if ($method === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true);
     $userId = isset($input['user_id']) ? (int)$input['user_id'] : 0;
@@ -117,12 +108,12 @@ if ($method === 'PUT') {
         jsonResponse(false, null, "Không tìm thấy người dùng");
     }
 
-    // Không cho phép thao tác trên tài khoản của chính mình
+    // Không cho phép tự thao tác trên tài khoản của chính mình
     if ($userId === $currentAdminId) {
         jsonResponse(false, null, "Không thể tự thao tác trên tài khoản của chính bạn");
     }
 
-    // Không cho phép sửa tài khoản Admin khác qua giao diện này
+    // Không cho phép sửa đổi tài khoản Admin khác
     if ($targetUser['role'] === 'admin') {
         jsonResponse(false, null, "Tài khoản Quản trị viên được bảo vệ cố định, không thể can thiệp qua giao diện");
     }
@@ -137,7 +128,7 @@ if ($method === 'PUT') {
         $stmt->execute([$input['role'], $userId]);
     }
 
-    // Cập nhật trạng thái khóa hoặc mở khóa tài khoản
+    // Cập nhật trạng thái khóa hoặc mở khóa tài khoản kèm lý do
     if (isset($input['status'])) {
         if ($input['status'] === 'locked') {
             $stmt = $pdo->prepare("UPDATE users SET status='locked', lock_reason=?, locked_at=NOW() WHERE id=?");
@@ -150,3 +141,4 @@ if ($method === 'PUT') {
 
     jsonResponse(true, null, "Cập nhật thành công");
 }
+

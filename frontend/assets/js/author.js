@@ -1,25 +1,23 @@
-/**
- * ==============================================================================
- * TÊN FILE: frontend/assets/js/author.js
- * PHÂN HỆ: Trang Hồ sơ Tác giả & Độc giả (Public Author/Member Profile Module)
- * MÔ TẢ: Khởi tạo và xử lý hiển thị trang hồ sơ công khai của thành viên (Độc giả, Phóng viên, Biên tập viên, Quản trị viên):
- *        1. Tiếp nhận tham số nhận diện qua URL: ?username= hoặc ?id= hoặc ?slug=.
- *        2. Gọi API public/author.php để lấy thông tin hồ sơ và danh sách bài viết đã xuất bản.
- *        3. Quy chuẩn chính sách quyền riêng tư: Ẩn email đối với Độc giả thông thường, hiển thị liên hệ đối với Phóng viên/BTV/Admin.
- *        4. Tính toán tổng lượt đọc, tổng số bài viết và danh sách các chuyên mục tác giả từng viết.
- *        5. Lọc bài viết theo chuyên mục ngay tại trang hồ sơ tác giả.
- * PHẠM VI SỬ DỤNG:
- *   - frontend/public/author.html
- * PHỤ THUỘC:
- *   - frontend/assets/js/common.js (initPublicHeader, initPublicFooter, resolveApiUrl, renderUserAvatar, renderCoverImage, etc.)
- *   - backend/api/public/author.php
- * ==============================================================================
- */
+/*
+==============================================================================
+TÊN FILE: frontend/assets/js/author.js
+PHÂN HỆ: Hồ sơ tác giả và độc giả
+MÔ TẢ: Khởi tạo và xử lý hiển thị trang hồ sơ công khai của thành viên:
+       - Tiếp nhận tham số qua URL (?username=, ?id= hoặc ?slug=)
+       - Gọi API public/author.php lấy hồ sơ và danh sách bài viết đã xuất bản
+       - Quy chuẩn hiển thị email (ẩn với độc giả, hiện với phóng viên/BTV/Admin)
+       - Thống kê tổng lượt đọc, tổng số bài viết và danh sách chuyên mục
+       - Bộ lọc bài viết theo chuyên mục tại trang hồ sơ
+PHẠM VI SỬ DỤNG:
+       - frontend/public/author.html
+PHỤ THUỘC:
+       - frontend/assets/js/common.js
+       - backend/api/public/author.php
+==============================================================================
+*/
 
 async function initAuthorPage() {
-  // ==============================================================================
-  // KHỐI 1: ĐỌC THAM SỐ URL & TẢI DỮ LIỆU TÁC GIẢ TỪ BACKEND
-  // ==============================================================================
+  // 1. Đọc tham số URL và tải dữ liệu tác giả từ backend
   const urlParams = new URLSearchParams(window.location.search);
   const rawKey = (urlParams.get("username") || urlParams.get("slug") || urlParams.get("id") || urlParams.get("author_id") || "").trim();
 
@@ -70,14 +68,12 @@ async function initAuthorPage() {
   // Cập nhật tiêu đề thẻ trang trình duyệt (Document Title)
   document.title = `${author.full_name || author.username} - Hồ sơ | Mạch Tin`;
 
-  // Bước 1: Hàm tiện ích trích xuất chuyên mục của bài viết (Category Helper)
+  // Hàm tiện ích trích xuất chuyên mục của bài viết (Category Helper)
   function getCategory(a) {
     return (a && a.category) || { name: "Tin tức", slug: "" };
   }
 
-  // ==============================================================================
-  // KHỐI 2: HIỂN THỊ THÔNG TIN HỒ SƠ, VAI TRÒ & THỐNG KÊ HOẠT ĐỘNG
-  // ==============================================================================
+  // 2. Hiển thị thông tin hồ sơ, vai trò và thống kê hoạt động
   // authorArticles đã được backend lọc sẵn status = 'published' và sắp xếp published_at DESC
   const totalViews = authorArticles.reduce((sum, a) => sum + getViews(a), 0);
 
@@ -132,9 +128,7 @@ async function initAuthorPage() {
   if (statArticlesEl) statArticlesEl.textContent = `${authorArticles.length}`;
   if (statViewsEl) statViewsEl.textContent = typeof formatNumber === "function" ? formatNumber(totalViews) : totalViews.toLocaleString("vi-VN");
 
-  // ==============================================================================
-  // KHỐI 3: BỘ LỌC CHUYÊN MỤC CỦA TÁC GIẢ
-  // ==============================================================================
+  // 3. Bộ lọc chuyên mục của tác giả
   const categoryFilter = document.getElementById("author-cat-filter");
   if (categoryFilter) {
     const authorCatsMap = new Map();
@@ -157,9 +151,7 @@ async function initAuthorPage() {
     });
   }
 
-  // ==============================================================================
-  // KHỐI 4: RENDER DANH SÁCH BÀI VIẾT CỦA TÁC GIẢ
-  // ==============================================================================
+  // 4. Hiển thị danh sách bài viết của tác giả
   function renderAuthorArticles(filterCatId = "") {
     const listMount = document.getElementById("author-articles-mount");
     const emptyMount = document.getElementById("author-articles-empty");
@@ -213,11 +205,11 @@ async function initAuthorPage() {
       .join("");
   }
 
-  // Bước 7: Khởi tạo hiển thị danh sách bài viết lần đầu (toàn bộ bài viết, không lọc từ khóa)
+  // Khởi tạo hiển thị danh sách bài viết lần đầu (toàn bộ bài viết, không lọc từ khóa)
   renderAuthorArticles("");
 }
 
-// Bước 8: Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
+// Khởi chạy module khi cây cấu trúc tài liệu DOM đã sẵn sàng
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initAuthorPage);
 } else {
