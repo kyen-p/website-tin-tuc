@@ -2139,6 +2139,87 @@ body.mobile-menu-locked {
   }
 }
 
+/* 22.5. Tự động chuyển các cụm lưới 2 cột sang 1 cột xếp dọc trên Điện thoại (<= 768px) */
+@media (max-width: 768px) {
+  #cat-tag-grid,
+  .admin-content div[style*="grid-template-columns"],
+  .admin-content [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  #section-reporters div[style*="overflow: hidden"],
+  #section-reporters div[style*="overflow"],
+  .admin-card div[style*="overflow: hidden"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  #modal-review-article {
+    padding: 10px !important;
+  }
+
+  #modal-review-article .admin-modal-container {
+    max-height: 96vh !important;
+    max-height: 96dvh !important;
+    width: 100% !important;
+  }
+
+  #modal-review-article .admin-modal-header {
+    padding: 12px 16px !important;
+  }
+
+  #modal-review-article .admin-modal-body {
+    padding: 16px 14px !important;
+  }
+
+  #modal-review-article div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  #modal-review-article [style*="display: none"],
+  #modal-review-article [style*="display:none"] {
+    display: none !important;
+  }
+
+  #modal-review-article .admin-modal-footer {
+    padding: 12px 14px !important;
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+
+  #modal-review-article .admin-modal-footer > div:not([style*="display: none"]):not([style*="display:none"]),
+  #modal-review-article #modal-editor-actions:not([style*="display: none"]):not([style*="display:none"]),
+  #modal-review-article #modal-admin-actions:not([style*="display: none"]):not([style*="display:none"]) {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  #modal-review-article .admin-modal-footer .admin-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  #contactConfigForm div[style*="justify-content: space-between"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  #contactConfigForm #btnResetConfig,
+  #contactConfigForm #btnSaveConfig {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+}
+
 @media (max-width: 480px) {
   .admin-topbar__inner {
     padding: 0 12px;
@@ -2151,6 +2232,12 @@ body.mobile-menu-locked {
   .admin-topbar__right .admin-sidebar__role-pill {
     padding: 4px 9px;
     font-size: 10.5px;
+  }
+
+  #section-reporters .admin-table th,
+  #section-reporters .admin-table td {
+    padding: 10px 6px !important;
+    font-size: 12px !important;
   }
 }
 
