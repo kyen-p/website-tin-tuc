@@ -1347,3 +1347,123 @@
   font-size: 14px;
 }
 
+/* ==============================================================================
+ * PHẦN 10: QUY TẮC RESPONSIVE TOÀN DIỆN CHO CÁC TRANG CÔNG KHAI
+ * Áp dụng cho: Trang chủ, Danh mục, Chi tiết bài viết, Tìm kiếm, Tác giả
+ * ============================================================================== */
+
+/* 1. Màn hình Tablet & Laptop nhỏ (<= 1024px) */
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .hero-grid__main {
+    border-bottom: 1px solid var(--line-soft);
+    padding-bottom: 24px;
+  }
+
+  .layout-split {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .layout-split--article {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* 2. Màn hình Mobile (<= 768px) */
+@media (max-width: 768px) {
+  .hero-grid {
+    padding: 16px 0 24px;
+  }
+
+  .hero-sub-card {
+    grid-template-columns: 120px 1fr;
+    gap: 12px;
+  }
+
+  .hero-sub-card .headline-md {
+    font-size: 15px;
+  }
+
+  .grid-3,
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .section--latest {
+    padding: 24px 0 16px;
+  }
+
+  .layout-split {
+    padding: 20px 0 40px;
+  }
+
+  .article-title {
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  .byline-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .author-profile {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 20px;
+    padding: 24px 16px;
+    margin: 24px auto 40px;
+  }
+
+  .author-avatar {
+    margin: 0 auto;
+    width: 120px;
+    height: 120px;
+    font-size: 36px;
+  }
+
+  .author-name {
+    font-size: 24px;
+  }
+}
+
+/* 3. Màn hình Mobile nhỏ (<= 480px) */
+@media (max-width: 480px) {
+  .hero-sub-card {
+    grid-template-columns: 100px 1fr;
+    gap: 10px;
+  }
+
+  .hero-sub-card .headline-md {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .article-title {
+    font-size: 21px;
+  }
+
+  .pagination-wrap {
+    gap: 4px;
+  }
+
+  .pagination-btn {
+    height: 36px;
+    min-width: 36px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+}
+

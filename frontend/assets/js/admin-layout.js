@@ -233,13 +233,21 @@ function initAdminLayout(currentRole, activeKey) {
 
     sidebarMount.className = "admin-sidebar";
     sidebarMount.innerHTML = `
-      <!-- 2.1. Header Sidebar: Logo thương hiệu TĨNH (không link, chuẩn ảnh mẫu) + Role Badge -->
+      <!-- 2.1. Header Sidebar: Logo thương hiệu TĨNH + Nút đóng X (chỉ hiện trên tablet/mobile) + Role Badge -->
       <div class="admin-sidebar__header">
-        <div class="admin-sidebar__brand">
-          <svg class="admin-sidebar__logo-pulse" width="24" height="24" viewBox="0 0 26 26" fill="none" aria-hidden="true">
-            <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="var(--crimson)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="admin-sidebar__logo-text">MẠCH <em>TIN</em></div>
+        <div class="admin-sidebar__header-top">
+          <div class="admin-sidebar__brand">
+            <svg class="admin-sidebar__logo-pulse" width="24" height="24" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+              <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="var(--crimson)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="admin-sidebar__logo-text">MẠCH <em>TIN</em></div>
+          </div>
+          <button type="button" class="admin-sidebar__close-btn" id="adminSidebarCloseBtn" aria-label="Đóng menu" title="Đóng menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
         <div class="admin-sidebar__role-pill ${roleConfig.roleBadgeClass}">
           <span class="admin-sidebar__role-dot"></span>
@@ -289,12 +297,96 @@ function initAdminLayout(currentRole, activeKey) {
     `;
   }
 
-  // 3. Topbar: Ẩn/loại bỏ để tối ưu không gian làm việc
+  // 3. Topbar: Hiển thị trên Tablet/Mobile (<= 1024px) với Hamburger, Logo và Role Badge
   const topbarMount = document.getElementById("admin-topbar");
   if (topbarMount) {
-    topbarMount.style.display = "none";
-    topbarMount.innerHTML = "";
+    topbarMount.className = "admin-topbar";
+    topbarMount.innerHTML = `
+      <div class="admin-topbar__inner">
+        <div class="admin-topbar__left">
+          <button type="button" class="admin-topbar__toggle" id="adminSidebarToggle" aria-label="Mở menu quản trị" title="Mở menu quản trị">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="admin-topbar__brand">
+            <svg class="admin-topbar__logo-pulse" width="22" height="22" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+              <path d="M1 13H7L9.5 6L13.5 20L16 13H25" stroke="var(--crimson)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="admin-topbar__logo-text">MẠCH <em>TIN</em></span>
+          </div>
+        </div>
+        <div class="admin-topbar__right">
+          <div class="admin-sidebar__role-pill ${roleConfig.roleBadgeClass}">
+            <span class="admin-sidebar__role-dot"></span>
+            <span>${roleConfig.roleTitle}</span>
+          </div>
+        </div>
+      </div>
+    `;
   }
+
+  // 3.1. Thiết lập Backdrop Overlay và sự kiện Đóng / Mở Menu Drawer
+  let overlay = document.getElementById("adminSidebarOverlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "adminSidebarOverlay";
+    overlay.className = "admin-sidebar-overlay";
+    document.body.appendChild(overlay);
+  }
+
+  function openAdminDrawer() {
+    if (sidebarMount) sidebarMount.classList.add("is-open");
+    if (overlay) overlay.classList.add("is-active");
+    document.body.classList.add("mobile-menu-locked");
+  }
+
+  function closeAdminDrawer() {
+    if (sidebarMount) sidebarMount.classList.remove("is-open");
+    if (overlay) overlay.classList.remove("is-active");
+    document.body.classList.remove("mobile-menu-locked");
+  }
+
+  const toggleBtn = document.getElementById("adminSidebarToggle");
+  if (toggleBtn) {
+    toggleBtn.onclick = openAdminDrawer;
+  }
+
+  const closeBtn = document.getElementById("adminSidebarCloseBtn");
+  if (closeBtn) {
+    closeBtn.onclick = closeAdminDrawer;
+  }
+
+  if (overlay) {
+    overlay.onclick = closeAdminDrawer;
+  }
+
+  // Tự động đóng Drawer khi click chọn một mục menu điều hướng
+  if (sidebarMount) {
+    sidebarMount.querySelectorAll(".admin-sidebar__link").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 1024) {
+          closeAdminDrawer();
+        }
+      });
+    });
+  }
+
+  // Đóng Drawer bằng phím Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAdminDrawer();
+    }
+  });
+
+  // Tự động thu gọn và mở khóa scroll khi resize lên màn hình laptop (> 1024px)
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 1024) {
+      closeAdminDrawer();
+    }
+  });
 
   // 4. Tự động tải số lượng huy hiệu cho Biên tập viên (Bài chờ duyệt)
   if (currentRole === "editor") {

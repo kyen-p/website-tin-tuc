@@ -770,7 +770,11 @@ async function initPublicHeader(activeCategorySlug = "") {
             ${PULSE_SVG_ICON}
             <span class="logo__word">MẠCH <em>TIN</em></span>
           </a>
-          <nav class="main-nav" aria-label="Điều hướng chuyên mục">
+          <nav class="main-nav" id="mainNavMenu" aria-label="Điều hướng chuyên mục">
+            <div class="mobile-drawer-header">
+              <span class="mobile-drawer-title">DANH MỤC TIN</span>
+              <button type="button" class="mobile-drawer-close" id="mobileMenuCloseBtn" aria-label="Đóng menu">✕</button>
+            </div>
             <a href="${publicPrefix}index.html" class="${isIndexPage ? 'is-active' : ''}">Trang chủ</a>
             ${navLinksHtml}
           </nav>
@@ -782,9 +786,17 @@ async function initPublicHeader(activeCategorySlug = "") {
               </svg>
             </a>
             ${headerActionsHtml}
+            <button type="button" class="nav-toggle" id="mobileMenuBtn" aria-label="Mở menu danh mục">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
+      <div class="mobile-nav-overlay" id="mobileMenuOverlay"></div>
       <div class="category-bar">
         <div class="wrap">
           <a href="${publicPrefix}category.html" class="${isCategoryAll ? 'is-active' : ''}">Tất cả</a>
@@ -806,6 +818,47 @@ async function initPublicHeader(activeCategorySlug = "") {
       if (!userMenuDropdown.contains(e.target)) {
         userMenuDropdown.classList.remove("is-open");
       }
+    });
+  }
+
+  // Gắn sự kiện điều khiển Menu di động (Mobile Drawer & Hamburger)
+  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+  const mainNavMenu = document.getElementById("mainNavMenu");
+  const mobileMenuOverlay = document.getElementById("mobileMenuOverlay");
+  const mobileMenuCloseBtn = document.getElementById("mobileMenuCloseBtn");
+
+  const openMobileMenu = () => {
+    if (mainNavMenu) mainNavMenu.classList.add("is-active");
+    if (mobileMenuOverlay) mobileMenuOverlay.classList.add("is-active");
+    document.body.classList.add("mobile-menu-locked");
+  };
+
+  const closeMobileMenu = () => {
+    if (mainNavMenu) mainNavMenu.classList.remove("is-active");
+    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove("is-active");
+    document.body.classList.remove("mobile-menu-locked");
+  };
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openMobileMenu();
+    });
+  }
+
+  if (mobileMenuCloseBtn) {
+    mobileMenuCloseBtn.addEventListener("click", closeMobileMenu);
+  }
+
+  if (mobileMenuOverlay) {
+    mobileMenuOverlay.addEventListener("click", closeMobileMenu);
+  }
+
+  // Tự động đóng drawer khi người dùng bấm vào một link chuyển trang
+  if (mainNavMenu) {
+    const navAnchors = mainNavMenu.querySelectorAll("a");
+    navAnchors.forEach((a) => {
+      a.addEventListener("click", closeMobileMenu);
     });
   }
 }

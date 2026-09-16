@@ -63,6 +63,33 @@
   background-color: #FCFAF6;
 }
 
+.admin-sidebar__header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.admin-sidebar__close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.admin-sidebar__close-btn:hover {
+  background-color: rgba(19, 27, 46, 0.08);
+  color: var(--crimson);
+}
+
 .admin-sidebar__brand {
   display: flex;
   align-items: center;
@@ -392,6 +419,29 @@
   background-color: #FDF2F1;
   color: var(--crimson);
   border-color: #FADBD8;
+}
+
+/* 2.4. Backdrop Overlay cho Mobile/Tablet Drawer */
+.admin-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(19, 27, 46, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  cursor: pointer;
+}
+
+.admin-sidebar-overlay.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.mobile-menu-locked {
+  overflow: hidden !important;
 }
 
 /* 3. KHU VỰC NỘI DUNG CHÍNH (MAIN CONTENT) */
@@ -1915,6 +1965,193 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* ==============================================================================
+ * 22. RESPONSIVE QUẢN TRỊ TOÀN DIỆN CHO TABLET & MOBILE (<= 1024px)
+ * ============================================================================== */
+@media (max-width: 1024px) {
+  /* 22.1. Topbar thanh điều hướng di động / tablet */
+  .admin-topbar {
+    display: block !important;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background-color: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 1px 4px rgba(19, 27, 46, 0.04);
+    width: 100%;
+  }
+
+  .admin-topbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 56px;
+    gap: 12px;
+    box-sizing: border-box;
+  }
+
+  .admin-topbar__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .admin-topbar__toggle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--ink);
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    transition: all 0.15s ease;
+  }
+
+  .admin-topbar__toggle:hover,
+  .admin-topbar__toggle:active {
+    background-color: #EDE8DC;
+    border-color: var(--brass);
+    color: var(--brass-dark);
+  }
+
+  .admin-topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+    cursor: default;
+  }
+
+  .admin-topbar__logo-pulse {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .admin-topbar__logo-text {
+    font-family: var(--f-display), 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    display: flex;
+    align-items: baseline;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .admin-topbar__logo-text em {
+    font-family: var(--f-serif), 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 600;
+    color: #8F7239;
+    margin-left: 4px;
+  }
+
+  .admin-topbar__right {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .admin-topbar__right .admin-sidebar__role-pill {
+    padding: 5px 12px;
+    font-size: 11.5px;
+    margin: 0;
+  }
+
+  /* 22.2. Sidebar chuyển sang Off-canvas Drawer */
+  .admin-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 82vw !important;
+    flex: none !important;
+    z-index: 1000 !important;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s ease;
+    box-shadow: 4px 0 28px rgba(19, 27, 46, 0.2);
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.is-open {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+  }
+
+  .admin-sidebar__close-btn {
+    display: flex !important;
+  }
+
+  /* 22.3. Bố cục Workspace khi Sidebar thu vào Drawer */
+  .admin-workspace {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  .admin-main {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: 1 1 100% !important;
+    display: block !important;
+  }
+
+  .admin-content {
+    padding: 20px 16px !important;
+  }
+
+  /* 22.4. Tối ưu thanh Toolbar bảng dữ liệu trên Tablet & Mobile */
+  .admin-card__toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .admin-search-input {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Phân trang linh hoạt */
+  .admin-table-pagination {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .admin-pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-topbar__inner {
+    padding: 0 12px;
+  }
+
+  .admin-topbar__logo-text {
+    font-size: 17px;
+  }
+
+  .admin-topbar__right .admin-sidebar__role-pill {
+    padding: 4px 9px;
+    font-size: 10.5px;
+  }
 }
 
 

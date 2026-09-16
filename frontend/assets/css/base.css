@@ -817,6 +817,12 @@ textarea.form-control {
   padding: 0 24px;
 }
 
+@media (max-width: 640px) {
+  .wrap {
+    padding: 0 16px;
+  }
+}
+
 .pulse-mark {
   color: var(--crimson);
   flex-shrink: 0;
