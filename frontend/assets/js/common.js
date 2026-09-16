@@ -292,31 +292,6 @@ function getArticleViews(article) {
 window.getArticleViews = getArticleViews;
 
 /**
- * Helper lấy đối tượng chuyên mục của bài viết chuẩn hóa
- */
-function getArticleCategory(article, categories = []) {
-  if (!article) return { name: "Tin tức", slug: "tin-tuc" };
-  if (article.category && typeof article.category === "object") return article.category;
-  const cat = Array.isArray(categories) ? categories.find((c) => String(c.id) === String(article.category_id)) : null;
-  return cat || { name: article.category_name || "Tin tức", slug: article.category_slug || "tin-tuc" };
-}
-window.getArticleCategory = getArticleCategory;
-
-/**
- * Helper lấy thông tin tác giả bài viết chuẩn hóa
- */
-function getArticleAuthor(article) {
-  if (!article) return { full_name: "Ban Biên Tập", username: "banbientap" };
-  if (article.author && typeof article.author === "object") return article.author;
-  return {
-    full_name: article.author_name || article.author || "Ban Biên Tập",
-    username: article.author_username || "banbientap",
-    avatar: article.author_avatar || ""
-  };
-}
-window.getArticleAuthor = getArticleAuthor;
-
-/**
  * Định dạng ngày đăng bài chuẩn toàn hệ thống Mạch Tin:
  * - Nếu < 48 giờ: 'Vừa xong' / 'X phút trước' / 'X giờ trước' / '1 ngày trước'
  * - Nếu > 48 giờ: 'HH:mm, DD/MM/YYYY' (ví dụ: '09:30, 13/08/2026')
