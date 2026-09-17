@@ -380,7 +380,7 @@ body.mobile-menu-locked {
 }
 
 /* ==============================================================================
- * PHẦN 3: TRẠNG THÁI ĐÃ ĐĂNG NHẬP, CHUÔNG THÔNG BÁO VÀ MENU NGƯỜI DÙNG
+ * PHẦN 3: TRẠNG THÁI ĐÃ ĐĂNG NHẬP VÀ MENU NGƯỜI DÙNG
  * ============================================================================== */
 .header-user {
   display: flex;
