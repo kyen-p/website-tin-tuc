@@ -612,7 +612,7 @@ async function initPublicHeader(activeCategorySlug = "") {
         </span>
       `)
       .join("");
-    // Nhân đôi danh sách để tạo hiệu ứng cuộn mượt mà vô tận
+    // Nhân đôi danh sách để tạo hiệu ứng cuộn mượt 
     tickerHtml = singleTicker + singleTicker;
   } else {
     tickerHtml = `<span><strong class="ticker__tag">NÓNG -</strong> Bắt mạch dòng chảy tin tức 24/7 từ Mạch Tin</span>`;

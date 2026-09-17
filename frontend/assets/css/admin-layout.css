@@ -460,7 +460,7 @@ body.mobile-menu-locked {
   overflow-x: clip;
 }
 
-/* 3.1. Topbar (Đã ẩn để tối ưu không gian làm việc rộng thoáng) */
+/* 3.1. Topbar */
 .admin-topbar {
   display: none !important;
 }
@@ -1436,7 +1436,7 @@ body.mobile-menu-locked {
 }
 
 /* ==============================================================================
- * PHẦN 14: BỐ CỤC BIỂU MẪU VÀ TRƯỜNG NHẬP LIỆU (FORM STYLES & LAYOUT)
+ * PHẦN 14: BỐ CỤC BIỂU MẪU VÀ TRƯỜNG NHẬP LIỆU 
  * ============================================================================== */
 .admin-form-layout {
   display: grid;

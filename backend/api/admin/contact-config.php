@@ -3,7 +3,7 @@
 ==============================================================================
 TÊN FILE: backend/api/admin/contact-config.php
 PHÂN HỆ: Cấu hình tòa soạn
-MÔ TẢ: Quản lý thông tin liên hệ và mạng xã hội của Tòa soạn Báo Mạch Tin:
+MÔ TẢ: Quản lý thông tin liên hệ và mạng xã hội Mạch Tin:
        - Xem thông tin liên hệ (công khai cho toàn trang)
        - Cập nhật thông tin tòa soạn và liên kết mạng xã hội (chỉ Admin)
 PHẠM VI SỬ DỤNG:

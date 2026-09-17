@@ -399,7 +399,7 @@
   border-color: var(--ink);
 }
 
-/* 5. CỘT THEO DÒNG SỰ KIỆN (MÔ-TÍP MẠCH XUNG) */
+/* 5. CỘT THEO DÒNG SỰ KIỆN */
 .pulse-rail {
   position: relative;
   padding-left: 20px;
@@ -725,7 +725,7 @@
   margin: 0;
 }
 
-/* Trang hồ sơ Tác giả (Author Profile Page) */
+/* Trang cá nhân */
 .author-hero-card {
   background: transparent;
   border: none;

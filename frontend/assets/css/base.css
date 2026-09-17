@@ -899,7 +899,7 @@ a:hover .ph img {
 .ph--tall { aspect-ratio: 3/4; }
 
 /* ==============================================================================
-   TOAST NOTIFICATION (TOASTIFY JS - MẠCH TIN PASTEL THEME)
+   TOAST NOTIFICATION 
    ============================================================================== */
 .toastify.mach-toast {
   display: inline-flex;
@@ -1059,7 +1059,7 @@ a:hover .ph img {
   padding-left: 4px;
 }
 
-/* Danh sách con lồng nhau (áp dụng khi danh sách con không có inline style riêng) */
+/* Danh sách con lồng nhau */
 .body-text ol ol:not([style*="list-style-type"]),
 .ck-content ol ol:not([style*="list-style-type"]) {
   list-style-type: lower-alpha;
@@ -1125,7 +1125,7 @@ a:hover .ph img {
 .body-text .text-align-justify, .ck-content .text-align-justify,
 .body-text .text-justify, .ck-content .text-justify { text-align: justify !important; }
 
-/* 5. Khối trích dẫn (Blockquote) chuẩn báo chí */
+/* 5. Khối trích dẫn (Blockquote) */
 .body-text blockquote,
 .ck-content blockquote {
   border-left: 3px solid var(--brass, #B8894F) !important;
