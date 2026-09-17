@@ -65,7 +65,7 @@ PHỤ THUỘC:
       });
     }
 
-    abort() {}
+    abort() { }
   }
 
   // 2. Plugin đăng ký adapter tải ảnh vào kho plugin FileRepository của CKEditor 5
@@ -137,6 +137,7 @@ PHỤ THUỘC:
         "CKBox",
         "CKFinder",
         "EasyImage",
+        "Base64UploadAdapter",
         "RealTimeCollaborativeComments",
         "RealTimeCollaborativeTrackChanges",
         "RealTimeCollaborativeRevisionHistory",
@@ -160,8 +161,8 @@ PHỤ THUỘC:
 
     const finalToolbar = customOptions.toolbar
       ? (Array.isArray(customOptions.toolbar)
-          ? { items: customOptions.toolbar, shouldNotGroupWhenFull: true }
-          : Object.assign({ shouldNotGroupWhenFull: true }, customOptions.toolbar))
+        ? { items: customOptions.toolbar, shouldNotGroupWhenFull: true }
+        : Object.assign({ shouldNotGroupWhenFull: true }, customOptions.toolbar))
       : defaultConfig.toolbar;
 
     const mergedConfig = Object.assign({}, defaultConfig, customOptions, { toolbar: finalToolbar });
@@ -171,9 +172,16 @@ PHỤ THUỘC:
 
     try {
       const editorInstance = await EditorConstructor.create(el, mergedConfig);
+
+      if (editorInstance.plugins.has("FileRepository")) {
+        editorInstance.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+          return new CustomServerUploadAdapter(loader);
+        };
+      }
+
       return editorInstance;
     } catch (error) {
-      console.error("Lỗi khi khởi tạo CKEditor 5:", error);
+      console.error("Lỗi CKEditor:", error);
       return null;
     }
   }
